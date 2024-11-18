@@ -82,6 +82,9 @@ export default [
           jsx: true, // 支持 JSX
           tsx: true
         }
+      },
+      globals: {
+        ...globals.node // 启用 Node.js 的全局变量（包括 __dirname 和 process）
       }
     },
     plugins: {
