@@ -1,6 +1,7 @@
 import { defineConfig } from '@rspack/cli'
 import { rspack } from '@rspack/core'
 import * as RefreshPlugin from '@rspack/plugin-react-refresh'
+import * as path from 'path'
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -13,7 +14,19 @@ export default defineConfig({
     main: './src/main.tsx'
   },
   resolve: {
-    extensions: ['...', '.ts', '.tsx', '.jsx']
+    extensions: ['...', '.ts', '.tsx', '.jsx'],
+    alias: {
+      api: path.resolve(__dirname, './src/api'),
+      assets: path.resolve(__dirname, './src/assets'),
+      components: path.resolve(__dirname, './src/components'),
+      configs: path.resolve(__dirname, './src/configs'),
+      hooks: path.resolve(__dirname, './src/hooks'),
+      modules: path.resolve(__dirname, './src/modules'),
+      pages: path.resolve(__dirname, './src/pages'),
+      router: path.resolve(__dirname, './src/router'),
+      styles: path.resolve(__dirname, './src/styles'),
+      utils: path.resolve(__dirname, './src/utils')
+    }
   },
   module: {
     rules: [
