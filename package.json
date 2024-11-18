@@ -8,7 +8,8 @@
     "check": "biome check --write",
     "dev": "cross-env NODE_ENV=development rspack serve",
     "format": "biome format --write",
-    "lint": "eslint ."
+    "lint": "eslint src",
+    "commitlint": "commitlint --edit $1"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -16,6 +17,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.3",
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
     "@eslint/compat": "^1.2.0",
     "@eslint/js": "^9.12.0",
     "@rspack/cli": "^1.1.1",
@@ -31,7 +34,7 @@
     "eslint-plugin-react": "^7.37.1",
     "eslint-plugin-react-hooks": "^5.0.0",
     "globals": "^15.11.0",
-    "husky": "^9.1.6",
+    "husky": "^8.0.0",
     "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
     "react-refresh": "^0.14.0",
