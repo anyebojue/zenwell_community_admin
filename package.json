@@ -42,11 +42,18 @@
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.8.1"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix"
+    "src/**/*.{js,jsx,d.ts,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
     ],
-    "*.{css,scss}": [
+    "src/**/*.{json,css,less}": [
       "prettier --write"
     ]
   }

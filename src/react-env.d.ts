@@ -1,4 +1,5 @@
 // CSS modules
+import type React from 'react'
 type CSSModuleClasses = { readonly [key: string]: string }
 
 declare module '*.module.css' {
