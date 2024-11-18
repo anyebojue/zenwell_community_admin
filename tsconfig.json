@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
+    "baseUrl": "src",
     "target": "ES2020",
-    "lib": ["DOM", "ES2020"],
+    "lib": [
+      "DOM",
+      "ES2020"
+    ],
     "module": "ESNext",
     "jsx": "react-jsx",
     "strict": true,
@@ -13,7 +17,9 @@
     "useDefineForClassFields": true,
     "allowImportingTsExtensions": true
   },
-  "include": ["src"],
+  "include": [
+    "src"
+  ],
   "ts-node": {
     "compilerOptions": {
       "module": "CommonJS"
