@@ -4,7 +4,6 @@ import { columns, rows } from './gridData'
 export default function CustomizedDataGrid() {
   return (
     <DataGrid
-      autoHeight
       checkboxSelection
       rows={rows}
       columns={columns}

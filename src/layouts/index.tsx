@@ -50,11 +50,11 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
   return (
     <AppTheme disableCustomTheme={disableCustomTheme} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', height: '100%' }}>
         {!isFullPage && <SideMenu />}
-        <Stack spacing={2}>
+        <Stack sx={{ width: '100%', height: '100%' }}>
           {!isFullPage && <Header />}
-          <Box>{routing}</Box>
+          <Box sx={{ p: 3, bgcolor: 'background.paper', height: '100%' }}>{routing}</Box>
         </Stack>
         {!isFullPage && <AppNavbar />}
       </Box>

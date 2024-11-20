@@ -20,7 +20,7 @@ const Header = () => {
         alignItems: { xs: 'flex-start', md: 'center' },
         justifyContent: 'space-between',
         maxWidth: { sm: '100%', md: '1700px' },
-        py: 2,
+        py: 1.7,
         px: 3,
         borderBottom: '1px solid',
         borderColor: theme.palette.divider

@@ -9,18 +9,6 @@
 @import '@fontsource/barlow/700.css';
 @import '@fontsource/barlow/800.css';
 
-/** **************************************
-* Plugins
-*************************************** */
-/* scrollbar */
-@import 'components/scrollbar/styles.css';
-
-/* chart */
-@import 'components/chart/styles.css';
-
-/** **************************************
-* Baseline
-*************************************** */
 html {
   height: 100%;
   -webkit-overflow-scrolling: touch;
@@ -29,6 +17,7 @@ html {
 body,
 #root,
 #root__layout {
+  height: 100%;
   display: flex;
   flex: 1 1 auto;
   min-height: 100%;
