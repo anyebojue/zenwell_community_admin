@@ -1,6 +1,6 @@
 import { ComponentType } from 'react'
 import { useRoutes, useLocation, Navigate } from 'react-router-dom'
-import { CssBaseline, drawerClasses, Box, Stack } from '@mui/material'
+import { CssBaseline, Box, Stack } from '@mui/material'
 import AppTheme from 'theme/AppTheme'
 import routes from 'routes'
 import {
@@ -47,20 +47,6 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
   const routing = useRoutes(convertedRoutes)
   const isFullPage = checkIsFullPage(convertedRoutes, location.pathname)
 
-  const renderMainContent = () => (
-    <Box
-      component="main"
-      sx={{
-        px: 3,
-        [`& .${drawerClasses.paper}`]: {
-          backgroundColor: 'background.paper'
-        }
-      }}
-    >
-      {routing}
-    </Box>
-  )
-
   return (
     <AppTheme disableCustomTheme={disableCustomTheme} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
@@ -68,7 +54,7 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
         {!isFullPage && <SideMenu />}
         <Stack spacing={2}>
           {!isFullPage && <Header />}
-          {renderMainContent()}
+          <Box>{routing}</Box>
         </Stack>
         {!isFullPage && <AppNavbar />}
       </Box>

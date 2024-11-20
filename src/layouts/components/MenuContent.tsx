@@ -7,21 +7,16 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material'
 const MenuContent = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   const location = useLocation()
-
   const handleClick = useCallback((index: number) => {
     setOpenIndex(prevIndex => (prevIndex === index ? null : index))
   }, [])
-
   const visibleRoutes = getAllRoutes.filter(item => !item.meta?.hidden)
-
   const isActiveLink = useCallback((path: string) => location.pathname === path, [location])
-
   const isAnyChildActive = useCallback(
     (children: any[], parentPath: string) =>
       children.some(child => location.pathname.startsWith(`${parentPath}/${child.path}`)),
     [location]
   )
-
   const linkStyle = { textDecoration: 'none', color: 'rgba(0, 0, 0, 0.54)' }
 
   return (
@@ -31,7 +26,6 @@ const MenuContent = () => {
         const { Icon, title } = meta || {}
         const isParentActive = isActiveLink(path)
         const hasActiveChild = children && isAnyChildActive(children, path)
-
         return (
           <Fragment key={index}>
             {meta?.single ? (
@@ -58,7 +52,6 @@ const MenuContent = () => {
                         const { meta: childMeta, path: childPath } = child
                         const { Icon: ChildIcon, title: childTitle } = childMeta || {}
                         const fullPath = `${path}/${childPath}`
-
                         return (
                           <NavLink to={fullPath} key={childIndex} style={linkStyle}>
                             <ListItemButton selected={isActiveLink(fullPath)} sx={{ pl: 4 }}>

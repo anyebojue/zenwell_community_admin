@@ -154,7 +154,8 @@ export const navigationCustomizations: Components<Theme> = {
   MuiDrawer: {
     styleOverrides: {
       paper: ({ theme }) => ({
-        backgroundColor: theme.palette.background.default
+        backgroundColor: theme.palette.background.default,
+        border: 0
       })
     }
   },
