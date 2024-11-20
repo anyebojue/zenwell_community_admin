@@ -26,6 +26,7 @@ export default defineConfig({
       pages: path.resolve(__dirname, './src/pages'),
       routes: path.resolve(__dirname, './src/routes'),
       styles: path.resolve(__dirname, './src/styles'),
+      theme: path.resolve(__dirname, './src/theme'),
       types: path.resolve(__dirname, './src/types'),
       utils: path.resolve(__dirname, './src/utils')
     }
@@ -33,7 +34,7 @@ export default defineConfig({
   module: {
     rules: [
       {
-        test: /\.svg$/,
+        test: /\.(png|jpe?g|gif|svg)$/i,
         type: 'asset'
       },
       {
@@ -78,5 +79,16 @@ export default defineConfig({
   },
   experiments: {
     css: true
+  },
+  devServer: {
+    port: 5127,
+    historyApiFallback: true,
+    proxy: [
+      {
+        context: ['/api'],
+        target: 'http://localhost:3000',
+        changeOrigin: true
+      }
+    ]
   }
 })
