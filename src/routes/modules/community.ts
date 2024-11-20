@@ -2,7 +2,8 @@ import { lazy } from 'react'
 import ApartmentIcon from '@mui/icons-material/Apartment'
 import { IRouter } from '../index'
 
-const CommunityComponent = lazy(() => import('pages/Community/MyCommunity'))
+const MyCommunity = lazy(() => import('pages/Community/MyCommunity'))
+const Business = lazy(() => import('pages/Community/Business'))
 
 const community: IRouter[] = [
   {
@@ -14,77 +15,77 @@ const community: IRouter[] = [
     children: [
       {
         path: 'my-community',
-        Component: CommunityComponent,
+        Component: MyCommunity,
         meta: {
           title: '我的小区'
         }
       },
       {
         path: 'business',
-        Component: CommunityComponent,
+        Component: Business,
         meta: {
           title: '业务受理'
         }
       },
       {
         path: 'big-screen',
-        Component: CommunityComponent,
+        Component: Business,
         meta: {
           title: '小区大屏'
         }
       },
       {
         path: 'decoration',
-        Component: CommunityComponent,
+        Component: Business,
         meta: {
           title: '房屋装修'
         }
       },
       {
         path: 'structure-diagram',
-        Component: CommunityComponent,
+        Component: Business,
         meta: {
           title: '结构图'
         }
       },
       {
         path: 'parking-structure',
-        Component: CommunityComponent,
+        Component: Business,
         meta: {
           title: '车位结构图'
         }
       },
       {
         path: 'property-registration',
-        Component: CommunityComponent,
+        Component: Business,
         meta: {
           title: '产权登记'
         }
       },
       {
         path: 'video-surveillance',
-        Component: CommunityComponent,
+        Component: Business,
         meta: {
           title: '视频监控'
         }
       },
       {
         path: 'pass-type',
-        Component: CommunityComponent,
+        Component: Business,
         meta: {
           title: '放行类型'
         }
       },
       {
         path: 'goods-release',
-        Component: CommunityComponent,
+        Component: Business,
         meta: {
           title: '物品放行'
         }
       },
       {
         path: 'community-publicity',
-        Component: CommunityComponent,
+        Component: Business,
         meta: {
           title: '小区公示'
         }
