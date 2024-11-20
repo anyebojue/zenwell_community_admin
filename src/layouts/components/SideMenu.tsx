@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { styled, Box, drawerClasses, Divider } from '@mui/material'
 import MuiDrawer from '@mui/material/Drawer'
 import zenwellLogo from 'assets/global/zenwell.png'
-import MenuContent from './components/MenuContent'
+import MenuContent from './MenuContent'
 
 const drawerWidth = 230
 

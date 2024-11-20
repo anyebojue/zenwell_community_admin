@@ -3,8 +3,8 @@ import { styled, AppBar, Box, Stack, tabsClasses, Typography } from '@mui/materi
 import MuiToolbar from '@mui/material/Toolbar'
 import { MenuRounded, DashboardRounded } from '@mui/icons-material'
 import ColorModeIconDropdown from 'theme/ColorModeIconDropdown'
+import MenuButton from './MenuButton'
 import SideMenuMobile from './SideMenuMobile'
-import MenuButton from './Header/components/MenuButton'
 
 const Toolbar = styled(MuiToolbar)({
   width: '100%',

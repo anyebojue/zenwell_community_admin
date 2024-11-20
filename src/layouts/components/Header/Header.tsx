@@ -2,10 +2,10 @@ import { memo } from 'react'
 import { Stack, drawerClasses, Avatar, Typography } from '@mui/material'
 import ColorModeIconDropdown from 'theme/ColorModeIconDropdown'
 import avatar from 'assets/global/windows.jpg'
-import Search from './components/Search'
-import NavbarBreadcrumbs from './components/NavbarBreadcrumbs'
-import MenuButton from './components/MenuButton'
-import OptionsMenu from './components/OptionsMenu'
+import MenuButton from '../MenuButton'
+import NavbarBreadcrumbs from './NavbarBreadcrumbs'
+import Search from './Search'
+import OptionsMenu from './OptionsMenu'
 
 const Header = () => {
   return (

@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 import MuiMenuItem from '@mui/material/MenuItem'
 import { LogoutRounded, MoreVertRounded } from '@mui/icons-material'
-import MenuButton from 'components/Header/components/MenuButton'
+import MenuButton from '../MenuButton'
 
 const MenuItem = styled(MuiMenuItem)({
   margin: '2px 0'

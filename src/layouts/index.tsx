@@ -3,15 +3,15 @@ import { useRoutes, useLocation, Navigate } from 'react-router-dom'
 import { CssBaseline, drawerClasses, Box, Stack } from '@mui/material'
 import AppTheme from 'theme/AppTheme'
 import routes from 'routes'
-import AppNavbar from './components/AppNavbar'
-import Header from './components/Header/Header'
-import SideMenu from './components/SideMenu/SideMenu'
 import {
   chartsCustomizations,
   dataGridCustomizations,
   datePickersCustomizations,
   treeViewCustomizations
-} from './theme/customizations'
+} from '../theme/customizations'
+import AppNavbar from './components/AppNavbar'
+import SideMenu from './components/SideMenu'
+import Header from './components/Header/Header'
 
 const xThemeComponents = {
   ...chartsCustomizations,

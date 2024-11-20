@@ -1,7 +1,7 @@
 import Grid from '@mui/material/Grid2'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import Copyright from 'components/internals/components/Copyright'
+import Copyright from 'layouts/components/Copyright'
 import PageViewsBarChart from './components/PageViewsBarChart'
 import SessionsChart from './components/SessionsChart'
 import StatCard, { StatCardProps } from './components/StatCard'
