@@ -20,7 +20,7 @@ const MenuContent = () => {
   const linkStyle = { textDecoration: 'none', color: 'rgba(0, 0, 0, 0.54)' }
 
   return (
-    <List component="nav" aria-labelledby="nested-list-subheader" sx={{ border: 'none' }}>
+    <List component="nav" aria-labelledby="nested-list-subheader" sx={{ p: 1 }}>
       {visibleRoutes.map((item, index) => {
         const { meta, path, children } = item
         const { Icon, title } = meta || {}
@@ -32,7 +32,7 @@ const MenuContent = () => {
               <NavLink to={path} style={linkStyle}>
                 <ListItemButton selected={isParentActive}>
                   <ListItemIcon>{Icon && <Icon />}</ListItemIcon>
-                  <ListItemText sx={{ ml: '10px' }} primary={title || '未命名'} />
+                  <ListItemText sx={{ ml: '10px', my: 0 }} primary={title || '未命名'} />
                 </ListItemButton>
               </NavLink>
             ) : (
@@ -42,7 +42,7 @@ const MenuContent = () => {
                   onClick={() => handleClick(index)}
                 >
                   <ListItemIcon>{Icon && <Icon />}</ListItemIcon>
-                  <ListItemText sx={{ ml: '10px' }} primary={title || '未命名'} />
+                  <ListItemText sx={{ ml: '10px', my: 0 }} primary={title || '未命名'} />
                   {openIndex === index ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
                 {children && (
@@ -51,12 +51,14 @@ const MenuContent = () => {
                       {children.map((child, childIndex) => {
                         const { meta: childMeta, path: childPath } = child
                         const { Icon: ChildIcon, title: childTitle } = childMeta || {}
-                        const fullPath = `${path}/${childPath}`
                         return (
-                          <NavLink to={fullPath} key={childIndex} style={linkStyle}>
-                            <ListItemButton selected={isActiveLink(fullPath)} sx={{ pl: 4 }}>
+                          <NavLink to={childPath} key={childIndex} style={linkStyle}>
+                            <ListItemButton selected={isActiveLink(childPath)} sx={{ pl: 4 }}>
                               <ListItemIcon>{ChildIcon && <ChildIcon />}</ListItemIcon>
-                              <ListItemText sx={{ ml: '10px' }} primary={childTitle || '未命名'} />
+                              <ListItemText
+                                sx={{ ml: '16px', my: 0 }}
+                                primary={childTitle || '未命名'}
+                              />
                             </ListItemButton>
                           </NavLink>
                         )

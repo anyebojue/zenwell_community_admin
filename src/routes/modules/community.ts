@@ -1,91 +1,89 @@
-import { lazy } from 'react'
 import ApartmentIcon from '@mui/icons-material/Apartment'
+import load from 'routes/load'
 import { IRouter } from '../index'
-
-const MyCommunity = lazy(() => import('pages/Community/MyCommunity'))
-const Business = lazy(() => import('pages/Community/Business'))
 
 const community: IRouter[] = [
   {
     path: '/community',
+    element: null,
     meta: {
       title: '小区',
       Icon: ApartmentIcon
     },
     children: [
       {
-        path: 'my-community',
-        Component: MyCommunity,
+        path: '/community/my-community',
+        element: load('Community/MyCommunity'),
         meta: {
           title: '我的小区'
         }
       },
       {
-        path: 'business',
-        Component: Business,
+        path: '/community/business',
+        element: load('Community/Business'),
         meta: {
           title: '业务受理'
         }
       },
       {
-        path: 'big-screen',
-        Component: Business,
+        path: '/community/big-screen',
+        element: load('Community/Business'),
         meta: {
           title: '小区大屏'
         }
       },
       {
-        path: 'decoration',
-        Component: Business,
+        path: '/community/decoration',
+        element: load('Community/Business'),
         meta: {
           title: '房屋装修'
         }
       },
       {
-        path: 'structure-diagram',
-        Component: Business,
+        path: '/community/structure-diagram',
+        element: load('Community/Business'),
         meta: {
           title: '结构图'
         }
       },
       {
-        path: 'parking-structure',
-        Component: Business,
+        path: '/community/parking-structure',
+        element: load('Community/Business'),
         meta: {
           title: '车位结构图'
         }
       },
       {
-        path: 'property-registration',
-        Component: Business,
+        path: '/community/property-registration',
+        element: load('Community/Business'),
         meta: {
           title: '产权登记'
         }
       },
       {
-        path: 'video-surveillance',
-        Component: Business,
+        path: '/community/video-surveillance',
+        element: load('Community/Business'),
         meta: {
           title: '视频监控'
         }
       },
       {
-        path: 'pass-type',
-        Component: Business,
+        path: '/community/pass-type',
+        element: load('Community/Business'),
         meta: {
           title: '放行类型'
         }
       },
       {
-        path: 'goods-release',
-        Component: Business,
+        path: '/community/goods-release',
+        element: load('Community/Business'),
         meta: {
           title: '物品放行'
         }
       },
       {
-        path: 'community-publicity',
-        Component: Business,
+        path: '/community/community-publicity',
+        element: load('Community/Business'),
         meta: {
           title: '小区公示'
         }

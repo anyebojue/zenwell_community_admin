@@ -1,14 +1,13 @@
-import React, { lazy } from 'react'
+import React, { ReactNode } from 'react'
 import control from './modules/control'
 import community from './modules/community'
+import load from './load'
 
 export interface IRouter {
   /** 链接路径 */
   path: string
-  /** 重定向路径 */
-  redirect?: string
   /** 渲染的组件 */
-  Component?: React.ComponentType<any>
+  element?: ReactNode
   /** 是否全屏显示 */
   isFullPage?: boolean
   /** 路由的元信息 */
@@ -29,18 +28,14 @@ export interface IRouter {
 const baseRoutes: IRouter[] = [
   {
     path: '/',
-    redirect: '/control',
-    meta: {
-      hidden: true
-    }
+    element: load('Control'),
+    meta: { hidden: true }
   },
   {
     path: '/login',
-    Component: lazy(() => import('pages/Login')),
+    element: load('Login'),
     isFullPage: true,
-    meta: {
-      hidden: true
-    }
+    meta: { hidden: true }
   }
 ]
 

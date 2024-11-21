@@ -13,6 +13,9 @@ export default defineConfig({
   entry: {
     main: './src/main.tsx'
   },
+  output: {
+    publicPath: '/' // 确保资源路径正确
+  },
   resolve: {
     extensions: ['...', '.ts', '.tsx', '.jsx'],
     alias: {

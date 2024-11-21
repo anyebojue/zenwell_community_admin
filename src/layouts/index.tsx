@@ -1,8 +1,7 @@
-import { ComponentType } from 'react'
-import { useRoutes, useLocation, Navigate } from 'react-router-dom'
+import { useRoutes, useLocation } from 'react-router-dom'
 import { CssBaseline, Box, Stack } from '@mui/material'
 import AppTheme from 'theme/AppTheme'
-import routes from 'routes'
+import routes, { IRouter } from 'routes'
 import {
   chartsCustomizations,
   dataGridCustomizations,
@@ -13,6 +12,7 @@ import AppNavbar from './components/AppNavbar'
 import SideMenu from './components/SideMenu'
 import Header from './components/Header/Header'
 
+// 合并自定义主题组件
 const xThemeComponents = {
   ...chartsCustomizations,
   ...dataGridCustomizations,
@@ -20,42 +20,42 @@ const xThemeComponents = {
   ...treeViewCustomizations
 }
 
-interface RouteConfig {
-  path: string
-  redirect?: string
-  Component?: ComponentType
-  children?: RouteConfig[]
-  isFullPage?: boolean
-}
-
-const convertRoutes = (routes: RouteConfig[]): RouteConfig[] =>
-  routes.map(({ path, redirect, Component, children, isFullPage }) => ({
+// 转换路由配置为 React Router 格式
+const convertRoutes = (routes: IRouter[]): IRouter[] =>
+  routes.map(({ path, element, children }) => ({
     path,
-    element: redirect ? <Navigate to={redirect} replace /> : Component ? <Component /> : null,
-    children: children ? convertRoutes(children) : undefined,
-    isFullPage
+    element,
+    children: children ? convertRoutes(children) : undefined
   }))
 
-const checkIsFullPage = (routes: RouteConfig[], pathname: string): boolean =>
+// 检查是否为全屏页面
+const checkIsFullPage = (routes: IRouter[], pathname: string): boolean =>
   routes.some(({ path, isFullPage, children }) =>
-    path === pathname ? isFullPage : children ? checkIsFullPage(children, pathname) : false
+    path === pathname ? isFullPage || false : children ? checkIsFullPage(children, pathname) : false
   )
 
 const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
   const location = useLocation()
-  const convertedRoutes = convertRoutes(routes as RouteConfig[])
+
+  // 转换路由
+  const convertedRoutes = convertRoutes(routes as IRouter[])
   const routing = useRoutes(convertedRoutes)
+
+  // 判断当前页面是否是全屏页面
   const isFullPage = checkIsFullPage(convertedRoutes, location.pathname)
 
   return (
     <AppTheme disableCustomTheme={disableCustomTheme} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
       <Box sx={{ display: 'flex', height: '100%' }}>
+        {/* 非全屏页面显示侧边栏 */}
         {!isFullPage && <SideMenu />}
         <Stack sx={{ width: '100%', height: '100%' }}>
+          {/* 非全屏页面显示头部 */}
           {!isFullPage && <Header />}
           <Box sx={{ p: 3, bgcolor: 'background.paper', height: '100%' }}>{routing}</Box>
         </Stack>
+        {/* 非全屏页面显示导航栏 */}
         {!isFullPage && <AppNavbar />}
       </Box>
     </AppTheme>

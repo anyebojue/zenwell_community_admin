@@ -28,7 +28,7 @@ const OptionsMenu = () => {
   }
   return (
     <Fragment>
-      <MenuButton aria-label="Open menu" onClick={handleClick} sx={{ borderColor: 'transparent' }}>
+      <MenuButton aria-label="Open menu" onClick={handleClick}>
         <MoreVertRounded />
       </MenuButton>
       <Menu

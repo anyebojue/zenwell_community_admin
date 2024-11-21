@@ -2,7 +2,6 @@ import { memo } from 'react'
 import { Stack, drawerClasses, Avatar, Typography } from '@mui/material'
 import ColorModeIconDropdown from 'theme/ColorModeIconDropdown'
 import avatar from 'assets/global/windows.jpg'
-import MenuButton from '../MenuButton'
 import NavbarBreadcrumbs from './NavbarBreadcrumbs'
 import Search from './Search'
 import OptionsMenu from './OptionsMenu'
@@ -48,9 +47,7 @@ const Header = () => {
         {/* 切换主题 */}
         <ColorModeIconDropdown />
         {/* 设置 */}
-        <MenuButton>
-          <OptionsMenu />
-        </MenuButton>
+        <OptionsMenu />
       </Stack>
     </Stack>
   )
