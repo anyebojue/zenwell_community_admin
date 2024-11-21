@@ -1,5 +1,5 @@
 import ApartmentIcon from '@mui/icons-material/Apartment'
-import load from 'routes/load'
+import { load } from 'routes/load'
 import { IRouter } from '../index'
 
 const community: IRouter[] = [

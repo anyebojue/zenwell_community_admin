@@ -1,5 +1,5 @@
 import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic'
-import load from '../load'
+import { load } from '../load'
 import { IRouter } from '../index'
 
 const control: IRouter[] = [

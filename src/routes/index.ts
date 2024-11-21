@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 import control from './modules/control'
 import community from './modules/community'
-import load from './load'
+import { load, navigateIndex } from './load'
 
 export interface IRouter {
   /** 链接路径 */
@@ -28,7 +28,7 @@ export interface IRouter {
 const baseRoutes: IRouter[] = [
   {
     path: '/',
-    element: load('Control'),
+    element: navigateIndex,
     meta: { hidden: true }
   },
   {
