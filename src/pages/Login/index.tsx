@@ -14,9 +14,9 @@ import zenwellLogo from 'assets/global/zenwell-logo.png'
 import zenwell from 'assets/global/zenwell.png'
 import Copyright from 'layouts/components/Copyright'
 
-// 封装的样式组件
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
+  flexDirection: 'column',
   alignSelf: 'center',
   width: '100%',
   padding: theme.spacing(3),
@@ -27,10 +27,9 @@ const Card = styled(MuiCard)(({ theme }) => ({
   WebkitBackdropFilter: 'blur(100px)',
   border: '1px solid rgba(255, 255, 255, 0.18)',
   borderRadius: theme.spacing(3),
-  flexDirection: 'column',
   [theme.breakpoints.up('sm')]: {
-    padding: theme.spacing(5),
     flexDirection: 'row',
+    padding: theme.spacing(5),
     maxWidth: '800px',
     minHeight: '350px'
   },
@@ -57,6 +56,7 @@ const Login = () => {
     password: ''
   })
 
+  // 输入验证
   const validateInputs = (username: string, password: string) => {
     const errors: typeof formErrors = { username: '', password: '' }
     if (!username || !/\S+@\S+\.\S+/.test(username)) {
@@ -69,6 +69,7 @@ const Login = () => {
     return !errors.username && !errors.password
   }
 
+  // 提交表单
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
@@ -82,21 +83,18 @@ const Login = () => {
 
   return (
     <SignInContainer direction="column" justifyContent="center">
-      <Box
-        sx={{
-          display: { xs: 'flex', sm: 'none' }
-        }}
-      >
+      {/* 移动端 Logo */}
+      <Box sx={{ display: { xs: 'flex', sm: 'none' }, justifyContent: 'center' }}>
         <img style={{ width: '40%' }} src={zenwellLogo} alt="Zenwell Logo" />
       </Box>
       <Card variant="outlined">
+        {/* 桌面端左侧内容 */}
         <Box
           sx={{
-            display: { xs: 'none', sm: 'flex' }
+            display: { xs: 'none', sm: 'flex' },
+            flexDirection: 'column',
+            justifyContent: 'space-between'
           }}
-          display="flex"
-          flexDirection="column"
-          justifyContent="space-between"
         >
           <Box>
             <img style={{ width: '30%' }} src={zenwellLogo} alt="Zenwell Logo" />
@@ -109,23 +107,22 @@ const Login = () => {
           </Box>
           <img style={{ width: '20%' }} src={zenwell} alt="Zenwell" />
         </Box>
+        {/* 移动端内容 */}
         <Box
           sx={{
-            display: { xs: 'flex', sm: 'none' }
+            display: { xs: 'flex', sm: 'none' },
+            flexDirection: 'column',
+            textAlign: 'center'
           }}
-          display="flex"
-          flexDirection="column"
-          justifyContent="space-between"
         >
-          <Box sx={{ textAlign: 'center' }}>
-            <Typography variant="h6" sx={{ fontSize: 'clamp(1.5rem, 10vw, 1.5rem)' }}>
-              登录
-            </Typography>
-            <Typography sx={{ fontSize: 'clamp(1.25rem, 10vw, 1.25rem)', pt: 3, pb: 2 }}>
-              Zenwell 智慧物业管理系统
-            </Typography>
-          </Box>
+          <Typography variant="h6" sx={{ fontSize: '1.5rem' }}>
+            登录
+          </Typography>
+          <Typography sx={{ fontSize: '1.25rem', pt: 1, pb: 2 }}>
+            Zenwell 智慧物业管理系统
+          </Typography>
         </Box>
+        {/* 表单部分 */}
         <Box
           component="form"
           onSubmit={handleSubmit}
