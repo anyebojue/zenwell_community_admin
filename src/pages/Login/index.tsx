@@ -1,226 +1,169 @@
-import * as React from 'react'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Checkbox from '@mui/material/Checkbox'
-import CssBaseline from '@mui/material/CssBaseline'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Divider from '@mui/material/Divider'
-import FormLabel from '@mui/material/FormLabel'
-import FormControl from '@mui/material/FormControl'
-import Link from '@mui/material/Link'
-import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
-import Stack from '@mui/material/Stack'
+import React, { useState } from 'react'
+import {
+  styled,
+  Box,
+  Button,
+  FormLabel,
+  FormControl,
+  TextField,
+  Typography,
+  Stack
+} from '@mui/material'
 import MuiCard from '@mui/material/Card'
-import { styled } from '@mui/material/styles'
-import AppTheme from 'theme/AppTheme'
-import ColorModeSelect from 'theme/ColorModeSelect'
-import ForgotPassword from './components/ForgotPassword'
-// import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons'
+import zenwellLogo from 'assets/global/zenwell-logo.png'
+import zenwell from 'assets/global/zenwell.png'
+import Copyright from 'layouts/components/Copyright'
 
+// 封装的样式组件
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
-  flexDirection: 'column',
   alignSelf: 'center',
   width: '100%',
-  padding: theme.spacing(4),
+  padding: theme.spacing(3),
   gap: theme.spacing(2),
   margin: 'auto',
+  backgroundColor: 'rgba(255, 255, 255, 0.7)',
+  backdropFilter: 'blur(100px)',
+  WebkitBackdropFilter: 'blur(100px)',
+  border: '1px solid rgba(255, 255, 255, 0.18)',
+  borderRadius: theme.spacing(3),
+  flexDirection: 'column',
   [theme.breakpoints.up('sm')]: {
-    maxWidth: '450px'
+    padding: theme.spacing(5),
+    flexDirection: 'row',
+    maxWidth: '800px',
+    minHeight: '350px'
   },
-  boxShadow:
-    'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-  ...theme.applyStyles('dark', {
-    boxShadow:
-      'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px'
-  })
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06)'
 }))
 
 const SignInContainer = styled(Stack)(({ theme }) => ({
-  height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
-  minHeight: '100%',
-  padding: theme.spacing(2),
-  [theme.breakpoints.up('sm')]: {
-    padding: theme.spacing(4)
-  },
+  height: '100vh',
+  padding: theme.spacing(5),
+  position: 'relative',
+  backgroundImage: 'radial-gradient(circle, #eff8fe 0%, white 100%)',
   '&::before': {
     content: '""',
-    display: 'block',
     position: 'absolute',
-    zIndex: -1,
     inset: 0,
-    backgroundImage: 'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
-    backgroundRepeat: 'no-repeat',
-    ...theme.applyStyles('dark', {
-      backgroundImage: 'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))'
-    })
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    zIndex: -1
   }
 }))
 
-const Login = (props: { disableCustomTheme?: boolean }) => {
-  const [emailError, setEmailError] = React.useState(false)
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState('')
-  const [passwordError, setPasswordError] = React.useState(false)
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('')
-  const [open, setOpen] = React.useState(false)
+const Login = () => {
+  const [formErrors, setFormErrors] = useState({
+    username: '',
+    password: ''
+  })
 
-  const handleClickOpen = () => {
-    setOpen(true)
-  }
-
-  const handleClose = () => {
-    setOpen(false)
+  const validateInputs = (username: string, password: string) => {
+    const errors: typeof formErrors = { username: '', password: '' }
+    if (!username || !/\S+@\S+\.\S+/.test(username)) {
+      errors.username = '请输入有效的用户名'
+    }
+    if (!password || password.length < 6) {
+      errors.password = '密码至少6位'
+    }
+    setFormErrors(errors)
+    return !errors.username && !errors.password
   }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    if (emailError || passwordError) {
-      event.preventDefault()
-      return
-    }
+    event.preventDefault()
     const data = new FormData(event.currentTarget)
-    console.log({
-      email: data.get('email'),
-      password: data.get('password')
-    })
-  }
+    const username = data.get('username') as string
+    const password = data.get('password') as string
 
-  const validateInputs = () => {
-    const email = document.getElementById('email') as HTMLInputElement
-    const password = document.getElementById('password') as HTMLInputElement
-
-    let isValid = true
-
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-      setEmailError(true)
-      setEmailErrorMessage('Please enter a valid email address.')
-      isValid = false
-    } else {
-      setEmailError(false)
-      setEmailErrorMessage('')
+    if (validateInputs(username, password)) {
+      console.log({ username, password })
     }
-
-    if (!password.value || password.value.length < 6) {
-      setPasswordError(true)
-      setPasswordErrorMessage('Password must be at least 6 characters long.')
-      isValid = false
-    } else {
-      setPasswordError(false)
-      setPasswordErrorMessage('')
-    }
-
-    return isValid
   }
 
   return (
-    <AppTheme {...props}>
-      <CssBaseline enableColorScheme />
-      <SignInContainer direction="column" justifyContent="space-between">
-        <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
-        <Card variant="outlined">
-          {/* <SitemarkIcon /> */}
-          <Typography
-            component="h1"
-            variant="h4"
-            sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
-          >
-            Sign in
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100%',
-              gap: 2
-            }}
-          >
-            <FormControl>
-              <FormLabel htmlFor="email">Email</FormLabel>
-              <TextField
-                error={emailError}
-                helperText={emailErrorMessage}
-                id="email"
-                type="email"
-                name="email"
-                placeholder="your@email.com"
-                autoComplete="email"
-                autoFocus
-                required
-                fullWidth
-                variant="outlined"
-                color={emailError ? 'error' : 'primary'}
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel htmlFor="password">Password</FormLabel>
-              <TextField
-                error={passwordError}
-                helperText={passwordErrorMessage}
-                name="password"
-                placeholder="••••••"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                autoFocus
-                required
-                fullWidth
-                variant="outlined"
-                color={passwordError ? 'error' : 'primary'}
-              />
-            </FormControl>
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-            <ForgotPassword open={open} handleClose={handleClose} />
-            <Button type="submit" fullWidth variant="contained" onClick={validateInputs}>
-              Sign in
-            </Button>
-            <Link
-              component="button"
-              type="button"
-              onClick={handleClickOpen}
-              variant="body2"
-              sx={{ alignSelf: 'center' }}
-            >
-              Forgot your password?
-            </Link>
-          </Box>
-          <Divider>or</Divider>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Button
-              fullWidth
-              variant="outlined"
-              onClick={() => alert('Sign in with Google')}
-              // startIcon={<GoogleIcon />}
-            >
-              Sign in with Google
-            </Button>
-            <Button
-              fullWidth
-              variant="outlined"
-              onClick={() => alert('Sign in with Facebook')}
-              // startIcon={<FacebookIcon />}
-            >
-              Sign in with Facebook
-            </Button>
-            <Typography sx={{ textAlign: 'center' }}>
-              Don&apos;t have an account?{' '}
-              <Link
-                href="/material-ui/getting-started/templates/sign-in/"
-                variant="body2"
-                sx={{ alignSelf: 'center' }}
-              >
-                Sign up
-              </Link>
+    <SignInContainer direction="column" justifyContent="center">
+      <Box
+        sx={{
+          display: { xs: 'flex', sm: 'none' }
+        }}
+      >
+        <img style={{ width: '40%' }} src={zenwellLogo} alt="Zenwell Logo" />
+      </Box>
+      <Card variant="outlined">
+        <Box
+          sx={{
+            display: { xs: 'none', sm: 'flex' }
+          }}
+          display="flex"
+          flexDirection="column"
+          justifyContent="space-between"
+        >
+          <Box>
+            <img style={{ width: '30%' }} src={zenwellLogo} alt="Zenwell Logo" />
+            <Typography variant="h6" sx={{ fontSize: 'clamp(2rem, 10vw, 1rem)', pt: 3 }}>
+              登录
+            </Typography>
+            <Typography sx={{ fontSize: 'clamp(1.3rem, 10vw, 1rem)' }}>
+              Zenwell 智慧物业管理系统
             </Typography>
           </Box>
-        </Card>
-      </SignInContainer>
-    </AppTheme>
+          <img style={{ width: '20%' }} src={zenwell} alt="Zenwell" />
+        </Box>
+        <Box
+          sx={{
+            display: { xs: 'flex', sm: 'none' }
+          }}
+          display="flex"
+          flexDirection="column"
+          justifyContent="space-between"
+        >
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h6" sx={{ fontSize: 'clamp(1.5rem, 10vw, 1.5rem)' }}>
+              登录
+            </Typography>
+            <Typography sx={{ fontSize: 'clamp(1.25rem, 10vw, 1.25rem)', pt: 3, pb: 2 }}>
+              Zenwell 智慧物业管理系统
+            </Typography>
+          </Box>
+        </Box>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          noValidate
+          sx={{ display: 'flex', flexDirection: 'column', width: { sm: '130%' }, gap: 2 }}
+        >
+          <FormControl>
+            <FormLabel htmlFor="username">用户名</FormLabel>
+            <TextField
+              id="username"
+              name="username"
+              placeholder="请输入用户名"
+              autoComplete="username"
+              error={!!formErrors.username}
+              helperText={formErrors.username}
+              fullWidth
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel htmlFor="password">密码</FormLabel>
+            <TextField
+              id="password"
+              name="password"
+              type="password"
+              placeholder="请输入密码"
+              autoComplete="current-password"
+              error={!!formErrors.password}
+              helperText={formErrors.password}
+              fullWidth
+            />
+          </FormControl>
+          <Button sx={{ mt: 2 }} type="submit" fullWidth variant="contained">
+            登录
+          </Button>
+        </Box>
+      </Card>
+      <Copyright />
+    </SignInContainer>
   )
 }
 

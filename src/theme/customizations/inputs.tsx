@@ -56,14 +56,14 @@ export const inputsCustomizations: Components<Theme> = {
             },
             style: {
               color: 'white',
-              backgroundColor: gray[900],
-              backgroundImage: `linear-gradient(to bottom, ${gray[700]}, ${gray[800]})`,
-              boxShadow: `inset 0 1px 0 ${gray[600]}, inset 0 -1px 0 1px hsl(220, 0%, 0%)`,
-              border: `1px solid ${gray[700]}`,
+              backgroundColor: 'initial',
+              backgroundImage: `linear-gradient(310deg, #1d428a, #0862c8)`,
+              transition: '150ms ease-in',
               '&:hover': {
-                backgroundImage: 'none',
-                backgroundColor: gray[700],
-                boxShadow: 'none'
+                backgroundColor: 'rgb(23, 193, 232)',
+                boxShadow:
+                  'rgba(0, 0, 0, 0.09) 0rem 0.1875rem 0.3125rem -0.0625rem, rgba(0, 0, 0, 0.07) 0rem 0.125rem 0.3125rem -0.0625rem',
+                transform: 'scale(1.02)'
               },
               '&:active': {
                 backgroundColor: gray[800]
