@@ -1,4 +1,7 @@
-import React, { useState } from 'react'
+import { memo } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import { LoginModel } from 'api/model/login'
 import {
   styled,
   Box,
@@ -24,8 +27,6 @@ const Card = styled(MuiCard)(({ theme }) => ({
   margin: 'auto',
   backgroundColor: 'rgba(255, 255, 255, 0.7)',
   backdropFilter: 'blur(100px)',
-  WebkitBackdropFilter: 'blur(100px)',
-  border: '1px solid rgba(255, 255, 255, 0.18)',
   borderRadius: theme.spacing(3),
   [theme.breakpoints.up('sm')]: {
     flexDirection: 'row',
@@ -51,34 +52,17 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }))
 
 const Login = () => {
-  const [formErrors, setFormErrors] = useState({
-    username: '',
-    password: ''
-  })
+  const navigate = useNavigate()
+  const {
+    handleSubmit,
+    register,
+    formState: { errors }
+  } = useForm<LoginModel>()
 
-  // 输入验证
-  const validateInputs = (username: string, password: string) => {
-    const errors: typeof formErrors = { username: '', password: '' }
-    if (!username || !/\S+@\S+\.\S+/.test(username)) {
-      errors.username = '请输入有效的用户名'
-    }
-    if (!password || password.length < 6) {
-      errors.password = '密码至少6位'
-    }
-    setFormErrors(errors)
-    return !errors.username && !errors.password
-  }
-
-  // 提交表单
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const data = new FormData(event.currentTarget)
-    const username = data.get('username') as string
-    const password = data.get('password') as string
-
-    if (validateInputs(username, password)) {
-      console.log({ username, password })
-    }
+  const onSubmit = (data: LoginModel) => {
+    const { username, password } = data
+    console.log(username, password)
+    navigate('/')
   }
 
   return (
@@ -97,9 +81,9 @@ const Login = () => {
           }}
         >
           <Box>
-            <img style={{ width: '30%' }} src={zenwellLogo} alt="Zenwell Logo" />
-            <Typography variant="h6" sx={{ fontSize: 'clamp(2rem, 10vw, 1rem)', pt: 3 }}>
-              登录
+            <img style={{ width: '35%' }} src={zenwellLogo} alt="Zenwell Logo" />
+            <Typography sx={{ fontSize: 'clamp(1.5rem, 10vw, 1rem)', pt: 3.5 }}>
+              欢迎使用
             </Typography>
             <Typography sx={{ fontSize: 'clamp(1.3rem, 10vw, 1rem)' }}>
               Zenwell 智慧物业管理系统
@@ -125,32 +109,32 @@ const Login = () => {
         {/* 表单部分 */}
         <Box
           component="form"
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           noValidate
           sx={{ display: 'flex', flexDirection: 'column', width: { sm: '130%' }, gap: 2 }}
         >
           <FormControl>
             <FormLabel htmlFor="username">用户名</FormLabel>
             <TextField
+              {...register('username', { required: '请输入用户名' })}
               id="username"
-              name="username"
               placeholder="请输入用户名"
-              autoComplete="username"
-              error={!!formErrors.username}
-              helperText={formErrors.username}
+              autoComplete="current-username"
+              error={!!errors?.username}
+              helperText={errors?.username?.message}
               fullWidth
             />
           </FormControl>
           <FormControl>
             <FormLabel htmlFor="password">密码</FormLabel>
             <TextField
+              {...register('password', { required: '请输入密码' })}
               id="password"
-              name="password"
               type="password"
               placeholder="请输入密码"
               autoComplete="current-password"
-              error={!!formErrors.password}
-              helperText={formErrors.password}
+              error={!!errors?.password}
+              helperText={errors?.password?.message}
               fullWidth
             />
           </FormControl>
@@ -164,4 +148,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default memo(Login)
