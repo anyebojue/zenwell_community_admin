@@ -25,7 +25,7 @@ const Toolbar = styled(MuiToolbar)({
 const AppNavbar = () => {
   const [open, setOpen] = useState(false)
 
-  const toggleDrawer = () => () => {
+  const toggleDrawer = () => {
     setOpen(prev => !prev)
   }
 

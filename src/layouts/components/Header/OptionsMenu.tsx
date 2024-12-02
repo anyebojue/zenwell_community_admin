@@ -10,7 +10,7 @@ import {
   listItemIconClasses
 } from '@mui/material'
 import MuiMenuItem from '@mui/material/MenuItem'
-import { LogoutRounded, MoreVertRounded } from '@mui/icons-material'
+import { LogoutRounded, Settings } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import MenuButton from '../MenuButton'
 
@@ -35,7 +35,7 @@ const OptionsMenu = () => {
   return (
     <Fragment>
       <MenuButton aria-label="Open menu" onClick={handleClick}>
-        <MoreVertRounded />
+        <Settings />
       </MenuButton>
       <Menu
         anchorEl={anchorEl}
