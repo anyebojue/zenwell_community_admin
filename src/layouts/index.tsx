@@ -2,6 +2,7 @@ import { useRoutes } from 'react-router-dom'
 import { CssBaseline, Box, Stack } from '@mui/material'
 import AppTheme from 'theme/AppTheme'
 import routes, { IRouter } from 'routes'
+import { useState } from 'react'
 import {
   chartsCustomizations,
   dataGridCustomizations,
@@ -28,20 +29,25 @@ const convertRoutes = (routes: IRouter[]): IRouter[] =>
   }))
 
 const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(true)
   const convertedRoutes = convertRoutes(routes as IRouter[])
   const routing = useRoutes(convertedRoutes)
   const isFullPage = convertedRoutes.some(route => {
     return route.path === window.location.pathname && route.isFullPage
   })
 
+  const toggleMenu = () => {
+    setIsMenuOpen(prev => !prev)
+  }
+
   return (
     <AppTheme disableCustomTheme={disableCustomTheme} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
       {!isFullPage ? (
         <Box sx={{ display: 'flex', height: '100%' }}>
-          <SideMenu />
+          <SideMenu isMenuOpen={isMenuOpen} />
           <Stack sx={{ width: '100%', height: '100%' }}>
-            <Header />
+            <Header isMenuOpen={isMenuOpen} onToggleMenu={toggleMenu} />
             <Box sx={{ p: 3, pt: 1, pb: 3, bgcolor: 'background.paper' }}>{routing}</Box>
           </Stack>
           <AppNavbar />

@@ -6,20 +6,26 @@ import { Menu, Translate } from '@mui/icons-material'
 import Search from './Search'
 import OptionsMenu from './OptionsMenu'
 
-const Header = () => {
+const Header = ({
+  isMenuOpen,
+  onToggleMenu
+}: {
+  isMenuOpen: boolean
+  onToggleMenu: () => void
+}) => {
   return (
     <Stack
       direction="row"
       sx={theme => ({
-        position: 'fixed', // 固定定位
-        top: 0, // 距离页面顶部 0
-        right: 0, // 距离页面右侧 0
-        backgroundColor: theme.palette.background.default, // 背景颜色可以根据需求修改
+        position: 'fixed',
+        top: 0,
+        right: 0,
+        backgroundColor: theme.palette.background.default,
         [`& .${drawerClasses.paper}`]: {
           backgroundColor: 'background.white'
         },
         display: { xs: 'none', md: 'flex' },
-        width: 'calc(100% - 260px)',
+        width: isMenuOpen ? 'calc(100% - 260px)' : 'calc(100% - 60px)',
         alignItems: { xs: 'flex-start', md: 'center' },
         justifyContent: 'space-between',
         maxWidth: { sm: '100%', md: '1700px' },
@@ -38,10 +44,9 @@ const Header = () => {
           borderColor: 'divider'
         }}
       >
-        <IconButton size="small" color="inherit">
+        <IconButton size="small" color="inherit" onClick={onToggleMenu}>
           <Menu />
         </IconButton>
-        {/* 搜索框 */}
         <Search />
       </Stack>
       <Stack
@@ -52,17 +57,12 @@ const Header = () => {
           borderColor: 'divider'
         }}
       >
-        {/* 国际化 */}
         <IconButton size="small" color="inherit">
           <Translate />
         </IconButton>
-        {/* 切换主题 */}
         <ColorModeIconDropdown />
-        {/* 设置 */}
         <OptionsMenu />
-        {/* 头像 */}
         <Avatar sizes="small" alt="Riley Carter" src={avatar} sx={{ width: 32, height: 32 }} />
-        {/* 昵称 */}
         <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '16px' }}>
           WhiteFox
         </Typography>

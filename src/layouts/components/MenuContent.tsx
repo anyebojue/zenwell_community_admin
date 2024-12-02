@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 
-const MenuContent = () => {
+const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
   const location = useLocation()
   const visibleRoutes = getAllRoutes.filter(item => !item.meta?.hidden)
   const [openIndex, setOpenIndex] = useState<number | null>(null)
@@ -43,19 +43,21 @@ const MenuContent = () => {
 
   return (
     <List
-      sx={{ width: '100%', maxWidth: 370 }}
+      sx={{ width: '100%', maxWidth: 370, paddingTop: 0 }}
       component="nav"
       subheader={
-        <ListSubheader
-          sx={{
-            paddingTop: '16px',
-            paddingLeft: '24px',
-            marginBottom: '12px',
-            fontSize: '0.75rem'
-          }}
-        >
-          平台端
-        </ListSubheader>
+        isMenuOpen && (
+          <ListSubheader
+            sx={{
+              paddingTop: '16px',
+              paddingLeft: '24px',
+              marginBottom: '12px',
+              fontSize: '0.75rem'
+            }}
+          >
+            平台端
+          </ListSubheader>
+        )
       }
     >
       {visibleRoutes.map((item, index) => {
@@ -69,14 +71,25 @@ const MenuContent = () => {
             {meta?.single ? (
               <NavLink to={path} style={{ color: 'initial' }}>
                 <ListItemButton
-                  sx={{
-                    pl: '25px',
-                    borderRight: isParentActive ? '2px solid rgb(22, 119, 255)' : ''
-                  }}
+                  sx={
+                    isMenuOpen
+                      ? {
+                          pl: '25px',
+                          borderRight: isParentActive ? '2px solid rgb(22, 119, 255)' : ''
+                        }
+                      : {
+                          pl: '25px',
+                          margin: '7px',
+                          padding: '10px 0',
+                          borderRadius: '10px'
+                        }
+                  }
                   selected={isParentActive}
                 >
-                  <ListItemIcon>{Icon && <Icon />}</ListItemIcon>
-                  <ListItemText sx={{ ml: '15px', my: '7px' }} primary={title || '未命名'} />
+                  <ListItemIcon sx={{ margin: '0 auto' }}>{Icon && <Icon />}</ListItemIcon>
+                  {isMenuOpen && (
+                    <ListItemText sx={{ ml: '15px', my: '7px' }} primary={title || '未命名'} />
+                  )}
                 </ListItemButton>
               </NavLink>
             ) : (
