@@ -42,7 +42,7 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
           <SideMenu />
           <Stack sx={{ width: '100%', height: '100%' }}>
             <Header />
-            <Box sx={{ p: 3, bgcolor: 'background.paper', height: '100%' }}>{routing}</Box>
+            <Box sx={{ p: 3, pt: 1, pb: 3, bgcolor: 'background.paper' }}>{routing}</Box>
           </Stack>
           <AppNavbar />
         </Box>

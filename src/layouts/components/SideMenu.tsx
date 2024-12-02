@@ -6,7 +6,7 @@ import zenwellLogoLight from 'assets/global/zenwell-logo.png'
 import zenwellLogoDark from 'assets/global/zenwell-logo-white.png'
 import MenuContent from './MenuContent'
 
-const drawerWidth = 270
+const drawerWidth = 260
 
 const Drawer = styled(MuiDrawer)({
   width: drawerWidth,

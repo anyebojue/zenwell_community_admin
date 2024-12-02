@@ -11,11 +11,15 @@ const Header = () => {
     <Stack
       direction="row"
       sx={theme => ({
+        position: 'fixed', // 固定定位
+        top: 0, // 距离页面顶部 0
+        right: 0, // 距离页面右侧 0
+        backgroundColor: theme.palette.background.default, // 背景颜色可以根据需求修改
         [`& .${drawerClasses.paper}`]: {
           backgroundColor: 'background.white'
         },
         display: { xs: 'none', md: 'flex' },
-        width: '100%',
+        width: 'calc(100% - 260px)',
         alignItems: { xs: 'flex-start', md: 'center' },
         justifyContent: 'space-between',
         maxWidth: { sm: '100%', md: '1700px' },

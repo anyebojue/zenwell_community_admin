@@ -1,9 +1,6 @@
-import * as React from 'react'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import Chip from '@mui/material/Chip'
 import Typography from '@mui/material/Typography'
-import Stack from '@mui/material/Stack'
 import { BarChart } from '@mui/x-charts/BarChart'
 import { useTheme } from '@mui/material/styles'
 
@@ -15,29 +12,11 @@ export default function PageViewsBarChart() {
     theme.palette.primary.light
   ]
   return (
-    <Card variant="outlined" sx={{ width: '100%' }}>
+    <Card variant="outlined" sx={{ width: '100%', pb: 3 }}>
       <CardContent>
-        <Typography component="h2" variant="subtitle2" gutterBottom>
-          Page views and downloads
+        <Typography component="h4" variant="h4" gutterBottom>
+          小区报修统计
         </Typography>
-        <Stack sx={{ justifyContent: 'space-between' }}>
-          <Stack
-            direction="row"
-            sx={{
-              alignContent: { xs: 'center', sm: 'flex-start' },
-              alignItems: 'center',
-              gap: 1
-            }}
-          >
-            <Typography variant="h4" component="p">
-              1.3M
-            </Typography>
-            <Chip size="small" color="error" label="-8%" />
-          </Stack>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            Page views and downloads for the last 6 months
-          </Typography>
-        </Stack>
         <BarChart
           borderRadius={8}
           colors={colorPalette}
@@ -46,7 +25,7 @@ export default function PageViewsBarChart() {
               {
                 scaleType: 'band',
                 categoryGapRatio: 0.5,
-                data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']
+                data: ['小区一', '小区二', '小区三', '小区四', '小区五', '小区六', '小区七']
               }
             ] as any
           }

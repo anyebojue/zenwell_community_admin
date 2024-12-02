@@ -1,10 +1,4 @@
-import * as React from 'react'
-import { useTheme } from '@mui/material/styles'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import Chip from '@mui/material/Chip'
-import Typography from '@mui/material/Typography'
-import Stack from '@mui/material/Stack'
+import { useTheme, Card, CardContent, Typography } from '@mui/material'
 import { LineChart } from '@mui/x-charts/LineChart'
 
 const AreaGradient = ({ color, id }: { color: string; id: string }) => {
@@ -18,24 +12,9 @@ const AreaGradient = ({ color, id }: { color: string; id: string }) => {
   )
 }
 
-const getDaysInMonth = (month: number, year: number) => {
-  const date = new Date(year, month, 0)
-  const monthName = date.toLocaleDateString('en-US', {
-    month: 'short'
-  })
-  const daysInMonth = date.getDate()
-  const days = []
-  let i = 1
-  while (days.length < daysInMonth) {
-    days.push(`${monthName} ${i}`)
-    i += 1
-  }
-  return days
-}
-
 export default function SessionsChart() {
   const theme = useTheme()
-  const data = getDaysInMonth(4, 2024)
+  const data = ['小区一', '小区二', '小区三', '小区四', '小区五', '小区六', '小区七']
 
   const colorPalette = [
     theme.palette.primary.light,
@@ -44,36 +23,17 @@ export default function SessionsChart() {
   ]
 
   return (
-    <Card variant="outlined" sx={{ width: '100%' }}>
+    <Card variant="outlined" sx={{ width: '100%', pb: 3 }}>
       <CardContent>
-        <Typography component="h2" variant="subtitle2" gutterBottom>
-          Sessions
+        <Typography component="h4" variant="h4" gutterBottom>
+          小区缴费统计
         </Typography>
-        <Stack sx={{ justifyContent: 'space-between' }}>
-          <Stack
-            direction="row"
-            sx={{
-              alignContent: { xs: 'center', sm: 'flex-start' },
-              alignItems: 'center',
-              gap: 1
-            }}
-          >
-            <Typography variant="h4" component="p">
-              13,277
-            </Typography>
-            <Chip size="small" color="success" label="+35%" />
-          </Stack>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            Sessions per day for the last 30 days
-          </Typography>
-        </Stack>
         <LineChart
           colors={colorPalette}
           xAxis={[
             {
               scaleType: 'point',
-              data,
-              tickInterval: (index, i) => (i + 1) % 5 === 0
+              data: data // 7个数据点
             }
           ]}
           series={[
@@ -85,11 +45,7 @@ export default function SessionsChart() {
               stack: 'total',
               area: true,
               stackOrder: 'ascending',
-              data: [
-                300, 900, 600, 1200, 1500, 1800, 2400, 2100, 2700, 3000, 1800, 3300, 3600, 3900,
-                4200, 4500, 3900, 4800, 5100, 5400, 4800, 5700, 6000, 6300, 6600, 6900, 7200, 7500,
-                7800, 8100
-              ]
+              data: [300, 900, 600, 1200, 1500, 1800, 2400]
             },
             {
               id: 'referral',
@@ -99,11 +55,7 @@ export default function SessionsChart() {
               stack: 'total',
               area: true,
               stackOrder: 'ascending',
-              data: [
-                500, 900, 700, 1400, 1100, 1700, 2300, 2000, 2600, 2900, 2300, 3200, 3500, 3800,
-                4100, 4400, 2900, 4700, 5000, 5300, 5600, 5900, 6200, 6500, 5600, 6800, 7100, 7400,
-                7700, 8000
-              ]
+              data: [500, 900, 700, 1400, 1100, 1700, 2300]
             },
             {
               id: 'organic',
@@ -112,11 +64,7 @@ export default function SessionsChart() {
               curve: 'linear',
               stack: 'total',
               stackOrder: 'ascending',
-              data: [
-                1000, 1500, 1200, 1700, 1300, 2000, 2400, 2200, 2600, 2800, 2500, 3000, 3400, 3700,
-                3200, 3900, 4100, 3500, 4300, 4500, 4000, 4700, 5000, 5200, 4800, 5400, 5600, 5900,
-                6100, 6300
-              ],
+              data: [1000, 1500, 1200, 1700, 1300, 2000, 2400],
               area: true
             }
           ]}
