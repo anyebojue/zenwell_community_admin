@@ -1,10 +1,12 @@
 import { memo } from 'react'
-import { styled, Box, drawerClasses, Divider } from '@mui/material'
+import { styled, Box, drawerClasses } from '@mui/material'
 import MuiDrawer from '@mui/material/Drawer'
-import zenwellLogo from 'assets/global/zenwell-logo.png'
+import { useTheme } from '@mui/material/styles'
+import zenwellLogoLight from 'assets/global/zenwell-logo.png'
+import zenwellLogoDark from 'assets/global/zenwell-logo-white.png'
 import MenuContent from './MenuContent'
 
-const drawerWidth = 230
+const drawerWidth = 270
 
 const Drawer = styled(MuiDrawer)({
   width: drawerWidth,
@@ -18,20 +20,22 @@ const Drawer = styled(MuiDrawer)({
 })
 
 const SideMenu = () => {
+  const theme = useTheme()
+  const logo = theme.palette.mode === 'dark' ? zenwellLogoDark : zenwellLogoLight
+
   return (
     <Drawer variant="permanent" sx={{ display: { xs: 'none', md: 'block' } }}>
       <Box
         sx={{
           height: '60px',
-          padding: '10px 10px 10px',
+          padding: '15px 25px 10px',
           display: 'flex',
-          justifyContent: 'center',
+          justifyContent: 'left',
           alignItems: 'center'
         }}
       >
-        <img style={{ height: '100%' }} src={zenwellLogo} alt="zenwell" />
+        <img style={{ height: '100%' }} src={logo} alt="zenwell" />
       </Box>
-      <Divider />
       <MenuContent />
     </Drawer>
   )

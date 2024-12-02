@@ -4,10 +4,10 @@ import { IRouter } from '../index'
 
 const control: IRouter[] = [
   {
-    path: '/control',
-    element: load('Control'),
+    path: '/property-company',
+    element: load('PropertyCompany'),
     meta: {
-      title: '首页',
+      title: '物业公司',
       Icon: DashboardIcon,
       single: true
     }

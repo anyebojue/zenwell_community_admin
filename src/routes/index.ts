@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 import control from './modules/control'
-import community from './modules/community'
+import cellInformation from './modules/cellInformation'
+import propertyCompany from './modules/propertyCompany'
 import { load, navigateIndex } from './load'
 
 export interface IRouter {
@@ -39,6 +40,11 @@ const baseRoutes: IRouter[] = [
   }
 ]
 
-const getAllRoutes = (): IRouter[] => [...baseRoutes, ...control, ...community]
+const getAllRoutes = (): IRouter[] => [
+  ...baseRoutes,
+  ...control,
+  ...cellInformation,
+  ...propertyCompany
+]
 
 export default getAllRoutes()

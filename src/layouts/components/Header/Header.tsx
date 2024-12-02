@@ -1,8 +1,8 @@
 import { memo } from 'react'
-import { Stack, drawerClasses, Avatar, Typography } from '@mui/material'
+import { Stack, drawerClasses, Avatar, Typography, IconButton } from '@mui/material'
 import ColorModeIconDropdown from 'theme/ColorModeIconDropdown'
 import avatar from 'assets/global/windows.jpg'
-import NavbarBreadcrumbs from './NavbarBreadcrumbs'
+import { Menu } from '@mui/icons-material'
 import Search from './Search'
 import OptionsMenu from './OptionsMenu'
 
@@ -26,8 +26,9 @@ const Header = () => {
       })}
       spacing={2}
     >
-      {/* 面包屑 */}
-      <NavbarBreadcrumbs />
+      <IconButton size="small" color="inherit">
+        <Menu />
+      </IconButton>
       <Stack
         direction="row"
         sx={{

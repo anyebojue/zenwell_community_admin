@@ -11,6 +11,7 @@ import {
 } from '@mui/material'
 import MuiMenuItem from '@mui/material/MenuItem'
 import { LogoutRounded, MoreVertRounded } from '@mui/icons-material'
+import { useNavigate } from 'react-router-dom'
 import MenuButton from '../MenuButton'
 
 const MenuItem = styled(MuiMenuItem)({
@@ -18,6 +19,7 @@ const MenuItem = styled(MuiMenuItem)({
 })
 
 const OptionsMenu = () => {
+  const navigate = useNavigate()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const handleClick = (event: MouseEvent<HTMLElement>) => {
@@ -25,6 +27,10 @@ const OptionsMenu = () => {
   }
   const handleClose = () => {
     setAnchorEl(null)
+  }
+  const handleLogout = () => {
+    setAnchorEl(null)
+    navigate('/login')
   }
   return (
     <Fragment>
@@ -51,9 +57,9 @@ const OptionsMenu = () => {
           }
         }}
       >
-        <MenuItem onClick={handleClose}>Settings</MenuItem>
+        <MenuItem onClick={handleClose}>设置</MenuItem>
         <MenuItem
-          onClick={handleClose}
+          onClick={handleLogout}
           sx={{
             [`& .${listItemIconClasses.root}`]: {
               ml: 'auto',
@@ -61,7 +67,7 @@ const OptionsMenu = () => {
             }
           }}
         >
-          <ListItemText>Logout</ListItemText>
+          <ListItemText>退出登录</ListItemText>
           <ListItemIcon>
             <LogoutRounded fontSize="small" />
           </ListItemIcon>

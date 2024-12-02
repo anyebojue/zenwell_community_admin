@@ -8,7 +8,7 @@ const Search = () => {
       <OutlinedInput
         size="small"
         id="search"
-        placeholder="Search…"
+        placeholder="搜索..."
         sx={{ flexGrow: 1 }}
         startAdornment={
           <InputAdornment position="start" sx={{ color: 'text.primary' }}>

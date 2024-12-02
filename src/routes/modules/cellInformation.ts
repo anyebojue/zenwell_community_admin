@@ -2,16 +2,16 @@ import DashboardIcon from '@mui/icons-material/Dashboard'
 import { load } from '../load'
 import { IRouter } from '../index'
 
-const control: IRouter[] = [
+const cellInformation: IRouter[] = [
   {
-    path: '/control',
-    element: load('Control'),
+    path: '/cellInformation',
+    element: load('CellInformation'),
     meta: {
-      title: '首页',
+      title: '小区信息',
       Icon: DashboardIcon,
       single: true
     }
   }
 ]
 
-export default control
+export default cellInformation
