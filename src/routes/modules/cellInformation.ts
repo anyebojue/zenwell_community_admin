@@ -1,4 +1,4 @@
-import DashboardIcon from '@mui/icons-material/Dashboard'
+import { Apartment } from '@mui/icons-material'
 import { load } from '../load'
 import { IRouter } from '../index'
 
@@ -8,7 +8,7 @@ const cellInformation: IRouter[] = [
     element: load('CellInformation'),
     meta: {
       title: '小区信息',
-      Icon: DashboardIcon,
+      Icon: Apartment,
       single: true
     }
   }

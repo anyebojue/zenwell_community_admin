@@ -1,4 +1,4 @@
-import DashboardIcon from '@mui/icons-material/Dashboard'
+import { HomeWork } from '@mui/icons-material'
 import { load } from '../load'
 import { IRouter } from '../index'
 
@@ -8,7 +8,7 @@ const control: IRouter[] = [
     element: load('PropertyCompany'),
     meta: {
       title: '物业公司',
-      Icon: DashboardIcon,
+      Icon: HomeWork,
       single: true
     }
   }
