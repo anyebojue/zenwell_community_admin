@@ -1,19 +1,25 @@
-import { Box, Chip, Button } from '@mui/material'
+import { styled, Stack, Chip, Paper } from '@mui/material'
 import { GridRowsProp, GridColDef } from '@mui/x-data-grid'
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  margin: theme.spacing(1),
+  textAlign: 'center',
+  color: 'rgb(22, 119, 255)',
+  ...theme.applyStyles('dark', {
+    backgroundColor: '#1A2027'
+  })
+}))
 
 const renderSparklineCell = () => {
   return (
-    <Box>
-      <Button variant="text" size="small">
-        同步IOT
-      </Button>
-      <Button variant="text" size="small">
-        修改
-      </Button>
-      <Button variant="text" size="small">
-        删除
-      </Button>
-    </Box>
+    <Stack direction={{ xs: 'row', sm: 'row' }} alignItems="center">
+      <Item>同步IOT</Item>
+      <Item>修改</Item>
+      <Item>删除</Item>
+    </Stack>
   )
 }
 
@@ -44,6 +50,7 @@ export const columns: GridColDef[] = [
     field: 'operation',
     headerName: '操作',
     headerAlign: 'center',
+    align: 'center',
     flex: 1,
     minWidth: 150,
     renderCell: renderSparklineCell

@@ -1,7 +1,7 @@
 import { memo } from 'react'
+import Box from '@mui/material/Box'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
-import Box from '@mui/material/Box'
 import { columns, rows } from './gridData'
 
 const TableDataGrid = () => {
