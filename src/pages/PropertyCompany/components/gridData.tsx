@@ -1,13 +1,13 @@
 import { Box, Chip, Tooltip, IconButton } from '@mui/material'
-import { Delete, Edit, Sync } from '@mui/icons-material'
+import { Block, Delete, Edit, ManageAccounts, RestartAlt, Login } from '@mui/icons-material'
 import { GridRowsProp, GridColDef } from '@mui/x-data-grid'
 
 const renderSparklineCell = () => {
   return (
     <Box>
-      <Tooltip title="同步 IOT">
+      <Tooltip title="管理小区">
         <IconButton size="small" color="primary">
-          <Sync fontSize="small" />
+          <ManageAccounts fontSize="small" />
         </IconButton>
       </Tooltip>
       <Tooltip title="修改">
@@ -18,6 +18,21 @@ const renderSparklineCell = () => {
       <Tooltip title="删除">
         <IconButton size="small" color="error">
           <Delete fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="登录">
+        <IconButton size="small" color="success">
+          <Login fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="限制登录">
+        <IconButton size="small" color="warning">
+          <Block fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="重置密码">
+        <IconButton size="small" color="info">
+          <RestartAlt fontSize="small" />
         </IconButton>
       </Tooltip>
     </Box>
@@ -53,7 +68,7 @@ export const columns: GridColDef[] = [
     headerAlign: 'center',
     align: 'center',
     flex: 1,
-    minWidth: 150,
+    minWidth: 250,
     renderCell: renderSparklineCell
   }
 ]

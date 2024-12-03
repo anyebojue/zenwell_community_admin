@@ -10,7 +10,6 @@ const CellInformation = () => {
     <Box
       sx={{
         width: '100%',
-        maxWidth: { sm: '100%', md: '1700px' },
         height: '100%',
         pt: 8
       }}
