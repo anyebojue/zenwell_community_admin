@@ -1,16 +1,24 @@
+import { memo } from 'react'
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
+import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
-import CustomizedDataGrid from './components/CustomizedDataGrid'
+import TableDataGrid from './components/TableDataGrid'
 
-export default function MainGrid() {
+const CellInformation = () => {
   return (
-    <Box sx={{ width: '100%' }}>
-      <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Details
-      </Typography>
-      <CustomizedDataGrid />
+    <Box
+      sx={{
+        width: '100%',
+        maxWidth: { sm: '100%', md: '1700px' },
+        height: 'calc(100vh - 32px)',
+        pt: 8
+      }}
+    >
+      <NavbarBreadcrumbs />
+      <TableDataGrid />
       <Copyright sx={{ my: 4 }} />
     </Box>
   )
 }
+
+export default memo(CellInformation)

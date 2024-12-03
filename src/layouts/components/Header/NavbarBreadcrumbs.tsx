@@ -18,7 +18,6 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
 const NavbarBreadcrumbs = () => {
   const location = useLocation()
   const path = getAllRoutes.filter(item => item.path === location.pathname)[0].meta?.title
-  console.log(path)
   return (
     <StyledBreadcrumbs aria-label="breadcrumb" separator={<NavigateNextRounded fontSize="small" />}>
       <Typography variant="body1">平台端</Typography>

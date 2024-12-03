@@ -1,10 +1,8 @@
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import Typography from '@mui/material/Typography'
+import { memo } from 'react'
+import { useTheme, Card, CardContent, Typography } from '@mui/material'
 import { BarChart } from '@mui/x-charts/BarChart'
-import { useTheme } from '@mui/material/styles'
 
-export default function PageViewsBarChart() {
+const PageViewsBarChart = () => {
   const theme = useTheme()
   const colorPalette = [
     theme.palette.primary.dark,
@@ -62,3 +60,5 @@ export default function PageViewsBarChart() {
     </Card>
   )
 }
+
+export default memo(PageViewsBarChart)

@@ -56,9 +56,16 @@ const Item = styled(Paper)(({ theme }) => ({
   })
 }))
 
-const MainGrid = () => {
+const Control = () => {
   return (
-    <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' }, pt: 8 }}>
+    <Box
+      sx={{
+        width: '100%',
+        maxWidth: { sm: '100%', md: '1700px' },
+        height: 'calc(100vh - 32px)',
+        pt: 8
+      }}
+    >
       <NavbarBreadcrumbs />
       <Grid
         container
@@ -88,4 +95,4 @@ const MainGrid = () => {
   )
 }
 
-export default memo(MainGrid)
+export default memo(Control)

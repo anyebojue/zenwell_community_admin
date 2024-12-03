@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { useTheme, Card, CardContent, Typography } from '@mui/material'
 import { LineChart } from '@mui/x-charts/LineChart'
 
@@ -12,7 +13,7 @@ const AreaGradient = ({ color, id }: { color: string; id: string }) => {
   )
 }
 
-export default function SessionsChart() {
+const SessionsChart = () => {
   const theme = useTheme()
   const data = ['小区一', '小区二', '小区三', '小区四', '小区五', '小区六', '小区七']
 
@@ -33,7 +34,7 @@ export default function SessionsChart() {
           xAxis={[
             {
               scaleType: 'point',
-              data: data // 7个数据点
+              data: data
             }
           ]}
           series={[
@@ -96,3 +97,5 @@ export default function SessionsChart() {
     </Card>
   )
 }
+
+export default memo(SessionsChart)
