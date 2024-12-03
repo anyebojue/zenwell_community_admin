@@ -6,7 +6,7 @@ import { columns, rows } from './gridData'
 
 const TableDataGrid = () => {
   return (
-    <Box sx={{ height: 'calc(100vh - 200px)', pt: 1 }}>
+    <Box>
       <DataGrid
         disableColumnMenu
         rows={rows}

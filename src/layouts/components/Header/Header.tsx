@@ -17,6 +17,7 @@ const Header = ({
     <Stack
       direction="row"
       sx={theme => ({
+        zIndex: 999,
         position: 'fixed',
         top: 0,
         right: 0,
