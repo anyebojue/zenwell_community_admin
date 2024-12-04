@@ -58,14 +58,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const Control = () => {
   return (
-    <Box
-      sx={{
-        width: '100%',
-        maxWidth: { sm: '100%', md: '1700px' },
-        height: 'calc(100vh - 32px)',
-        pt: 8
-      }}
-    >
+    <Box sx={{ width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
       <Grid
         container

@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { ChangeEvent, Dispatch, memo, SetStateAction, useState } from 'react'
 import { Box, FormControl, Button, MenuItem, Stack, TextField } from '@mui/material'
 import { Add, Delete, History, Search } from '@mui/icons-material'
 
@@ -28,6 +28,15 @@ const buttonStyles = (backgroundColor: string, hoverColor: string) => ({
 const city = [{ value: '0', label: '北京' }]
 
 const FormData = () => {
+  const [province, setProvince] = useState('')
+  const [cityValue, setCityValue] = useState('')
+  const [county, setCounty] = useState('')
+
+  const handleSelectChange =
+    (setter: Dispatch<SetStateAction<string>>) => (event: ChangeEvent<HTMLInputElement>) => {
+      setter(event.target.value)
+    }
+
   return (
     <Box>
       <Stack direction="row" spacing={3} component="form" sx={{ mt: 3, mb: 1.5 }}>
@@ -50,13 +59,18 @@ const FormData = () => {
           />
         </FormControl>
         <Stack direction="row" spacing={1}>
-          {['省', '市', '县'].map(label => (
+          {[
+            { label: '省', value: province, setter: setProvince },
+            { label: '市', value: cityValue, setter: setCityValue },
+            { label: '县', value: county, setter: setCounty }
+          ].map(({ label, value, setter }) => (
             <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined" key={label}>
               <TextField
                 select
                 size="small"
                 label={`请选择${label}`}
-                type="text"
+                value={value}
+                onChange={handleSelectChange(setter)}
                 variant="outlined"
                 sx={textFieldStyles}
               >

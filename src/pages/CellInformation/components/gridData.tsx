@@ -2,6 +2,14 @@ import { Box, Chip, Tooltip, IconButton } from '@mui/material'
 import { Delete, Edit, Sync } from '@mui/icons-material'
 import { GridRowsProp, GridColDef } from '@mui/x-data-grid'
 
+const renderStatus = (status: '审核完成' | 'Offline') => {
+  const colors: { [index: string]: 'success' | 'default' } = {
+    审核完成: 'success',
+    Offline: 'default'
+  }
+  return <Chip label={status} color={colors[status]} size="small" />
+}
+
 const renderSparklineCell = () => {
   return (
     <Box>
@@ -24,14 +32,6 @@ const renderSparklineCell = () => {
   )
 }
 
-const renderStatus = (status: '审核完成' | 'Offline') => {
-  const colors: { [index: string]: 'success' | 'default' } = {
-    审核完成: 'success',
-    Offline: 'default'
-  }
-  return <Chip label={status} color={colors[status]} size="small" />
-}
-
 export const columns: GridColDef[] = [
   { field: 'id', headerName: '小区ID', flex: 0.5, minWidth: 50 },
   { field: 'name', headerName: '小区名称', flex: 1, minWidth: 100 },
@@ -45,7 +45,7 @@ export const columns: GridColDef[] = [
     align: 'center',
     flex: 1,
     minWidth: 100,
-    renderCell: params => renderStatus(params.value as any)
+    renderCell: params => renderStatus(params.value)
   },
   {
     field: 'operation',

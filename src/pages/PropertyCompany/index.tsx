@@ -7,13 +7,7 @@ import FormData from './components/FormData'
 
 const PropertyCompany = () => {
   return (
-    <Box
-      sx={{
-        width: '100%',
-        height: '100%',
-        pt: 8
-      }}
-    >
+    <Box sx={{ width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
       <FormData />
       <TableDataGrid />
