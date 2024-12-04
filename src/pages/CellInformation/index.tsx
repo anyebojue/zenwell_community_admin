@@ -7,7 +7,7 @@ import FormData from './components/FormData'
 
 const CellInformation = () => {
   return (
-    <Box sx={{ width: '100%', height: '100%' }}>
+    <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
       <FormData />
       <TableDataGrid />

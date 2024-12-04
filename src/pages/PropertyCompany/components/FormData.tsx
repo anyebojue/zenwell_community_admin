@@ -28,7 +28,7 @@ const buttonStyles = (backgroundColor: string, hoverColor: string) => ({
 const FormData = () => {
   return (
     <Box>
-      <Stack direction="row" spacing={3} component="form" sx={{ mt: 3, mb: 1.5 }}>
+      <Stack direction="row" spacing={3} component="form" sx={{ mt: 2, mb: 1.5 }}>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"

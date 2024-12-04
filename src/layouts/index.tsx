@@ -48,7 +48,19 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
           <Stack sx={{ width: '100%', height: '100%' }}>
             <Header isMenuOpen={isMenuOpen} onToggleMenu={() => setIsMenuOpen(prev => !prev)} />
             <Tabs
-              sx={{ mt: '60px' }}
+              sx={{
+                mt: '70px',
+                border: 'none',
+                boxShadow: 'none',
+                '& .MuiTab-root': {
+                  border: 'none',
+                  boxShadow: 'none'
+                },
+                '& .MuiTab-root:hover': {
+                  border: 'none',
+                  boxShadow: 'none'
+                }
+              }}
               value={activeTabIndex}
               onChange={handleTabChange}
               textColor="secondary"
@@ -56,12 +68,13 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
             >
               {tabs.map((tab, index) => (
                 <Tab
+                  sx={{ pl: 3, pr: 2 }}
                   key={tab.id}
                   label={
                     <Box display="flex" alignItems="center">
                       {tab.label}
                       <Close
-                        fontSize="small"
+                        sx={{ ml: 0.5, fontSize: '16px' }}
                         onClick={e => {
                           e.stopPropagation()
                           handleTabClose(tab.id)
