@@ -82,27 +82,27 @@ const FormData = () => {
               </TextField>
             </FormControl>
           ))}
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Search />}
-            sx={buttonStyles('#2660ad', '#1d428a')}
-          >
-            查询
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<History />}
-            sx={buttonStyles('darkgray', '#696969')}
-          >
-            重置
-          </Button>
         </Stack>
       </Stack>
       <Stack direction="row" spacing={1} component="form" sx={{ mb: 2 }}>
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
+          startIcon={<Search />}
+          sx={buttonStyles('#2660ad', '#1d428a')}
+        >
+          查询
+        </Button>
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
+          startIcon={<History />}
+          sx={buttonStyles('darkgray', '#696969')}
+        >
+          重置
+        </Button>
         <Button
           size="small"
           variant="contained"
