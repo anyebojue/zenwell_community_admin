@@ -114,7 +114,9 @@ const Login = () => {
           sx={{ display: 'flex', flexDirection: 'column', width: { sm: '130%' }, gap: 2 }}
         >
           <FormControl>
-            <FormLabel htmlFor="username">用户名</FormLabel>
+            <FormLabel htmlFor="username" sx={{ fontWeight: 500 }}>
+              用户名
+            </FormLabel>
             <TextField
               {...register('username', { required: '请输入用户名' })}
               id="username"
@@ -123,10 +125,18 @@ const Login = () => {
               error={!!errors?.username}
               helperText={errors?.username?.message}
               fullWidth
+              size="medium"
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  height: '45px'
+                }
+              }}
             />
           </FormControl>
           <FormControl>
-            <FormLabel htmlFor="password">密码</FormLabel>
+            <FormLabel htmlFor="password" sx={{ fontWeight: 500 }}>
+              密码
+            </FormLabel>
             <TextField
               {...register('password', { required: '请输入密码' })}
               id="password"
@@ -136,6 +146,11 @@ const Login = () => {
               error={!!errors?.password}
               helperText={errors?.password?.message}
               fullWidth
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  height: '45px'
+                }
+              }}
             />
           </FormControl>
           <Button sx={{ mt: 2 }} type="submit" fullWidth variant="contained">
