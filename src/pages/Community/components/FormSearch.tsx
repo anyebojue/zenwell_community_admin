@@ -1,6 +1,7 @@
 import { ChangeEvent, Dispatch, memo, SetStateAction, useState } from 'react'
 import { Box, FormControl, Button, MenuItem, Stack, TextField } from '@mui/material'
 import { Add, Delete, History, Search } from '@mui/icons-material'
+import FormDialog from './FormDialog'
 
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {
@@ -27,10 +28,11 @@ const buttonStyles = (backgroundColor: string, hoverColor: string) => ({
 
 const city = [{ value: '0', label: '北京' }]
 
-const FormData = () => {
+const SearchForm = () => {
   const [province, setProvince] = useState('')
   const [cityValue, setCityValue] = useState('')
   const [county, setCounty] = useState('')
+  const [openDialog, setOpenDialog] = useState(false)
 
   const handleSelectChange =
     (setter: Dispatch<SetStateAction<string>>) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -109,6 +111,7 @@ const FormData = () => {
           color="error"
           startIcon={<Add />}
           sx={buttonStyles('#2660ad', '#1d428a')}
+          onClick={() => setOpenDialog(true)}
         >
           新增
         </Button>
@@ -122,8 +125,9 @@ const FormData = () => {
           批量删除
         </Button>
       </Stack>
+      <FormDialog open={openDialog} dialogType="add" onClose={() => setOpenDialog(false)} />
     </Box>
   )
 }
 
-export default memo(FormData)
+export default memo(SearchForm)

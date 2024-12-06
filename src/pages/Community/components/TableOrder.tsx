@@ -14,7 +14,6 @@ import {
   Paper,
   SelectChangeEvent
 } from '@mui/material'
-import { columns, rows } from './gridData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {
   const [page, setPage] = useState(1)
@@ -26,7 +25,7 @@ const usePagination = <T,>(data: T[], rowsPerPage: number) => {
   return { page, paginatedRows, setPage, handlePageChange }
 }
 
-const TableDataGrid = () => {
+const TableDataGrid = ({ rows, columns }: { rows: any[]; columns: any[] }) => {
   const [rowsPerPage, setRowsPerPage] = useState(20)
   const { page, paginatedRows, setPage, handlePageChange } = usePagination(rows, rowsPerPage)
 
@@ -144,28 +143,17 @@ const TableDataGrid = () => {
               }
             }}
           >
-            {[5, 10, 20, 50].map(size => (
-              <MenuItem key={size} value={size}>
-                {size}
-              </MenuItem>
-            ))}
+            <MenuItem value={10}>10</MenuItem>
+            <MenuItem value={20}>20</MenuItem>
+            <MenuItem value={50}>50</MenuItem>
           </Select>
           <Pagination
             count={Math.ceil(rows.length / rowsPerPage)}
             page={page}
             onChange={handlePageChange}
-            variant="outlined"
+            color="primary"
             shape="rounded"
-            sx={theme => ({
-              '& .MuiPaginationItem-page.Mui-selected': {
-                backgroundColor: theme.palette.grey[500],
-                border: `1px solid ${theme.palette.grey[500]}`,
-                color: theme.palette.common.white
-              },
-              '& .MuiPaginationItem-root:hover': {
-                backgroundColor: theme.palette.grey[500]
-              }
-            })}
+            size="small"
           />
         </Box>
       </Box>

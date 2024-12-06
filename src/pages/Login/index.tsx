@@ -1,7 +1,9 @@
 import { memo } from 'react'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { LoginModel } from 'api/model/login'
+import { Login } from 'api/login'
+import { LoginParams } from 'api/model/loginModel'
 import {
   styled,
   Box,
@@ -16,6 +18,8 @@ import MuiCard from '@mui/material/Card'
 import zenwellLogo from 'assets/global/zenwell-logo.png'
 import zenwell from 'assets/global/zenwell.png'
 import Copyright from 'layouts/components/Copyright'
+import message from 'components/Message'
+import { getUserInfo } from 'modules/global'
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -51,18 +55,29 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
   }
 }))
 
-const Login = () => {
+const LoginIndex = () => {
+  const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const {
     handleSubmit,
     register,
-    formState: { errors }
-  } = useForm<LoginModel>()
+    formState: { errors, isSubmitting }
+  } = useForm<LoginParams>()
 
-  const onSubmit = (data: LoginModel) => {
+  const onSubmit = async (data: LoginParams) => {
     const { username, password } = data
-    console.log(username, password)
-    navigate('/')
+    const closeLoading = message.loading('正在登录中...')
+    try {
+      const res = await Login({ username, password })
+      localStorage.setItem('zenwell_token', res.token)
+      closeLoading()
+      message.success('登录成功')
+      navigate('/')
+      dispatch(getUserInfo())
+    } catch (err) {
+      closeLoading()
+      message.error('请检查用户名或密码是否正确')
+    }
   }
 
   return (
@@ -118,6 +133,7 @@ const Login = () => {
               用户名
             </FormLabel>
             <TextField
+              defaultValue="super"
               {...register('username', { required: '请输入用户名' })}
               id="username"
               placeholder="请输入用户名"
@@ -126,11 +142,14 @@ const Login = () => {
               helperText={errors?.username?.message}
               fullWidth
               size="medium"
-              sx={{
+              sx={theme => ({
                 '& .MuiOutlinedInput-root': {
-                  height: '45px'
+                  marginTop: '5px',
+                  height: '45px',
+                  border: '2px solid',
+                  borderColor: theme.palette.divider
                 }
-              }}
+              })}
             />
           </FormControl>
           <FormControl>
@@ -138,6 +157,7 @@ const Login = () => {
               密码
             </FormLabel>
             <TextField
+              defaultValue="zenwell123"
               {...register('password', { required: '请输入密码' })}
               id="password"
               type="password"
@@ -146,15 +166,24 @@ const Login = () => {
               error={!!errors?.password}
               helperText={errors?.password?.message}
               fullWidth
-              sx={{
+              sx={theme => ({
                 '& .MuiOutlinedInput-root': {
-                  height: '45px'
+                  marginTop: '5px',
+                  height: '45px',
+                  border: '2px solid',
+                  borderColor: theme.palette.divider
                 }
-              }}
+              })}
             />
           </FormControl>
-          <Button sx={{ mt: 2 }} type="submit" fullWidth variant="contained">
-            登录
+          <Button
+            sx={{ mt: 2 }}
+            type="submit"
+            fullWidth
+            variant="contained"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? '登录中...' : '登录'}
           </Button>
         </Box>
       </Card>
@@ -163,4 +192,4 @@ const Login = () => {
   )
 }
 
-export default memo(Login)
+export default memo(LoginIndex)

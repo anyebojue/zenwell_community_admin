@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
-import globalStateReducer from './global'
+import info from './global'
+import CommunitySlice from './community'
 
 const store = configureStore({
   reducer: {
-    global: globalStateReducer
+    info,
+    CommunitySlice
   },
   // 关闭序列化检测
   middleware: getDefaultMiddleware =>

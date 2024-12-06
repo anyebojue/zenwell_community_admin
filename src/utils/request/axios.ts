@@ -1,77 +1,78 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
-import configs from 'configs'
+import configObj from 'configs'
 
 class Request {
   private instance: AxiosInstance
-  private delayMs: number = 200 // 统一的延迟时间，单位为毫秒
-  private loadingTimeout: number | null = null // 定义一个计时器
 
   constructor() {
     this.instance = axios.create({
-      baseURL: configs.baseURL,
-      timeout: configs.requestTimeout,
+      // baseURL: configObj.baseURL,
+      baseURL: 'https://community-admin.zenwell.cn', // 替换成你的实际接口地址
+      timeout: configObj.requestTimeout, // 请求超时时间
       headers: { 'Content-Type': 'application/json' }
     })
 
     // 添加请求拦截器
     this.instance.interceptors.request.use(
-      async config => {
-        // 设置延时200毫秒的计时器
-        this.loadingTimeout = window.setTimeout(() => {
-          this.showLoadingAnimation()
-        }, this.delayMs)
-
-        // 保证所有请求路径都以 /api 开头
+      config => {
         if (!config.url?.startsWith('/api')) {
           config.url = `/api${config.url}`
         }
 
-        // GET 和 DELETE 请求添加时间戳避免缓存
+        // 给GET和DELETE请求加时间戳
         if (config.method === 'get' || config.method === 'delete') {
-          const timestamp = Date.now().toString()
-          const separator = config.url.includes('?') ? '&' : '?'
-          config.url = `${config.url}${separator}_t=${timestamp}`
+          const timestamp = Date.now().toString() // 生成时间戳
+          const urlObj = new URL(config.url!, this.instance.defaults.baseURL)
+          const params = new URLSearchParams(urlObj.search)
+          params.append('_t', timestamp)
+          urlObj.search = params.toString()
+          config.url = urlObj.toString()
         }
 
-        // POST 和 PATCH 请求自动设置 Content-Type
+        // 只在未设置 Content-Type 时设置
         if (config.method === 'post' || config.method === 'patch') {
           if (!config.headers['Content-Type']) {
-            config.headers['Content-Type'] =
-              config.data instanceof FormData ? 'multipart/form-data' : 'application/json'
-            if (!(config.data instanceof FormData)) {
-              config.data = JSON.stringify(config.data)
+            // 自动根据 data 类型设置 Content-Type
+            if (config.data instanceof FormData) {
+              config.headers['Content-Type'] = 'multipart/form-data'
+            } else {
+              config.headers['Content-Type'] = 'application/json'
+              config.data = JSON.stringify(config.data) // 确保 JSON 数据格式化
             }
           }
         }
 
-        // 从 localStorage 获取 JWT token 并添加到请求头
-        const token = localStorage.getItem('yide_token')
-        if (token && !config.url.includes('/login')) {
-          config.headers['Authorization'] = `Bearer ${token}`
+        // 从 localStorage 或其他存储中获取 JWT
+        const token = localStorage.getItem('zenwell_token')
+        if (token && !config.url?.includes('/login')) {
+          config.headers['Authorization'] = `Bearer ${token}` // 添加 Authorization 头 JWT
         }
 
         return config
       },
-      error => Promise.reject(error)
+      error => {
+        return Promise.reject(error)
+      }
     )
 
     // 添加响应拦截器
     this.instance.interceptors.response.use(
       response => {
-        this.clearLoadingAnimation() // 清除加载动画
         return response
       },
       error => {
-        this.clearLoadingAnimation() // 清除加载动画
         if (error.response) {
+          // 提取错误信息
           const errorData = error.response.data
+
+          // 处理特定的状态码
           switch (error.response.status) {
             case 400:
               console.warn('请求错误，参数无效')
               break
             case 401:
               console.warn('未授权，请登录')
-              localStorage.removeItem('yide_token')
+              localStorage.removeItem('zenwell_token')
               break
             case 403:
               console.warn('禁止访问')
@@ -85,45 +86,36 @@ class Request {
             default:
               console.warn('发生未知错误')
           }
+
           return Promise.reject({
-            code: errorData.code || error.response.status,
-            message: errorData.message || '请求失败',
-            reason: errorData.reason || '未知原因',
+            code: errorData.code || error.response.status, // 状态码
+            message: errorData.message || '请求失败', // 错误信息
+            reason: errorData.reason || '未知原因', // 可能的原因
             metadata: errorData.metadata || {}
           })
         } else {
-          return Promise.reject({ message: '网络错误，请检查连接' })
+          return Promise.reject({ message: '网络错误，请检查连接' }) // 网络错误
         }
       }
     )
   }
 
-  // 显示加载动画的函数
-  private showLoadingAnimation() {
-    console.log('显示加载动画')
-  }
-
-  // 清除加载动画的函数
-  private clearLoadingAnimation() {
-    if (this.loadingTimeout) {
-      clearTimeout(this.loadingTimeout)
-      this.loadingTimeout = null
-    }
-    console.log('清除加载动画')
-  }
-
+  // GET 请求
   public get<T = any>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     return this.instance.get<T>(config.url!, config)
   }
 
+  // POST 请求
   public post<T = any>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     return this.instance.post<T>(config.url!, config.data, config)
   }
 
+  // PATCH 请求
   public patch<T = any>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     return this.instance.patch<T>(config.url!, config.data, config)
   }
 
+  // DELETE 请求
   public delete<T = any>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     return this.instance.delete<T>(config.url!, config)
   }

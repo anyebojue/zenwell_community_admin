@@ -14,7 +14,7 @@ export default defineConfig({
     main: './src/main.tsx'
   },
   output: {
-    publicPath: '/' // 确保资源路径正确
+    publicPath: '/'
   },
   resolve: {
     extensions: ['...', '.ts', '.tsx', '.jsx'],
@@ -90,7 +90,7 @@ export default defineConfig({
     proxy: [
       {
         context: ['/api'],
-        target: 'http://localhost:3000',
+        target: 'https://community-admin.zenwell.cn/',
         changeOrigin: true
       }
     ]

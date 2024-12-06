@@ -2,10 +2,10 @@ import { Apartment } from '@mui/icons-material'
 import { load } from '../load'
 import { IRouter } from '../index'
 
-const cellInformation: IRouter[] = [
+const communityRoute: IRouter[] = [
   {
-    path: '/cellInformation',
-    element: load('CellInformation'),
+    path: '/community',
+    element: load('Community'),
     meta: {
       title: '小区信息',
       Icon: Apartment,
@@ -14,4 +14,4 @@ const cellInformation: IRouter[] = [
   }
 ]
 
-export default cellInformation
+export default communityRoute

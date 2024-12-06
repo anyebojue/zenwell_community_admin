@@ -1,16 +1,19 @@
-import { useState } from 'react'
-import { useRoutes } from 'react-router-dom'
-import { CssBaseline, Box, Stack, Tabs, Tab } from '@mui/material'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useRoutes, useLocation, useNavigate } from 'react-router-dom'
 import routes, { IRouter } from 'routes'
+import useDynamicTabs from 'hooks/useDynamicTabs'
+import { getUserInfo, permissionMenuPaths } from 'modules/global'
+import { CssBaseline, Box, Stack, Tabs, Tab } from '@mui/material'
 import { Close } from '@mui/icons-material'
 import AppTheme from 'theme/AppTheme'
-import useDynamicTabs from 'hooks/useDynamicTabs'
+import message from 'components/Message'
 import {
   chartsCustomizations,
   dataGridCustomizations,
   datePickersCustomizations,
   treeViewCustomizations
-} from '../theme/customizations'
+} from 'theme/customizations'
 import AppNavbar from './components/AppNavbar'
 import SideMenu from './components/SideMenu'
 import Header from './components/Header/Header'
@@ -31,13 +34,44 @@ const convertRoutes = (routes: IRouter[]): IRouter[] =>
   }))
 
 const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
+  const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const isLoginPage = location.pathname === '/login'
   const [isMenuOpen, setIsMenuOpen] = useState(true)
   const convertedRoutes = convertRoutes(routes as IRouter[])
   const routing = useRoutes(convertedRoutes)
+  const info = useSelector((state: RootState) => state.info.userInfo)
   const isFullPage = convertedRoutes.some(
     route => route.path === window.location.pathname && route.isFullPage
   )
   const { tabs, activeTabIndex, handleTabChange, handleTabClose } = useDynamicTabs(convertedRoutes)
+
+  useEffect(() => {
+    const token = localStorage.getItem('zenwell_token')
+    // 检查token
+    if ((!token || token === '') && !isLoginPage) {
+      message.warning('登录状态已过期，请重新登录')
+      navigate('/login')
+      return
+    }
+    // 检查用户信息
+    if (token && token !== '' && info.id === '') {
+      dispatch(getUserInfo())
+      return
+    }
+    // 检查权限
+    if (info.id !== '' && !isLoginPage) {
+      const paths = permissionMenuPaths(info.permission.menus)
+      if (paths.length === 0) {
+        navigate('/login')
+        return
+      }
+      if (!paths.includes(location.pathname)) {
+        navigate(paths[0])
+      }
+    }
+  }, [dispatch, navigate, info, isLoginPage, location.pathname])
 
   return (
     <AppTheme disableCustomTheme={disableCustomTheme} themeComponents={xThemeComponents}>

@@ -3,7 +3,7 @@
 ## 命令提示
 
 - 进入项目
-  cd ./zenwell_app
+  cd ./zenwell_admin
 - 安装依赖
   npm install (node -v 20.17.0)
 - 运行
