@@ -35,6 +35,11 @@ export default defineConfig({
       utils: path.resolve(__dirname, './src/utils')
     }
   },
+  performance: {
+    hints: 'warning',
+    maxAssetSize: 600000, // 单个资源最大限制 (600 KiB)
+    maxEntrypointSize: 600000 // 入口点最大限制 (600 KiB)
+  },
   module: {
     rules: [
       {
