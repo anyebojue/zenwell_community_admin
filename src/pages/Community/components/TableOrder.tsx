@@ -14,6 +14,8 @@ import {
   Paper,
   SelectChangeEvent
 } from '@mui/material'
+import { CommunityReply } from 'api/model/communityModel'
+import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {
   const [page, setPage] = useState(1)
@@ -25,7 +27,13 @@ const usePagination = <T,>(data: T[], rowsPerPage: number) => {
   return { page, paginatedRows, setPage, handlePageChange }
 }
 
-const TableDataGrid = ({ rows, columns }: { rows: any[]; columns: any[] }) => {
+const TableDataGrid = ({
+  rows,
+  columns
+}: {
+  rows: CommunityReply[]
+  columns: Column<CommunityReply>[]
+}) => {
   const [rowsPerPage, setRowsPerPage] = useState(20)
   const { page, paginatedRows, setPage, handlePageChange } = usePagination(rows, rowsPerPage)
 
@@ -91,7 +99,7 @@ const TableDataGrid = ({ rows, columns }: { rows: any[]; columns: any[] }) => {
                 })}
               >
                 {columns.map(column => {
-                  const value = row[column.key]
+                  const value = row[column.key as keyof CommunityReply]
                   return (
                     <TableCell
                       key={column.key}

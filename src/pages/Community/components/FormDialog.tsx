@@ -13,6 +13,13 @@ interface FormDialogProps {
   onClose: () => void
 }
 
+interface FormData {
+  email: string
+  name: string
+  address: string
+  phone: string
+}
+
 const city = [{ value: '0', label: '北京' }]
 
 const FormDialog: React.FC<FormDialogProps> = ({ open, dialogType, onClose }) => {
@@ -28,7 +35,10 @@ const FormDialog: React.FC<FormDialogProps> = ({ open, dialogType, onClose }) =>
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
-    const formJson = Object.fromEntries((formData as any).entries())
+    const formJson: Partial<FormData> = {}
+    formData.forEach((value, key) => {
+      formJson[key as keyof FormData] = value.toString()
+    })
     const email = formJson.email
     console.log(email)
     onClose()

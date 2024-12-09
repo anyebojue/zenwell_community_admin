@@ -18,15 +18,12 @@ const PageViewsBarChart = () => {
         <BarChart
           borderRadius={8}
           colors={colorPalette}
-          xAxis={
-            [
-              {
-                scaleType: 'band',
-                categoryGapRatio: 0.5,
-                data: ['小区一', '小区二', '小区三', '小区四', '小区五', '小区六', '小区七']
-              }
-            ] as any
-          }
+          xAxis={[
+            {
+              scaleType: 'band',
+              data: ['小区一', '小区二', '小区三', '小区四', '小区五', '小区六', '小区七']
+            }
+          ]}
           series={[
             {
               id: 'page-views',

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRoutes, useLocation, useNavigate } from 'react-router-dom'
-import routes, { IRouter } from 'routes'
+import type { IRouter } from 'routes'
+import routesConfig from 'routes'
 import useDynamicTabs from 'hooks/useDynamicTabs'
 import { getUserInfo, permissionMenuPaths } from 'modules/global'
 import { CssBaseline, Box, Stack, Tabs, Tab } from '@mui/material'
@@ -39,7 +40,7 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
   const location = useLocation()
   const isLoginPage = location.pathname === '/login'
   const [isMenuOpen, setIsMenuOpen] = useState(true)
-  const convertedRoutes = convertRoutes(routes as IRouter[])
+  const convertedRoutes = convertRoutes(routesConfig as IRouter[])
   const routing = useRoutes(convertedRoutes)
   const info = useSelector((state: RootState) => state.info.userInfo)
   const isFullPage = convertedRoutes.some(

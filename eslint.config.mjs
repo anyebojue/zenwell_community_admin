@@ -46,7 +46,10 @@ const commonRules = {
   'react/function-component-definition': 'off', // 禁用函数组件必须是函数声明的规则
   'react/jsx-no-useless-fragment': 'error', // 确保不会出现不必要的片段
   'arrow-body-style': 'off', // 禁用箭头函数体样式规则
-  '@typescript-eslint/no-unused-vars': 'error'
+  '@typescript-eslint/no-unused-vars': 'warn',
+  '@typescript-eslint/no-explicit-any': 'error', // 禁止使用 any
+  '@typescript-eslint/no-shadow': 'error', // 禁止变量重名
+  'no-undef': 'off'
 }
 
 export default [
@@ -84,7 +87,8 @@ export default [
         }
       },
       globals: {
-        ...globals.node // 启用 Node.js 的全局变量（包括 __dirname 和 process）
+        ...globals.node, // 启用 Node.js 的全局变量（包括 __dirname 和 process）
+        ...globals.browser // 同时保留浏览器全局变量
       }
     },
     plugins: {
@@ -94,7 +98,8 @@ export default [
       prettier: eslintPluginPrettier
     },
     rules: {
-      ...commonRules
+      ...commonRules, // 通用规则
+      'prettier/prettier': 'warn'
     },
     settings: {
       react: {
@@ -102,5 +107,5 @@ export default [
       }
     }
   },
-  { ignores: ['dist/'] }
+  { ignores: ['node_modules/', 'dist/'] } // 忽略文件夹
 ]

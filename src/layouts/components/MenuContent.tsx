@@ -1,4 +1,4 @@
-import { memo, Fragment, useState, useEffect, useCallback } from 'react'
+import { memo, Fragment, useState, useEffect, useCallback, ElementType } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import getAllRoutes from 'routes'
 import {
@@ -11,6 +11,13 @@ import {
 } from '@mui/material'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 
+// Define the IRoute type based on your route structure
+interface IRoute {
+  path: string
+  meta?: { title?: string; hidden?: boolean; single?: boolean; Icon?: ElementType }
+  children?: IRoute[]
+}
+
 const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
   const location = useLocation()
   const visibleRoutes = getAllRoutes.filter(item => !item.meta?.hidden)
@@ -19,7 +26,7 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
 
   // 判断路径是否匹配某个父菜单或其子菜单
   const isAnyChildActive = useCallback(
-    (children: any[], parentPath: string) =>
+    (children: IRoute[], parentPath: string) =>
       children.some(child => location.pathname.startsWith(`${parentPath}/${child.path}`)),
     [location]
   )

@@ -37,15 +37,16 @@ const ActionColumn = (): ReactNode => {
   )
 }
 
-const renderStatusChip = (value: string | undefined) => {
+const renderStatusChip = (value: string | number | undefined) => {
   const colors: { [key: string]: 'success' | 'default' } = {
     审核完成: 'success',
     Offline: 'default'
   }
-  return <Chip label={value} color={colors[value || '']} size="small" />
+  const valueStr = value !== undefined ? String(value) : ''
+  return <Chip label={valueStr} color={colors[valueStr] || 'default'} size="small" />
 }
 
-interface Column<T> {
+export interface Column<T> {
   headerName: string
   key: string
   align?: 'left' | 'right' | 'center'
@@ -68,7 +69,7 @@ const GridData = () => {
       key: 'status_cd',
       headerName: '状态',
       align: 'center',
-      renderCell: (value: string) => renderStatusChip(value)
+      renderCell: (value: string | number | undefined) => renderStatusChip(value)
     },
     {
       key: 'operate',

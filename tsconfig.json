@@ -4,7 +4,8 @@
     "target": "ES2020",
     "lib": [
       "DOM",
-      "ES2020"
+      "ES2020",
+      "esnext"
     ],
     "module": "ESNext",
     "jsx": "react-jsx",
@@ -14,7 +15,7 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "useDefineForClassFields": true,
     "allowImportingTsExtensions": true
   },

@@ -74,7 +74,7 @@ const LoginIndex = () => {
       message.success('登录成功')
       navigate('/')
       dispatch(getUserInfo())
-    } catch (err) {
+    } catch {
       closeLoading()
       message.error('请检查用户名或密码是否正确')
     }

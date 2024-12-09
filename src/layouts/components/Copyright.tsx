@@ -1,17 +1,16 @@
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
+import { memo } from 'react'
 
-export default function Copyright(props: any) {
+const Copyright = () => {
   return (
     <Typography
       variant="body2"
       align="center"
-      {...props}
       sx={[
         {
           color: 'text.secondary'
-        },
-        ...(Array.isArray(props.sx) ? props.sx : [props.sx])
+        }
       ]}
     >
       {'Copyright © '}
@@ -23,3 +22,5 @@ export default function Copyright(props: any) {
     </Typography>
   )
 }
+
+export default memo(Copyright)

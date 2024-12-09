@@ -2,12 +2,11 @@ import { useState, useEffect, SyntheticEvent } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { IRouter } from 'routes'
 
-const useDynamicTabs = (routes: IRouter[]) => {
+const useDynamicTabs = (routeList: IRouter[]) => {
   const navigate = useNavigate()
   const location = useLocation()
 
   // 默认首页标签
-
   const [tabs, setTabs] = useState<{ id: number; label: string; path: string }[]>([])
   const [activeTabIndex, setActiveTabIndex] = useState(0) // 默认激活首页
 
@@ -23,7 +22,7 @@ const useDynamicTabs = (routes: IRouter[]) => {
       }
       return undefined
     }
-    return findRouteTitle(routes)
+    return findRouteTitle(routeList)
   }
 
   // 监听路径变化，动态更新标签页
