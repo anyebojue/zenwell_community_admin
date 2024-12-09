@@ -125,7 +125,7 @@ const SearchForm = () => {
           批量删除
         </Button>
       </Stack>
-      <FormDialog open={openDialog} dialogType="add" onClose={() => setOpenDialog(false)} />
+      <FormDialog openDialog={openDialog} dialogType="add" setOpenDialog={setOpenDialog} />
     </Box>
   )
 }

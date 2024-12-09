@@ -1,4 +1,4 @@
-import { memo, useState, useMemo, ChangeEvent } from 'react'
+import { memo, useState, useMemo, ChangeEvent, Dispatch, SetStateAction } from 'react'
 import {
   Pagination,
   Table,
@@ -29,10 +29,12 @@ const usePagination = <T,>(data: T[], rowsPerPage: number) => {
 
 const TableDataGrid = ({
   rows,
-  columns
+  columns,
+  setDialogValue
 }: {
   rows: CommunityReply[]
   columns: Column<CommunityReply>[]
+  setDialogValue: Dispatch<SetStateAction<CommunityReply | undefined>>
 }) => {
   const [rowsPerPage, setRowsPerPage] = useState(20)
   const { page, paginatedRows, setPage, handlePageChange } = usePagination(rows, rowsPerPage)
@@ -87,8 +89,9 @@ const TableDataGrid = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedRows.map(row => (
+            {paginatedRows.map((row: CommunityReply) => (
               <TableRow
+                onClick={() => setDialogValue(row)}
                 key={row.id}
                 sx={theme => ({
                   backgroundColor:

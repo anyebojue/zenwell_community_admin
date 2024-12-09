@@ -11,7 +11,7 @@ const CommunityIndex = () => {
       <NavbarBreadcrumbs />
       <SearchForm />
       <TableData />
-      <Copyright sx={{ mt: 3 }} />
+      <Copyright />
     </Box>
   )
 }

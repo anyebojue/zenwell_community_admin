@@ -4,7 +4,7 @@ export interface CommunityReply {
   id?: string
   createdAt?: string
   updatedAt?: string
-  bId?: string // 业务ID
+  bId?: string // 社区编码
   name?: string // 小区名称
   address?: string // 小区地址
   nearbyLandmarks?: string // 地标，如王府井北60米
@@ -23,13 +23,14 @@ export interface CommunityReply {
 
 export interface CommunityParams {
   id?: string
-  name?: string
-  img?: string
-  status?: number | null
-  intro?: string
-  is_top?: number
-  start_time?: string
-  end_time?: string
+  name: string //小区名称
+  city_code: string //小区地区
+  address: string //小区地址
+  nearby_landmarks: string //附近地标
+  tel: string //客服电话
+  pay_fee_month: string //缴费周期
+  fee_price: number //每月单价
+  b_id: string //社区编码
 }
 
 export interface FindCommunityReply {

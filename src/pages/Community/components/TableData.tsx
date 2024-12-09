@@ -8,7 +8,7 @@ import { find } from 'modules/community'
 import OrderTable from './TableOrder'
 import FormDialog from './FormDialog'
 
-const ActionColumn = (): ReactNode => {
+const ActionColumn = ({ dialogValue }: { dialogValue: CommunityReply | undefined }): ReactNode => {
   const [openDialog, setOpenDialog] = useState(false)
   return (
     <Box>
@@ -32,7 +32,12 @@ const ActionColumn = (): ReactNode => {
           <Delete fontSize="small" />
         </IconButton>
       </Tooltip>
-      <FormDialog open={openDialog} dialogType="edit" onClose={() => setOpenDialog(false)} />
+      <FormDialog
+        dialogValue={dialogValue}
+        openDialog={openDialog}
+        dialogType="edit"
+        setOpenDialog={setOpenDialog}
+      />
     </Box>
   )
 }
@@ -57,6 +62,7 @@ export interface Column<T> {
 const GridData = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.CommunitySlice)
+  const [dialogValue, setDialogValue] = useState<CommunityReply>()
   const [loading, setLoading] = useState(false)
 
   const columns: Column<CommunityReply>[] = [
@@ -75,7 +81,7 @@ const GridData = () => {
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => <ActionColumn />
+      renderCell: () => <ActionColumn dialogValue={dialogValue} />
     }
   ]
 
@@ -106,7 +112,7 @@ const GridData = () => {
           <Typography>加载中...</Typography>
         </Box>
       ) : (
-        <OrderTable rows={list} columns={columns} />
+        <OrderTable rows={list} columns={columns} setDialogValue={setDialogValue} />
       )}
     </Box>
   )
