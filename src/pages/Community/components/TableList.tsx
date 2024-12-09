@@ -12,7 +12,8 @@ import {
   Typography,
   Box,
   Paper,
-  SelectChangeEvent
+  SelectChangeEvent,
+  Checkbox
 } from '@mui/material'
 import { CommunityReply } from 'api/model/communityModel'
 import { Column } from './TableData'
@@ -30,23 +31,44 @@ const usePagination = <T,>(data: T[], rowsPerPage: number) => {
 const TableDataGrid = ({
   rows,
   columns,
-  setDialogValue
+  setDialogValue,
+  selectedRows,
+  setSelectedRows
 }: {
   rows: CommunityReply[]
   columns: Column<CommunityReply>[]
   setDialogValue: Dispatch<SetStateAction<CommunityReply | undefined>>
+  selectedRows: Set<string | undefined>
+  setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
 }) => {
-  const [rowsPerPage, setRowsPerPage] = useState(20)
-  const { page, paginatedRows, setPage, handlePageChange } = usePagination(rows, rowsPerPage)
+  const [rowsPerPage, setRowsPerPage] = useState('20')
+  const { page, paginatedRows, setPage, handlePageChange } = usePagination(
+    rows,
+    Number(rowsPerPage)
+  )
 
-  const handleRowsPerPageChange = (event: SelectChangeEvent<number>) => {
-    setRowsPerPage(Number(event.target.value))
+  const handleRowsPerPageChange = (event: SelectChangeEvent<string>) => {
+    setRowsPerPage(String(event.target.value))
     setPage(1)
   }
+
+  const onSelectAll = (event: ChangeEvent<HTMLInputElement>) => {
+    setSelectedRows(event.target.checked ? new Set(rows.map(row => row.id)) : new Set())
+  }
+
+  const onSelectRow = (id: string | undefined) => {
+    setSelectedRows(prev =>
+      prev.has(id) ? new Set([...prev].filter(rowId => rowId !== id)) : new Set(prev).add(id)
+    )
+  }
+
+  const allSelected = selectedRows.size === rows.length && rows.length > 0
+  const someSelected = selectedRows.size > 0 && selectedRows.size < rows.length
 
   return (
     <Box
       sx={theme => ({
+        mt: 3,
         width: '100%',
         borderRadius: '7px',
         border: `1px solid ${theme.palette.divider}`,
@@ -60,7 +82,7 @@ const TableDataGrid = ({
             theme.palette.mode === 'light' ? 'white' : theme.palette.background.default
         })}
       >
-        <Table sx={{ minWidth: 650 }} aria-label="simple table" size="small">
+        <Table sx={{ minWidth: 650 }} aria-label="data table" size="small">
           <TableHead>
             <TableRow
               sx={theme => ({
@@ -73,6 +95,15 @@ const TableDataGrid = ({
                 }
               })}
             >
+              <TableCell padding="checkbox">
+                <Checkbox
+                  color="primary"
+                  checked={allSelected}
+                  indeterminate={someSelected}
+                  onChange={onSelectAll}
+                  inputProps={{ 'aria-label': 'select all rows' }}
+                />
+              </TableCell>
               {columns.map(column => (
                 <TableCell
                   key={column.headerName}
@@ -89,34 +120,50 @@ const TableDataGrid = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedRows.map((row: CommunityReply) => (
-              <TableRow
-                onClick={() => setDialogValue(row)}
-                key={row.id}
-                sx={theme => ({
-                  backgroundColor:
-                    theme.palette.mode === 'light' ? 'white' : theme.palette.background.paper,
-                  '&:hover': {
-                    backgroundColor: theme.palette.action.hover
-                  }
-                })}
-              >
-                {columns.map(column => {
-                  const value = row[column.key as keyof CommunityReply]
-                  return (
-                    <TableCell
-                      key={column.key}
-                      align={column.align}
-                      sx={{
-                        borderBottom: theme => `1px solid ${theme.palette.divider}`
-                      }}
-                    >
-                      {column.renderCell ? column.renderCell(value) : value}
-                    </TableCell>
-                  )
-                })}
+            {paginatedRows.length > 0 ? (
+              paginatedRows.map(row => (
+                <TableRow
+                  onClick={() => setDialogValue(row)}
+                  key={row.id}
+                  sx={theme => ({
+                    backgroundColor:
+                      theme.palette.mode === 'light' ? 'white' : theme.palette.background.paper,
+                    '&:hover': {
+                      backgroundColor: theme.palette.action.hover
+                    }
+                  })}
+                >
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      color="primary"
+                      checked={selectedRows.has(row.id)}
+                      onChange={() => onSelectRow(row.id)}
+                      inputProps={{ 'aria-label': `select row ${row.id}` }}
+                    />
+                  </TableCell>
+                  {columns.map(column => {
+                    const value = row[column.key as keyof CommunityReply]
+                    return (
+                      <TableCell
+                        key={column.key}
+                        align={column.align}
+                        sx={{
+                          borderBottom: theme => `1px solid ${theme.palette.divider}`
+                        }}
+                      >
+                        {column.renderCell ? column.renderCell(value) : value}
+                      </TableCell>
+                    )
+                  })}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length + 1} align="center">
+                  暂无数据
+                </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </TableContainer>
@@ -137,7 +184,7 @@ const TableDataGrid = ({
           </Typography>
           <Select
             value={rowsPerPage}
-            onChange={handleRowsPerPageChange} // 修正后的事件处理函数
+            onChange={handleRowsPerPageChange}
             size="small"
             sx={{
               marginRight: 2,
@@ -159,7 +206,7 @@ const TableDataGrid = ({
             <MenuItem value={50}>50</MenuItem>
           </Select>
           <Pagination
-            count={Math.ceil(rows.length / rowsPerPage)}
+            count={Math.ceil(rows.length / Number(rowsPerPage))}
             page={page}
             onChange={handlePageChange}
             color="primary"

@@ -43,7 +43,7 @@ export const update = createAsyncThunk(`${namespace}/update`, async (data: Commu
   return res
 })
 
-export const deleteByIds = createAsyncThunk(`${namespace}/deleteByIds`, async (ids: []) => {
+export const deleteByIds = createAsyncThunk(`${namespace}/deleteByIds`, async (ids: string[]) => {
   const res = await DeleteCommunity(ids)
   return res
 })

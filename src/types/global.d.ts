@@ -18,4 +18,20 @@ declare global {
     reason?: string // 错误原因
     metadata?: unknown // 额外的元数据
   }
+
+  interface PayloadActionWithError<T> {
+    type: string
+    meta: {
+      arg: T // 请求的参数类型
+      requestId: string
+      rejectedWithValue: boolean
+      requestStatus: 'rejected' | 'fulfilled' // 请求的状态
+      aborted: boolean
+      condition: boolean
+    }
+    error?: {
+      // 只有在 rejected 时才有 error 属性
+      message: string
+    }
+  }
 }

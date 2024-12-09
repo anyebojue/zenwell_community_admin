@@ -55,7 +55,7 @@ export const UpdateCommunity = (data: CommunityParams) => {
  * @param ids
  * @returns
  */
-export const DeleteCommunity = (ids: []) => {
+export const DeleteCommunity = (ids: string[]) => {
   return request
     .delete({
       url: `${ApiPrefix.DeleteCommunity}/${ids.join(',')}`

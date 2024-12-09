@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useCallback, useMemo, useState } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Dialog from '@mui/material/Dialog'
@@ -37,23 +37,32 @@ const FormDialog: React.FC<FormDialogProps> = ({
       address: dialogType === 'edit' ? dialogValue?.address || '' : '',
       nearby_landmarks: dialogType === 'edit' ? dialogValue?.nearbyLandmarks || '' : '',
       tel: dialogType === 'edit' ? dialogValue?.tel || '' : '',
-      pay_fee_month: dialogType === 'edit' ? dialogValue?.payFeeMonth || '' : '',
+      pay_fee_month: dialogType === 'edit' ? dialogValue?.payFeeMonth || 0 : 0,
       fee_price: dialogType === 'edit' ? dialogValue?.feePrice || 0 : 0,
-      b_id: dialogType === 'edit' ? dialogValue?.bId || '' : ''
+      b_id: dialogType === 'edit' ? dialogValue?.bId || '' : '',
+      state: dialogType === 'edit' ? dialogValue?.state || '0' : '0'
     }),
     [dialogType, dialogValue]
   )
   const [formData, setFormData] = useState<CommunityParams>(initialFormData)
+
+  useEffect(() => {
+    setFormData(initialFormData)
+  }, [initialFormData])
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
       setLoading(true)
       try {
+        console.log(formData)
         const params = { ...formData }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
-        await dispatch(action)
+        const res = (await dispatch(action)) as PayloadActionWithError<CommunityParams>
+        if (res.meta.requestStatus === 'rejected' && res.error) {
+          throw new Error(res.error.message)
+        }
         await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))
         message.success(dialogType === 'add' ? '新建成功' : '编辑成功')
         setOpenDialog(false)
@@ -68,13 +77,13 @@ const FormDialog: React.FC<FormDialogProps> = ({
   )
 
   const formFields = [
-    { label: '小区名称', id: 'name', required: true },
-    { label: '小区地址', id: 'address', required: true },
-    { label: '附近地标', id: 'nearby_landmarks', required: true },
-    { label: '客服电话', id: 'tel', required: true },
-    { label: '缴费周期', id: 'pay_fee_month', required: true },
-    { label: '每月单价', id: 'fee_price', required: true },
-    { label: '社区编码', id: 'b_id', required: true }
+    { label: '小区名称', type: 'text', id: 'name', required: true },
+    { label: '小区地址', type: 'text', id: 'address', required: true },
+    { label: '附近地标', type: 'text', id: 'nearby_landmarks', required: true },
+    { label: '客服电话', type: 'text', id: 'tel', required: true },
+    { label: '缴费周期', type: 'number', id: 'pay_fee_month', required: true },
+    { label: '每月单价', type: 'number', id: 'fee_price', required: true },
+    { label: '社区编码', type: 'text', id: 'b_id', required: true }
   ]
 
   return (
@@ -88,13 +97,14 @@ const FormDialog: React.FC<FormDialogProps> = ({
       <DialogTitle>{dialogType === 'add' ? '新增' : '编辑'}</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
-          {formFields.map(({ label, id, required }) => (
+          {formFields.map(({ label, type, id, required }) => (
             <Box
               sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
               key={id}
             >
               <FormLabel>{label}：</FormLabel>
               <TextField
+                type={type}
                 sx={{ width: '80%' }}
                 size="small"
                 required={required}
@@ -104,7 +114,6 @@ const FormDialog: React.FC<FormDialogProps> = ({
               />
             </Box>
           ))}
-
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>小区地区：</FormLabel>
             {[

@@ -1,6 +1,7 @@
 import { ChangeEvent, Dispatch, memo, SetStateAction, useState } from 'react'
 import { Box, FormControl, Button, MenuItem, Stack, TextField } from '@mui/material'
 import { Add, Delete, History, Search } from '@mui/icons-material'
+import message from 'components/Message'
 import FormDialog from './FormDialog'
 
 const textFieldStyles = {
@@ -28,7 +29,12 @@ const buttonStyles = (backgroundColor: string, hoverColor: string) => ({
 
 const city = [{ value: '0', label: '北京' }]
 
-const SearchForm = () => {
+interface SearchFormProps {
+  selectedRows: Set<string | undefined>
+  setDelOpen: Dispatch<SetStateAction<boolean>>
+}
+
+const SearchForm: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => {
   const [province, setProvince] = useState('')
   const [cityValue, setCityValue] = useState('')
   const [county, setCounty] = useState('')
@@ -121,6 +127,12 @@ const SearchForm = () => {
           color="error"
           startIcon={<Delete />}
           sx={buttonStyles('#B22222', '#8B0000')}
+          onClick={() => {
+            if (![...selectedRows].length) {
+              return message.warning('请选择至少一项')
+            }
+            setDelOpen(true)
+          }}
         >
           批量删除
         </Button>

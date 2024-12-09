@@ -295,7 +295,7 @@ export const inputsCustomizations: Components<Theme> = {
         fontWeight: 500,
         ...theme.applyStyles('dark', {
           color: gray[400],
-          boxShadow: '0 4px 16px rgba(0, 0, 0, 0.5)',
+          boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
           [`&.${toggleButtonClasses.selected}`]: {
             color: brand[300]
           }

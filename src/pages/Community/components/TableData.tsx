@@ -1,54 +1,19 @@
-import { Box, Chip, Tooltip, IconButton, Typography } from '@mui/material'
+import { Box, Chip, Tooltip, IconButton } from '@mui/material'
 import { Delete, Edit, Sync } from '@mui/icons-material'
-import { memo, ReactNode, useCallback, useEffect, useState } from 'react'
+import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { CommunityReply } from 'api/model/communityModel'
 import message from 'components/Message'
 import { useDispatch, useSelector } from 'react-redux'
 import { find } from 'modules/community'
-import OrderTable from './TableOrder'
-import FormDialog from './FormDialog'
-
-const ActionColumn = ({ dialogValue }: { dialogValue: CommunityReply | undefined }): ReactNode => {
-  const [openDialog, setOpenDialog] = useState(false)
-  return (
-    <Box>
-      <Tooltip title="同步 IOT">
-        <IconButton size="small" color="primary">
-          <Sync fontSize="small" />
-        </IconButton>
-      </Tooltip>
-      <Tooltip
-        title="修改"
-        onClick={() => {
-          setOpenDialog(true)
-        }}
-      >
-        <IconButton size="small" color="secondary">
-          <Edit fontSize="small" />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="删除">
-        <IconButton size="small" color="error">
-          <Delete fontSize="small" />
-        </IconButton>
-      </Tooltip>
-      <FormDialog
-        dialogValue={dialogValue}
-        openDialog={openDialog}
-        dialogType="edit"
-        setOpenDialog={setOpenDialog}
-      />
-    </Box>
-  )
-}
+import TableList from './TableList'
 
 const renderStatusChip = (value: string | number | undefined) => {
   const colors: { [key: string]: 'success' | 'default' } = {
-    审核完成: 'success',
-    Offline: 'default'
+    '': 'success',
+    '0': 'default'
   }
   const valueStr = value !== undefined ? String(value) : ''
-  return <Chip label={valueStr} color={colors[valueStr] || 'default'} size="small" />
+  return <Chip label={'审核成功'} color={colors[valueStr] || 'default'} size="small" />
 }
 
 export interface Column<T> {
@@ -59,11 +24,23 @@ export interface Column<T> {
   renderCell?: (value: T[keyof T]) => ReactNode
 }
 
-const GridData = () => {
+interface TableDataProps {
+  setDialogValue: Dispatch<SetStateAction<CommunityReply | undefined>>
+  selectedRows: Set<string | undefined>
+  setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
+  setOpenDialog: Dispatch<SetStateAction<boolean>>
+  setDelOpen: Dispatch<SetStateAction<boolean>>
+}
+
+const TableData: React.FC<TableDataProps> = ({
+  setDialogValue,
+  selectedRows,
+  setSelectedRows,
+  setOpenDialog,
+  setDelOpen
+}) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.CommunitySlice)
-  const [dialogValue, setDialogValue] = useState<CommunityReply>()
-  const [loading, setLoading] = useState(false)
 
   const columns: Column<CommunityReply>[] = [
     { key: 'id', headerName: '小区ID', align: 'center' },
@@ -72,7 +49,7 @@ const GridData = () => {
     { key: 'cityCode', headerName: '城市编码', align: 'center' },
     { key: 'bId', headerName: '社区编码', align: 'center' },
     {
-      key: 'status_cd',
+      key: 'state',
       headerName: '状态',
       align: 'center',
       renderCell: (value: string | number | undefined) => renderStatusChip(value)
@@ -81,13 +58,30 @@ const GridData = () => {
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => <ActionColumn dialogValue={dialogValue} />
+      renderCell: () => (
+        <Box>
+          <Tooltip title="同步 IOT">
+            <IconButton size="small" color="primary">
+              <Sync fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="修改" onClick={() => setOpenDialog(true)}>
+            <IconButton size="small" color="secondary">
+              <Edit fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="删除" onClick={() => setDelOpen(true)}>
+            <IconButton size="small" color="error">
+              <Delete fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      )
     }
   ]
 
   const fetchData = useCallback(
     async (params?: CommunityReply & PaginationParams) => {
-      setLoading(true)
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         await dispatch(find({ 'page.num': page.num, 'page.size': page.size, ...params }))
@@ -95,7 +89,6 @@ const GridData = () => {
         message.error('列表加载失败，请刷新页面或检查网络问题')
       } finally {
         closeLoading()
-        setLoading(false)
       }
     },
     [dispatch, page.num, page.size]
@@ -106,16 +99,14 @@ const GridData = () => {
   }, [fetchData])
 
   return (
-    <Box>
-      {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
-          <Typography>加载中...</Typography>
-        </Box>
-      ) : (
-        <OrderTable rows={list} columns={columns} setDialogValue={setDialogValue} />
-      )}
-    </Box>
+    <TableList
+      rows={list}
+      columns={columns}
+      setDialogValue={setDialogValue}
+      selectedRows={selectedRows}
+      setSelectedRows={setSelectedRows}
+    />
   )
 }
 
-export default memo(GridData)
+export default memo(TableData)
