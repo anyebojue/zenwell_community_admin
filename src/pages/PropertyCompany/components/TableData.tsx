@@ -20,7 +20,6 @@ export interface Column<T> {
   headerName: string
   key: string
   align?: 'left' | 'right' | 'center'
-  // eslint-disable-next-line no-unused-vars
   renderCell?: (value: T[keyof T]) => ReactNode
 }
 
