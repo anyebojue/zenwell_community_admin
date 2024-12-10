@@ -9,7 +9,8 @@ const Copyright = () => {
       align="center"
       sx={[
         {
-          color: 'text.secondary'
+          color: 'text.secondary',
+          marginTop: '20px'
         }
       ]}
     >

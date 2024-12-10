@@ -8,20 +8,54 @@ import { find } from 'modules/community'
 import TableList from './TableList'
 
 const renderStatusChip = (value: string | number | undefined) => {
-  const colors: { [key: string]: 'success' | 'default' } = {
-    '': 'success',
-    '0': 'default'
+  const statusMap: Record<string, { label: string; color: 'success' | 'default' }> = {
+    '': { label: '审核成功', color: 'success' },
+    '0': { label: '未审核', color: 'default' }
   }
-  const valueStr = value !== undefined ? String(value) : ''
-  return <Chip label={'审核成功'} color={colors[valueStr] || 'default'} size="small" />
+
+  const status = statusMap[String(value) || ''] || { label: '未知状态', color: 'default' }
+  return <Chip label={status.label} color={status.color} size="small" />
 }
+
+const renderActionButtons = (
+  setOpenDialog: Dispatch<SetStateAction<boolean>>,
+  setDelOpen: Dispatch<SetStateAction<boolean>>
+) => (
+  <Box>
+    {[
+      {
+        title: '同步 IOT',
+        color: 'primary' as const,
+        icon: <Sync fontSize="small" />,
+        onClick: () => message.info('同步操作未实现')
+      },
+      {
+        title: '修改',
+        color: 'secondary' as const,
+        icon: <Edit fontSize="small" />,
+        onClick: () => setOpenDialog(true)
+      },
+      {
+        title: '删除',
+        color: 'error' as const,
+        icon: <Delete fontSize="small" />,
+        onClick: () => setDelOpen(true)
+      }
+    ].map((action, index) => (
+      <Tooltip title={action.title} key={index}>
+        <IconButton size="small" color={action.color} onClick={action.onClick}>
+          {action.icon}
+        </IconButton>
+      </Tooltip>
+    ))}
+  </Box>
+)
 
 export interface Column<T> {
   headerName: string
   key: string
   align?: 'left' | 'right' | 'center'
-  // eslint-disable-next-line no-unused-vars
-  renderCell?: (value: T[keyof T]) => ReactNode
+  renderCell?: (_value: T[keyof T]) => ReactNode
 }
 
 interface TableDataProps {
@@ -58,41 +92,20 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => (
-        <Box>
-          <Tooltip title="同步 IOT">
-            <IconButton size="small" color="primary">
-              <Sync fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="修改" onClick={() => setOpenDialog(true)}>
-            <IconButton size="small" color="secondary">
-              <Edit fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="删除" onClick={() => setDelOpen(true)}>
-            <IconButton size="small" color="error">
-              <Delete fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      )
+      renderCell: () => renderActionButtons(setOpenDialog, setDelOpen)
     }
   ]
 
-  const fetchData = useCallback(
-    async (params?: CommunityReply & PaginationParams) => {
-      const closeLoading = message.loading('正在加载列表中，请稍后...')
-      try {
-        await dispatch(find({ 'page.num': page.num, 'page.size': page.size, ...params }))
-      } catch {
-        message.error('列表加载失败，请刷新页面或检查网络问题')
-      } finally {
-        closeLoading()
-      }
-    },
-    [dispatch, page.num, page.size]
-  )
+  const fetchData = useCallback(async () => {
+    const closeLoading = message.loading('正在加载列表中，请稍后...')
+    try {
+      await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+    } catch {
+      message.error('列表加载失败，请刷新页面或检查网络问题')
+    } finally {
+      closeLoading()
+    }
+  }, [dispatch, page.num, page.size])
 
   useEffect(() => {
     fetchData()

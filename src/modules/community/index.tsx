@@ -27,7 +27,7 @@ const initialState: IInitialState = {
 
 export const find = createAsyncThunk(
   `${namespace}/find`,
-  async (params: CommunityReply & PaginationParams) => {
+  async (params: CommunityParams & PaginationParams) => {
     const res = await FindCommunity(params)
     return res
   }

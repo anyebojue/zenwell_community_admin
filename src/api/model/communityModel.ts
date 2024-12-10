@@ -22,16 +22,16 @@ export interface CommunityReply {
 }
 
 export interface CommunityParams {
-  id?: string
+  id: string
   name: string //小区名称
   city_code: string //小区地区
-  address: string //小区地址
-  nearby_landmarks: string //附近地标
-  tel: string //客服电话
-  pay_fee_month: number //缴费周期
-  fee_price: number //每月单价
-  b_id: string //社区编码
-  state: string // 审核状态
+  address?: string //小区地址
+  nearby_landmarks?: string //附近地标
+  tel?: string //客服电话
+  pay_fee_month?: number //缴费周期
+  fee_price?: number //每月单价
+  b_id?: string //社区编码
+  state?: string // 审核状态
 }
 
 export interface FindCommunityReply {

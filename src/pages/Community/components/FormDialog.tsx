@@ -18,9 +18,10 @@ import { create, find, update } from 'modules/community'
 import { CommunityParams, CommunityReply } from 'api/model/communityModel'
 import { useDispatch, useSelector } from 'react-redux'
 import message from 'components/Message'
+import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
-  dialogValue?: CommunityReply | undefined
+  dialogValue?: CommunityReply
   openDialog: boolean
   dialogType: string
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -63,7 +64,6 @@ const FormDialog: React.FC<FormDialogProps> = ({
       event.preventDefault()
       setLoading(true)
       try {
-        console.log(formData)
         const params = { ...formData }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
@@ -124,30 +124,14 @@ const FormDialog: React.FC<FormDialogProps> = ({
           ))}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>小区地区：</FormLabel>
-            {[
-              {
-                label: '省',
-                value: formData.city_code,
-                setter: (value: string) => setFormData({ ...formData, city_code: value })
-              },
-              {
-                label: '市',
-                value: formData.city_code,
-                setter: (value: string) => setFormData({ ...formData, city_code: value })
-              },
-              {
-                label: '县',
-                value: formData.city_code,
-                setter: (value: string) => setFormData({ ...formData, city_code: value })
-              }
-            ].map(({ label, value, setter }) => (
+            {['省', '市', '县'].map(label => (
               <FormControl sx={{ width: '22%' }} variant="outlined" key={label}>
                 <TextField
                   select
                   size="small"
                   label={`请选择${label}`}
-                  value={value}
-                  onChange={e => setter(e.target.value)}
+                  value={formData.city_code}
+                  onChange={e => setFormData({ ...formData, city_code: e.target.value })}
                   variant="outlined"
                 >
                   {city.map(option => (
@@ -168,6 +152,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
         <Button
           variant="contained"
           type="submit"
+          color="error"
+          sx={buttonStyles('#2660ad', '#1d428a')}
           disabled={loading}
           startIcon={loading && <CircularProgress size={24} color="inherit" />}
         >

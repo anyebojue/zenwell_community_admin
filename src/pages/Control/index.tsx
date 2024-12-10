@@ -83,7 +83,7 @@ const Control = () => {
           <PageViewsBarChart />
         </Grid>
       </Grid>
-      <Copyright sx={{ my: 5, mb: 1.5 }} />
+      <Copyright />
     </Box>
   )
 }

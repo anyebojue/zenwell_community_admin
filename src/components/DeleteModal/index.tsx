@@ -5,25 +5,33 @@ import {
   DialogContentText,
   DialogActions,
   DialogContent,
-  DialogTitle
+  DialogTitle,
+  CircularProgress
 } from '@mui/material'
 import { WarningRounded } from '@mui/icons-material'
 
 interface DeleteModalProps {
+  loading: boolean
   delOpen: boolean
   setDelOpen: Dispatch<SetStateAction<boolean>>
   userName?: string[]
   onDelete: () => void
 }
 
-const buttonStyles = (backgroundColor: string, hoverColor: string) => ({
+export const buttonStyles = (backgroundColor: string, hoverColor: string) => ({
   backgroundColor: backgroundColor,
   '&:hover': {
     backgroundColor: hoverColor
   }
 })
 
-const DeleteModal: React.FC<DeleteModalProps> = ({ delOpen, setDelOpen, userName, onDelete }) => (
+const DeleteModal: React.FC<DeleteModalProps> = ({
+  loading,
+  delOpen,
+  setDelOpen,
+  userName,
+  onDelete
+}) => (
   <Dialog open={delOpen} onClose={() => setDelOpen(false)}>
     <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
       <WarningRounded />
@@ -38,11 +46,14 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ delOpen, setDelOpen, userName
       </Button>
       <Button
         variant="contained"
+        type="submit"
         color="error"
         sx={buttonStyles('#2660ad', '#1d428a')}
+        disabled={loading}
+        startIcon={loading && <CircularProgress size={24} color="inherit" />}
         onClick={onDelete}
       >
-        确定
+        {loading ? '保存中...' : '保存'}
       </Button>
     </DialogActions>
   </Dialog>

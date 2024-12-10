@@ -13,7 +13,8 @@ import {
   Box,
   Paper,
   SelectChangeEvent,
-  Checkbox
+  Checkbox,
+  Theme
 } from '@mui/material'
 import { CommunityReply } from 'api/model/communityModel'
 import { Column } from './TableData'
@@ -47,8 +48,25 @@ const TableList = ({
     Number(rowsPerPage)
   )
 
+  const tableHeaderStyle = (theme: Theme) => ({
+    backgroundColor: theme.palette.action.hover,
+    '& th': {
+      fontWeight: 'bold',
+      borderBottom: `1px solid ${theme.palette.divider}`,
+      height: 45,
+      lineHeight: '45px'
+    }
+  })
+
+  const tableRowStyle = (theme: Theme) => ({
+    backgroundColor: theme.palette.mode === 'light' ? 'white' : theme.palette.background.paper,
+    '&:hover': {
+      backgroundColor: theme.palette.action.hover
+    }
+  })
+
   const handleRowsPerPageChange = (event: SelectChangeEvent<string>) => {
-    setRowsPerPage(String(event.target.value))
+    setRowsPerPage(event.target.value)
     setPage(1)
   }
 
@@ -84,17 +102,7 @@ const TableList = ({
       >
         <Table sx={{ minWidth: 650 }} aria-label="data table" size="small">
           <TableHead>
-            <TableRow
-              sx={theme => ({
-                backgroundColor: theme.palette.action.hover,
-                '& th': {
-                  fontWeight: 'bold',
-                  borderBottom: `1px solid ${theme.palette.divider}`,
-                  height: 45,
-                  lineHeight: '45px'
-                }
-              })}
-            >
+            <TableRow sx={tableHeaderStyle}>
               <TableCell padding="checkbox">
                 <Checkbox
                   color="primary"
@@ -122,18 +130,13 @@ const TableList = ({
           <TableBody>
             {paginatedRows.length > 0 ? (
               paginatedRows.map(row => (
-                <TableRow
-                  onClick={() => setDialogValue(row)}
-                  key={row.id}
-                  sx={theme => ({
-                    backgroundColor:
-                      theme.palette.mode === 'light' ? 'white' : theme.palette.background.paper,
-                    '&:hover': {
-                      backgroundColor: theme.palette.action.hover
-                    }
-                  })}
-                >
-                  <TableCell padding="checkbox">
+                <TableRow onClick={() => setDialogValue(row)} key={row.id} sx={tableRowStyle}>
+                  <TableCell
+                    padding="checkbox"
+                    sx={{
+                      borderBottom: theme => `1px solid ${theme.palette.divider}`
+                    }}
+                  >
                     <Checkbox
                       color="primary"
                       checked={selectedRows.has(row.id)}
@@ -188,12 +191,7 @@ const TableList = ({
             size="small"
             sx={{
               marginRight: 2,
-              border: 'none',
-              boxShadow: 'none',
               '.MuiOutlinedInput-notchedOutline': {
-                border: 'none'
-              },
-              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
                 border: 'none'
               },
               '& .MuiSelect-select': {
@@ -201,9 +199,11 @@ const TableList = ({
               }
             }}
           >
-            <MenuItem value={10}>10</MenuItem>
-            <MenuItem value={20}>20</MenuItem>
-            <MenuItem value={50}>50</MenuItem>
+            {[10, 20, 50].map(size => (
+              <MenuItem key={size} value={size}>
+                {size}
+              </MenuItem>
+            ))}
           </Select>
           <Pagination
             count={Math.ceil(rows.length / Number(rowsPerPage))}

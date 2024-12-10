@@ -3,7 +3,7 @@ import { CloseRounded, CheckCircle, Report, Warning, Info } from '@mui/icons-mat
 import { Box, Alert, IconButton, Typography, CircularProgress } from '@mui/material'
 
 interface MessageOptions {
-  type: 'success' | 'warning' | 'error' | 'neutral' | 'loading'
+  type: 'success' | 'warning' | 'error' | 'info' | 'loading'
   content: string
 }
 
@@ -11,7 +11,7 @@ const iconMap = {
   success: <CheckCircle />,
   warning: <Warning />,
   error: <Report />,
-  neutral: <Info />,
+  info: <Info />,
   loading: <CircularProgress size={24} />
 }
 
@@ -19,7 +19,7 @@ const colorMap: Record<MessageOptions['type'], 'success' | 'error' | 'info' | 'w
   success: 'success',
   warning: 'warning',
   error: 'error',
-  neutral: 'info',
+  info: 'info',
   loading: 'info'
 }
 
@@ -104,7 +104,7 @@ const message = {
   success: (content: string) => createMessage({ type: 'success', content }),
   error: (content: string) => createMessage({ type: 'error', content }),
   warning: (content: string) => createMessage({ type: 'warning', content }),
-  neutral: (content: string) => createMessage({ type: 'neutral', content }),
+  info: (content: string) => createMessage({ type: 'info', content }),
   loading: (content: string) => createMessage({ type: 'loading', content })
 }
 

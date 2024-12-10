@@ -46,10 +46,11 @@ const commonRules = {
   'react/function-component-definition': 'off', // 禁用函数组件必须是函数声明的规则
   'react/jsx-no-useless-fragment': 'error', // 确保不会出现不必要的片段
   'arrow-body-style': 'off', // 禁用箭头函数体样式规则
-  '@typescript-eslint/no-unused-vars': 'warn',
   '@typescript-eslint/no-explicit-any': 'error', // 禁止使用 any
   '@typescript-eslint/no-shadow': 'error', // 禁止变量重名
-  'no-undef': 'off'
+  'no-undef': 'off',
+  'no-unused-vars': 'off', // 禁用默认的 no-unused-vars
+  '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }]
 }
 
 export default [

@@ -1,5 +1,5 @@
 import { request } from 'utils/request/axios'
-import { FindCommunityReply, CommunityReply, CommunityParams } from './model/communityModel'
+import { FindCommunityReply, CommunityParams } from './model/communityModel'
 
 const ApiPrefix = {
   FindCommunity: '/community',
@@ -13,7 +13,7 @@ const ApiPrefix = {
  * @param params User
  * @returns
  */
-export const FindCommunity = (params: CommunityReply) => {
+export const FindCommunity = (params: CommunityParams & PaginationParams) => {
   return request
     .get<FindCommunityReply>({
       url: ApiPrefix.FindCommunity,
