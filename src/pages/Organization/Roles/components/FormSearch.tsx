@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { CommunityParams } from 'api/model/communityModel'
 import { find } from 'modules/community'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
-import { Add, History, Search } from '@mui/icons-material'
+import { Add, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 
