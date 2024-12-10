@@ -144,11 +144,11 @@ const TableList = ({
                       inputProps={{ 'aria-label': `select row ${row.id}` }}
                     />
                   </TableCell>
-                  {columns.map(column => {
+                  {columns.map((column, index) => {
                     const value = row[column.key as keyof PropertyCompanyReply]
                     return (
                       <TableCell
-                        key={column.key}
+                        key={index}
                         align={column.align}
                         sx={{
                           borderBottom: theme => `1px solid ${theme.palette.divider}`
