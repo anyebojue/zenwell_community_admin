@@ -18,12 +18,7 @@ const MUI_X_PRODUCTS: TreeViewBaseItem[] = [
       { id: '002', label: '002小区' },
       { id: '003', label: '003小区' },
       { id: '004', label: '004小区' },
-      { id: '005', label: '005小区' },
-      { id: '006', label: '006小区' },
-      { id: '007', label: '007小区' },
-      { id: '008', label: '008小区' },
-      { id: '009', label: '009小区' },
-      { id: '010', label: '010小区' }
+      { id: '005', label: '005小区' }
     ]
   },
   {
@@ -34,12 +29,7 @@ const MUI_X_PRODUCTS: TreeViewBaseItem[] = [
       { id: '012', label: '002小区' },
       { id: '013', label: '003小区' },
       { id: '014', label: '004小区' },
-      { id: '015', label: '005小区' },
-      { id: '016', label: '006小区' },
-      { id: '017', label: '007小区' },
-      { id: '018', label: '008小区' },
-      { id: '019', label: '009小区' },
-      { id: '020', label: '010小区' }
+      { id: '015', label: '005小区' }
     ]
   },
   {
@@ -50,12 +40,7 @@ const MUI_X_PRODUCTS: TreeViewBaseItem[] = [
       { id: '022', label: '002小区' },
       { id: '023', label: '003小区' },
       { id: '024', label: '004小区' },
-      { id: '025', label: '005小区' },
-      { id: '026', label: '006小区' },
-      { id: '027', label: '007小区' },
-      { id: '028', label: '008小区' },
-      { id: '029', label: '009小区' },
-      { id: '030', label: '010小区' }
+      { id: '025', label: '005小区' }
     ]
   }
 ]
