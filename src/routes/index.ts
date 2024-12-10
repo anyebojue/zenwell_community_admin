@@ -3,6 +3,7 @@ import control from './modules/control'
 import community from './modules/community'
 import propertyCompany from './modules/propertyCompany'
 import { load, navigateIndex } from './load'
+import organization from './modules/organization'
 
 export interface IRouter {
   /** 链接路径 */
@@ -40,6 +41,12 @@ const baseRoutes: IRouter[] = [
   }
 ]
 
-const getAllRoutes = (): IRouter[] => [...baseRoutes, ...control, ...community, ...propertyCompany]
+const getAllRoutes = (): IRouter[] => [
+  ...baseRoutes,
+  ...control,
+  ...community,
+  ...propertyCompany,
+  ...organization
+]
 
 export default getAllRoutes()
