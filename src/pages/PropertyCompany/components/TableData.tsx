@@ -1,5 +1,5 @@
-import { Box, Tooltip, IconButton } from '@mui/material'
-import { Delete, Edit, Sync } from '@mui/icons-material'
+import { Tooltip, IconButton, Stack } from '@mui/material'
+import { Block, Delete, Edit, ManageAccounts, RestartAlt, Login } from '@mui/icons-material'
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { PropertyCompanyReply } from 'api/model/propertyCompanyModel'
 import message from 'components/Message'
@@ -11,13 +11,13 @@ const renderActionButtons = (
   setOpenDialog: Dispatch<SetStateAction<boolean>>,
   setDelOpen: Dispatch<SetStateAction<boolean>>
 ) => (
-  <Box>
+  <Stack width={110} direction="row" flexWrap="wrap">
     {[
       {
-        title: '同步 IOT',
+        title: '管理小区',
         color: 'primary' as const,
-        icon: <Sync fontSize="small" />,
-        onClick: () => message.info('同步操作未实现')
+        icon: <ManageAccounts fontSize="small" />,
+        onClick: () => message.info('未实现')
       },
       {
         title: '修改',
@@ -30,6 +30,24 @@ const renderActionButtons = (
         color: 'error' as const,
         icon: <Delete fontSize="small" />,
         onClick: () => setDelOpen(true)
+      },
+      {
+        title: '登录',
+        color: 'success' as const,
+        icon: <Login fontSize="small" />,
+        onClick: () => message.info('未实现')
+      },
+      {
+        title: '限制登录',
+        color: 'warning' as const,
+        icon: <Block fontSize="small" />,
+        onClick: () => message.info('未实现')
+      },
+      {
+        title: '重置密码',
+        color: 'info' as const,
+        icon: <RestartAlt fontSize="small" />,
+        onClick: () => message.info('未实现')
       }
     ].map((action, index) => (
       <Tooltip title={action.title} key={index}>
@@ -38,7 +56,7 @@ const renderActionButtons = (
         </IconButton>
       </Tooltip>
     ))}
-  </Box>
+  </Stack>
 )
 
 export interface Column<T> {
