@@ -13,20 +13,19 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
-import { Box, CircularProgress, FormControl, FormLabel, MenuItem, Stack } from '@mui/material'
-import { create, find, update } from 'modules/community'
-import { CommunityParams, CommunityReply } from 'api/model/communityModel'
+import { Box, CircularProgress, FormLabel, Stack } from '@mui/material'
+import { create, find, update } from 'modules/propertyCompany'
+import { PropertyCompanyParams, PropertyCompanyReply } from 'api/model/propertyCompanyModel'
 import { useDispatch, useSelector } from 'react-redux'
 import message from 'components/Message'
+import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
-  dialogValue?: CommunityReply | undefined
+  dialogValue?: PropertyCompanyReply
   openDialog: boolean
   dialogType: string
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
-
-const city = [{ value: '0', label: '北京' }]
 
 const FormDialog: React.FC<FormDialogProps> = ({
   dialogValue,
@@ -35,24 +34,21 @@ const FormDialog: React.FC<FormDialogProps> = ({
   setOpenDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.CommunitySlice)
+  const { page } = useSelector((state: RootState) => state.PropertyCompanySlice)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(
     () => ({
       name: dialogType === 'edit' ? dialogValue?.name || '' : '',
-      city_code: dialogType === 'edit' ? dialogValue?.cityCode || '' : '',
       address: dialogType === 'edit' ? dialogValue?.address || '' : '',
-      nearby_landmarks: dialogType === 'edit' ? dialogValue?.nearbyLandmarks || '' : '',
       tel: dialogType === 'edit' ? dialogValue?.tel || '' : '',
-      pay_fee_month: dialogType === 'edit' ? dialogValue?.payFeeMonth || 0 : 0,
-      fee_price: dialogType === 'edit' ? dialogValue?.feePrice || 0 : 0,
-      b_id: dialogType === 'edit' ? dialogValue?.bId || '' : '',
-      state: dialogType === 'edit' ? dialogValue?.state || '0' : '0'
+      store_type_cd: dialogType === 'edit' ? dialogValue?.storeTypeCd || '' : '',
+      nearby_landmarks: dialogType === 'edit' ? dialogValue?.nearbyLandmarks || '' : '',
+      map_x: dialogType === 'edit' ? dialogValue?.mapX || '' : ''
     }),
     [dialogType, dialogValue]
   )
-  const [formData, setFormData] = useState<CommunityParams>(initialFormData)
+  const [formData, setFormData] = useState<PropertyCompanyParams>(initialFormData)
 
   useEffect(() => {
     setFormData(initialFormData)
@@ -63,11 +59,10 @@ const FormDialog: React.FC<FormDialogProps> = ({
       event.preventDefault()
       setLoading(true)
       try {
-        console.log(formData)
         const params = { ...formData }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
-        const res = (await dispatch(action)) as PayloadActionWithError<CommunityParams>
+        const res = (await dispatch(action)) as PayloadActionWithError<PropertyCompanyParams>
         if (res.meta.requestStatus === 'rejected' && res.error) {
           throw new Error(res.error.message)
         }
@@ -85,13 +80,12 @@ const FormDialog: React.FC<FormDialogProps> = ({
   )
 
   const formFields = [
-    { label: '小区名称', type: 'text', id: 'name', required: true },
-    { label: '小区地址', type: 'text', id: 'address', required: true },
-    { label: '附近地标', type: 'text', id: 'nearby_landmarks', required: true },
-    { label: '客服电话', type: 'text', id: 'tel', required: true },
-    { label: '缴费周期', type: 'number', id: 'pay_fee_month', required: true },
-    { label: '每月单价', type: 'number', id: 'fee_price', required: true },
-    { label: '社区编码', type: 'text', id: 'b_id', required: true }
+    { label: '名称', type: 'text', id: 'name', required: true },
+    { label: '地址', type: 'text', id: 'address', required: true },
+    { label: '电话', type: 'text', id: 'tel', required: true },
+    { label: '公司法人', type: 'text', id: 'store_type_cd', required: true },
+    { label: '成立日期', type: 'date', id: 'nearby_landmarks', required: true },
+    { label: '地标', type: 'text', id: 'map_x', required: true }
   ]
 
   return (
@@ -117,48 +111,11 @@ const FormDialog: React.FC<FormDialogProps> = ({
                 size="small"
                 required={required}
                 id={id}
-                value={formData[id as keyof CommunityParams]}
+                value={formData[id as keyof PropertyCompanyParams]}
                 onChange={e => setFormData({ ...formData, [id]: e.target.value })}
               />
             </Box>
           ))}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>小区地区：</FormLabel>
-            {[
-              {
-                label: '省',
-                value: formData.city_code,
-                setter: (value: string) => setFormData({ ...formData, city_code: value })
-              },
-              {
-                label: '市',
-                value: formData.city_code,
-                setter: (value: string) => setFormData({ ...formData, city_code: value })
-              },
-              {
-                label: '县',
-                value: formData.city_code,
-                setter: (value: string) => setFormData({ ...formData, city_code: value })
-              }
-            ].map(({ label, value, setter }) => (
-              <FormControl sx={{ width: '22%' }} variant="outlined" key={label}>
-                <TextField
-                  select
-                  size="small"
-                  label={`请选择${label}`}
-                  value={value}
-                  onChange={e => setter(e.target.value)}
-                  variant="outlined"
-                >
-                  {city.map(option => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </FormControl>
-            ))}
-          </Box>
         </Stack>
       </DialogContent>
       <DialogActions>
@@ -168,6 +125,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
         <Button
           variant="contained"
           type="submit"
+          color="error"
+          sx={buttonStyles('#2660ad', '#1d428a')}
           disabled={loading}
           startIcon={loading && <CircularProgress size={24} color="inherit" />}
         >

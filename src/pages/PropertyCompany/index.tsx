@@ -1,53 +1,56 @@
-import { memo, useCallback, useState } from 'react'
-import Box from '@mui/material/Box'
+import { memo, useCallback, useState, useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { PropertyCompanyReply } from 'api/model/propertyCompanyModel'
+import { deleteByIds, find } from 'modules/propertyCompany'
+import { Box } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
-import DeleteModal from 'components/DeleteModal'
-import { deleteByIds, find } from 'modules/community'
-import { useDispatch, useSelector } from 'react-redux'
 import message from 'components/Message'
-import { CommunityReply } from 'api/model/communityModel'
+import DeleteModal from 'components/DeleteModal'
 import TableData from './components/TableData'
 import FormSearch from './components/FormSearch'
 import FormDialog from './components/FormDialog'
 
-const CommunityIndex = () => {
+const PropertyCompanyIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.CommunitySlice)
-  const [dialogValue, setDialogValue] = useState<CommunityReply>()
+  const { page, list } = useSelector((state: RootState) => state.PropertyCompanySlice)
+  const [dialogValue, setDialogValue] = useState<PropertyCompanyReply>()
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [openDialog, setOpenDialog] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const DelName =
-    selectedRows.size === 0
-      ? dialogValue?.name
-        ? [dialogValue.name]
+  const getDeleteData = useCallback(() => {
+    if (selectedRows.size > 0) {
+      return list
+        .filter(item => selectedRows.has(item.id))
+        .map(item => ({ id: item.id!, name: item.name! }))
+        .filter(item => item.id && item.name)
+    }
+    if (dialogValue) {
+      return dialogValue.id && dialogValue.name
+        ? [{ id: dialogValue.id, name: dialogValue.name }]
         : []
-      : (list
-          .filter(item => selectedRows.has(item.id))
-          .map(item => item.name)
-          .filter(Boolean) as string[])
+    }
+    return []
+  }, [selectedRows, list, dialogValue])
 
-  const DelData =
-    selectedRows.size === 0
-      ? dialogValue?.id
-        ? [dialogValue.id]
-        : []
-      : (list
-          .filter(item => selectedRows.has(item.id))
-          .map(item => item.id)
-          .filter(Boolean) as string[])
+  const deleteData = useMemo(() => getDeleteData(), [getDeleteData])
+  const deleteIds = deleteData.map(item => item.id)
+  const deleteNames = deleteData.map(item => item.name)
 
   const handleDelete = useCallback(
-    async (id: string[]) => {
+    async (ids: string[]) => {
+      setLoading(true)
       try {
-        await dispatch(deleteByIds(id))
+        await dispatch(deleteByIds(ids))
         setDelOpen(false)
         message.success('删除成功')
         await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
-      } catch (err: unknown) {
+        setLoading(false)
+      } catch (err) {
         if (err instanceof Error) message.error(err.message)
+        setLoading(false)
       }
     },
     [dispatch, page.num, page.size]
@@ -73,13 +76,14 @@ const CommunityIndex = () => {
         setOpenDialog={setOpenDialog}
       />
       <DeleteModal
+        loading={loading}
         delOpen={delOpen}
         setDelOpen={setDelOpen}
-        userName={DelName}
-        onDelete={() => handleDelete(DelData)}
+        userName={deleteNames}
+        onDelete={() => handleDelete(deleteIds)}
       />
     </Box>
   )
 }
 
-export default memo(CommunityIndex)
+export default memo(PropertyCompanyIndex)
