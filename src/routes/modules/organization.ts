@@ -1,4 +1,4 @@
-import ApartmentIcon from '@mui/icons-material/Apartment'
+import BadgeIcon from '@mui/icons-material/Badge'
 import { load } from 'routes/load'
 import { IRouter } from '../index'
 
@@ -8,7 +8,7 @@ const organization: IRouter[] = [
     element: null,
     meta: {
       title: '组织设置',
-      Icon: ApartmentIcon,
+      Icon: BadgeIcon,
       single: false
     },
     children: [
