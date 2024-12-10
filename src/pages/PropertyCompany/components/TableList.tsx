@@ -190,8 +190,13 @@ const TableList = ({
             onChange={handleRowsPerPageChange}
             size="small"
             sx={{
-              marginRight: 2,
+              marginRight: 3,
+              border: 'none',
+              boxShadow: 'none',
               '.MuiOutlinedInput-notchedOutline': {
+                border: 'none'
+              },
+              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
                 border: 'none'
               },
               '& .MuiSelect-select': {

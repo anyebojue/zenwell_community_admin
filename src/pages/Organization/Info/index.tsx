@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { TreeViewBaseItem } from '@mui/x-tree-view/models'
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
 import { Box, Button, Stack, Theme, Typography } from '@mui/material'
-import { Add, FileCopy } from '@mui/icons-material'
+import { Add, Delete, Edit, FileCopy } from '@mui/icons-material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import { buttonStyles } from 'components/DeleteModal'
@@ -48,8 +48,8 @@ const MUI_X_PRODUCTS: TreeViewBaseItem[] = [
 const treeViewStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
   borderRadius: '15px',
-  padding: '20px 15px',
-  width: '22%'
+  padding: '15px 15px',
+  width: '100%'
 })
 
 const contentBoxStyle = (theme: Theme) => ({
@@ -63,13 +63,55 @@ const InfoIndex = () => {
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
-      <Stack sx={{ mt: 2, mb: 1.5 }} direction="row" spacing={3}>
-        <RichTreeView
-          sx={treeViewStyle}
-          defaultExpandedItems={['0', '1', '2']}
-          items={MUI_X_PRODUCTS}
-        />
-        <Box sx={{ width: '100%' }}>
+      <Stack sx={{ mt: 2, mb: 1.5, width: '100%' }} direction="row" spacing={3}>
+        <Box sx={treeViewStyle}>
+          <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              startIcon={<Add />}
+              sx={{
+                ...buttonStyles('#2660ad', '#1d428a'),
+                fontSize: '0.85rem',
+                minWidth: '80px',
+                height: '32px'
+              }}
+            >
+              添加
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              startIcon={<Edit />}
+              sx={{
+                ...buttonStyles('#2660ad', '#1d428a'),
+                fontSize: '0.85rem',
+                minWidth: '80px',
+                height: '32px'
+              }}
+            >
+              修改
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              startIcon={<Delete />}
+              sx={{
+                ...buttonStyles('#2660ad', '#1d428a'),
+                fontSize: '0.85rem',
+                minWidth: '80px',
+                height: '32px'
+              }}
+            >
+              删除
+            </Button>
+          </Stack>
+          <RichTreeView defaultExpandedItems={['0', '1', '2']} items={MUI_X_PRODUCTS} />
+        </Box>
+        <Box sx={{ width: '450%' }}>
           <FormSearch />
           <Box sx={contentBoxStyle}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
