@@ -1,5 +1,5 @@
 import { Box, Chip, Tooltip, IconButton } from '@mui/material'
-import { Article, Delete } from '@mui/icons-material'
+import { Delete, Details } from '@mui/icons-material'
 import { memo, ReactNode, useCallback, useEffect } from 'react'
 import { CommunityReply } from 'api/model/communityModel'
 import message from 'components/Message'
@@ -23,7 +23,7 @@ const renderActionButtons = () => (
       {
         title: '详情',
         color: 'primary' as const,
-        icon: <Article fontSize="small" />,
+        icon: <Details fontSize="small" />,
         onClick: () => message.info('未实现')
       },
       {
