@@ -1,4 +1,4 @@
-import { memo, Fragment, useState, useCallback } from 'react'
+import { memo, Fragment, useState, useCallback, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import getAllRoutes, { IRouter } from 'routes'
 import {
@@ -30,6 +30,16 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
     [location]
   )
 
+  useEffect(() => {
+    const activeIndex = visibleRoutes.findIndex(
+      item =>
+        isActiveLink(item.path) || (item.children && isAnyChildActive(item.children, item.path))
+    )
+    if (openIndex === null) {
+      setOpenIndex(activeIndex !== -1 ? activeIndex : null)
+    }
+  }, [location.pathname, visibleRoutes, isActiveLink, isAnyChildActive, openIndex])
+
   const handleClick = useCallback((index: number, event: React.MouseEvent<HTMLElement>) => {
     setOpenIndex(prevIndex => (prevIndex === index ? null : index))
     setAnchorEl(event.currentTarget)
@@ -44,10 +54,15 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
     borderRight: isParentActive ? '2px solid rgb(22, 119, 255)' : ''
   })
 
+  const isItemActive = (item: IRouter) => {
+    const { path, children } = item
+    return isActiveLink(path) || (children && isAnyChildActive(children, path))
+  }
+
   const renderMenuItem = (item: IRouter, index: number) => {
     const { meta, path, children } = item
     const { Icon, title } = meta || {}
-    const isParentActive = isActiveLink(path) || (children && isAnyChildActive(children, path))
+    const isParentActive = isItemActive(item)
     const isExpanded = openIndex === index
     const menuItemStyle = getMenuItemStyle(isParentActive || false)
 
@@ -107,6 +122,7 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
       </Fragment>
     )
   }
+
   const renderChildMenuItem = (child: IRouter, childIndex: number) => {
     const { meta: childMeta, path: childPath } = child
     const { Icon: ChildIcon, title: childTitle } = childMeta || {}
