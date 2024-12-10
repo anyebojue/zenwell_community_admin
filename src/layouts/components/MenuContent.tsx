@@ -1,6 +1,6 @@
-import { memo, Fragment, useState, useCallback, ElementType } from 'react'
+import { memo, Fragment, useState, useCallback } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import getAllRoutes from 'routes'
+import getAllRoutes, { IRouter } from 'routes'
 import {
   List,
   ListItemButton,
@@ -13,22 +13,19 @@ import {
 } from '@mui/material'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 
-interface IRoute {
-  path: string
-  meta?: { title?: string; hidden?: boolean; single?: boolean; Icon?: ElementType }
-  children?: IRoute[]
-}
-
 const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
   const location = useLocation()
   const visibleRoutes = getAllRoutes.filter(item => !item.meta?.hidden)
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
-  const isActiveLink = useCallback((path: string) => location.pathname === path, [location])
+  const isActiveLink = useCallback(
+    (path: string) => location.pathname === path || location.pathname.startsWith(`${path}/`),
+    [location]
+  )
 
   const isAnyChildActive = useCallback(
-    (children: IRoute[], parentPath: string) =>
+    (children: IRouter[], parentPath: string) =>
       children.some(child => location.pathname.startsWith(`${parentPath}/${child.path}`)),
     [location]
   )
@@ -47,13 +44,12 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
     borderRight: isParentActive ? '2px solid rgb(22, 119, 255)' : ''
   })
 
-  const renderMenuItem = (item: IRoute, index: number) => {
+  const renderMenuItem = (item: IRouter, index: number) => {
     const { meta, path, children } = item
     const { Icon, title } = meta || {}
-    const isParentActive = isActiveLink(path)
-    const hasActiveChild = children && isAnyChildActive(children, path)
+    const isParentActive = isActiveLink(path) || (children && isAnyChildActive(children, path))
     const isExpanded = openIndex === index
-    const menuItemStyle = getMenuItemStyle(isParentActive)
+    const menuItemStyle = getMenuItemStyle(isParentActive || false)
 
     return (
       <Fragment key={index}>
@@ -72,7 +68,7 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
           <>
             <ListItemButton
               sx={menuItemStyle}
-              selected={isParentActive || hasActiveChild}
+              selected={isParentActive}
               onClick={event => handleClick(index, event)}
             >
               <Tooltip title={title || '未命名'}>
@@ -111,18 +107,21 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
       </Fragment>
     )
   }
-  const renderChildMenuItem = (child: IRoute, childIndex: number) => {
+  const renderChildMenuItem = (child: IRouter, childIndex: number) => {
     const { meta: childMeta, path: childPath } = child
     const { Icon: ChildIcon, title: childTitle } = childMeta || {}
+    const isChildActive = isActiveLink(childPath)
+
     return (
       <NavLink to={childPath} key={childIndex} style={{ color: 'initial' }}>
-        <ListItemButton selected={isActiveLink(childPath)} sx={{ pl: '48px' }}>
+        <ListItemButton selected={isChildActive} sx={{ pl: '48px' }}>
           <ListItemIcon>{ChildIcon && <ChildIcon />}</ListItemIcon>
           <ListItemText sx={{ ml: '15px', my: '7px' }} primary={childTitle || '未命名'} />
         </ListItemButton>
       </NavLink>
     )
   }
+
   return (
     <List
       sx={{ width: '100%', maxWidth: 370, paddingTop: 0 }}
