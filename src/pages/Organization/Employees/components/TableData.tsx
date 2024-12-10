@@ -1,5 +1,5 @@
 import { Box, Chip, Tooltip, IconButton } from '@mui/material'
-import { Delete, Details } from '@mui/icons-material'
+import { Delete, Article, Edit, RestartAlt } from '@mui/icons-material'
 import { memo, ReactNode, useCallback, useEffect } from 'react'
 import { CommunityReply } from 'api/model/communityModel'
 import message from 'components/Message'
@@ -21,16 +21,28 @@ const renderActionButtons = () => (
   <Box>
     {[
       {
+        title: '重置密码',
+        color: 'info' as const,
+        icon: <RestartAlt fontSize="small" />,
+        onClick: () => message.info('未实现')
+      },
+      {
         title: '详情',
         color: 'primary' as const,
-        icon: <Details fontSize="small" />,
+        icon: <Article fontSize="small" />,
+        onClick: () => message.info('未实现')
+      },
+      {
+        title: '修改',
+        color: 'secondary' as const,
+        icon: <Edit fontSize="small" />,
         onClick: () => message.info('未实现')
       },
       {
         title: '删除',
         color: 'error' as const,
         icon: <Delete fontSize="small" />,
-        onClick: () => message.info('同步操作未实现')
+        onClick: () => message.info('未实现')
       }
     ].map((action, index) => (
       <Tooltip title={action.title} key={index}>
