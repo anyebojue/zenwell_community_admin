@@ -22,9 +22,9 @@ export interface CommunityReply {
 }
 
 export interface CommunityParams {
-  id: string
-  name: string //小区名称
-  city_code: string //小区地区
+  id?: string
+  name?: string //小区名称
+  city_code?: string //小区地区
   address?: string //小区地址
   nearby_landmarks?: string //附近地标
   tel?: string //客服电话
