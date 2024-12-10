@@ -102,6 +102,19 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
             ) : (
               <>
                 <ListItemButton
+                  sx={
+                    isMenuOpen
+                      ? {
+                          pl: '25px',
+                          borderRight: isParentActive ? '2px solid rgb(22, 119, 255)' : ''
+                        }
+                      : {
+                          pl: '25px',
+                          margin: '7px',
+                          padding: '10px 0',
+                          borderRadius: '10px'
+                        }
+                  }
                   selected={isParentActive && !hasActiveChild}
                   onClick={() => handleClick(index)}
                 >
@@ -121,7 +134,7 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
                               selected={isActiveLink(childPath)}
                               sx={{
                                 borderRight: isParentActive ? '2px solid rgb(22, 119, 255)' : '',
-                                pl: 4
+                                pl: '48px'
                               }}
                             >
                               <ListItemIcon>{ChildIcon && <ChildIcon />}</ListItemIcon>

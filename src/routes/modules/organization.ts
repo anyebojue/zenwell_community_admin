@@ -8,7 +8,8 @@ const organization: IRouter[] = [
     element: null,
     meta: {
       title: '组织设置',
-      Icon: ApartmentIcon
+      Icon: ApartmentIcon,
+      single: false
     },
     children: [
       {
@@ -20,14 +21,14 @@ const organization: IRouter[] = [
       },
       {
         path: '/organization/employees',
-        element: load('Organization/PropertyCompany'),
+        element: load('Organization/Employees'),
         meta: {
           title: '员工信息'
         }
       },
       {
         path: '/organization/roles',
-        element: load('Organization/PropertyCompany'),
+        element: load('Organization/Roles'),
         meta: {
           title: '角色权限'
         }
