@@ -105,7 +105,31 @@ const message = {
   error: (content: string) => createMessage({ type: 'error', content }),
   warning: (content: string) => createMessage({ type: 'warning', content }),
   info: (content: string) => createMessage({ type: 'info', content }),
-  loading: (content: string) => createMessage({ type: 'loading', content })
+  loading: (content: string) => {
+    let timeoutId: NodeJS.Timeout | null = null
+    let started = false
+    let closeLoading: (() => void) | null = null
+
+    // 延时显示loading，2000ms后才显示
+    const delayTimeout = setTimeout(() => {
+      if (!started) {
+        started = true
+        closeLoading = createMessage({ type: 'loading', content })
+      }
+    }, 2000)
+
+    // 返回关闭函数
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId) // 清除延迟显示
+      }
+      clearTimeout(delayTimeout) // 清除2000ms的延迟
+
+      if (closeLoading) {
+        closeLoading() // 如果加载完成，关闭loading
+      }
+    }
+  }
 }
 
 export default message
