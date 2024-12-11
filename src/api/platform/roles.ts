@@ -2,10 +2,10 @@ import { request } from 'utils/request/axios'
 import { FindRolesReply, RolesParams } from '../model/platform/rolesModel'
 
 const ApiPrefix = {
-  FindRoles: '/group',
-  CreateRoles: '/group',
-  UpdateRoles: '/group',
-  DeleteRoles: '/group'
+  FindRoles: '/auth/user/group',
+  CreateRoles: '/auth/user/group',
+  UpdateRoles: '/auth/user/group',
+  DeleteRoles: '/auth/user/group'
 }
 
 /**

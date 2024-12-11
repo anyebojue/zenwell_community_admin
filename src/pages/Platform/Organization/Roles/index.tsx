@@ -1,30 +1,18 @@
 import { memo, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { find } from 'modules/platform/roles'
-import { RichTreeView, TreeViewBaseItem } from '@mui/x-tree-view'
+import { deleteByIds, find } from 'modules/platform/roles'
+import { RichTreeView } from '@mui/x-tree-view'
 import { Box, Button, Divider, Stack, Tab, Tabs, Theme, Typography } from '@mui/material'
 import { Add, Delete, Edit } from '@mui/icons-material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
-import { buttonStyles } from 'components/DeleteModal'
+import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
+import { RolesReply } from 'api/model/platform/rolesModel'
 import Feature from './components/Feature'
 import Accredit from './components/Accredit'
 import Relevance from './components/Relevance'
-
-const MUI_X_PRODUCTS: TreeViewBaseItem[] = [
-  { id: '0', label: '管理员角色' },
-  { id: '1', label: '客服经理' },
-  { id: '2', label: '保安经理' },
-  { id: '3', label: '小区经理' },
-  { id: '4', label: '公司领导' },
-  { id: '5', label: 'A物业公司' },
-  { id: '6', label: '物业公司管理员' },
-  { id: '7', label: '管理人员' },
-  { id: '8', label: '业主' },
-  { id: '9', label: '保洁公司' },
-  { id: '10', label: '财务' }
-]
+import FormDialog from './components/FormDialog'
 
 const treeViewStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -42,15 +30,40 @@ const contentBoxStyle = (theme: Theme) => ({
 
 const RolesIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.RolesSlice)
+  const { page, list } = useSelector((state: RootState) => state.RolesSlice)
   const [activeTabIndex, setActiveTabIndex] = useState(0)
+  const MUI_X_PRODUCTS = list.map(item => ({ id: item.id, label: item.name }))
+  const [openDialog, setOpenDialog] = useState(false)
+  const [dialogType, setDialogType] = useState('')
+  const [dialogValue, setDialogValue] = useState<RolesReply>({})
+  const [location, setLoading] = useState(false)
+  const [delOpen, setDelOpen] = useState(false)
+
+  const handleDelete = useCallback(
+    async (ids: string[]) => {
+      setLoading(true)
+      try {
+        await dispatch(deleteByIds(ids))
+        setDelOpen(false)
+        message.success('删除成功')
+        await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+        setLoading(false)
+      } catch (err) {
+        if (err instanceof Error) message.error(err.message)
+        setLoading(false)
+      }
+    },
+    [dispatch, page.num, page.size]
+  )
 
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
       await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+      setLoading(false)
     } catch {
       message.error('列表加载失败，请刷新页面或检查网络问题')
+      setLoading(false)
     } finally {
       closeLoading()
     }
@@ -60,7 +73,7 @@ const RolesIndex = () => {
     fetchData()
   }, [fetchData])
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setActiveTabIndex(newValue)
   }
 
@@ -81,6 +94,10 @@ const RolesIndex = () => {
                 minWidth: '80px',
                 height: '32px'
               }}
+              onClick={() => {
+                setOpenDialog(true)
+                setDialogType('add')
+              }}
             >
               添加
             </Button>
@@ -94,6 +111,10 @@ const RolesIndex = () => {
                 fontSize: '0.85rem',
                 minWidth: '80px',
                 height: '32px'
+              }}
+              onClick={() => {
+                setOpenDialog(true)
+                setDialogType('edit')
               }}
             >
               修改
@@ -109,11 +130,20 @@ const RolesIndex = () => {
                 minWidth: '80px',
                 height: '32px'
               }}
+              onClick={() => setDelOpen(true)}
             >
               删除
             </Button>
           </Stack>
-          <RichTreeView items={MUI_X_PRODUCTS} />
+          <RichTreeView
+            items={MUI_X_PRODUCTS}
+            onSelectedItemsChange={(_, itemId) => {
+              const data = list.filter(item => item.id === itemId)
+              if (data.length > 0) {
+                setDialogValue(data[0])
+              }
+            }}
+          />
         </Box>
         <Box sx={{ width: '450%' }}>
           <Box sx={contentBoxStyle}>
@@ -150,6 +180,19 @@ const RolesIndex = () => {
         </Box>
       </Stack>
       <Copyright />
+      <FormDialog
+        dialogValue={dialogValue}
+        openDialog={openDialog}
+        setOpenDialog={setOpenDialog}
+        dialogType={dialogType}
+      />
+      <DeleteModal
+        loading={location}
+        delOpen={delOpen}
+        setDelOpen={setDelOpen}
+        userName={[dialogValue.name as string]}
+        onDelete={() => handleDelete([dialogValue.id as string])}
+      />
     </Box>
   )
 }
