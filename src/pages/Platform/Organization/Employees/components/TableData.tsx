@@ -1,21 +1,11 @@
 import { memo, ReactNode, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CommunityReply } from 'api/model/platform/communityModel'
-import { find } from 'modules/platform/community'
-import { Box, Chip, Tooltip, IconButton } from '@mui/material'
+import { EmployeesReply } from 'api/model/platform/employeesModel'
+import { find } from 'modules/platform/employees'
+import { Box, Tooltip, IconButton } from '@mui/material'
 import { Delete, Article, Edit, RestartAlt } from '@mui/icons-material'
 import message from 'components/Message'
 import TableList from './TableList'
-
-const renderStatusChip = (value: string | number | undefined) => {
-  const statusMap: Record<string, { label: string; color: 'success' | 'default' }> = {
-    '': { label: '审核成功', color: 'success' },
-    '0': { label: '未审核', color: 'default' }
-  }
-
-  const status = statusMap[String(value) || ''] || { label: '未知状态', color: 'default' }
-  return <Chip label={status.label} color={status.color} size="small" />
-}
 
 const renderActionButtons = () => (
   <Box>
@@ -63,20 +53,17 @@ export interface Column<T> {
 
 const TableData: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.CommunitySlice)
+  const { page, list } = useSelector((state: RootState) => state.EmployeesSlice)
 
-  const columns: Column<CommunityReply>[] = [
-    { key: 'id', headerName: '小区ID', align: 'center' },
-    { key: 'name', headerName: '小区名称', align: 'center' },
-    { key: 'nearbyLandmarks', headerName: '附近地标', align: 'center' },
-    { key: 'cityCode', headerName: '城市编码', align: 'center' },
-    { key: 'bId', headerName: '社区编码', align: 'center' },
-    {
-      key: 'state',
-      headerName: '状态',
-      align: 'center',
-      renderCell: (value: string | number | undefined) => renderStatusChip(value)
-    },
+  const columns: Column<EmployeesReply>[] = [
+    { key: 'id', headerName: '员工编号', align: 'center' },
+    { key: 'name', headerName: '名称', align: 'center' },
+    { key: 'nearbyLandmarks', headerName: '手机号', align: 'center' },
+    { key: 'cityCode', headerName: '关联组织', align: 'center' },
+    { key: 'bId', headerName: '岗位', align: 'center' },
+    { key: 'bId', headerName: '身份证', align: 'center' },
+    { key: 'bId', headerName: '地址', align: 'center' },
+    { key: 'bId', headerName: '性别', align: 'center' },
     {
       key: 'operate',
       headerName: '操作',

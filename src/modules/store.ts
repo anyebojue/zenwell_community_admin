@@ -3,13 +3,15 @@ import info from './global'
 import CommunitySlice from './platform/community'
 import PropertyCompanySlice from './platform/propertyCompany'
 import RolesSlice from './platform/roles'
+import EmployeesSlice from './platform/employees'
 
 const store = configureStore({
   reducer: {
     info,
     CommunitySlice,
     PropertyCompanySlice,
-    RolesSlice
+    RolesSlice,
+    EmployeesSlice
   },
   // 关闭序列化检测
   middleware: getDefaultMiddleware =>

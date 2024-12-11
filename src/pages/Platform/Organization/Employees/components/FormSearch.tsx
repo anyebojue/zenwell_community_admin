@@ -1,7 +1,7 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CommunityParams } from 'api/model/platform/communityModel'
-import { find } from 'modules/platform/community'
+import { EmployeesParams } from 'api/model/platform/employeesModel'
+import { find } from 'modules/platform/employees'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -25,15 +25,15 @@ const textFieldStyles = {
 
 const FormSearch: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.CommunitySlice)
-  const [searchParams, setSearchParams] = useState<CommunityParams>({
+  const { page } = useSelector((state: RootState) => state.EmployeesSlice)
+  const [searchParams, setSearchParams] = useState<EmployeesParams>({
     id: '',
     name: '',
     tel: ''
   })
 
   const handleInputChange =
-    (field: keyof CommunityParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof EmployeesParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -41,7 +41,7 @@ const FormSearch: React.FC = () => {
     }
 
   const fetchData = useCallback(
-    async (params: CommunityParams & PaginationParams) => {
+    async (params: EmployeesParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         await dispatch(find({ 'page.num': page.num, 'page.size': page.size, ...params }))

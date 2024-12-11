@@ -1,5 +1,5 @@
 import { memo, useState, useMemo, ChangeEvent } from 'react'
-import { CommunityReply } from 'api/model/platform/communityModel'
+import { EmployeesReply } from 'api/model/platform/employeesModel'
 import {
   Pagination,
   Table,
@@ -33,8 +33,8 @@ const TableList = ({
   rows,
   columns
 }: {
-  rows: CommunityReply[]
-  columns: Column<CommunityReply>[]
+  rows: EmployeesReply[]
+  columns: Column<EmployeesReply>[]
 }) => {
   const [rowsPerPage, setRowsPerPage] = useState('20')
   const { page, paginatedRows, setPage, handlePageChange } = usePagination(
@@ -118,7 +118,7 @@ const TableList = ({
                     />
                   </TableCell>
                   {columns.map(column => {
-                    const value = row[column.key as keyof CommunityReply]
+                    const value = row[column.key as keyof EmployeesReply]
                     return (
                       <TableCell
                         key={column.key}

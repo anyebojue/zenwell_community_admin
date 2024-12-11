@@ -172,7 +172,7 @@ const RolesIndex = () => {
               <Tab sx={{ pl: 2, pr: 2 }} label="员工关联" value={2} />
             </Tabs>
             <Box sx={{ mt: 2 }}>
-              {activeTabIndex === 0 && <Feature />}
+              {activeTabIndex === 0 && <Feature dialogValue={dialogValue} />}
               {activeTabIndex === 1 && <Accredit />}
               {activeTabIndex === 2 && <Relevance />}
             </Box>

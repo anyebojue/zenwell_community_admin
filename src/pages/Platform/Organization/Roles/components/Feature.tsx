@@ -1,8 +1,14 @@
 import { memo } from 'react'
 import { Box } from '@mui/material'
 import { RichTreeView, TreeViewBaseItem } from '@mui/x-tree-view'
+import { RolesReply } from 'api/model/platform/rolesModel'
 
-const Feature = () => {
+interface FeatureProps {
+  dialogValue: RolesReply
+}
+
+const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
+  console.log(dialogValue)
   const MUI_X_PRODUCTS: TreeViewBaseItem[] = [
     {
       id: '0',
