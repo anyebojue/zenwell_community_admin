@@ -84,19 +84,7 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
           <Stack sx={{ width: '100%', height: '100%' }}>
             <Header isMenuOpen={isMenuOpen} onToggleMenu={() => setIsMenuOpen(prev => !prev)} />
             <Tabs
-              sx={{
-                mt: '70px',
-                border: 'none',
-                boxShadow: 'none',
-                '& .MuiTab-root': {
-                  border: 'none',
-                  boxShadow: 'none'
-                },
-                '& .MuiTab-root:hover': {
-                  border: 'none',
-                  boxShadow: 'none'
-                }
-              }}
+              sx={{ mt: '70px' }}
               value={activeTabIndex}
               onChange={handleTabChange}
               textColor="secondary"

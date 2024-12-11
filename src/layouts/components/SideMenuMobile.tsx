@@ -46,7 +46,7 @@ export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobilePro
         </Stack>
         <Divider />
         <Stack sx={{ flexGrow: 1 }}>
-          <MenuContent />
+          <MenuContent isMenuOpen={true} />
           <Divider />
         </Stack>
         <Stack sx={{ p: 2 }}>

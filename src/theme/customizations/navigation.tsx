@@ -192,7 +192,8 @@ export const navigationCustomizations: Components<Theme> = {
     styleOverrides: {
       root: { minHeight: 'fit-content' }, // 最小高度适配内容
       indicator: ({ theme }) => ({
-        backgroundColor: theme.palette.grey[800], // 指示器颜色
+        // backgroundColor: theme.palette.grey[800], // 指示器颜色
+        backgroundColor: '#2660ad', // 指示器颜色
         ...theme.applyStyles('dark', {
           backgroundColor: theme.palette.grey[200] // 深色模式指示器颜色
         })
@@ -203,6 +204,10 @@ export const navigationCustomizations: Components<Theme> = {
   MuiTab: {
     styleOverrides: {
       root: ({ theme }) => ({
+        border: 'none',
+        boxShadow: 'none',
+        fontWeight: 'normal', // 默认字体正常，不加粗
+        transition: 'color 0.3s ease-in-out', // 为颜色变化添加过渡效果
         padding: '6px 8px', // 内边距
         marginBottom: '8px', // 下间距
         textTransform: 'none', // 禁用大写转换
@@ -210,15 +215,16 @@ export const navigationCustomizations: Components<Theme> = {
         minHeight: 'fit-content', // 最小高度适配内容
         color: theme.palette.text.secondary, // 默认文本颜色
         borderRadius: theme.shape.borderRadius, // 圆角
-        border: '1px solid', // 边框
         borderColor: 'transparent', // 默认透明
         '&:hover': {
+          border: 'none',
+          boxShadow: 'none',
           color: theme.palette.text.primary, // 悬浮时文本颜色
           backgroundColor: theme.palette.action.hover // 悬浮时背景色
         },
         [`&.${tabClasses.selected}`]: {
           fontWeight: 700, // 选中时字体加粗
-          color: theme.palette.text.primary, // 文本颜色
+          color: '#1d428a', // 文本颜色
           borderColor: theme.palette.divider // 边框颜色
         },
         ...theme.applyStyles('dark', {
