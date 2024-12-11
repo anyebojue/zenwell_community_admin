@@ -6,6 +6,10 @@ const ApiPrefix = {
   UploadImage: '/file/uploads'
 }
 
+interface UploadImageResponse {
+  url: string
+}
+
 /**
  * 获取用户信息
  * @returns
@@ -27,7 +31,7 @@ export const uploadImage = (file: File): Promise<string> => {
   const formData = new FormData()
   formData.append('file', file)
   return request
-    .post({
+    .post<UploadImageResponse>({
       url: ApiPrefix.UploadImage,
       data: formData,
       headers: {

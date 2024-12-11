@@ -1,13 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit'
 import info from './global'
-import CommunitySlice from './community'
-import PropertyCompanySlice from './propertyCompany'
+import CommunitySlice from './platform/community'
+import PropertyCompanySlice from './platform/propertyCompany'
+import RolesSlice from './platform/roles'
 
 const store = configureStore({
   reducer: {
     info,
     CommunitySlice,
-    PropertyCompanySlice
+    PropertyCompanySlice,
+    RolesSlice
   },
   // 关闭序列化检测
   middleware: getDefaultMiddleware =>

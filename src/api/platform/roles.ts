@@ -1,0 +1,64 @@
+import { request } from 'utils/request/axios'
+import { FindRolesReply, RolesParams } from '../model/platform/rolesModel'
+
+const ApiPrefix = {
+  FindRoles: '/group',
+  CreateRoles: '/group',
+  UpdateRoles: '/group',
+  DeleteRoles: '/group'
+}
+
+/**
+ * 查询接口
+ * @param params User
+ * @returns
+ */
+export const FindRoles = (params: RolesParams & PaginationParams) => {
+  return request
+    .get<FindRolesReply>({
+      url: ApiPrefix.FindRoles,
+      params
+    })
+    .then(res => res.data)
+}
+
+/**
+ * 新增接口
+ * @param data AcivityParams
+ * @returns
+ */
+export const CreateRoles = (data: RolesParams) => {
+  return request
+    .post({
+      url: ApiPrefix.CreateRoles,
+      data
+    })
+    .then(res => res.data)
+}
+
+/**
+ * 修改接口
+ * @param data AcivityParams
+ * @returns
+ */
+export const UpdateRoles = (data: RolesParams) => {
+  return request
+    .patch({
+      url: `${ApiPrefix.UpdateRoles}/${data.id}`,
+      data
+    })
+    .then(res => res.data)
+}
+
+/**
+ * 删除接口
+ * @param ids
+ * @returns
+ */
+export const DeleteRoles = (ids: string[]) => {
+  return request
+    .delete({
+      url: `${ApiPrefix.DeleteRoles}/${ids.join(',')}`
+    })
+    .then(res => res.data)
+}

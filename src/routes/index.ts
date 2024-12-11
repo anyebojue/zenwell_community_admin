@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react'
-import control from './modules/control'
-import community from './modules/community'
-import propertyCompany from './modules/propertyCompany'
 import { load, navigateIndex } from './load'
-import organization from './modules/organization'
+import control from './modules/platform/control'
+import community from './modules/platform/community'
+import propertyCompany from './modules/platform/propertyCompany'
+import organization from './modules/platform/organization'
 
 export interface IRouter {
   /** 链接路径 */

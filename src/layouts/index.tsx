@@ -64,13 +64,14 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
     // 检查权限
     if (info.id !== '' && !isLoginPage) {
       const paths = permissionMenuPaths(info.permission.menus)
-      if (paths.length === 0) {
-        navigate('/login')
-        return
-      }
-      if (!paths.includes(location.pathname)) {
-        navigate(paths[0])
-      }
+      console.log(paths)
+      // if (paths.length === 0) {
+      //   navigate('/login')
+      //   return
+      // }
+      // if (!paths.includes(location.pathname)) {
+      //   navigate(paths[0])
+      // }
     }
   }, [dispatch, navigate, info, isLoginPage, location.pathname])
 

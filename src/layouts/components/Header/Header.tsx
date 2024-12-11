@@ -1,8 +1,8 @@
 import { memo } from 'react'
 import { Stack, drawerClasses, Avatar, Typography, IconButton } from '@mui/material'
+import { Menu, Translate } from '@mui/icons-material'
 import ColorModeIconDropdown from 'theme/ColorModeIconDropdown'
 import avatar from 'assets/global/windows.jpg'
-import { Menu, Translate } from '@mui/icons-material'
 import Search from './Search'
 import OptionsMenu from './OptionsMenu'
 

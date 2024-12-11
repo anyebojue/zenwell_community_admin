@@ -1,8 +1,8 @@
 import { memo } from 'react'
+import { useLocation } from 'react-router-dom'
 import getAllRoutes, { IRouter } from 'routes'
 import { styled, Typography, Breadcrumbs, breadcrumbsClasses } from '@mui/material'
 import { NavigateNextRounded } from '@mui/icons-material'
-import { useLocation } from 'react-router-dom'
 
 const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
   margin: theme.spacing(1, 0),

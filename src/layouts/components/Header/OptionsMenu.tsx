@@ -1,4 +1,5 @@
 import { Fragment, useState, MouseEvent, memo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   styled,
   dividerClasses,
@@ -11,7 +12,6 @@ import {
 } from '@mui/material'
 import MuiMenuItem from '@mui/material/MenuItem'
 import { LogoutRounded, Settings } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
 import MenuButton from '../MenuButton'
 
 const MenuItem = styled(MuiMenuItem)({

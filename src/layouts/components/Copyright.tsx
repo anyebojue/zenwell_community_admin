@@ -1,6 +1,6 @@
+import { memo } from 'react'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
-import { memo } from 'react'
 
 const Copyright = () => {
   return (

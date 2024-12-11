@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { Login } from 'api/login'
 import { LoginParams } from 'api/model/loginModel'
+import { getUserInfo } from 'modules/global'
 import {
   styled,
   Box,
@@ -19,7 +20,6 @@ import zenwellLogo from 'assets/global/zenwell-logo.png'
 import zenwell from 'assets/global/zenwell.png'
 import Copyright from 'layouts/components/Copyright'
 import message from 'components/Message'
-import { getUserInfo } from 'modules/global'
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
