@@ -153,6 +153,7 @@ const InfoIndex = () => {
               const item = findItemById(list, selectedItemId)
               if (item) setDialogValue(item)
             }}
+            expansionTrigger="iconContainer" // 只有点击左边的按钮才展开
           />
         </Box>
         <Box sx={{ width: '450%' }}>
