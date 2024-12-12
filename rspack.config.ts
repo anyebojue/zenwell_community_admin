@@ -35,11 +35,11 @@ export default defineConfig({
       utils: path.resolve(__dirname, './src/utils')
     }
   },
-  // performance: {
-  //   hints: 'warning',
-  //   maxAssetSize: 600000, // 单个资源最大限制 (600 KiB)
-  //   maxEntrypointSize: 600000 // 入口点最大限制 (600 KiB)
-  // },
+  performance: {
+    hints: 'warning',
+    maxAssetSize: 600000, // 单个资源最大限制 (600 KiB)
+    maxEntrypointSize: 600000 // 入口点最大限制 (600 KiB)
+  },
   module: {
     rules: [
       {
@@ -80,7 +80,23 @@ export default defineConfig({
   ].filter(Boolean),
   optimization: {
     splitChunks: {
-      chunks: 'all'
+      chunks: 'all',
+      minSize: 20000,
+      maxSize: 500000,
+      automaticNameDelimiter: '-',
+      cacheGroups: {
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true
+        },
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+          priority: -10
+        }
+      }
     }
   },
   experiments: {
