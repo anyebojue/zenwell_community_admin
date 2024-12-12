@@ -68,8 +68,8 @@ const FormSearch: React.FC = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.id}
-            onChange={handleInputChange('id')}
+            value={searchParams.name}
+            onChange={handleInputChange('name')}
           />
         </FormControl>
         <Stack direction="row" spacing={1} component="form" sx={{ mb: 2 }}>

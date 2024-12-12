@@ -13,8 +13,8 @@ const organization: IRouter[] = [
     },
     children: [
       {
-        path: '/organization/info',
-        element: load('Platform/Organization/Info'),
+        path: '/organization/organization-info',
+        element: load('Platform/Organization/OrganizationInfo'),
         meta: {
           title: '组织信息'
         }
