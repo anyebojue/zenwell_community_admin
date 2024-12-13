@@ -74,12 +74,33 @@ export default defineConfig({
   },
   plugins: [
     new rspack.HtmlRspackPlugin({
-      template: './index.html',
-      inject: 'body'
+      template: './index.html'
     }),
     isDev ? new RefreshPlugin() : null
   ].filter(Boolean),
-
+  optimization: {
+    minimize: true, // 启用代码压缩
+    usedExports: true, // 启用树摇
+    splitChunks: {
+      chunks: 'all',
+      minSize: 30000, // 最小拆分大小
+      maxSize: 500000, // 单个文件最大限制
+      minChunks: 1, // 至少引用一次时拆分
+      automaticNameDelimiter: '-',
+      cacheGroups: {
+        react: {
+          test: /[\\/]node_modules[\\/]react|react-dom/,
+          name: 'react',
+          chunks: 'all'
+        },
+        mui: {
+          test: /[\\/]node_modules[\\/]@mui[\\/]/,
+          name: 'mui',
+          chunks: 'all'
+        }
+      }
+    }
+  },
   experiments: {
     css: true
   },
@@ -92,7 +113,6 @@ export default defineConfig({
         target: 'https://community-admin.zenwell.cn/',
         changeOrigin: true
       }
-    ],
-    compress: true // 启用gzip压缩
+    ]
   }
 })
