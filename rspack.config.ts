@@ -74,8 +74,7 @@ export default defineConfig({
   },
   plugins: [
     new rspack.HtmlRspackPlugin({
-      template: './index.html',
-      inject: 'body'
+      template: './index.html'
     }),
     isDev ? new RefreshPlugin() : null
   ].filter(Boolean),
@@ -86,20 +85,7 @@ export default defineConfig({
       chunks: 'all',
       minSize: 30000, // 最小拆分大小
       maxSize: 500000, // 单个文件最大限制
-      minChunks: 1, // 至少引用一次时拆分
-      automaticNameDelimiter: '-',
-      cacheGroups: {
-        react: {
-          test: /[\\/]node_modules[\\/]react|react-dom/,
-          name: 'react',
-          chunks: 'all'
-        },
-        mui: {
-          test: /[\\/]node_modules[\\/]@mui[\\/]/,
-          name: 'mui',
-          chunks: 'all'
-        }
-      }
+      minChunks: 1 // 至少引用一次时拆分
     }
   },
   experiments: {
