@@ -16,6 +16,11 @@ export default defineConfig({
   output: {
     publicPath: '/'
   },
+  externals: {
+    react: 'React',
+    'react-dom': 'ReactDOM',
+    '@mui/material': 'MaterialUI' // 通过CDN加载mui
+  },
   resolve: {
     extensions: ['...', '.ts', '.tsx', '.jsx'],
     alias: {
@@ -36,9 +41,9 @@ export default defineConfig({
     }
   },
   performance: {
-    hints: 'warning',
-    maxAssetSize: 600000, // 单个资源最大限制 (600 KiB)
-    maxEntrypointSize: 600000 // 入口点最大限制 (600 KiB)
+    hints: isDev ? false : 'warning', // 在开发模式下禁用警告
+    maxAssetSize: 1000000, // 增加最大资源大小限制 (1000 KiB)
+    maxEntrypointSize: 1000000 // 增加最大入口点资源大小限制 (1000 KiB)
   },
   module: {
     rules: [
@@ -74,27 +79,30 @@ export default defineConfig({
   },
   plugins: [
     new rspack.HtmlRspackPlugin({
-      template: './index.html'
+      template: './index.html',
+      inject: 'body'
     }),
     isDev ? new RefreshPlugin() : null
   ].filter(Boolean),
   optimization: {
+    minimize: true, // 启用代码压缩
+    usedExports: true, // 启用树摇
     splitChunks: {
       chunks: 'all',
-      minSize: 20000,
-      maxSize: 500000,
+      minSize: 30000, // 最小拆分大小
+      maxSize: 500000, // 单个文件最大限制
+      minChunks: 1, // 至少引用一次时拆分
       automaticNameDelimiter: '-',
       cacheGroups: {
-        default: {
-          minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true
+        react: {
+          test: /[\\/]node_modules[\\/]react|react-dom/,
+          name: 'react',
+          chunks: 'all'
         },
-        vendor: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'all',
-          priority: -10
+        mui: {
+          test: /[\\/]node_modules[\\/]@mui[\\/]/,
+          name: 'mui',
+          chunks: 'all'
         }
       }
     }
@@ -111,6 +119,7 @@ export default defineConfig({
         target: 'https://community-admin.zenwell.cn/',
         changeOrigin: true
       }
-    ]
+    ],
+    compress: true // 启用gzip压缩
   }
 })
