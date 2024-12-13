@@ -5,10 +5,10 @@ import {
 } from '../model/platform/propertyCompanyModel'
 
 const ApiPrefix = {
-  FindPropertyCompany: '/store',
-  CreatePropertyCompany: '/store',
-  UpdatePropertyCompany: '/store',
-  DeletePropertyCompany: '/store'
+  FindPropertyCompany: '/auth/store',
+  CreatePropertyCompany: '/auth/store',
+  UpdatePropertyCompany: '/auth/store',
+  DeletePropertyCompany: '/auth/store'
 }
 
 /**

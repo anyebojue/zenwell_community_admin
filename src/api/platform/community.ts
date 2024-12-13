@@ -2,10 +2,10 @@ import { request } from 'utils/request/axios'
 import { FindCommunityReply, CommunityParams } from '../model/platform/communityModel'
 
 const ApiPrefix = {
-  FindCommunity: '/community',
-  CreateCommunity: '/community',
-  UpdateCommunity: '/community',
-  DeleteCommunity: '/community'
+  FindCommunity: '/auth/community',
+  CreateCommunity: '/auth/community',
+  UpdateCommunity: '/auth/community',
+  DeleteCommunity: '/auth/community'
 }
 
 /**

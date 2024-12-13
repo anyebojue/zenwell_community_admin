@@ -23,7 +23,11 @@ const textFieldStyles = {
   }
 }
 
-const FormSearch: React.FC = () => {
+interface FormSearchProps {
+  dialogValue: OrgUserReply
+}
+
+const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.OrganizationInfoSlice)
   const [searchParams, setSearchParams] = useState<OrgUserReply>({
@@ -42,14 +46,21 @@ const FormSearch: React.FC = () => {
     async (params: OrgUserReply & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
-        await dispatch(findOrgUser({ 'page.num': page.num, 'page.size': page.size, ...params }))
+        await dispatch(
+          findOrgUser({
+            'page.num': page.num,
+            'page.size': page.size,
+            ...params,
+            orgId: dialogValue.id || '9027438861059358721'
+          })
+        )
       } catch {
         message.error('列表加载失败，请刷新页面或检查网络问题')
       } finally {
         closeLoading()
       }
     },
-    [dispatch, page.num, page.size]
+    [dispatch, page.num, page.size, dialogValue.id]
   )
 
   const handleSearch = () => {
@@ -88,9 +99,10 @@ const FormSearch: React.FC = () => {
             startIcon={<History />}
             sx={buttonStyles('darkgray', '#696969')}
             onClick={() => {
-              setSearchParams({ name: '' })
+              setSearchParams({ name: '', orgId: '9027438861059358721' })
               fetchData({
                 name: '',
+                orgId: '9027438861059358721',
                 'page.num': page.num,
                 'page.size': page.size
               })

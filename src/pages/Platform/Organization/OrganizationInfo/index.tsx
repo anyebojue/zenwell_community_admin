@@ -157,7 +157,7 @@ const InfoIndex = () => {
           />
         </Box>
         <Box sx={{ width: '450%' }}>
-          <FormSearch />
+          <FormSearch dialogValue={dialogValue} />
           <Box sx={contentBoxStyle}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Typography variant="h6">WhiteFox物业 员工</Typography>
