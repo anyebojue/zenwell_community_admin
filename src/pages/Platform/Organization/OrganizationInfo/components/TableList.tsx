@@ -1,4 +1,4 @@
-import { memo, useState, useMemo, ChangeEvent } from 'react'
+import { memo, useState, useMemo, ChangeEvent, ReactNode } from 'react'
 import {
   Pagination,
   Table,
@@ -16,7 +16,8 @@ import {
   Checkbox,
   Theme
 } from '@mui/material'
-import { CommunityReply } from 'api/model/platform/communityModel'
+import { OrgUserReply } from 'api/model/platform/organizationInfoModel'
+import { EmployeesReply } from 'api/model/platform/employeesModel'
 import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {
@@ -29,13 +30,7 @@ const usePagination = <T,>(data: T[], rowsPerPage: number) => {
   return { page, paginatedRows, setPage, handlePageChange }
 }
 
-const TableList = ({
-  rows,
-  columns
-}: {
-  rows: CommunityReply[]
-  columns: Column<CommunityReply>[]
-}) => {
+const TableList = ({ rows, columns }: { rows: OrgUserReply[]; columns: Column[] }) => {
   const [rowsPerPage, setRowsPerPage] = useState('20')
   const { page, paginatedRows, setPage, handlePageChange } = usePagination(
     rows,
@@ -104,35 +99,37 @@ const TableList = ({
           </TableHead>
           <TableBody>
             {paginatedRows.length > 0 ? (
-              paginatedRows.map(row => (
-                <TableRow key={row.id} sx={tableRowStyle}>
-                  <TableCell
-                    padding="checkbox"
-                    sx={{
-                      borderBottom: theme => `1px solid ${theme.palette.divider}`
-                    }}
-                  >
-                    <Checkbox
-                      color="primary"
-                      inputProps={{ 'aria-label': `select row ${row.id}` }}
-                    />
-                  </TableCell>
-                  {columns.map(column => {
-                    const value = row[column.key as keyof CommunityReply]
-                    return (
-                      <TableCell
-                        key={column.key}
-                        align={column.align}
-                        sx={{
-                          borderBottom: theme => `1px solid ${theme.palette.divider}`
-                        }}
-                      >
-                        {column.renderCell ? column.renderCell(value) : value}
-                      </TableCell>
-                    )
-                  })}
-                </TableRow>
-              ))
+              paginatedRows
+                .flatMap(item => item.users || [])
+                .map(row => (
+                  <TableRow key={row.id} sx={tableRowStyle}>
+                    <TableCell
+                      padding="checkbox"
+                      sx={{
+                        borderBottom: theme => `1px solid ${theme.palette.divider}`
+                      }}
+                    >
+                      <Checkbox
+                        color="primary"
+                        inputProps={{ 'aria-label': `select row ${row.id}` }}
+                      />
+                    </TableCell>
+                    {columns.map(column => {
+                      const value = row[column.key as keyof EmployeesReply] as ReactNode
+                      return (
+                        <TableCell
+                          key={column.key}
+                          align={column.align}
+                          sx={{
+                            borderBottom: theme => `1px solid ${theme.palette.divider}`
+                          }}
+                        >
+                          {column.renderCell ? column.renderCell(value) : value}
+                        </TableCell>
+                      )
+                    })}
+                  </TableRow>
+                ))
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length + 1} align="center">

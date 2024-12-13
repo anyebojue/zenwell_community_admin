@@ -1,7 +1,7 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CommunityParams } from 'api/model/platform/communityModel'
-import { find } from 'modules/platform/community'
+import { OrgUserReply } from 'api/model/platform/organizationInfoModel'
+import { findOrgUser } from 'modules/platform/organizationInfo'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -25,15 +25,13 @@ const textFieldStyles = {
 
 const FormSearch: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.CommunitySlice)
-  const [searchParams, setSearchParams] = useState<CommunityParams>({
-    id: '',
-    name: '',
-    city_code: ''
+  const { page } = useSelector((state: RootState) => state.OrganizationInfoSlice)
+  const [searchParams, setSearchParams] = useState<OrgUserReply>({
+    name: ''
   })
 
   const handleInputChange =
-    (field: keyof CommunityParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof OrgUserReply) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -41,10 +39,10 @@ const FormSearch: React.FC = () => {
     }
 
   const fetchData = useCallback(
-    async (params: CommunityParams & PaginationParams) => {
+    async (params: OrgUserReply & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
-        await dispatch(find({ 'page.num': page.num, 'page.size': page.size, ...params }))
+        await dispatch(findOrgUser({ 'page.num': page.num, 'page.size': page.size, ...params }))
       } catch {
         message.error('列表加载失败，请刷新页面或检查网络问题')
       } finally {
@@ -90,11 +88,9 @@ const FormSearch: React.FC = () => {
             startIcon={<History />}
             sx={buttonStyles('darkgray', '#696969')}
             onClick={() => {
-              setSearchParams({ id: '', name: '', city_code: '' })
+              setSearchParams({ name: '' })
               fetchData({
-                id: '',
                 name: '',
-                city_code: '',
                 'page.num': page.num,
                 'page.size': page.size
               })

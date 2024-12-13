@@ -1,4 +1,16 @@
 import { Page } from '../pageModel'
+import { EmployeesReply } from './employeesModel'
+
+export interface OrgUserReply {
+  id?: string
+  createdAt?: string
+  updatedAt?: string
+  name?: string // 员工姓名
+  orgId?: string // 组织ID
+  userId?: string // 员工ID
+  orgs?: []
+  users?: EmployeesReply // 员工信息
+}
 
 export interface OrganizationInfoReply {
   id?: string
@@ -19,6 +31,11 @@ export interface OrganizationInfoParams {
   description?: string // 组织描述
   pId?: string // 上级ID 0是顶级ID
   plate?: string // 平台  0 物业 1平台 2开发
+}
+
+export interface FindOrgUserReply {
+  page: Page
+  list: Array<OrgUserReply>
 }
 
 export interface FindOrganizationInfoReply {

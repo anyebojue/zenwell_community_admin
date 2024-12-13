@@ -182,7 +182,7 @@ const InfoIndex = () => {
                 </Button>
               </Stack>
             </Box>
-            <TableData />
+            <TableData dialogValue={dialogValue} />
           </Box>
         </Box>
       </Stack>

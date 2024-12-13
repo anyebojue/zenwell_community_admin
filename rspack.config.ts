@@ -16,11 +16,6 @@ export default defineConfig({
   output: {
     publicPath: '/'
   },
-  externals: {
-    react: 'React',
-    'react-dom': 'ReactDOM',
-    '@mui/material': 'MaterialUI' // 通过CDN加载mui
-  },
   resolve: {
     extensions: ['...', '.ts', '.tsx', '.jsx'],
     alias: {

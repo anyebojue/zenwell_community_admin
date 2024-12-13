@@ -2,13 +2,15 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
 import {
   OrganizationInfoParams,
-  OrganizationInfoReply
+  OrganizationInfoReply,
+  OrgUserReply
 } from 'api/model/platform/organizationInfoModel'
 import {
   FindOrganizationInfo,
   CreateOrganizationInfo,
   UpdateOrganizationInfo,
-  DeleteOrganizationInfo
+  DeleteOrganizationInfo,
+  FindOrgUser
 } from 'api/platform/organizationInfo'
 
 const namespace = 'OrganizationInfo'
@@ -21,6 +23,7 @@ const PAGE = {
 interface IInitialState {
   page: Page
   list: OrganizationInfoReply[]
+  orgUserList: OrgUserReply[]
 }
 
 const initialState: IInitialState = {
@@ -30,8 +33,17 @@ const initialState: IInitialState = {
     total: '0',
     disable: false
   },
-  list: []
+  list: [],
+  orgUserList: []
 }
+
+export const findOrgUser = createAsyncThunk(
+  `OrgUserReply/find`,
+  async (params: OrgUserReply & PaginationParams) => {
+    const res = await FindOrgUser(params)
+    return res
+  }
+)
 
 export const find = createAsyncThunk(
   `${namespace}/find`,
@@ -70,8 +82,11 @@ export const OrganizationInfoSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(find.fulfilled, (state, action) => {
-      state.page = action.payload.page
       state.list = action.payload.list
+    })
+    builder.addCase(findOrgUser.fulfilled, (state, action) => {
+      state.page = action.payload.page
+      state.orgUserList = action.payload.list
     })
   }
 })

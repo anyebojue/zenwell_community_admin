@@ -1,14 +1,31 @@
 import { request } from 'utils/request/axios'
 import {
+  OrgUserReply,
+  FindOrgUserReply,
   FindOrganizationInfoReply,
   OrganizationInfoParams
 } from '../model/platform/organizationInfoModel'
 
 const ApiPrefix = {
+  FindOrgUser: '/auth/org_user',
   FindOrganizationInfo: '/auth/org_tree',
   CreateOrganizationInfo: '/auth/org',
   UpdateOrganizationInfo: '/auth/org',
   DeleteOrganizationInfo: '/auth/org'
+}
+
+/**
+ * 查询接口
+ * @param params User
+ * @returns
+ */
+export const FindOrgUser = (params: OrgUserReply & PaginationParams) => {
+  return request
+    .get<FindOrgUserReply>({
+      url: ApiPrefix.FindOrgUser,
+      params
+    })
+    .then(res => res.data)
 }
 
 /**

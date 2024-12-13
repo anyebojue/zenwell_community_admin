@@ -1,21 +1,11 @@
 import { memo, ReactNode, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CommunityReply } from 'api/model/platform/communityModel'
-import { find } from 'modules/platform/community'
-import { Box, Chip, Tooltip, IconButton } from '@mui/material'
+import { OrgUserReply } from 'api/model/platform/organizationInfoModel'
+import { findOrgUser } from 'modules/platform/organizationInfo'
+import { Box, Tooltip, IconButton } from '@mui/material'
 import { Article, Delete } from '@mui/icons-material'
 import message from 'components/Message'
 import TableList from './TableList'
-
-const renderStatusChip = (value: string | number | undefined) => {
-  const statusMap: Record<string, { label: string; color: 'success' | 'default' }> = {
-    '': { label: '审核成功', color: 'success' },
-    '0': { label: '未审核', color: 'default' }
-  }
-
-  const status = statusMap[String(value) || ''] || { label: '未知状态', color: 'default' }
-  return <Chip label={status.label} color={status.color} size="small" />
-}
 
 const renderActionButtons = () => (
   <Box>
@@ -42,29 +32,31 @@ const renderActionButtons = () => (
   </Box>
 )
 
-export interface Column<T> {
+export interface Column {
   headerName: string
   key: string
   align?: 'left' | 'right' | 'center'
-  renderCell?: (_value: T[keyof T]) => ReactNode
+  renderCell?: (value: ReactNode | null | undefined) => ReactNode
 }
 
-const TableData: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.CommunitySlice)
+interface TableDataProps {
+  dialogValue: OrgUserReply
+}
 
-  const columns: Column<CommunityReply>[] = [
-    { key: 'id', headerName: '小区ID', align: 'center' },
-    { key: 'name', headerName: '小区名称', align: 'center' },
-    { key: 'nearbyLandmarks', headerName: '附近地标', align: 'center' },
-    { key: 'cityCode', headerName: '城市编码', align: 'center' },
-    { key: 'bId', headerName: '社区编码', align: 'center' },
-    {
-      key: 'state',
-      headerName: '状态',
-      align: 'center',
-      renderCell: (value: string | number | undefined) => renderStatusChip(value)
-    },
+const TableData: React.FC<TableDataProps> = ({ dialogValue }) => {
+  const dispatch = useDispatch<AppDispatch>()
+  const { page, orgUserList } = useSelector((state: RootState) => ({
+    page: state.OrganizationInfoSlice.page,
+    orgUserList: state.OrganizationInfoSlice.orgUserList as OrgUserReply[]
+  }))
+
+  const columns: Column[] = [
+    { key: 'name', headerName: '名称', align: 'center' },
+    { key: 'mobile', headerName: '手机号', align: 'center' },
+    { key: 'position', headerName: '岗位', align: 'center' },
+    { key: 'email', headerName: '邮箱', align: 'center' },
+    { key: 'address', headerName: '地址', align: 'center' },
+    { key: 'sex', headerName: '性别', align: 'center' },
     {
       key: 'operate',
       headerName: '操作',
@@ -76,19 +68,25 @@ const TableData: React.FC = () => {
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+      await dispatch(
+        findOrgUser({
+          'page.num': page.num,
+          'page.size': page.size,
+          orgId: dialogValue.id || '9027438861059358721'
+        })
+      )
     } catch {
       message.error('列表加载失败，请刷新页面或检查网络问题')
     } finally {
       closeLoading()
     }
-  }, [dispatch, page.num, page.size])
+  }, [dispatch, page.num, page.size, dialogValue.id])
 
   useEffect(() => {
     fetchData()
   }, [fetchData])
 
-  return <TableList rows={list} columns={columns} />
+  return <TableList rows={orgUserList} columns={columns} />
 }
 
 export default memo(TableData)
