@@ -74,9 +74,10 @@ export default defineConfig({
   },
   plugins: [
     new rspack.HtmlRspackPlugin({
-      template: './index.html'
+      template: './index.html',
+      inject: 'body'
     }),
-    isDev ? new RefreshPlugin() : null
+    isDev ? null : new RefreshPlugin()
   ].filter(Boolean),
   optimization: {
     minimize: true, // 启用代码压缩
@@ -113,6 +114,7 @@ export default defineConfig({
         target: 'https://community-admin.zenwell.cn/',
         changeOrigin: true
       }
-    ]
+    ],
+    compress: true // 启用gzip压缩
   }
 })
