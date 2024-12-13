@@ -3,12 +3,9 @@ import { Navigate } from 'react-router-dom'
 import LoadComponent from 'layouts/components/LoadComponent'
 
 const load = (component: string) => {
-  try {
-    return LoadComponent(lazy(() => import(`pages/${component}`)))
-  } catch (error) {
-    console.error(`Failed to load component: ${component}`, error)
-    throw error
-  }
+  const LazyComponent = lazy(() => import(`pages/${component}`))
+
+  return <LoadComponent component={LazyComponent} />
 }
 
 const navigateIndex = <Navigate to="/control" replace />
