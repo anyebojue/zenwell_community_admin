@@ -1,10 +1,15 @@
-import { memo } from 'react'
+import { memo, useCallback, useMemo, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { EmployeesReply } from 'api/model/platform/employeesModel'
+import { deleteByIds, find } from 'modules/platform/employees'
 import { Box, Button, Theme, Typography } from '@mui/material'
 import { Add } from '@mui/icons-material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
-import { buttonStyles } from 'components/DeleteModal'
+import DeleteModal, { buttonStyles } from 'components/DeleteModal'
+import message from 'components/Message'
 import FormSearch from './components/FormSearch'
+import FormDialog from './components/FormDialog'
 import TableData from './components/TableData'
 
 const contentBoxStyle = (theme: Theme) => ({
@@ -15,11 +20,56 @@ const contentBoxStyle = (theme: Theme) => ({
 })
 
 const EmployeesIndex = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  const { page, list } = useSelector((state: RootState) => state.EmployeesSlice)
+  const [dialogValue, setDialogValue] = useState<EmployeesReply>()
+  const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
+  const [dialogType, setDialogType] = useState('add')
+  const [openDialog, setOpenDialog] = useState(false)
+  const [delOpen, setDelOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  const getDeleteData = useCallback(() => {
+    if (selectedRows.size > 0) {
+      return list
+        .filter(item => selectedRows.has(item.id))
+        .map(item => ({ id: item.id!, username: item.username! }))
+        .filter(item => item.id && item.username)
+    }
+    if (dialogValue) {
+      return dialogValue.id && dialogValue.username
+        ? [{ id: dialogValue.id, username: dialogValue.username }]
+        : []
+    }
+    return []
+  }, [selectedRows, list, dialogValue])
+
+  const deleteData = useMemo(() => getDeleteData(), [getDeleteData])
+  const deleteIds = deleteData.map(item => item.id)
+  const deleteNames = deleteData.map(item => item.username)
+
+  const handleDelete = useCallback(
+    async (ids: string[]) => {
+      setLoading(true)
+      try {
+        await dispatch(deleteByIds(ids))
+        setDelOpen(false)
+        message.success('删除成功')
+        await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+        setLoading(false)
+      } catch (err) {
+        if (err instanceof Error) message.error(err.message)
+        setLoading(false)
+      }
+    },
+    [dispatch, page.num, page.size]
+  )
+
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
       <Box sx={{ width: '100%' }}>
-        <FormSearch />
+        <FormSearch setDelOpen={setDelOpen} selectedRows={selectedRows} />
         <Box sx={contentBoxStyle}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Typography variant="h6">员工管理</Typography>
@@ -29,14 +79,39 @@ const EmployeesIndex = () => {
               color="error"
               startIcon={<Add />}
               sx={buttonStyles('#2660ad', '#1d428a')}
+              onClick={() => {
+                setOpenDialog(true)
+                setDialogType('add')
+              }}
             >
               添加
             </Button>
           </Box>
-          <TableData />
+          <TableData
+            setDialogType={setDialogType}
+            setDialogValue={setDialogValue}
+            selectedRows={selectedRows}
+            setSelectedRows={setSelectedRows}
+            setOpenDialog={setOpenDialog}
+            setDelOpen={setDelOpen}
+          />
         </Box>
       </Box>
       <Copyright />
+
+      <FormDialog
+        dialogValue={dialogValue}
+        openDialog={openDialog}
+        dialogType={dialogType}
+        setOpenDialog={setOpenDialog}
+      />
+      <DeleteModal
+        loading={loading}
+        delOpen={delOpen}
+        setDelOpen={setDelOpen}
+        userName={deleteNames}
+        onDelete={() => handleDelete(deleteIds)}
+      />
     </Box>
   )
 }

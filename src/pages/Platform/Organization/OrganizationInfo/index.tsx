@@ -71,6 +71,14 @@ const InfoIndex = () => {
     fetchData()
   }, [fetchData])
 
+  useEffect(() => {
+    if (!list || list.length === 0) {
+      setDialogValue({})
+    } else {
+      setDialogValue(list[0])
+    }
+  }, [list])
+
   const handleDelete = useCallback(
     async (ids: string[]) => {
       setLoading(true)
@@ -148,8 +156,9 @@ const InfoIndex = () => {
           <RichTreeView
             items={transformData}
             defaultExpandedItems={['9027438861059358721']}
+            selectedItems={dialogValue?.id || ''}
             onSelectedItemsChange={(_, selectedItemId) => {
-              if (selectedItemId === null) return
+              if (!selectedItemId) return
               const item = findItemById(list, selectedItemId)
               if (item) setDialogValue(item)
             }}
@@ -160,7 +169,7 @@ const InfoIndex = () => {
           <FormSearch dialogValue={dialogValue} />
           <Box sx={contentBoxStyle}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography variant="h6">WhiteFox物业 员工</Typography>
+              <Typography variant="h6">{dialogValue.name} 员工</Typography>
               <Stack direction="row" spacing={1}>
                 <Button
                   size="small"

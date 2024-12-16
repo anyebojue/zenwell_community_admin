@@ -1,4 +1,4 @@
-import { memo, ReactNode, useCallback, useEffect } from 'react'
+import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { EmployeesReply } from 'api/model/platform/employeesModel'
 import { find } from 'modules/platform/employees'
@@ -7,7 +7,11 @@ import { Delete, Article, Edit, RestartAlt } from '@mui/icons-material'
 import message from 'components/Message'
 import TableList from './TableList'
 
-const renderActionButtons = () => (
+const renderActionButtons = (
+  setDialogType: Dispatch<SetStateAction<string>>,
+  setOpenDialog: Dispatch<SetStateAction<boolean>>,
+  setDelOpen: Dispatch<SetStateAction<boolean>>
+) => (
   <Box>
     {[
       {
@@ -26,13 +30,16 @@ const renderActionButtons = () => (
         title: '修改',
         color: 'secondary' as const,
         icon: <Edit fontSize="small" />,
-        onClick: () => message.info('未实现')
+        onClick: () => {
+          setOpenDialog(true)
+          setDialogType('edit')
+        }
       },
       {
         title: '删除',
         color: 'error' as const,
         icon: <Delete fontSize="small" />,
-        onClick: () => message.info('未实现')
+        onClick: () => setDelOpen(true)
       }
     ].map((action, index) => (
       <Tooltip title={action.title} key={index}>
@@ -51,24 +58,40 @@ export interface Column<T> {
   renderCell?: (_value: T[keyof T]) => ReactNode
 }
 
-const TableData: React.FC = () => {
+interface TableDataProps {
+  setDialogType: Dispatch<SetStateAction<string>>
+  setDialogValue: Dispatch<SetStateAction<EmployeesReply | undefined>>
+  selectedRows: Set<string | undefined>
+  setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
+  setOpenDialog: Dispatch<SetStateAction<boolean>>
+  setDelOpen: Dispatch<SetStateAction<boolean>>
+}
+
+const TableData: React.FC<TableDataProps> = ({
+  setDialogType,
+  setDialogValue,
+  selectedRows,
+  setSelectedRows,
+  setOpenDialog,
+  setDelOpen
+}) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.EmployeesSlice)
 
   const columns: Column<EmployeesReply>[] = [
     { key: 'id', headerName: '员工编号', align: 'center' },
-    { key: 'name', headerName: '名称', align: 'center' },
-    { key: 'nearbyLandmarks', headerName: '手机号', align: 'center' },
-    { key: 'cityCode', headerName: '关联组织', align: 'center' },
-    { key: 'bId', headerName: '岗位', align: 'center' },
-    { key: 'bId', headerName: '身份证', align: 'center' },
-    { key: 'bId', headerName: '地址', align: 'center' },
-    { key: 'bId', headerName: '性别', align: 'center' },
+    { key: 'username', headerName: '名称', align: 'center' },
+    { key: 'mobile', headerName: '手机号', align: 'center' },
+    { key: 'org', headerName: '关联组织', align: 'center' },
+    { key: 'position', headerName: '岗位', align: 'center' },
+    { key: 'idcard', headerName: '身份证', align: 'center' },
+    { key: 'address', headerName: '地址', align: 'center' },
+    { key: 'sex', headerName: '性别', align: 'center' },
     {
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => renderActionButtons()
+      renderCell: () => renderActionButtons(setDialogType, setOpenDialog, setDelOpen)
     }
   ]
 
@@ -87,7 +110,15 @@ const TableData: React.FC = () => {
     fetchData()
   }, [fetchData])
 
-  return <TableList rows={list} columns={columns} />
+  return (
+    <TableList
+      rows={list}
+      columns={columns}
+      setDialogValue={setDialogValue}
+      selectedRows={selectedRows}
+      setSelectedRows={setSelectedRows}
+    />
+  )
 }
 
 export default memo(TableData)

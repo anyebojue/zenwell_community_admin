@@ -81,7 +81,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
             onChange={handleInputChange('name')}
           />
         </FormControl>
-        <Stack direction="row" spacing={1} component="form" sx={{ mb: 2 }}>
+        <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
           <Button
             size="small"
             variant="contained"

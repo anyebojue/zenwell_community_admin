@@ -1,9 +1,9 @@
-import { ChangeEvent, memo, useState, useCallback } from 'react'
+import { ChangeEvent, Dispatch, memo, SetStateAction, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { EmployeesParams } from 'api/model/platform/employeesModel'
 import { find } from 'modules/platform/employees'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
-import { History, Search } from '@mui/icons-material'
+import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 
@@ -23,13 +23,19 @@ const textFieldStyles = {
   }
 }
 
-const FormSearch: React.FC = () => {
+interface SearchFormProps {
+  selectedRows: Set<string | undefined>
+  setDelOpen: Dispatch<SetStateAction<boolean>>
+}
+
+const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.EmployeesSlice)
+
   const [searchParams, setSearchParams] = useState<EmployeesParams>({
     id: '',
-    name: '',
-    tel: ''
+    username: '',
+    mobile: ''
   })
 
   const handleInputChange =
@@ -79,8 +85,8 @@ const FormSearch: React.FC = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.name}
-            onChange={handleInputChange('name')}
+            value={searchParams.username}
+            onChange={handleInputChange('username')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -90,11 +96,11 @@ const FormSearch: React.FC = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.tel}
-            onChange={handleInputChange('tel')}
+            value={searchParams.mobile}
+            onChange={handleInputChange('mobile')}
           />
         </FormControl>
-        <Stack direction="row" spacing={1} component="form" sx={{ mb: 2 }}>
+        <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
           <Button
             size="small"
             variant="contained"
@@ -112,17 +118,32 @@ const FormSearch: React.FC = () => {
             startIcon={<History />}
             sx={buttonStyles('darkgray', '#696969')}
             onClick={() => {
-              setSearchParams({ id: '', name: '', tel: '' })
+              setSearchParams({ id: '', username: '', mobile: '' })
               fetchData({
                 id: '',
-                name: '',
-                tel: '',
+                username: '',
+                mobile: '',
                 'page.num': page.num,
                 'page.size': page.size
               })
             }}
           >
             重置
+          </Button>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            startIcon={<Delete />}
+            sx={buttonStyles('#B22222', '#8B0000')}
+            onClick={() => {
+              if (![...selectedRows].length) {
+                return message.warning('请选择至少一项')
+              }
+              setDelOpen(true)
+            }}
+          >
+            批量删除
           </Button>
         </Stack>
       </Stack>

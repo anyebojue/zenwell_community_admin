@@ -77,7 +77,7 @@ export default defineConfig({
       template: './index.html',
       inject: 'body'
     }),
-    isDev ? null : new RefreshPlugin()
+    new RefreshPlugin()
   ].filter(Boolean),
   optimization: {
     minimize: true, // 启用代码压缩

@@ -2,10 +2,10 @@ import { request } from 'utils/request/axios'
 import { FindEmployeesReply, EmployeesParams } from '../model/platform/employeesModel'
 
 const ApiPrefix = {
-  FindEmployees: '/auth/org_user',
-  CreateEmployees: '/auth/org_user',
-  UpdateEmployees: '/auth/org_user',
-  DeleteEmployees: '/auth/org_user'
+  FindEmployees: '/auth/user',
+  CreateEmployees: '/auth/user',
+  UpdateEmployees: '/auth/user',
+  DeleteEmployees: '/auth/user'
 }
 
 /**

@@ -1,36 +1,38 @@
 import { Page } from '../pageModel'
-import { RolesReply } from './rolesModel'
 
 export interface EmployeesReply {
-  id: string
-  createdAt: string
-  updatedAt: string
-  username: string
+  actions: []
+  address: string // 地址
   code: string
-  platform: string
-  locked: false
+  createdAt: string
+  email: string // 邮箱
+  id: string
   lastLogin: string
   lockExpire: string
   lockMsg: string
-  actions: []
+  locked: boolean
+  mobile: string // 手机号
+  platform: string
+  position: string // 岗位
+  // role: RolesReply
   roleId: string
-  role: RolesReply
-  mobile: string
-  email: string
-  address: string
-  sex: number
-  position: string
+  sex: number // 性别
+  updatedAt: string
+  username: string // 名称
+  idcard: string // 身份证
+  org: string // 关联组织
 }
 
 export interface EmployeesParams {
-  createdAt?: string
   id?: string
-  name?: string
-  orgId?: string
-  orgs?: []
-  updatedAt?: string
-  userId?: string
-  users?: []
+  username?: string // 名称
+  sex?: number // 性别
+  mobile?: string // 手机号
+  position?: string // 岗位
+  email?: string // 邮箱
+  address?: string // 地址
+  idcard?: string // 身份证
+  org?: string // 关联组织
 }
 
 export interface FindEmployeesReply {

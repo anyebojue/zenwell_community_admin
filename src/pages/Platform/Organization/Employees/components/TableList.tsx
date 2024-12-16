@@ -1,5 +1,4 @@
-import { memo, useState, useMemo, ChangeEvent } from 'react'
-import { EmployeesReply } from 'api/model/platform/employeesModel'
+import { memo, useState, useMemo, ChangeEvent, Dispatch, SetStateAction } from 'react'
 import {
   Pagination,
   Table,
@@ -17,6 +16,7 @@ import {
   Checkbox,
   Theme
 } from '@mui/material'
+import { EmployeesReply } from 'api/model/platform/employeesModel'
 import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {
@@ -31,10 +31,16 @@ const usePagination = <T,>(data: T[], rowsPerPage: number) => {
 
 const TableList = ({
   rows,
-  columns
+  columns,
+  setDialogValue,
+  selectedRows,
+  setSelectedRows
 }: {
   rows: EmployeesReply[]
   columns: Column<EmployeesReply>[]
+  setDialogValue: Dispatch<SetStateAction<EmployeesReply | undefined>>
+  selectedRows: Set<string | undefined>
+  setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
 }) => {
   const [rowsPerPage, setRowsPerPage] = useState('20')
   const { page, paginatedRows, setPage, handlePageChange } = usePagination(
@@ -64,10 +70,23 @@ const TableList = ({
     setPage(1)
   }
 
+  const onSelectAll = (event: ChangeEvent<HTMLInputElement>) => {
+    setSelectedRows(event.target.checked ? new Set(rows.map(row => row.id)) : new Set())
+  }
+
+  const onSelectRow = (id: string | undefined) => {
+    setSelectedRows(prev =>
+      prev.has(id) ? new Set([...prev].filter(rowId => rowId !== id)) : new Set(prev).add(id)
+    )
+  }
+
+  const allSelected = selectedRows.size === rows.length && rows.length > 0
+  const someSelected = selectedRows.size > 0 && selectedRows.size < rows.length
+
   return (
     <Box
       sx={theme => ({
-        mt: 1,
+        mt: 3,
         width: '100%',
         borderRadius: '7px',
         border: `1px solid ${theme.palette.divider}`,
@@ -85,7 +104,13 @@ const TableList = ({
           <TableHead>
             <TableRow sx={tableHeaderStyle}>
               <TableCell padding="checkbox">
-                <Checkbox color="primary" inputProps={{ 'aria-label': 'select all rows' }} />
+                <Checkbox
+                  color="primary"
+                  checked={allSelected}
+                  indeterminate={someSelected}
+                  onChange={onSelectAll}
+                  inputProps={{ 'aria-label': 'select all rows' }}
+                />
               </TableCell>
               {columns.map(column => (
                 <TableCell
@@ -105,7 +130,7 @@ const TableList = ({
           <TableBody>
             {paginatedRows.length > 0 ? (
               paginatedRows.map(row => (
-                <TableRow key={row.id} sx={tableRowStyle}>
+                <TableRow onClick={() => setDialogValue(row)} key={row.id} sx={tableRowStyle}>
                   <TableCell
                     padding="checkbox"
                     sx={{
@@ -114,6 +139,8 @@ const TableList = ({
                   >
                     <Checkbox
                       color="primary"
+                      checked={selectedRows.has(row.id)}
+                      onChange={() => onSelectRow(row.id)}
                       inputProps={{ 'aria-label': `select row ${row.id}` }}
                     />
                   </TableCell>
