@@ -3,7 +3,7 @@ import { FindEmployeesReply, EmployeesParams } from '../model/platform/employees
 
 const ApiPrefix = {
   FindEmployees: '/auth/user',
-  CreateEmployees: '/auth/user',
+  CreateEmployees: '/auth/register',
   UpdateEmployees: '/auth/user',
   DeleteEmployees: '/auth/user'
 }

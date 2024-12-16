@@ -89,8 +89,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
   const formFields = [
     { label: '员工名称', type: 'text', id: 'username', required: true },
     { label: '员工岗位', type: 'text', id: 'position', required: true },
-    { label: '手机', type: 'number', id: 'mobile', required: true },
-    { label: '身份证', type: 'number', id: 'idcard', required: true },
+    { label: '手机', type: 'text', id: 'mobile', required: true },
+    { label: '身份证', type: 'text', id: 'idcard', required: true },
     { label: '家庭住址', type: 'text', id: 'address', required: true },
     { label: '关联组织', type: 'text', id: 'org', required: true }
   ]
