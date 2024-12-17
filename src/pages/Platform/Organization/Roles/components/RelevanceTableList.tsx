@@ -1,5 +1,5 @@
-import { memo, useState, useMemo, ChangeEvent } from 'react'
-import { CommunityReply } from 'api/model/platform/communityModel'
+import { memo, useState, useMemo, ChangeEvent, Dispatch, SetStateAction } from 'react'
+import { EmployeesReply } from 'api/model/platform/employeesModel'
 import {
   Pagination,
   Table,
@@ -14,7 +14,6 @@ import {
   Box,
   Paper,
   SelectChangeEvent,
-  Checkbox,
   Theme
 } from '@mui/material'
 import { Column } from './RelevanceTableData'
@@ -31,16 +30,15 @@ const usePagination = <T,>(data: T[], rowsPerPage: number) => {
 
 const RelevanceTableList = ({
   rows,
-  columns
+  columns,
+  setDialogEmployessValue
 }: {
-  rows: CommunityReply[]
-  columns: Column<CommunityReply>[]
+  rows: EmployeesReply[]
+  columns: Column<EmployeesReply>[]
+  setDialogEmployessValue: Dispatch<SetStateAction<EmployeesReply | undefined>>
 }) => {
-  const [rowsPerPage, setRowsPerPage] = useState('20')
-  const { page, paginatedRows, setPage, handlePageChange } = usePagination(
-    rows,
-    Number(rowsPerPage)
-  )
+  const [rowsPerPage, setRowsPerPage] = useState(20)
+  const { page, paginatedRows, setPage, handlePageChange } = usePagination(rows, rowsPerPage)
 
   const tableHeaderStyle = (theme: Theme) => ({
     backgroundColor: theme.palette.action.hover,
@@ -59,15 +57,25 @@ const RelevanceTableList = ({
     }
   })
 
-  const handleRowsPerPageChange = (event: SelectChangeEvent<string>) => {
-    setRowsPerPage(event.target.value)
+  const handleRowsPerPageChange = (event: SelectChangeEvent<number>) => {
+    setRowsPerPage(Number(event.target.value))
     setPage(1)
+  }
+
+  const renderValue = (value: EmployeesReply[keyof EmployeesReply] | undefined) => {
+    if (Array.isArray(value)) {
+      return JSON.stringify(value)
+    } else if (value && typeof value === 'object') {
+      return JSON.stringify(value)
+    } else {
+      return value || '-'
+    }
   }
 
   return (
     <Box
       sx={theme => ({
-        mt: 1,
+        mt: 3,
         width: '100%',
         borderRadius: '7px',
         border: `1px solid ${theme.palette.divider}`,
@@ -84,9 +92,6 @@ const RelevanceTableList = ({
         <Table sx={{ minWidth: 650 }} aria-label="data table" size="small">
           <TableHead>
             <TableRow sx={tableHeaderStyle}>
-              <TableCell padding="checkbox">
-                <Checkbox color="primary" inputProps={{ 'aria-label': 'select all rows' }} />
-              </TableCell>
               {columns.map(column => (
                 <TableCell
                   key={column.headerName}
@@ -105,29 +110,20 @@ const RelevanceTableList = ({
           <TableBody>
             {paginatedRows.length > 0 ? (
               paginatedRows.map(row => (
-                <TableRow key={row.id} sx={tableRowStyle}>
-                  <TableCell
-                    padding="checkbox"
-                    sx={{
-                      borderBottom: theme => `1px solid ${theme.palette.divider}`
-                    }}
-                  >
-                    <Checkbox
-                      color="primary"
-                      inputProps={{ 'aria-label': `select row ${row.id}` }}
-                    />
-                  </TableCell>
+                <TableRow
+                  onClick={() => setDialogEmployessValue(row)}
+                  key={row.id}
+                  sx={tableRowStyle}
+                >
                   {columns.map(column => {
-                    const value = row[column.key as keyof CommunityReply]
+                    const value = row[column.key as keyof EmployeesReply]
                     return (
                       <TableCell
                         key={column.key}
                         align={column.align}
-                        sx={{
-                          borderBottom: theme => `1px solid ${theme.palette.divider}`
-                        }}
+                        sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}
                       >
-                        {column.renderCell ? column.renderCell(value) : value}
+                        {column.renderCell ? column.renderCell(row) : renderValue(value)}
                       </TableCell>
                     )
                   })}
@@ -184,7 +180,7 @@ const RelevanceTableList = ({
             ))}
           </Select>
           <Pagination
-            count={Math.ceil(rows.length / Number(rowsPerPage))}
+            count={Math.ceil(rows.length / rowsPerPage)}
             page={page}
             onChange={handlePageChange}
             color="primary"

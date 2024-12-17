@@ -1,5 +1,6 @@
 import { Page } from '../pageModel'
 import { CommunityReply } from './communityModel'
+import { EmployeesReply } from './employeesModel'
 
 export interface RolesGroupReply {
   community?: CommunityReply
@@ -16,7 +17,7 @@ export interface RolesReply {
   name?: string // 角色名称
   plate?: string // 平台  0 物业 1平台 2开发
   word?: string
-  users?: []
+  users?: EmployeesReply[]
   actions?: []
 }
 

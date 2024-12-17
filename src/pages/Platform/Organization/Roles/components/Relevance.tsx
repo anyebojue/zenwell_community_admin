@@ -1,20 +1,31 @@
-import { memo } from 'react'
+import { memo, useState } from 'react'
 import { Box, Theme } from '@mui/material'
+import { EmployeesReply } from 'api/model/platform/employeesModel'
+import { RolesReply } from 'api/model/platform/rolesModel'
 import FormSearch from './RelevanceTableFormSearch'
 import RelevanceTableData from './RelevanceTableData'
 
-const Relevance = () => {
-  const contentBoxStyle = (theme: Theme) => ({
-    background: theme.palette.background.default,
-    borderRadius: '15px',
-    padding: '15px 15px',
-    width: '100%'
-  })
+const contentBoxStyle = (theme: Theme) => ({
+  background: theme.palette.background.default,
+  borderRadius: '15px',
+  padding: '15px 15px',
+  width: '100%'
+})
+
+interface RelevanceProps {
+  dialogValue: RolesReply
+}
+
+const Relevance: React.FC<RelevanceProps> = ({ dialogValue }) => {
+  const [dialogEmployessValue, setDialogEmployessValue] = useState<EmployeesReply | undefined>()
 
   return (
     <Box sx={contentBoxStyle}>
       <FormSearch />
-      <RelevanceTableData />
+      <RelevanceTableData
+        dialogValue={dialogValue}
+        setDialogEmployessValue={setDialogEmployessValue}
+      />
     </Box>
   )
 }

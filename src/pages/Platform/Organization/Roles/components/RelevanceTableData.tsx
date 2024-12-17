@@ -1,21 +1,12 @@
-import { memo, ReactNode, useCallback, useEffect } from 'react'
+import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CommunityReply } from 'api/model/platform/communityModel'
-import { find } from 'modules/platform/community'
-import { Box, Chip, Tooltip, IconButton } from '@mui/material'
-import { Article } from '@mui/icons-material'
+import { EmployeesReply } from 'api/model/platform/employeesModel'
+import { find } from 'modules/platform/roles'
+import { Box, Tooltip, IconButton } from '@mui/material'
+import { Article, Delete } from '@mui/icons-material'
 import message from 'components/Message'
-import TableList from './RelevanceTableList'
-
-const renderStatusChip = (value: string | number | undefined) => {
-  const statusMap: Record<string, { label: string; color: 'success' | 'default' }> = {
-    '': { label: '审核成功', color: 'success' },
-    '0': { label: '未审核', color: 'default' }
-  }
-
-  const status = statusMap[String(value) || ''] || { label: '未知状态', color: 'default' }
-  return <Chip label={status.label} color={status.color} size="small" />
-}
+import { RolesReply } from 'api/model/platform/rolesModel'
+import RelevanceTableList from './RelevanceTableList'
 
 const renderActionButtons = () => (
   <Box>
@@ -25,6 +16,12 @@ const renderActionButtons = () => (
         color: 'primary' as const,
         icon: <Article fontSize="small" />,
         onClick: () => message.info('未实现')
+      },
+      {
+        title: '删除',
+        color: 'error' as const,
+        icon: <Delete fontSize="small" />,
+        onClick: () => message.info('同步操作未实现')
       }
     ].map((action, index) => (
       <Tooltip title={action.title} key={index}>
@@ -38,26 +35,32 @@ const renderActionButtons = () => (
 
 export interface Column<T> {
   headerName: string
-  key: string
-  align?: 'left' | 'right' | 'center'
-  renderCell?: (_value: T[keyof T]) => ReactNode
+  key: Exclude<keyof T, symbol> | `${Exclude<keyof T, symbol>}.${string}` | 'operate' // 过滤掉 symbol 类型
+  align?: 'left' | 'center' | 'right'
+  renderCell?: (row: T) => ReactNode
 }
 
-const RelevanceTableData: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.CommunitySlice)
+interface RelevanceTableDataProps {
+  dialogValue: RolesReply
+  setDialogEmployessValue: Dispatch<SetStateAction<EmployeesReply | undefined>>
+}
 
-  const columns: Column<CommunityReply>[] = [
-    { key: 'id', headerName: '小区ID', align: 'center' },
-    { key: 'name', headerName: '小区名称', align: 'center' },
-    { key: 'nearbyLandmarks', headerName: '附近地标', align: 'center' },
-    { key: 'cityCode', headerName: '城市编码', align: 'center' },
-    { key: 'bId', headerName: '社区编码', align: 'center' },
+const RelevanceTableData: React.FC<RelevanceTableDataProps> = ({
+  dialogValue,
+  setDialogEmployessValue
+}) => {
+  const dispatch = useDispatch<AppDispatch>()
+  const { page, list } = useSelector((state: RootState) => state.RolesSlice)
+
+  const columns: Column<EmployeesReply>[] = [
+    { key: 'username', headerName: '名称', align: 'center' },
+    { key: 'mobile', headerName: '手机号', align: 'center' },
+    { key: 'address', headerName: '地址', align: 'center' },
     {
-      key: 'state',
-      headerName: '状态',
+      key: 'sex',
+      headerName: '性别',
       align: 'center',
-      renderCell: (value: string | number | undefined) => renderStatusChip(value)
+      renderCell: (row: EmployeesReply) => (row?.sex === 0 ? '女' : '男')
     },
     {
       key: 'operate',
@@ -82,7 +85,13 @@ const RelevanceTableData: React.FC = () => {
     fetchData()
   }, [fetchData])
 
-  return <TableList rows={list} columns={columns} />
+  return (
+    <RelevanceTableList
+      rows={list.filter(item => item.id === dialogValue.id)[0].users || []}
+      columns={columns}
+      setDialogEmployessValue={setDialogEmployessValue}
+    />
+  )
 }
 
 export default memo(RelevanceTableData)

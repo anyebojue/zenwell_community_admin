@@ -26,7 +26,7 @@ const textFieldStyles = {
 
 const RelevanceTableFormSearch: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.CommunitySlice)
+  const { page } = useSelector((state: RootState) => state.RolesSlice)
   const [searchParams, setSearchParams] = useState<CommunityParams>({
     id: '',
     name: '',
