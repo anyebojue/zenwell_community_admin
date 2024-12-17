@@ -7,11 +7,26 @@ import {
 } from '../model/platform/organizationInfoModel'
 
 const ApiPrefix = {
+  RelevanceOrgUser: '/auth/org_user',
   FindOrgUser: '/auth/org_user',
   FindOrganizationInfo: '/auth/org_tree',
   CreateOrganizationInfo: '/auth/org',
   UpdateOrganizationInfo: '/auth/org',
   DeleteOrganizationInfo: '/auth/org'
+}
+
+/**
+ * 关联员工
+ * @param params orgId关联的组织ID userId关联的员工ID
+ * @returns
+ */
+export const RelevanceOrgUser = (data: { orgId: string; userId: string }) => {
+  return request
+    .post({
+      url: ApiPrefix.RelevanceOrgUser,
+      data
+    })
+    .then(res => res.data)
 }
 
 /**

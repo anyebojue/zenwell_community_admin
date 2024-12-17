@@ -10,7 +10,8 @@ import {
   CreateOrganizationInfo,
   UpdateOrganizationInfo,
   DeleteOrganizationInfo,
-  FindOrgUser
+  FindOrgUser,
+  RelevanceOrgUser
 } from 'api/platform/organizationInfo'
 
 const namespace = 'OrganizationInfo'
@@ -36,6 +37,14 @@ const initialState: IInitialState = {
   list: [],
   orgUserList: []
 }
+
+export const relevanceOrgUser = createAsyncThunk(
+  `OrgUserReply/create`,
+  async (data: { orgId: string; userId: string }) => {
+    const res = await RelevanceOrgUser(data)
+    return res
+  }
+)
 
 export const findOrgUser = createAsyncThunk(
   `OrgUserReply/find`,

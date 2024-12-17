@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import message from 'components/Message'
 import { deleteByIds, find } from 'modules/platform/organizationInfo'
 import { OrganizationInfoReply, OrgUserReply } from 'api/model/platform/organizationInfoModel'
+import { EmployeesReply } from 'api/model/platform/employeesModel'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
 import FormDialog from './components/FormDialog'
@@ -43,6 +44,7 @@ const InfoIndex = () => {
   const [dialogType, setDialogType] = useState('')
   const [dialogValue, setDialogValue] = useState<OrganizationInfoReply>({})
   const [dialogUserValue, setDialogUserValue] = useState<OrgUserReply>({})
+  const [dialogEmployessValue, setDialogEmployessValue] = useState<EmployeesReply | undefined>()
 
   const [associatedOpen, setAssociatedOpen] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
@@ -221,6 +223,8 @@ const InfoIndex = () => {
         dialogValue={dialogValue}
         associatedOpen={associatedOpen}
         setAssociatedOpen={setAssociatedOpen}
+        dialogEmployessValue={dialogEmployessValue}
+        setDialogEmployessValue={setDialogEmployessValue}
       />
     </Box>
   )
