@@ -93,7 +93,14 @@ const TableData: React.FC<TableDataProps> = ({
     { key: 'position', headerName: '岗位', align: 'center' },
     { key: 'idcard', headerName: '身份证', align: 'center' },
     { key: 'address', headerName: '地址', align: 'center' },
-    { key: 'sex', headerName: '性别', align: 'center' },
+    {
+      key: 'sex',
+      headerName: '性别',
+      align: 'center',
+      renderCell: (row: EmployeesReply) => {
+        return row.sex === 0 ? '女' : '男'
+      }
+    },
     {
       key: 'operate',
       headerName: '操作',
