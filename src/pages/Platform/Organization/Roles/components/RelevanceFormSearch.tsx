@@ -1,20 +1,16 @@
-import { ChangeEvent, memo, useState, useCallback, Dispatch, SetStateAction } from 'react'
+import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CommunityParams } from 'api/model/platform/communityModel'
-import { find } from 'modules/platform/community'
+import { OrganizationInfoReply, OrgUserReply } from 'api/model/platform/organizationInfoModel'
+import { findOrgUser } from 'modules/platform/organizationInfo'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
-import { Add, Search } from '@mui/icons-material'
+import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import { EmployeesReply } from 'api/model/platform/employeesModel'
-import { RolesReply } from 'api/model/platform/rolesModel'
-import RelevanceModel from './RelevanceModel'
 
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {
     '& fieldset': {
-      border: '1px solid',
-      borderColor: 'primary.main'
+      border: 'none'
     },
     '&:hover fieldset': {
       border: '1px solid',
@@ -27,28 +23,19 @@ const textFieldStyles = {
   }
 }
 
-interface RelevanceTableFormSearchProps {
-  dialogValue: RolesReply
-  dialogEmployessValue: EmployeesReply | undefined
-  setDialogEmployessValue: Dispatch<SetStateAction<EmployeesReply | undefined>>
+interface FormSearchProps {
+  dialogValue: OrganizationInfoReply
 }
 
-const RelevanceTableFormSearch: React.FC<RelevanceTableFormSearchProps> = ({
-  dialogValue,
-  dialogEmployessValue,
-  setDialogEmployessValue
-}) => {
+const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.RolesSlice)
-  const [open, setOpen] = useState(false)
-  const [searchParams, setSearchParams] = useState<CommunityParams>({
-    id: '',
-    name: '',
-    tel: ''
+  const { page } = useSelector((state: RootState) => state.OrganizationInfoSlice)
+  const [searchParams, setSearchParams] = useState<OrgUserReply>({
+    name: ''
   })
 
   const handleInputChange =
-    (field: keyof CommunityParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof OrgUserReply) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -56,17 +43,24 @@ const RelevanceTableFormSearch: React.FC<RelevanceTableFormSearchProps> = ({
     }
 
   const fetchData = useCallback(
-    async (params: CommunityParams & PaginationParams) => {
+    async (params: OrgUserReply & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
-        await dispatch(find({ 'page.num': page.num, 'page.size': page.size, ...params }))
+        await dispatch(
+          findOrgUser({
+            'page.num': page.num,
+            'page.size': page.size,
+            ...params,
+            orgId: dialogValue.id || '9027438861059358721'
+          })
+        )
       } catch {
         message.error('列表加载失败，请刷新页面或检查网络问题')
       } finally {
         closeLoading()
       }
     },
-    [dispatch, page.num, page.size]
+    [dispatch, page.num, page.size, dialogValue.id]
   )
 
   const handleSearch = () => {
@@ -79,7 +73,7 @@ const RelevanceTableFormSearch: React.FC<RelevanceTableFormSearchProps> = ({
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
-            label="请输入员工姓名"
+            label="请填写员工名称"
             type="text"
             variant="outlined"
             sx={textFieldStyles}
@@ -87,7 +81,7 @@ const RelevanceTableFormSearch: React.FC<RelevanceTableFormSearchProps> = ({
             onChange={handleInputChange('name')}
           />
         </FormControl>
-        <Stack direction="row" spacing={1} component="form" sx={{ mb: 2 }}>
+        <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
           <Button
             size="small"
             variant="contained"
@@ -102,23 +96,24 @@ const RelevanceTableFormSearch: React.FC<RelevanceTableFormSearchProps> = ({
             size="small"
             variant="contained"
             color="error"
-            startIcon={<Add />}
-            sx={buttonStyles('#2660ad', '#1d428a')}
-            onClick={() => setOpen(true)}
+            startIcon={<History />}
+            sx={buttonStyles('darkgray', '#696969')}
+            onClick={() => {
+              setSearchParams({ name: '', orgId: '9027438861059358721' })
+              fetchData({
+                name: '',
+                orgId: '9027438861059358721',
+                'page.num': page.num,
+                'page.size': page.size
+              })
+            }}
           >
-            关联员工
+            重置
           </Button>
         </Stack>
       </Stack>
-      <RelevanceModel
-        dialogValue={dialogValue}
-        open={open}
-        setOpen={setOpen}
-        dialogEmployessValue={dialogEmployessValue}
-        setDialogEmployessValue={setDialogEmployessValue}
-      />
     </Box>
   )
 }
 
-export default memo(RelevanceTableFormSearch)
+export default memo(FormSearch)
