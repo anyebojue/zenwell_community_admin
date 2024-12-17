@@ -1,10 +1,10 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OrganizationInfoReply } from 'api/model/platform/organizationInfoModel'
-import { EmployeesReply } from 'api/model/platform/employeesModel'
-import { find } from 'modules/platform/employees'
+import { RolesReply } from 'api/model/platform/rolesModel'
+import { find } from 'modules/platform/community'
 import message from 'components/Message'
-import AccreditModelTableData from './AccreditModelTableData'
+import { CommunityReply } from 'api/model/platform/communityModel'
+import AccreditModelTableList from './AccreditModelTableList'
 
 export interface Column<T> {
   headerName: string
@@ -13,37 +13,25 @@ export interface Column<T> {
   renderCell?: (row: T) => ReactNode
 }
 
-interface AssociatedTableDataProps {
-  dialogValue: OrganizationInfoReply
-  setDialogEmployessValue: Dispatch<SetStateAction<EmployeesReply | undefined>>
+interface AccreditTableDataProps {
+  dialogValue: RolesReply
+  setDialogCommunityValue: Dispatch<SetStateAction<CommunityReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
 }
 
-const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({
-  setDialogEmployessValue,
+const AccreditModelTableData: React.FC<AccreditTableDataProps> = ({
+  setDialogCommunityValue,
   selectedRows,
   setSelectedRows
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.EmployeesSlice)
+  const { page, list } = useSelector((state: RootState) => state.CommunitySlice)
 
-  const columns: Column<EmployeesReply>[] = [
-    {
-      key: 'username',
-      headerName: '员工名称',
-      align: 'center'
-    },
-    {
-      key: 'mobile',
-      headerName: '员工电话',
-      align: 'center'
-    },
-    {
-      key: 'id',
-      headerName: '员工编号',
-      align: 'center'
-    }
+  const columns: Column<CommunityReply>[] = [
+    { key: 'id', headerName: '小区ID', align: 'center' },
+    { key: 'name', headerName: '小区名称', align: 'center' },
+    { key: 'address', headerName: '小区地址', align: 'center' }
   ]
 
   const fetchData = useCallback(async () => {
@@ -67,14 +55,14 @@ const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({
   }, [fetchData])
 
   return (
-    <AccreditModelTableData
+    <AccreditModelTableList
       rows={list}
       columns={columns}
-      setDialogEmployessValue={setDialogEmployessValue}
+      setDialogCommunityValue={setDialogCommunityValue}
       selectedRows={selectedRows}
       setSelectedRows={setSelectedRows}
     />
   )
 }
 
-export default memo(AssociatedTableData)
+export default memo(AccreditModelTableData)

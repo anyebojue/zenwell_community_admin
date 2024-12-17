@@ -1,7 +1,7 @@
 import { Dispatch, memo, SetStateAction, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { OrganizationInfoParams } from 'api/model/platform/organizationInfoModel'
-import { findOrgUser, relevanceOrgUser } from 'modules/platform/organizationInfo'
+import { findRolesGroup, relevanceCommunity } from 'modules/platform/roles'
 import {
   Button,
   CircularProgress,
@@ -14,8 +14,8 @@ import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 import { CommunityReply } from 'api/model/platform/communityModel'
 import { RolesReply } from 'api/model/platform/rolesModel'
-import FormSearch from './FormSearch'
-import AccreditTableData from './AccreditTableData'
+import FormSearch from './AccreditModelFormSearch'
+import AccreditModelTableData from './AccreditModelTableData'
 
 interface AAccreditModelProps {
   dialogValue: RolesReply
@@ -33,7 +33,7 @@ const AccreditModel: React.FC<AAccreditModelProps> = ({
   setDialogCommunityValue
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.OrganizationInfoSlice)
+  const { page } = useSelector((state: RootState) => state.RolesSlice)
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [loading, setLoading] = useState(false)
 
@@ -45,7 +45,7 @@ const AccreditModel: React.FC<AAccreditModelProps> = ({
     try {
       setLoading(true)
       const res = (await dispatch(
-        relevanceOrgUser({ orgId: dialogValue.id, userId: dialogCommunityValue.id })
+        relevanceCommunity({ userGroupId: dialogValue.id, communityId: dialogCommunityValue.id })
       )) as PayloadActionWithError<OrganizationInfoParams>
       if (res.meta.requestStatus === 'rejected') {
         if (res.error) {
@@ -54,10 +54,10 @@ const AccreditModel: React.FC<AAccreditModelProps> = ({
       } else if (res.meta.requestStatus === 'fulfilled') {
         message.success('关联成功')
         await dispatch(
-          findOrgUser({
+          findRolesGroup({
             'page.num': page.num,
             'page.size': page.size,
-            orgId: dialogValue.id || '9027438861059358721'
+            userGroupId: dialogValue.id || '9027404928166920193'
           })
         )
         setAssociatedOpen(false)
@@ -75,7 +75,7 @@ const AccreditModel: React.FC<AAccreditModelProps> = ({
         <FormSearch dialogValue={dialogValue} />
       </DialogTitle>
       <DialogContent>
-        <AccreditTableData
+        <AccreditModelTableData
           dialogValue={dialogValue}
           setDialogCommunityValue={setDialogCommunityValue}
           selectedRows={selectedRows}

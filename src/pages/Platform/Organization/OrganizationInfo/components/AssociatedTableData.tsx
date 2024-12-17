@@ -29,21 +29,9 @@ const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({
   const { page, list } = useSelector((state: RootState) => state.EmployeesSlice)
 
   const columns: Column<EmployeesReply>[] = [
-    {
-      key: 'username',
-      headerName: '员工名称',
-      align: 'center'
-    },
-    {
-      key: 'mobile',
-      headerName: '员工电话',
-      align: 'center'
-    },
-    {
-      key: 'id',
-      headerName: '员工编号',
-      align: 'center'
-    }
+    { key: 'username', headerName: '员工名称', align: 'center' },
+    { key: 'mobile', headerName: '员工电话', align: 'center' },
+    { key: 'id', headerName: '员工编号', align: 'center' }
   ]
 
   const fetchData = useCallback(async () => {

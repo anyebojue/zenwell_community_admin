@@ -40,7 +40,6 @@ const Accredit: React.FC<AccreditProps> = ({ dialogValue }) => {
         dialogGroupValue={dialogGroupValue}
         setDialogGroupValue={setDialogGroupValue}
       />
-
       <AccreditModel
         dialogValue={dialogValue}
         associatedOpen={associatedOpen}

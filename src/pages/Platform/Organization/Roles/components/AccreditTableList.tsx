@@ -28,7 +28,7 @@ const usePagination = <T,>(data: T[], rowsPerPage: number) => {
   return { page, paginatedRows, setPage, handlePageChange }
 }
 
-const TableList = ({
+const AccreditTableList = ({
   rows,
   columns,
   setDialogGroupValue
@@ -189,4 +189,4 @@ const TableList = ({
   )
 }
 
-export default memo(TableList)
+export default memo(AccreditTableList)

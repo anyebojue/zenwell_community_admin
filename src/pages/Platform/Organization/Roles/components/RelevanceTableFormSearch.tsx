@@ -24,7 +24,7 @@ const textFieldStyles = {
   }
 }
 
-const FormSearch: React.FC = () => {
+const RelevanceTableFormSearch: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.CommunitySlice)
   const [searchParams, setSearchParams] = useState<CommunityParams>({
@@ -99,4 +99,4 @@ const FormSearch: React.FC = () => {
   )
 }
 
-export default memo(FormSearch)
+export default memo(RelevanceTableFormSearch)

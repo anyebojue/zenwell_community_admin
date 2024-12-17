@@ -6,7 +6,8 @@ import {
   CreateRoles,
   UpdateRoles,
   DeleteRoles,
-  FindRolesGroup
+  FindRolesGroup,
+  RelevanceCommunity
 } from 'api/platform/roles'
 
 const namespace = 'Roles'
@@ -19,7 +20,7 @@ const PAGE = {
 interface IInitialState {
   page: Page
   list: RolesReply[]
-  rolesUserList: RolesGroupReply[]
+  rolesGroupList: RolesGroupReply[]
 }
 
 const initialState: IInitialState = {
@@ -30,8 +31,16 @@ const initialState: IInitialState = {
     disable: false
   },
   list: [],
-  rolesUserList: []
+  rolesGroupList: []
 }
+
+export const relevanceCommunity = createAsyncThunk(
+  `RolesGroup/create`,
+  async (data: { userGroupId: string; communityId: string }) => {
+    const res = await RelevanceCommunity(data)
+    return res
+  }
+)
 
 export const findRolesGroup = createAsyncThunk(
   `RolesGroup/find`,
@@ -76,7 +85,7 @@ export const RolesSlice = createSlice({
     })
     builder.addCase(findRolesGroup.fulfilled, (state, action) => {
       state.page = action.payload.page
-      state.rolesUserList = action.payload.list
+      state.rolesGroupList = action.payload.list
     })
   }
 })

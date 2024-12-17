@@ -43,7 +43,7 @@ export interface Column<T> {
   renderCell?: (_value: T[keyof T]) => ReactNode
 }
 
-const TableData: React.FC = () => {
+const RelevanceTableData: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.CommunitySlice)
 
@@ -85,4 +85,4 @@ const TableData: React.FC = () => {
   return <TableList rows={list} columns={columns} />
 }
 
-export default memo(TableData)
+export default memo(RelevanceTableData)

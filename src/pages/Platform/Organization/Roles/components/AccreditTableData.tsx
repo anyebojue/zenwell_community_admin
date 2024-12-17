@@ -44,7 +44,7 @@ const AccreditTableData: React.FC<AccreditTableDataProps> = ({
   setDialogGroupValue
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, rolesUserList } = useSelector((state: RootState) => state.RolesSlice)
+  const { page, rolesGroupList } = useSelector((state: RootState) => state.RolesSlice)
 
   const columns: Column<RolesGroupReply>[] = [
     {
@@ -96,7 +96,7 @@ const AccreditTableData: React.FC<AccreditTableDataProps> = ({
 
   return (
     <AccreditTableList
-      rows={rolesUserList}
+      rows={rolesGroupList}
       columns={columns}
       setDialogGroupValue={setDialogGroupValue}
     />

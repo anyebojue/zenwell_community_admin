@@ -7,11 +7,26 @@ import {
 } from '../model/platform/rolesModel'
 
 const ApiPrefix = {
+  RelevanceCommunity: '/auth/org_user',
   FindRolesGroup: '/auth/user_group_community_relation',
   FindRoles: '/auth/user/group',
   CreateRoles: '/auth/user/group',
   UpdateRoles: '/auth/user/group',
   DeleteRoles: '/auth/user/group'
+}
+
+/**
+ * 关联小区
+ * @param params userGroupId关联的角色ID communityId关联的小区ID
+ * @returns
+ */
+export const RelevanceCommunity = (data: { userGroupId: string; communityId: string }) => {
+  return request
+    .post({
+      url: ApiPrefix.RelevanceCommunity,
+      data
+    })
+    .then(res => res.data)
 }
 
 /**

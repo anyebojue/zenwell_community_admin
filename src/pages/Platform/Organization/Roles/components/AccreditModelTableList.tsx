@@ -1,5 +1,5 @@
 import { memo, useState, useMemo, ChangeEvent, Dispatch, SetStateAction } from 'react'
-import { EmployeesReply } from 'api/model/platform/employeesModel'
+import { CommunityReply } from 'api/model/platform/communityModel'
 import {
   Pagination,
   Table,
@@ -29,16 +29,16 @@ const usePagination = <T,>(data: T[], rowsPerPage: number) => {
   return { page, paginatedRows, setPage, handlePageChange }
 }
 
-const AssociatedTableList = ({
+const AccreditModelTableList = ({
   rows,
   columns,
-  setDialogEmployessValue,
+  setDialogCommunityValue,
   selectedRows,
   setSelectedRows
 }: {
-  rows: EmployeesReply[]
-  columns: Column<EmployeesReply>[]
-  setDialogEmployessValue: Dispatch<SetStateAction<EmployeesReply | undefined>>
+  rows: CommunityReply[]
+  columns: Column<CommunityReply>[]
+  setDialogCommunityValue: Dispatch<SetStateAction<CommunityReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
 }) => {
@@ -80,7 +80,7 @@ const AssociatedTableList = ({
   const allSelected = selectedRows.size === rows.length && rows.length > 0
   const someSelected = selectedRows.size > 0 && selectedRows.size < rows.length
 
-  const renderValue = (value: EmployeesReply[keyof EmployeesReply] | undefined) => {
+  const renderValue = (value: CommunityReply[keyof CommunityReply] | undefined) => {
     if (Array.isArray(value)) {
       return JSON.stringify(value)
     } else if (value && typeof value === 'object') {
@@ -138,7 +138,7 @@ const AssociatedTableList = ({
             {paginatedRows.length > 0 ? (
               paginatedRows.map(row => (
                 <TableRow
-                  onClick={() => setDialogEmployessValue(row)}
+                  onClick={() => setDialogCommunityValue(row)}
                   key={row.id}
                   sx={tableRowStyle}
                 >
@@ -156,7 +156,7 @@ const AssociatedTableList = ({
                     />
                   </TableCell>
                   {columns.map(column => {
-                    const value = row[column.key as keyof EmployeesReply]
+                    const value = row[column.key as keyof CommunityReply]
                     return (
                       <TableCell
                         key={column.key}
@@ -233,4 +233,4 @@ const AssociatedTableList = ({
   )
 }
 
-export default memo(AssociatedTableList)
+export default memo(AccreditModelTableList)
