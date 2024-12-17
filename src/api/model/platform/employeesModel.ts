@@ -25,8 +25,8 @@ export interface EmployeesReply {
     status: number
     updatedAt: string
   }[] // 关联组织
-  plate: string
-  platform: string
+  plate: string // 平台
+  platform: string // 平台
   position: string // 岗位
   role: RolesReply[]
   roleId: string
@@ -38,12 +38,13 @@ export interface EmployeesReply {
 export interface EmployeesParams {
   id?: string
   username?: string // 名称
-  sex?: number // 性别
-  mobile?: string // 手机号
   position?: string // 岗位
-  email?: string // 邮箱
-  address?: string // 地址
+  mobile?: string // 手机号
   idcard?: string // 身份证
+  address?: string // 地址
+  password?: string // 密码
+  sex?: number // 性别
+  platform?: string // 平台
 }
 
 export interface FindEmployeesReply {

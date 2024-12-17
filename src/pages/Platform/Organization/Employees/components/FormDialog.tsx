@@ -48,10 +48,11 @@ const FormDialog: React.FC<FormDialogProps> = ({
       username: dialogType === 'edit' ? dialogValue?.username || '' : '',
       position: dialogType === 'edit' ? dialogValue?.position || '' : '',
       mobile: dialogType === 'edit' ? dialogValue?.mobile || '' : '',
-      sex: dialogType === 'edit' ? dialogValue?.sex || 0 : 0,
       idcard: dialogType === 'edit' ? dialogValue?.idcard || '' : '',
       address: dialogType === 'edit' ? dialogValue?.address || '' : '',
-      org: dialogType === 'edit' ? dialogValue?.org || '' : ''
+      password: dialogType === 'edit' ? '' : '',
+      sex: dialogType === 'edit' ? dialogValue?.sex || 0 : 0,
+      platform: dialogType === 'edit' ? dialogValue?.platform || '' : ''
     }),
     [dialogType, dialogValue]
   )
@@ -66,6 +67,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
       event.preventDefault()
       setLoading(true)
       try {
+        console.log(formData)
         const params = { ...formData }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
@@ -92,7 +94,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
     { label: '手机', type: 'text', id: 'mobile', required: true },
     { label: '身份证', type: 'text', id: 'idcard', required: true },
     { label: '家庭住址', type: 'text', id: 'address', required: true },
-    { label: '关联组织', type: 'text', id: 'org', required: true }
+    { label: '登录密码', type: 'password', id: 'password', required: dialogType !== 'edit' }
   ]
 
   return (
@@ -124,7 +126,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
             </Box>
           ))}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>平台：</FormLabel>
+            <FormLabel>性别：</FormLabel>
             <TextField
               sx={{ width: '80%' }}
               select
@@ -136,6 +138,27 @@ const FormDialog: React.FC<FormDialogProps> = ({
               {[
                 { value: 0, label: '女' },
                 { value: 1, label: '男' }
+              ].map(option => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>平台：</FormLabel>
+            <TextField
+              sx={{ width: '80%' }}
+              select
+              size="small"
+              value={formData.platform}
+              onChange={e => setFormData({ ...formData, platform: e.target.value })}
+              variant="outlined"
+            >
+              {[
+                { value: '0', label: '物业' },
+                { value: '1', label: '平台' },
+                { value: '2', label: '开发' }
               ].map(option => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
