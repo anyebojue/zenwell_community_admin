@@ -7,7 +7,7 @@ import {
 } from '../model/platform/rolesModel'
 
 const ApiPrefix = {
-  RelevanceCommunity: '/auth/org_user',
+  RelevanceCommunity: '/auth/user_group_community_relation',
   FindRolesGroup: '/auth/user_group_community_relation',
   FindRoles: '/auth/user/group',
   CreateRoles: '/auth/user/group',
