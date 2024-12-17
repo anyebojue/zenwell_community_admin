@@ -18,6 +18,7 @@ interface RelevanceProps {
 
 const Relevance: React.FC<RelevanceProps> = ({ dialogValue }) => {
   const [dialogEmployessValue, setDialogEmployessValue] = useState<EmployeesReply | undefined>()
+  console.log(dialogEmployessValue)
 
   return (
     <Box sx={contentBoxStyle}>
