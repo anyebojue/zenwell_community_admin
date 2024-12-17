@@ -1,6 +1,6 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OrgUserReply } from 'api/model/platform/organizationInfoModel'
+import { OrganizationInfoReply, OrgUserReply } from 'api/model/platform/organizationInfoModel'
 import { findOrgUser } from 'modules/platform/organizationInfo'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
@@ -24,7 +24,7 @@ const textFieldStyles = {
 }
 
 interface FormSearchProps {
-  dialogValue: OrgUserReply
+  dialogValue: OrganizationInfoReply
 }
 
 const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {

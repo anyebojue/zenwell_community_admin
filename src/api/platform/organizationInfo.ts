@@ -1,9 +1,9 @@
 import { request } from 'utils/request/axios'
 import {
-  OrgUserReply,
   FindOrgUserReply,
   FindOrganizationInfoReply,
-  OrganizationInfoParams
+  OrganizationInfoParams,
+  OrgUserReply
 } from '../model/platform/organizationInfoModel'
 
 const ApiPrefix = {

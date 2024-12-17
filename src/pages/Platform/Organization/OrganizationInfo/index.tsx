@@ -9,10 +9,11 @@ import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import { useDispatch, useSelector } from 'react-redux'
 import message from 'components/Message'
 import { deleteByIds, find } from 'modules/platform/organizationInfo'
-import { OrganizationInfoReply } from 'api/model/platform/organizationInfoModel'
+import { OrganizationInfoReply, OrgUserReply } from 'api/model/platform/organizationInfoModel'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
 import FormDialog from './components/FormDialog'
+import Associated from './components/Associated'
 
 const treeViewStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -41,7 +42,9 @@ const InfoIndex = () => {
   const [openDialog, setOpenDialog] = useState(false)
   const [dialogType, setDialogType] = useState('')
   const [dialogValue, setDialogValue] = useState<OrganizationInfoReply>({})
+  const [dialogUserValue, setDialogUserValue] = useState<OrgUserReply>({})
 
+  const [associatedOpen, setAssociatedOpen] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -186,12 +189,17 @@ const InfoIndex = () => {
                   color="error"
                   startIcon={<Add />}
                   sx={buttonCommonStyle()}
+                  onClick={() => setAssociatedOpen(true)}
                 >
                   关联员工
                 </Button>
               </Stack>
             </Box>
-            <TableData dialogValue={dialogValue} />
+            <TableData
+              dialogValue={dialogValue}
+              dialogUserValue={dialogUserValue}
+              setDialogUserValue={setDialogUserValue}
+            />
           </Box>
         </Box>
       </Stack>
@@ -208,6 +216,11 @@ const InfoIndex = () => {
         setDelOpen={setDelOpen}
         userName={[dialogValue.name as string]}
         onDelete={() => handleDelete([dialogValue.id as string])}
+      />
+      <Associated
+        dialogValue={dialogValue}
+        associatedOpen={associatedOpen}
+        setAssociatedOpen={setAssociatedOpen}
       />
     </Box>
   )

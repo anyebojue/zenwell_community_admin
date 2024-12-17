@@ -1,6 +1,6 @@
-import { memo, ReactNode, useCallback, useEffect } from 'react'
+import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OrgUserReply } from 'api/model/platform/organizationInfoModel'
+import { OrganizationInfoReply, OrgUserReply } from 'api/model/platform/organizationInfoModel'
 import { findOrgUser } from 'modules/platform/organizationInfo'
 import { Box, Tooltip, IconButton } from '@mui/material'
 import { Article, Delete } from '@mui/icons-material'
@@ -32,31 +32,54 @@ const renderActionButtons = () => (
   </Box>
 )
 
-export interface Column {
+export interface Column<T> {
   headerName: string
-  key: string
-  align?: 'left' | 'right' | 'center'
-  renderCell?: (value: ReactNode | null | undefined) => ReactNode
+  key: Exclude<keyof T, symbol> | `${Exclude<keyof T, symbol>}.${string}` | 'operate' // 过滤掉 symbol 类型
+  align?: 'left' | 'center' | 'right'
+  renderCell?: (row: T) => ReactNode
 }
 
 interface TableDataProps {
-  dialogValue: OrgUserReply
+  dialogValue: OrganizationInfoReply
+  dialogUserValue: OrgUserReply
+  setDialogUserValue: Dispatch<SetStateAction<OrgUserReply>>
 }
 
-const TableData: React.FC<TableDataProps> = ({ dialogValue }) => {
+const TableData: React.FC<TableDataProps> = ({ dialogValue, setDialogUserValue }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, orgUserList } = useSelector((state: RootState) => ({
-    page: state.OrganizationInfoSlice.page,
-    orgUserList: state.OrganizationInfoSlice.orgUserList as OrgUserReply[]
-  }))
+  const { page, orgUserList } = useSelector((state: RootState) => state.OrganizationInfoSlice)
 
-  const columns: Column[] = [
-    { key: 'name', headerName: '名称', align: 'center' },
-    { key: 'mobile', headerName: '手机号', align: 'center' },
-    { key: 'position', headerName: '岗位', align: 'center' },
-    { key: 'email', headerName: '邮箱', align: 'center' },
-    { key: 'address', headerName: '地址', align: 'center' },
-    { key: 'sex', headerName: '性别', align: 'center' },
+  const columns: Column<OrgUserReply>[] = [
+    {
+      key: 'users.username',
+      headerName: '名称',
+      align: 'center',
+      renderCell: (row: OrgUserReply) => row.users?.username
+    },
+    {
+      key: 'users.mobile',
+      headerName: '手机号',
+      align: 'center',
+      renderCell: (row: OrgUserReply) => row.users?.mobile
+    },
+    {
+      key: 'users.position',
+      headerName: '岗位',
+      align: 'center',
+      renderCell: (row: OrgUserReply) => row.users?.position
+    },
+    {
+      key: 'users.address',
+      headerName: '地址',
+      align: 'center',
+      renderCell: (row: OrgUserReply) => row.users?.address
+    },
+    {
+      key: 'users.sex',
+      headerName: '性别',
+      align: 'center',
+      renderCell: (row: OrgUserReply) => (row.users?.sex === 0 ? '女' : '男')
+    },
     {
       key: 'operate',
       headerName: '操作',
@@ -86,7 +109,7 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue }) => {
     fetchData()
   }, [fetchData])
 
-  return <TableList rows={orgUserList} columns={columns} />
+  return <TableList rows={orgUserList} columns={columns} setDialogUserValue={setDialogUserValue} />
 }
 
 export default memo(TableData)

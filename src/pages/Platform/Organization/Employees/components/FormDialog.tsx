@@ -122,6 +122,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
                 id={id}
                 value={formData[id as keyof EmployeesParams]}
                 onChange={e => setFormData({ ...formData, [id]: e.target.value })}
+                autoComplete={type === 'password' ? 'current-password' : ''}
               />
             </Box>
           ))}

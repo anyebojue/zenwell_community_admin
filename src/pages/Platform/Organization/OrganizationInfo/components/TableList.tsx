@@ -1,4 +1,4 @@
-import { memo, useState, useMemo, ChangeEvent, ReactNode } from 'react'
+import { memo, useState, useMemo, ChangeEvent, Dispatch, SetStateAction } from 'react'
 import {
   Pagination,
   Table,
@@ -13,11 +13,9 @@ import {
   Box,
   Paper,
   SelectChangeEvent,
-  Checkbox,
   Theme
 } from '@mui/material'
 import { OrgUserReply } from 'api/model/platform/organizationInfoModel'
-import { EmployeesReply } from 'api/model/platform/employeesModel'
 import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {
@@ -30,12 +28,17 @@ const usePagination = <T,>(data: T[], rowsPerPage: number) => {
   return { page, paginatedRows, setPage, handlePageChange }
 }
 
-const TableList = ({ rows, columns }: { rows: OrgUserReply[]; columns: Column[] }) => {
-  const [rowsPerPage, setRowsPerPage] = useState('20')
-  const { page, paginatedRows, setPage, handlePageChange } = usePagination(
-    rows,
-    Number(rowsPerPage)
-  )
+const TableList = ({
+  rows,
+  columns,
+  setDialogUserValue
+}: {
+  rows: OrgUserReply[]
+  columns: Column<OrgUserReply>[]
+  setDialogUserValue: Dispatch<SetStateAction<OrgUserReply>>
+}) => {
+  const [rowsPerPage, setRowsPerPage] = useState(20)
+  const { page, paginatedRows, setPage, handlePageChange } = usePagination(rows, rowsPerPage)
 
   const tableHeaderStyle = (theme: Theme) => ({
     backgroundColor: theme.palette.action.hover,
@@ -54,15 +57,25 @@ const TableList = ({ rows, columns }: { rows: OrgUserReply[]; columns: Column[] 
     }
   })
 
-  const handleRowsPerPageChange = (event: SelectChangeEvent<string>) => {
-    setRowsPerPage(event.target.value)
+  const handleRowsPerPageChange = (event: SelectChangeEvent<number>) => {
+    setRowsPerPage(Number(event.target.value))
     setPage(1)
+  }
+
+  const renderValue = (value: OrgUserReply[keyof OrgUserReply] | undefined) => {
+    if (Array.isArray(value)) {
+      return JSON.stringify(value)
+    } else if (value && typeof value === 'object') {
+      return JSON.stringify(value)
+    } else {
+      return value || '-'
+    }
   }
 
   return (
     <Box
       sx={theme => ({
-        mt: 1,
+        mt: 3,
         width: '100%',
         borderRadius: '7px',
         border: `1px solid ${theme.palette.divider}`,
@@ -79,9 +92,6 @@ const TableList = ({ rows, columns }: { rows: OrgUserReply[]; columns: Column[] 
         <Table sx={{ minWidth: 650 }} aria-label="data table" size="small">
           <TableHead>
             <TableRow sx={tableHeaderStyle}>
-              <TableCell padding="checkbox">
-                <Checkbox color="primary" inputProps={{ 'aria-label': 'select all rows' }} />
-              </TableCell>
               {columns.map(column => (
                 <TableCell
                   key={column.headerName}
@@ -99,37 +109,22 @@ const TableList = ({ rows, columns }: { rows: OrgUserReply[]; columns: Column[] 
           </TableHead>
           <TableBody>
             {paginatedRows.length > 0 ? (
-              paginatedRows
-                .flatMap(item => item.users || [])
-                .map(row => (
-                  <TableRow key={row.id} sx={tableRowStyle}>
-                    <TableCell
-                      padding="checkbox"
-                      sx={{
-                        borderBottom: theme => `1px solid ${theme.palette.divider}`
-                      }}
-                    >
-                      <Checkbox
-                        color="primary"
-                        inputProps={{ 'aria-label': `select row ${row.id}` }}
-                      />
-                    </TableCell>
-                    {columns.map(column => {
-                      const value = row[column.key as keyof EmployeesReply] as ReactNode
-                      return (
-                        <TableCell
-                          key={column.key}
-                          align={column.align}
-                          sx={{
-                            borderBottom: theme => `1px solid ${theme.palette.divider}`
-                          }}
-                        >
-                          {column.renderCell ? column.renderCell(value) : value}
-                        </TableCell>
-                      )
-                    })}
-                  </TableRow>
-                ))
+              paginatedRows.map(row => (
+                <TableRow onClick={() => setDialogUserValue(row)} key={row.id} sx={tableRowStyle}>
+                  {columns.map(column => {
+                    const value = row[column.key as keyof OrgUserReply]
+                    return (
+                      <TableCell
+                        key={column.key}
+                        align={column.align}
+                        sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}
+                      >
+                        {column.renderCell ? column.renderCell(row) : renderValue(value)}
+                      </TableCell>
+                    )
+                  })}
+                </TableRow>
+              ))
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length + 1} align="center">
@@ -181,7 +176,7 @@ const TableList = ({ rows, columns }: { rows: OrgUserReply[]; columns: Column[] 
             ))}
           </Select>
           <Pagination
-            count={Math.ceil(rows.length / Number(rowsPerPage))}
+            count={Math.ceil(rows.length / rowsPerPage)}
             page={page}
             onChange={handlePageChange}
             color="primary"

@@ -2,13 +2,23 @@ import { Page } from '../pageModel'
 import { EmployeesReply } from './employeesModel'
 
 export interface OrgUserReply {
-  id?: string
   createdAt?: string
-  updatedAt?: string
+  id?: string
   name?: string // 员工姓名
   orgId?: string // 组织ID
+  orgs?: {
+    createdAt: string
+    description: string
+    id: string
+    name: string
+    pId: string
+    plate: string
+    remark: string
+    status: number
+    updatedAt: string
+  }[]
+  updatedAt?: string
   userId?: string // 员工ID
-  orgs?: []
   users?: EmployeesReply // 员工信息
 }
 

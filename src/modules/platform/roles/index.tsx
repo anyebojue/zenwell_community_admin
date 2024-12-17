@@ -66,7 +66,6 @@ export const RolesSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(find.fulfilled, (state, action) => {
-      state.page = action.payload.page
       state.list = action.payload.list
     })
     builder.addCase(findRolesUser.fulfilled, (state, action) => {
