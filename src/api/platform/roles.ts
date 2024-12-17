@@ -1,13 +1,13 @@
 import { request } from 'utils/request/axios'
 import {
   FindRolesReply,
-  FindRolesUserReply,
+  FindRolesGroupReply,
   RolesParams,
-  RolesUserReply
+  RolesGroupReply
 } from '../model/platform/rolesModel'
 
 const ApiPrefix = {
-  FindRolesUser: '/auth/user_group_community_relation',
+  FindRolesGroup: '/auth/user_group_community_relation',
   FindRoles: '/auth/user/group',
   CreateRoles: '/auth/user/group',
   UpdateRoles: '/auth/user/group',
@@ -19,10 +19,10 @@ const ApiPrefix = {
  * @param params User
  * @returns
  */
-export const FindRolesUser = (params: RolesUserReply & PaginationParams) => {
+export const FindRolesGroup = (params: RolesGroupReply & PaginationParams) => {
   return request
-    .get<FindRolesUserReply>({
-      url: ApiPrefix.FindRolesUser,
+    .get<FindRolesGroupReply>({
+      url: ApiPrefix.FindRolesGroup,
       params
     })
     .then(res => res.data)

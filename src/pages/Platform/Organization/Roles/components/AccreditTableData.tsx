@@ -1,11 +1,11 @@
-import { memo, ReactNode, useCallback, useEffect } from 'react'
+import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RolesUserReply } from 'api/model/platform/rolesModel'
-import { findRolesUser } from 'modules/platform/roles'
+import { RolesReply, RolesGroupReply } from 'api/model/platform/rolesModel'
+import { findRolesGroup } from 'modules/platform/roles'
 import { Box, Tooltip, IconButton } from '@mui/material'
 import { Delete } from '@mui/icons-material'
 import message from 'components/Message'
-import TableList from './AccreditTableList'
+import AccreditTableList from './AccreditTableList'
 
 const renderActionButtons = () => (
   <Box>
@@ -28,21 +28,43 @@ const renderActionButtons = () => (
 
 export interface Column<T> {
   headerName: string
-  key: string
-  align?: 'left' | 'right' | 'center'
-  renderCell?: (value: T[keyof T]) => ReactNode
+  key: Exclude<keyof T, symbol> | `${Exclude<keyof T, symbol>}.${string}` | 'operate' // 过滤掉 symbol 类型
+  align?: 'left' | 'center' | 'right'
+  renderCell?: (row: T) => ReactNode
 }
 
-const TableData: React.FC = () => {
+interface AccreditTableDataProps {
+  dialogValue: RolesReply
+  dialogGroupValue: RolesGroupReply
+  setDialogGroupValue: Dispatch<SetStateAction<RolesGroupReply>>
+}
+
+const AccreditTableData: React.FC<AccreditTableDataProps> = ({
+  dialogValue,
+  setDialogGroupValue
+}) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, rolesUserList } = useSelector((state: RootState) => state.RolesSlice)
 
-  const columns: Column<RolesUserReply>[] = [
-    { key: 'id', headerName: '小区ID', align: 'center' },
-    { key: 'name', headerName: '小区名称', align: 'center' },
-    { key: 'nearbyLandmarks', headerName: '附近地标', align: 'center' },
-    { key: 'cityCode', headerName: '城市编码', align: 'center' },
-    { key: 'bId', headerName: '社区编码', align: 'center' },
+  const columns: Column<RolesGroupReply>[] = [
+    {
+      key: 'community.id',
+      headerName: '小区ID',
+      align: 'center',
+      renderCell: (row: RolesGroupReply) => row?.community?.id
+    },
+    {
+      key: 'community.name',
+      headerName: '小区名称',
+      align: 'center',
+      renderCell: (row: RolesGroupReply) => row?.community?.name
+    },
+    {
+      key: 'community.nearbyLandmarks',
+      headerName: '附近地标',
+      align: 'center',
+      renderCell: (row: RolesGroupReply) => row?.community?.nearbyLandmarks
+    },
     {
       key: 'operate',
       headerName: '操作',
@@ -54,19 +76,31 @@ const TableData: React.FC = () => {
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      await dispatch(findRolesUser({ 'page.num': page.num, 'page.size': page.size }))
+      await dispatch(
+        findRolesGroup({
+          'page.num': page.num,
+          'page.size': page.size,
+          userGroupId: dialogValue.id || '9027404928166920193'
+        })
+      )
     } catch {
       message.error('列表加载失败，请刷新页面或检查网络问题')
     } finally {
       closeLoading()
     }
-  }, [dispatch, page.num, page.size])
+  }, [dispatch, page.num, page.size, dialogValue.id])
 
   useEffect(() => {
     fetchData()
   }, [fetchData])
 
-  return <TableList rows={rolesUserList} columns={columns} />
+  return (
+    <AccreditTableList
+      rows={rolesUserList}
+      columns={columns}
+      setDialogGroupValue={setDialogGroupValue}
+    />
+  )
 }
 
-export default memo(TableData)
+export default memo(AccreditTableData)

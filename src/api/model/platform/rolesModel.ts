@@ -1,8 +1,8 @@
 import { Page } from '../pageModel'
 import { CommunityReply } from './communityModel'
 
-export interface RolesUserReply {
-  community?: CommunityReply[]
+export interface RolesGroupReply {
+  community?: CommunityReply
   communityId?: string
   createdAt?: string
   id?: string
@@ -26,9 +26,9 @@ export interface RolesParams {
   plate?: string
 }
 
-export interface FindRolesUserReply {
+export interface FindRolesGroupReply {
   page: Page
-  list: Array<RolesUserReply>
+  list: Array<RolesGroupReply>
 }
 
 export interface FindRolesReply {
