@@ -73,6 +73,14 @@ const RolesIndex = () => {
     fetchData()
   }, [fetchData])
 
+  useEffect(() => {
+    if (!list || list.length === 0) {
+      setDialogValue({})
+    } else {
+      setDialogValue(list[0])
+    }
+  }, [list])
+
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setActiveTabIndex(newValue)
   }
@@ -137,6 +145,7 @@ const RolesIndex = () => {
           </Stack>
           <RichTreeView
             items={MUI_X_PRODUCTS}
+            selectedItems={dialogValue?.id || ''}
             onSelectedItemsChange={(_, itemId) => {
               const data = list.filter(item => item.id === itemId)
               if (data.length > 0) {

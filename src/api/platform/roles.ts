@@ -1,11 +1,31 @@
 import { request } from 'utils/request/axios'
-import { FindRolesReply, RolesParams } from '../model/platform/rolesModel'
+import {
+  FindRolesReply,
+  FindRolesUserReply,
+  RolesParams,
+  RolesUserReply
+} from '../model/platform/rolesModel'
 
 const ApiPrefix = {
+  FindRolesUser: '/auth/user_group_community_relation',
   FindRoles: '/auth/user/group',
   CreateRoles: '/auth/user/group',
   UpdateRoles: '/auth/user/group',
   DeleteRoles: '/auth/user/group'
+}
+
+/**
+ * 查询接口
+ * @param params User
+ * @returns
+ */
+export const FindRolesUser = (params: RolesUserReply & PaginationParams) => {
+  return request
+    .get<FindRolesUserReply>({
+      url: ApiPrefix.FindRolesUser,
+      params
+    })
+    .then(res => res.data)
 }
 
 /**

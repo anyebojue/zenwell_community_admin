@@ -1,4 +1,5 @@
 import { Page } from '../pageModel'
+import { RolesReply } from './rolesModel'
 
 export interface EmployeesReply {
   actions: []
@@ -7,20 +8,31 @@ export interface EmployeesReply {
   createdAt: string
   email: string // 邮箱
   id: string
+  idcard: string // 身份证
   lastLogin: string
   lockExpire: string
   lockMsg: string
   locked: boolean
   mobile: string // 手机号
+  org: {
+    createdAt: string
+    description: string
+    id: string
+    name: string
+    pId: string
+    plate: string
+    remark: string
+    status: number
+    updatedAt: string
+  }[] // 关联组织
+  plate: string
   platform: string
   position: string // 岗位
-  // role: RolesReply
+  role: RolesReply[]
   roleId: string
   sex: number // 性别
   updatedAt: string
   username: string // 名称
-  idcard: string // 身份证
-  org: string // 关联组织
 }
 
 export interface EmployeesParams {
@@ -32,7 +44,6 @@ export interface EmployeesParams {
   email?: string // 邮箱
   address?: string // 地址
   idcard?: string // 身份证
-  org?: string // 关联组织
 }
 
 export interface FindEmployeesReply {

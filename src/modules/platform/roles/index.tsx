@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
-import { RolesParams, RolesReply } from 'api/model/platform/rolesModel'
-import { FindRoles, CreateRoles, UpdateRoles, DeleteRoles } from 'api/platform/roles'
+import { RolesParams, RolesReply, RolesUserReply } from 'api/model/platform/rolesModel'
+import { FindRoles, CreateRoles, UpdateRoles, DeleteRoles, FindRolesUser } from 'api/platform/roles'
 
 const namespace = 'Roles'
 
@@ -13,6 +13,7 @@ const PAGE = {
 interface IInitialState {
   page: Page
   list: RolesReply[]
+  rolesUserList: RolesUserReply[]
 }
 
 const initialState: IInitialState = {
@@ -22,8 +23,17 @@ const initialState: IInitialState = {
     total: '0',
     disable: false
   },
-  list: []
+  list: [],
+  rolesUserList: []
 }
+
+export const findRolesUser = createAsyncThunk(
+  `RolesUserReply/find`,
+  async (params: RolesUserReply & PaginationParams) => {
+    const res = await FindRolesUser(params)
+    return res
+  }
+)
 
 export const find = createAsyncThunk(
   `${namespace}/find`,
@@ -58,6 +68,10 @@ export const RolesSlice = createSlice({
     builder.addCase(find.fulfilled, (state, action) => {
       state.page = action.payload.page
       state.list = action.payload.list
+    })
+    builder.addCase(findRolesUser.fulfilled, (state, action) => {
+      state.page = action.payload.page
+      state.rolesUserList = action.payload.list
     })
   }
 })

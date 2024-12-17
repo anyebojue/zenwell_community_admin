@@ -53,9 +53,9 @@ const renderActionButtons = (
 
 export interface Column<T> {
   headerName: string
-  key: string
-  align?: 'left' | 'right' | 'center'
-  renderCell?: (_value: T[keyof T]) => ReactNode
+  key: keyof T | 'operate'
+  align?: 'left' | 'center' | 'right'
+  renderCell?: (row: T) => ReactNode
 }
 
 interface TableDataProps {
@@ -82,7 +82,14 @@ const TableData: React.FC<TableDataProps> = ({
     { key: 'id', headerName: '员工编号', align: 'center' },
     { key: 'username', headerName: '名称', align: 'center' },
     { key: 'mobile', headerName: '手机号', align: 'center' },
-    { key: 'org', headerName: '关联组织', align: 'center' },
+    {
+      key: 'org',
+      headerName: '关联组织',
+      align: 'center',
+      renderCell: (row: EmployeesReply) => {
+        return Array.isArray(row.org) && row.org.length > 0 ? row.org[0].name : '-'
+      }
+    },
     { key: 'position', headerName: '岗位', align: 'center' },
     { key: 'idcard', headerName: '身份证', align: 'center' },
     { key: 'address', headerName: '地址', align: 'center' },

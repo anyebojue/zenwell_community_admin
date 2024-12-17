@@ -1,5 +1,5 @@
 import { memo, useState, useMemo, ChangeEvent } from 'react'
-import { CommunityReply } from 'api/model/platform/communityModel'
+import { RolesUserReply } from 'api/model/platform/rolesModel'
 import {
   Pagination,
   Table,
@@ -33,8 +33,8 @@ const TableList = ({
   rows,
   columns
 }: {
-  rows: CommunityReply[]
-  columns: Column<CommunityReply>[]
+  rows: RolesUserReply[]
+  columns: Column<RolesUserReply>[]
 }) => {
   const [rowsPerPage, setRowsPerPage] = useState('20')
   const { page, paginatedRows, setPage, handlePageChange } = usePagination(
@@ -104,35 +104,38 @@ const TableList = ({
           </TableHead>
           <TableBody>
             {paginatedRows.length > 0 ? (
-              paginatedRows.map(row => (
-                <TableRow key={row.id} sx={tableRowStyle}>
-                  <TableCell
-                    padding="checkbox"
-                    sx={{
-                      borderBottom: theme => `1px solid ${theme.palette.divider}`
-                    }}
-                  >
-                    <Checkbox
-                      color="primary"
-                      inputProps={{ 'aria-label': `select row ${row.id}` }}
-                    />
-                  </TableCell>
-                  {columns.map(column => {
-                    const value = row[column.key as keyof CommunityReply]
-                    return (
-                      <TableCell
-                        key={column.key}
-                        align={column.align}
-                        sx={{
-                          borderBottom: theme => `1px solid ${theme.palette.divider}`
-                        }}
-                      >
-                        {column.renderCell ? column.renderCell(value) : value}
-                      </TableCell>
-                    )
-                  })}
-                </TableRow>
-              ))
+              paginatedRows
+                .flatMap(item => item.community || [])
+                .map(row => (
+                  <TableRow key={row.id} sx={tableRowStyle}>
+                    <TableCell
+                      padding="checkbox"
+                      sx={{
+                        borderBottom: theme => `1px solid ${theme.palette.divider}`
+                      }}
+                    >
+                      <Checkbox
+                        color="primary"
+                        inputProps={{ 'aria-label': `select row ${row.id}` }}
+                      />
+                    </TableCell>
+                    {columns.map(column => {
+                      console.log(column.key)
+                      const value = row[column.key]
+                      return (
+                        <TableCell
+                          key={column.key}
+                          align={column.align}
+                          sx={{
+                            borderBottom: theme => `1px solid ${theme.palette.divider}`
+                          }}
+                        >
+                          {column.renderCell ? column.renderCell(value) : value}
+                        </TableCell>
+                      )
+                    })}
+                  </TableRow>
+                ))
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length + 1} align="center">
