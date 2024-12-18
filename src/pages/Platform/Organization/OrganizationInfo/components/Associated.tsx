@@ -31,23 +31,23 @@ const Associated: React.FC<AssociatedProps> = ({
   dialogValue,
   associatedOpen,
   setAssociatedOpen,
-  dialogEmployessValue,
   setDialogEmployessValue
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.OrganizationInfoSlice)
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [loading, setLoading] = useState(false)
+  console.log(1111, selectedRows.size)
 
   const onSubmit = async () => {
-    if (!dialogValue.id || !dialogEmployessValue?.id) {
+    if (!dialogValue.id || !selectedRows.size) {
       message.error('请选择有效的组织或员工')
       return
     }
     try {
       setLoading(true)
       const res = (await dispatch(
-        relevanceOrgUser({ orgId: dialogValue.id, userId: dialogEmployessValue.id })
+        relevanceOrgUser({ orgId: dialogValue.id, userId: [...selectedRows].join(',') })
       )) as PayloadActionWithError<OrganizationInfoParams>
       if (res.meta.requestStatus === 'rejected') {
         if (res.error) {

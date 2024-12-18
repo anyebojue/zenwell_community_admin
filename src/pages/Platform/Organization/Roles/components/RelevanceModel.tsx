@@ -1,11 +1,9 @@
 import { Dispatch, memo, SetStateAction, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  OrganizationInfoParams,
-  OrganizationInfoReply
-} from 'api/model/platform/organizationInfoModel'
+import { RolesParams, RolesReply } from 'api/model/platform/rolesModel'
 import { EmployeesReply } from 'api/model/platform/employeesModel'
-import { findOrgUser, relevanceOrgUser } from 'modules/platform/organizationInfo'
+import { update } from 'modules/platform/roles'
+import { find } from 'modules/platform/roles'
 import {
   Button,
   CircularProgress,
@@ -20,7 +18,7 @@ import RelevanceFormSearch from './RelevanceFormSearch'
 import RelevanceModelTableData from './RelevanceModelTableData'
 
 interface AssociatedProps {
-  dialogValue: OrganizationInfoReply
+  dialogValue: RolesReply
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
   dialogEmployessValue: EmployeesReply | undefined
@@ -38,6 +36,7 @@ const RelevanceModel: React.FC<AssociatedProps> = ({
   const { page } = useSelector((state: RootState) => state.OrganizationInfoSlice)
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [loading, setLoading] = useState(false)
+  console.log(dialogValue)
 
   const onSubmit = async () => {
     if (!dialogValue.id || !dialogEmployessValue?.id) {
@@ -47,21 +46,21 @@ const RelevanceModel: React.FC<AssociatedProps> = ({
     try {
       setLoading(true)
       const res = (await dispatch(
-        relevanceOrgUser({ orgId: dialogValue.id, userId: dialogEmployessValue.id })
-      )) as PayloadActionWithError<OrganizationInfoParams>
+        update({
+          users: dialogEmployessValue.id,
+          id: dialogValue.id,
+          name: dialogValue.name,
+          plate: dialogValue.plate,
+          word: dialogValue.word
+        })
+      )) as PayloadActionWithError<RolesParams>
       if (res.meta.requestStatus === 'rejected') {
         if (res.error) {
           throw new Error(res.error.message || '关联失败')
         }
       } else if (res.meta.requestStatus === 'fulfilled') {
         message.success('关联成功')
-        await dispatch(
-          findOrgUser({
-            'page.num': page.num,
-            'page.size': page.size,
-            orgId: dialogValue.id || '9027438861059358721'
-          })
-        )
+        await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
         setOpen(false)
       }
     } catch (err: unknown) {

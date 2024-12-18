@@ -25,6 +25,8 @@ export interface RolesParams {
   id?: string
   name?: string
   plate?: string
+  users?: string
+  word?: string
 }
 
 export interface FindRolesGroupReply {
