@@ -9,6 +9,7 @@ import {
 const ApiPrefix = {
   RelevanceOrgUser: '/auth/org_user',
   FindOrgUser: '/auth/org_user',
+  DeleteOrgUser: '/auth/org_user',
   FindOrganizationInfo: '/auth/org_tree',
   CreateOrganizationInfo: '/auth/org',
   UpdateOrganizationInfo: '/auth/org',
@@ -30,7 +31,7 @@ export const RelevanceOrgUser = (data: { orgId: string; userId: string }) => {
 }
 
 /**
- * 查询接口
+ * 查询员工关联接口
  * @param params User
  * @returns
  */
@@ -39,6 +40,19 @@ export const FindOrgUser = (params: OrgUserReply & PaginationParams) => {
     .get<FindOrgUserReply>({
       url: ApiPrefix.FindOrgUser,
       params
+    })
+    .then(res => res.data)
+}
+
+/**
+ * 删除员工关联接口
+ * @param ids
+ * @returns
+ */
+export const DeleteOrgUser = (ids: string[]) => {
+  return request
+    .delete({
+      url: `${ApiPrefix.DeleteOrgUser}/${ids.join(',')}`
     })
     .then(res => res.data)
 }

@@ -1,8 +1,8 @@
 import { memo, useCallback, useEffect, useState, useMemo } from 'react'
 import { TreeViewBaseItem } from '@mui/x-tree-view/models'
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
-import { Box, Button, Stack, Theme, Typography } from '@mui/material'
-import { Add, Delete, Edit, FileCopy } from '@mui/icons-material'
+import { Box, Button, Stack, Theme } from '@mui/material'
+import { Add, Delete, Edit } from '@mui/icons-material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
@@ -17,13 +17,6 @@ import FormDialog from './components/FormDialog'
 import Associated from './components/Associated'
 
 const treeViewStyle = (theme: Theme) => ({
-  background: theme.palette.background.default,
-  borderRadius: '15px',
-  padding: '15px 15px',
-  width: '100%'
-})
-
-const contentBoxStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
   borderRadius: '15px',
   padding: '15px 15px',
@@ -45,6 +38,7 @@ const InfoIndex = () => {
   const [dialogValue, setDialogValue] = useState<OrganizationInfoReply>({})
   const [dialogUserValue, setDialogUserValue] = useState<OrgUserReply>({})
   const [dialogEmployessValue, setDialogEmployessValue] = useState<EmployeesReply | undefined>()
+  const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
 
   const [associatedOpen, setAssociatedOpen] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
@@ -172,37 +166,14 @@ const InfoIndex = () => {
         </Box>
         <Box sx={{ width: '450%' }}>
           <FormSearch dialogValue={dialogValue} />
-          <Box sx={contentBoxStyle}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography variant="h6">{dialogValue.name} 员工</Typography>
-              <Stack direction="row" spacing={1}>
-                <Button
-                  size="small"
-                  variant="contained"
-                  color="error"
-                  startIcon={<FileCopy />}
-                  sx={buttonCommonStyle()}
-                >
-                  文档
-                </Button>
-                <Button
-                  size="small"
-                  variant="contained"
-                  color="error"
-                  startIcon={<Add />}
-                  sx={buttonCommonStyle()}
-                  onClick={() => setAssociatedOpen(true)}
-                >
-                  关联员工
-                </Button>
-              </Stack>
-            </Box>
-            <TableData
-              dialogValue={dialogValue}
-              dialogUserValue={dialogUserValue}
-              setDialogUserValue={setDialogUserValue}
-            />
-          </Box>
+          <TableData
+            dialogValue={dialogValue}
+            dialogUserValue={dialogUserValue}
+            setDialogUserValue={setDialogUserValue}
+            selectedRows={selectedRows}
+            setSelectedRows={setSelectedRows}
+            setAssociatedOpen={setAssociatedOpen}
+          />
         </Box>
       </Stack>
       <Copyright />

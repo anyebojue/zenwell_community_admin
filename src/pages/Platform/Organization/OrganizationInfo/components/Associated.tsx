@@ -37,7 +37,6 @@ const Associated: React.FC<AssociatedProps> = ({
   const { page } = useSelector((state: RootState) => state.OrganizationInfoSlice)
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [loading, setLoading] = useState(false)
-  console.log(1111, selectedRows.size)
 
   const onSubmit = async () => {
     if (!dialogValue.id || !selectedRows.size) {

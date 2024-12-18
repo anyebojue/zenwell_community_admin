@@ -11,7 +11,8 @@ import {
   UpdateOrganizationInfo,
   DeleteOrganizationInfo,
   FindOrgUser,
-  RelevanceOrgUser
+  RelevanceOrgUser,
+  DeleteOrgUser
 } from 'api/platform/organizationInfo'
 
 const namespace = 'OrganizationInfo'
@@ -50,6 +51,14 @@ export const findOrgUser = createAsyncThunk(
   `OrgUserReply/find`,
   async (params: OrgUserReply & PaginationParams) => {
     const res = await FindOrgUser(params)
+    return res
+  }
+)
+
+export const deleteOrgUserByIds = createAsyncThunk(
+  `OrgUserReply/deleteByIds`,
+  async (ids: string[]) => {
+    const res = await DeleteOrgUser(ids)
     return res
   }
 )

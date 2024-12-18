@@ -36,7 +36,6 @@ const RelevanceModel: React.FC<AssociatedProps> = ({
   const { page } = useSelector((state: RootState) => state.OrganizationInfoSlice)
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [loading, setLoading] = useState(false)
-  console.log(dialogValue)
 
   const onSubmit = async () => {
     if (!dialogValue.id || !dialogEmployessValue?.id) {
