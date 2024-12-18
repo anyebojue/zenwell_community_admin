@@ -43,11 +43,15 @@ export interface Column<T> {
 interface RelevanceTableDataProps {
   dialogValue: RolesReply
   setDialogEmployessValue: Dispatch<SetStateAction<EmployeesReply | undefined>>
+  selectedRows: Set<string | undefined>
+  setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
 }
 
 const RelevanceTableData: React.FC<RelevanceTableDataProps> = ({
   dialogValue,
-  setDialogEmployessValue
+  setDialogEmployessValue,
+  selectedRows,
+  setSelectedRows
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.RolesSlice)
@@ -90,6 +94,8 @@ const RelevanceTableData: React.FC<RelevanceTableDataProps> = ({
       rows={list.filter(item => item.id === dialogValue.id)[0].users || []}
       columns={columns}
       setDialogEmployessValue={setDialogEmployessValue}
+      selectedRows={selectedRows}
+      setSelectedRows={setSelectedRows}
     />
   )
 }
