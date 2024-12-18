@@ -61,6 +61,7 @@ const PropertyCompanyIndex = () => {
       <NavbarBreadcrumbs />
       <FormSearch setDelOpen={setDelOpen} selectedRows={selectedRows} />
       <TableData
+        dialogValue={dialogValue}
         setDialogValue={setDialogValue}
         selectedRows={selectedRows}
         setSelectedRows={setSelectedRows}

@@ -1,4 +1,5 @@
 import { Page } from '../pageModel'
+import { EmployeesReply } from './employeesModel'
 
 export interface PropertyCompanyReply {
   address: '麒麟座D' // 地址
@@ -13,6 +14,7 @@ export interface PropertyCompanyReply {
   storeTypeCd: 'zenwell' // 公司法人（管理员）
   tel: '13130701269' // 电话
   updatedAt: '2024-12-10 03:11:21' // 更新时间
+  user: EmployeesReply
 }
 
 export interface PropertyCompanyParams {

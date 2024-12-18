@@ -1,4 +1,4 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { PropertyCompanyReply } from 'api/model/platform/propertyCompanyModel'
 import { find } from 'modules/platform/propertyCompany'
@@ -6,10 +6,12 @@ import { Tooltip, IconButton, Stack } from '@mui/material'
 import { Block, Delete, Edit, ManageAccounts, RestartAlt, Login } from '@mui/icons-material'
 import message from 'components/Message'
 import TableList from './TableList'
+import RestrictedEntry from './RestrictedEntry'
 
 const renderActionButtons = (
   setOpenDialog: Dispatch<SetStateAction<boolean>>,
-  setDelOpen: Dispatch<SetStateAction<boolean>>
+  setDelOpen: Dispatch<SetStateAction<boolean>>,
+  setRestrictOpen: Dispatch<SetStateAction<boolean>>
 ) => (
   <Stack width={110} direction="row" flexWrap="wrap">
     {[
@@ -41,7 +43,7 @@ const renderActionButtons = (
         title: '限制登录',
         color: 'warning' as const,
         icon: <Block fontSize="small" />,
-        onClick: () => message.info('未实现')
+        onClick: () => setRestrictOpen(true)
       },
       {
         title: '重置密码',
@@ -67,6 +69,7 @@ export interface Column<T> {
 }
 
 interface TableDataProps {
+  dialogValue?: PropertyCompanyReply
   setDialogValue: Dispatch<SetStateAction<PropertyCompanyReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
@@ -75,6 +78,7 @@ interface TableDataProps {
 }
 
 const TableData: React.FC<TableDataProps> = ({
+  dialogValue,
   setDialogValue,
   selectedRows,
   setSelectedRows,
@@ -83,6 +87,7 @@ const TableData: React.FC<TableDataProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.PropertyCompanySlice)
+  const [restrictOpen, setRestrictOpen] = useState(false)
 
   const columns: Column<PropertyCompanyReply>[] = [
     { key: 'id', headerName: '编号', align: 'center' },
@@ -98,7 +103,7 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => renderActionButtons(setOpenDialog, setDelOpen)
+      renderCell: () => renderActionButtons(setOpenDialog, setDelOpen, setRestrictOpen)
     }
   ]
 
@@ -118,13 +123,20 @@ const TableData: React.FC<TableDataProps> = ({
   }, [fetchData])
 
   return (
-    <TableList
-      rows={list}
-      columns={columns}
-      setDialogValue={setDialogValue}
-      selectedRows={selectedRows}
-      setSelectedRows={setSelectedRows}
-    />
+    <>
+      <TableList
+        rows={list}
+        columns={columns}
+        setDialogValue={setDialogValue}
+        selectedRows={selectedRows}
+        setSelectedRows={setSelectedRows}
+      />
+      <RestrictedEntry
+        dialogValue={dialogValue}
+        restrictOpen={restrictOpen}
+        setRestrictOpen={setRestrictOpen}
+      />
+    </>
   )
 }
 
