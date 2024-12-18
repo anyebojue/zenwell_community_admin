@@ -7,11 +7,13 @@ import { Block, Delete, Edit, ManageAccounts, RestartAlt, Login } from '@mui/ico
 import message from 'components/Message'
 import TableList from './TableList'
 import RestrictedEntry from './RestrictedEntry'
+import ResetPassword from './ResetPassword'
 
 const renderActionButtons = (
   setOpenDialog: Dispatch<SetStateAction<boolean>>,
   setDelOpen: Dispatch<SetStateAction<boolean>>,
-  setRestrictOpen: Dispatch<SetStateAction<boolean>>
+  setRestrictOpen: Dispatch<SetStateAction<boolean>>,
+  setPasswordOpen: Dispatch<SetStateAction<boolean>>
 ) => (
   <Stack width={110} direction="row" flexWrap="wrap">
     {[
@@ -49,7 +51,7 @@ const renderActionButtons = (
         title: '重置密码',
         color: 'info' as const,
         icon: <RestartAlt fontSize="small" />,
-        onClick: () => message.info('未实现')
+        onClick: () => setPasswordOpen(true)
       }
     ].map((action, index) => (
       <Tooltip title={action.title} key={index}>
@@ -88,6 +90,7 @@ const TableData: React.FC<TableDataProps> = ({
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.PropertyCompanySlice)
   const [restrictOpen, setRestrictOpen] = useState(false)
+  const [passwordOpen, setPasswordOpen] = useState(false)
 
   const columns: Column<PropertyCompanyReply>[] = [
     { key: 'id', headerName: '编号', align: 'center' },
@@ -103,7 +106,8 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => renderActionButtons(setOpenDialog, setDelOpen, setRestrictOpen)
+      renderCell: () =>
+        renderActionButtons(setOpenDialog, setDelOpen, setRestrictOpen, setPasswordOpen)
     }
   ]
 
@@ -135,6 +139,11 @@ const TableData: React.FC<TableDataProps> = ({
         dialogValue={dialogValue}
         restrictOpen={restrictOpen}
         setRestrictOpen={setRestrictOpen}
+      />
+      <ResetPassword
+        dialogValue={dialogValue}
+        passwordOpen={passwordOpen}
+        setPasswordOpen={setPasswordOpen}
       />
     </>
   )
