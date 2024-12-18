@@ -48,6 +48,25 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
   )
   const { tabs, activeTabIndex, handleTabChange, handleTabClose } = useDynamicTabs(convertedRoutes)
 
+  // 根据窗口尺寸动态设置菜单显示状态
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1200) {
+        setIsMenuOpen(false)
+      } else {
+        setIsMenuOpen(true)
+      }
+    }
+    // 初次加载时根据窗口大小设置菜单状态
+    handleResize()
+    // 监听窗口大小变化
+    window.addEventListener('resize', handleResize)
+    // 清除事件监听器
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+
   useEffect(() => {
     const token = localStorage.getItem('zenwell_token')
     // 检查token
