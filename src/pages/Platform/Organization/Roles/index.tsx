@@ -39,23 +39,6 @@ const RolesIndex = () => {
   const [location, setLoading] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
 
-  const handleDelete = useCallback(
-    async (ids: string[]) => {
-      setLoading(true)
-      try {
-        await dispatch(deleteByIds(ids))
-        setDelOpen(false)
-        message.success('删除成功')
-        await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
-        setLoading(false)
-      } catch (err) {
-        if (err instanceof Error) message.error(err.message)
-        setLoading(false)
-      }
-    },
-    [dispatch, page.num, page.size]
-  )
-
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
@@ -68,6 +51,23 @@ const RolesIndex = () => {
       closeLoading()
     }
   }, [dispatch, page.num, page.size])
+
+  const handleDelete = useCallback(
+    async (ids: string[]) => {
+      setLoading(true)
+      try {
+        await dispatch(deleteByIds(ids))
+        setDelOpen(false)
+        message.success('删除成功')
+        fetchData()
+        setLoading(false)
+      } catch (err) {
+        if (err instanceof Error) message.error(err.message)
+        setLoading(false)
+      }
+    },
+    [dispatch, fetchData]
+  )
 
   useEffect(() => {
     fetchData()

@@ -7,24 +7,26 @@ import { Delete } from '@mui/icons-material'
 import message from 'components/Message'
 import AccreditTableList from './AccreditTableList'
 
-const renderActionButtons = () => (
-  <Box>
-    {[
-      {
-        title: '删除',
-        color: 'error' as const,
-        icon: <Delete fontSize="small" />,
-        onClick: () => message.info('未实现')
-      }
-    ].map((action, index) => (
-      <Tooltip title={action.title} key={index}>
-        <IconButton size="small" color={action.color} onClick={action.onClick}>
-          {action.icon}
-        </IconButton>
-      </Tooltip>
-    ))}
-  </Box>
-)
+const renderActionButtons = ({ setDelOpen }: { setDelOpen: Dispatch<SetStateAction<boolean>> }) => {
+  return (
+    <Box>
+      {[
+        {
+          title: '删除',
+          color: 'error' as const,
+          icon: <Delete fontSize="small" />,
+          onClick: () => setDelOpen(true)
+        }
+      ].map((action, index) => (
+        <Tooltip title={action.title} key={index}>
+          <IconButton size="small" color={action.color} onClick={action.onClick}>
+            {action.icon}
+          </IconButton>
+        </Tooltip>
+      ))}
+    </Box>
+  )
+}
 
 export interface Column<T> {
   headerName: string
@@ -37,11 +39,17 @@ interface AccreditTableDataProps {
   dialogValue: RolesReply
   dialogGroupValue: RolesGroupReply
   setDialogGroupValue: Dispatch<SetStateAction<RolesGroupReply>>
+  selectedRows: Set<string | undefined>
+  setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
+  setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const AccreditTableData: React.FC<AccreditTableDataProps> = ({
   dialogValue,
-  setDialogGroupValue
+  setDialogGroupValue,
+  selectedRows,
+  setSelectedRows,
+  setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, rolesGroupList } = useSelector((state: RootState) => state.RolesSlice)
@@ -69,7 +77,7 @@ const AccreditTableData: React.FC<AccreditTableDataProps> = ({
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => renderActionButtons()
+      renderCell: () => renderActionButtons({ setDelOpen })
     }
   ]
 
@@ -99,6 +107,8 @@ const AccreditTableData: React.FC<AccreditTableDataProps> = ({
       rows={rolesGroupList}
       columns={columns}
       setDialogGroupValue={setDialogGroupValue}
+      selectedRows={selectedRows}
+      setSelectedRows={setSelectedRows}
     />
   )
 }

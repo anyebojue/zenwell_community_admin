@@ -9,6 +9,7 @@ import {
 const ApiPrefix = {
   RelevanceCommunity: '/auth/user_group_community_relation',
   FindRolesGroup: '/auth/user_group_community_relation',
+  DeleteRolesGroup: '/auth/user_group_community_relation',
   FindRoles: '/auth/user/group',
   CreateRoles: '/auth/user/group',
   UpdateRoles: '/auth/user/group',
@@ -30,7 +31,7 @@ export const RelevanceCommunity = (data: { userGroupId: string; communityId: str
 }
 
 /**
- * 查询接口
+ * 查询员工关联接口
  * @param params User
  * @returns
  */
@@ -39,6 +40,19 @@ export const FindRolesGroup = (params: RolesGroupReply & PaginationParams) => {
     .get<FindRolesGroupReply>({
       url: ApiPrefix.FindRolesGroup,
       params
+    })
+    .then(res => res.data)
+}
+
+/**
+ * 删除员工关联接口
+ * @param ids
+ * @returns
+ */
+export const DeleteRolesGroup = (ids: string[]) => {
+  return request
+    .delete({
+      url: `${ApiPrefix.DeleteRolesGroup}/${ids.join(',')}`
     })
     .then(res => res.data)
 }

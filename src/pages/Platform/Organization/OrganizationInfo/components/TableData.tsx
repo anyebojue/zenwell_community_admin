@@ -91,9 +91,25 @@ const TableData: React.FC<TableDataProps> = ({
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
+  const fetchData = useCallback(async () => {
+    const closeLoading = message.loading('正在加载列表中，请稍后...')
+    try {
+      await dispatch(
+        findOrgUser({
+          'page.num': page.num,
+          'page.size': page.size,
+          orgId: dialogValue.id || '9027438861059358721'
+        })
+      )
+    } catch {
+      message.error('列表加载失败，请刷新页面或检查网络问题')
+    } finally {
+      closeLoading()
+    }
+  }, [dispatch, page.num, page.size, dialogValue.id])
+
   const getDeleteData = useCallback(() => {
     if (selectedRows.size > 0) {
-      console.log(orgUserList.filter(item => selectedRows.has(item.id)))
       return orgUserList
         .filter(item => selectedRows.has(item.id))
         .map(item => ({ id: item.id!, name: item.users?.username! }))
@@ -118,20 +134,14 @@ const TableData: React.FC<TableDataProps> = ({
         await dispatch(deleteOrgUserByIds(ids))
         setDelOpen(false)
         message.success('删除成功')
-        await dispatch(
-          findOrgUser({
-            'page.num': page.num,
-            'page.size': page.size,
-            orgId: dialogValue.id || '9027438861059358721'
-          })
-        )
+        fetchData()
       } catch (err) {
         if (err instanceof Error) message.error(err.message)
       } finally {
         setLoading(false)
       }
     },
-    [dispatch, page.num, page.size, dialogValue.id]
+    [dispatch, fetchData]
   )
 
   const columns: Column<OrgUserReply>[] = [
@@ -172,23 +182,6 @@ const TableData: React.FC<TableDataProps> = ({
       renderCell: () => renderActionButtons({ setDelOpen })
     }
   ]
-
-  const fetchData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      await dispatch(
-        findOrgUser({
-          'page.num': page.num,
-          'page.size': page.size,
-          orgId: dialogValue.id || '9027438861059358721'
-        })
-      )
-    } catch {
-      message.error('列表加载失败，请刷新页面或检查网络问题')
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch, page.num, page.size, dialogValue.id])
 
   useEffect(() => {
     fetchData()

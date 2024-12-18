@@ -29,7 +29,6 @@ const AccreditModel: React.FC<AAccreditModelProps> = ({
   dialogValue,
   associatedOpen,
   setAssociatedOpen,
-  dialogCommunityValue,
   setDialogCommunityValue
 }) => {
   const dispatch = useDispatch<AppDispatch>()
@@ -38,14 +37,17 @@ const AccreditModel: React.FC<AAccreditModelProps> = ({
   const [loading, setLoading] = useState(false)
 
   const onSubmit = async () => {
-    if (!dialogValue.id || !dialogCommunityValue?.id) {
+    if (!dialogValue.id || !selectedRows.size) {
       message.error('请选择有效的角色或小区')
       return
     }
     try {
       setLoading(true)
       const res = (await dispatch(
-        relevanceCommunity({ userGroupId: dialogValue.id, communityId: dialogCommunityValue.id })
+        relevanceCommunity({
+          userGroupId: dialogValue.id,
+          communityId: [...selectedRows].join(',')
+        })
       )) as PayloadActionWithError<OrganizationInfoParams>
       if (res.meta.requestStatus === 'rejected') {
         if (res.error) {

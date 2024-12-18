@@ -7,7 +7,8 @@ import {
   UpdateRoles,
   DeleteRoles,
   FindRolesGroup,
-  RelevanceCommunity
+  RelevanceCommunity,
+  DeleteRolesGroup
 } from 'api/platform/roles'
 
 const namespace = 'Roles'
@@ -49,6 +50,11 @@ export const findRolesGroup = createAsyncThunk(
     return res
   }
 )
+
+export const deleteRolesGroupByIds = createAsyncThunk(`RolesGroup/find`, async (ids: string[]) => {
+  const res = await DeleteRolesGroup(ids)
+  return res
+})
 
 export const find = createAsyncThunk(
   `${namespace}/find`,
