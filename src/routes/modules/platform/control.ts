@@ -7,7 +7,7 @@ const control: IRouter[] = [
     path: '/control',
     element: load('Platform/Control'),
     meta: {
-      title: '首页',
+      title: '首页222',
       Icon: Home,
       single: true
     }
