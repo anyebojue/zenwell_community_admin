@@ -20,7 +20,7 @@ const propertyCompany: IRouter[] = [
         }
       },
       {
-        path: '/property-company/company',
+        path: 'company',
         element: load('Platform/PropertyCompany/Company'),
         meta: {
           title: '加入的小区信息',

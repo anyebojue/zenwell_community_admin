@@ -12,11 +12,12 @@ const useDynamicTabs = (routeList: IRouter[]) => {
 
   // 获取路由标题
   const getRouteTitle = (path: string): string | undefined => {
-    const findRouteTitle = (routes: IRouter[]): string | undefined => {
+    const findRouteTitle = (routes: IRouter[], basePath: string = ''): string | undefined => {
       for (const route of routes) {
-        if (route.path === path) return route.meta?.title
+        const fullPath = `${basePath}/${route.path}`.replace(/\/+/g, '/')
+        if (fullPath === path) return route.meta?.title
         if (route.children) {
-          const childTitle = findRouteTitle(route.children)
+          const childTitle = findRouteTitle(route.children, fullPath)
           if (childTitle) return childTitle
         }
       }

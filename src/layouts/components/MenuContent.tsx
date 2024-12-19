@@ -101,7 +101,7 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
                 <List component="div" disablePadding>
                   {children
                     .filter(child => !child.meta?.hidden)
-                    .map((child, childIndex) => renderChildMenuItem(child, childIndex))}
+                    .map((child, childIndex) => renderChildMenuItem(child, childIndex, path))}
                 </List>
               </Collapse>
             )}
@@ -118,7 +118,7 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
               >
                 {children
                   ?.filter(child => !child.meta?.hidden)
-                  .map((child, childIndex) => renderChildMenuItem(child, childIndex))}
+                  .map((child, childIndex) => renderChildMenuItem(child, childIndex, path))}
               </Popover>
             )}
           </>
@@ -127,13 +127,13 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
     )
   }
 
-  const renderChildMenuItem = (child: IRouter, childIndex: number) => {
+  const renderChildMenuItem = (child: IRouter, childIndex: number, parentPath: string) => {
     const { meta: childMeta, path: childPath } = child
     const { Icon: ChildIcon, title: childTitle } = childMeta || {}
-    const isChildActive = isActiveLink(childPath)
+    const isChildActive = isActiveLink(`${parentPath}/${childPath}`)
 
     return (
-      <NavLink to={childPath} key={childIndex} style={{ color: 'initial' }}>
+      <NavLink to={`${parentPath}/${childPath}`} key={childIndex} style={{ color: 'initial' }}>
         <ListItemButton selected={isChildActive} sx={{ pl: '48px' }}>
           <ListItemIcon>{ChildIcon && <ChildIcon />}</ListItemIcon>
           <ListItemText sx={{ ml: '15px', my: '7px' }} primary={childTitle || '未命名'} />

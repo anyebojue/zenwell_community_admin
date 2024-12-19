@@ -46,7 +46,7 @@ class Request {
         }
 
         // 从 localStorage 获取 JWT token 并添加到请求头
-        const token = localStorage.getItem('yide_token')
+        const token = localStorage.getItem('zenwell_token')
         if (token && !config.url.includes('/login')) {
           config.headers['Authorization'] = `Bearer ${token}`
         }
@@ -72,7 +72,7 @@ class Request {
               break
             case 401:
               console.warn('未授权，请登录')
-              localStorage.removeItem('yide_token')
+              localStorage.removeItem('zenwell_token')
               break
             case 403:
               console.warn('禁止访问')
