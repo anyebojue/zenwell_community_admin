@@ -41,6 +41,7 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
   const isLoginPage = location.pathname === '/login'
   const [isMenuOpen, setIsMenuOpen] = useState(true)
   const convertedRoutes = convertRoutes(routesConfig as IRouter[])
+  console.log(convertedRoutes)
   const routing = useRoutes(convertedRoutes)
   const info = useSelector((state: RootState) => state.info.userInfo)
   const isFullPage = convertedRoutes.some(

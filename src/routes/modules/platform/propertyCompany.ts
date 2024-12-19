@@ -5,12 +5,20 @@ import { IRouter } from '../../index'
 const propertyCompany: IRouter[] = [
   {
     path: '/property-company',
-    element: load('Platform/PropertyCompany'),
+    element: null,
     meta: {
       title: '物业公司',
       Icon: HomeWork
     },
     children: [
+      {
+        path: '/property-company',
+        element: load('Platform/PropertyCompany'),
+        meta: {
+          title: '物业公司',
+          hidden: true
+        }
+      },
       {
         path: '/property-company/company',
         element: load('Platform/PropertyCompany/Company'),

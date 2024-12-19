@@ -35,7 +35,8 @@ const baseRoutes: IRouter[] = [
   },
   {
     path: '*',
-    element: navigateIndex
+    element: navigateIndex,
+    meta: { hidden: true }
   },
   {
     path: '/login',
