@@ -19,6 +19,10 @@
 |   ├── api                     请求
 |   ├── assets                  静态文件
 |   ├── components              全局组件
+|   ├── configs                 请求配置
+|   ├── hooks                   全局hooks
+|   ├── layouts
+|   ├── modules                 redux
 |   ├── pages                   页面文件目录
 |   |   └── index               index 页面目录
 |   |       ├── index.js        index 页面逻辑
