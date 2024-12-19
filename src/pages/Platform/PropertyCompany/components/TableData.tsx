@@ -5,63 +5,67 @@ import { find } from 'modules/platform/propertyCompany'
 import { Tooltip, IconButton, Stack } from '@mui/material'
 import { Block, Delete, Edit, ManageAccounts, RestartAlt, Login } from '@mui/icons-material'
 import message from 'components/Message'
+import { useNavigate } from 'react-router-dom'
 import TableList from './TableList'
 import RestrictedEntry from './RestrictedEntry'
 import ResetPassword from './ResetPassword'
 
 const renderActionButtons = (
+  navigate: ReturnType<typeof useNavigate>,
   setOpenDialog: Dispatch<SetStateAction<boolean>>,
   setDelOpen: Dispatch<SetStateAction<boolean>>,
   setRestrictOpen: Dispatch<SetStateAction<boolean>>,
   setPasswordOpen: Dispatch<SetStateAction<boolean>>
-) => (
-  <Stack width={110} direction="row" flexWrap="wrap">
-    {[
-      {
-        title: '管理小区',
-        color: 'primary' as const,
-        icon: <ManageAccounts fontSize="small" />,
-        onClick: () => message.info('未实现')
-      },
-      {
-        title: '修改',
-        color: 'secondary' as const,
-        icon: <Edit fontSize="small" />,
-        onClick: () => setOpenDialog(true)
-      },
-      {
-        title: '删除',
-        color: 'error' as const,
-        icon: <Delete fontSize="small" />,
-        onClick: () => setDelOpen(true)
-      },
-      {
-        title: '登录',
-        color: 'success' as const,
-        icon: <Login fontSize="small" />,
-        onClick: () => message.info('未实现')
-      },
-      {
-        title: '限制登录',
-        color: 'warning' as const,
-        icon: <Block fontSize="small" />,
-        onClick: () => setRestrictOpen(true)
-      },
-      {
-        title: '重置密码',
-        color: 'info' as const,
-        icon: <RestartAlt fontSize="small" />,
-        onClick: () => setPasswordOpen(true)
-      }
-    ].map((action, index) => (
-      <Tooltip title={action.title} key={index}>
-        <IconButton size="small" color={action.color} onClick={action.onClick}>
-          {action.icon}
-        </IconButton>
-      </Tooltip>
-    ))}
-  </Stack>
-)
+) => {
+  return (
+    <Stack width={110} direction="row" flexWrap="wrap">
+      {[
+        {
+          title: '管理小区',
+          color: 'primary' as const,
+          icon: <ManageAccounts fontSize="small" />,
+          onClick: () => navigate('/property-company/company')
+        },
+        {
+          title: '修改',
+          color: 'secondary' as const,
+          icon: <Edit fontSize="small" />,
+          onClick: () => setOpenDialog(true)
+        },
+        {
+          title: '删除',
+          color: 'error' as const,
+          icon: <Delete fontSize="small" />,
+          onClick: () => setDelOpen(true)
+        },
+        {
+          title: '登录',
+          color: 'success' as const,
+          icon: <Login fontSize="small" />,
+          onClick: () => message.info('未实现')
+        },
+        {
+          title: '限制登录',
+          color: 'warning' as const,
+          icon: <Block fontSize="small" />,
+          onClick: () => setRestrictOpen(true)
+        },
+        {
+          title: '重置密码',
+          color: 'info' as const,
+          icon: <RestartAlt fontSize="small" />,
+          onClick: () => setPasswordOpen(true)
+        }
+      ].map((action, index) => (
+        <Tooltip title={action.title} key={index}>
+          <IconButton size="small" color={action.color} onClick={action.onClick}>
+            {action.icon}
+          </IconButton>
+        </Tooltip>
+      ))}
+    </Stack>
+  )
+}
 
 export interface Column<T> {
   headerName: string
@@ -88,6 +92,7 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.PropertyCompanySlice)
   const [restrictOpen, setRestrictOpen] = useState(false)
   const [passwordOpen, setPasswordOpen] = useState(false)
@@ -107,7 +112,7 @@ const TableData: React.FC<TableDataProps> = ({
       headerName: '操作',
       align: 'center',
       renderCell: () =>
-        renderActionButtons(setOpenDialog, setDelOpen, setRestrictOpen, setPasswordOpen)
+        renderActionButtons(navigate, setOpenDialog, setDelOpen, setRestrictOpen, setPasswordOpen)
     }
   ]
 

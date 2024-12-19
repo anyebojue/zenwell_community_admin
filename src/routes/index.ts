@@ -34,6 +34,10 @@ const baseRoutes: IRouter[] = [
     meta: { hidden: true }
   },
   {
+    path: '*',
+    element: navigateIndex
+  },
+  {
     path: '/login',
     element: load('Login'),
     isFullPage: true,

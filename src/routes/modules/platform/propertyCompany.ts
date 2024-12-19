@@ -8,9 +8,18 @@ const propertyCompany: IRouter[] = [
     element: load('Platform/PropertyCompany'),
     meta: {
       title: '物业公司',
-      Icon: HomeWork,
-      single: true
-    }
+      Icon: HomeWork
+    },
+    children: [
+      {
+        path: '/property-company/company',
+        element: load('Platform/PropertyCompany/Company'),
+        meta: {
+          title: '加入的小区信息',
+          hidden: true
+        }
+      }
+    ]
   }
 ]
 

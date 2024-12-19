@@ -68,7 +68,7 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
 
     return (
       <Fragment key={index}>
-        {meta?.single ? (
+        {meta?.single || children?.every(child => child.meta?.hidden === true) ? (
           <NavLink to={path} style={{ color: 'initial' }}>
             <ListItemButton sx={menuItemStyle} selected={isParentActive}>
               <Tooltip title={title || '未命名'}>
@@ -99,7 +99,9 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
             {isMenuOpen && children && (
               <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  {children.map((child, childIndex) => renderChildMenuItem(child, childIndex))}
+                  {children
+                    .filter(child => !child.meta?.hidden)
+                    .map((child, childIndex) => renderChildMenuItem(child, childIndex))}
                 </List>
               </Collapse>
             )}
@@ -114,7 +116,9 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
                 }}
                 sx={{ marginTop: 1 }}
               >
-                {children?.map((child, childIndex) => renderChildMenuItem(child, childIndex))}
+                {children
+                  ?.filter(child => !child.meta?.hidden)
+                  .map((child, childIndex) => renderChildMenuItem(child, childIndex))}
               </Popover>
             )}
           </>
