@@ -1,5 +1,16 @@
 import { Page } from '../pageModel'
+import { CommunityReply } from './communityModel'
 import { EmployeesReply } from './employeesModel'
+
+export interface CompanyReply {
+  id: string
+  createdAt: string
+  updatedAt: string
+  storeId: string
+  communityId: string
+  community: CommunityReply
+  store: PropertyCompanyReply
+}
 
 export interface PropertyCompanyReply {
   address: '麒麟座D' // 地址
@@ -25,6 +36,11 @@ export interface PropertyCompanyParams {
   store_type_cd?: string // 公司法人（管理员）
   nearby_landmarks?: string // 成立日期
   map_x?: string // 地标
+}
+
+export interface FindCompanyReply {
+  page: Page
+  list: Array<CompanyReply>
 }
 
 export interface FindPropertyCompanyReply {

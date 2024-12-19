@@ -1,10 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
 import {
+  CompanyReply,
   PropertyCompanyParams,
   PropertyCompanyReply
 } from 'api/model/platform/propertyCompanyModel'
 import {
+  FindCompany,
   FindPropertyCompany,
   CreatePropertyCompany,
   UpdatePropertyCompany,
@@ -21,6 +23,7 @@ const PAGE = {
 interface IInitialState {
   page: Page
   list: PropertyCompanyReply[]
+  companyList: CompanyReply[]
 }
 
 const initialState: IInitialState = {
@@ -30,8 +33,14 @@ const initialState: IInitialState = {
     total: '0',
     disable: false
   },
-  list: []
+  list: [],
+  companyList: []
 }
+
+export const companyfind = createAsyncThunk(`company/find`, async (params: PaginationParams) => {
+  const res = await FindCompany(params)
+  return res
+})
 
 export const find = createAsyncThunk(
   `${namespace}/find`,
@@ -72,6 +81,10 @@ export const PropertyCompanySlice = createSlice({
     builder.addCase(find.fulfilled, (state, action) => {
       state.page = action.payload.page
       state.list = action.payload.list
+    })
+    builder.addCase(companyfind.fulfilled, (state, action) => {
+      state.page = action.payload.page
+      state.companyList = action.payload.list
     })
   }
 })

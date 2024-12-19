@@ -1,14 +1,30 @@
 import { request } from 'utils/request/axios'
 import {
+  FindCompanyReply,
   FindPropertyCompanyReply,
   PropertyCompanyParams
 } from '../model/platform/propertyCompanyModel'
 
 const ApiPrefix = {
+  FindCompany: '/auth/store_community_relation',
   FindPropertyCompany: '/auth/store',
   CreatePropertyCompany: '/auth/store',
   UpdatePropertyCompany: '/auth/store',
   DeletePropertyCompany: '/auth/store'
+}
+
+/**
+ * 查询接口
+ * @param params User
+ * @returns
+ */
+export const FindCompany = (params: PaginationParams) => {
+  return request
+    .get<FindCompanyReply>({
+      url: ApiPrefix.FindCompany,
+      params
+    })
+    .then(res => res.data)
 }
 
 /**

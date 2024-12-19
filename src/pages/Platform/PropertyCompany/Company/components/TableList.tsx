@@ -1,5 +1,5 @@
 import { memo, useState, useMemo, ChangeEvent } from 'react'
-import { CommunityReply } from 'api/model/platform/communityModel'
+import { CompanyReply } from 'api/model/platform/propertyCompanyModel'
 import {
   Pagination,
   Table,
@@ -32,8 +32,8 @@ const TableList = ({
   rows,
   columns
 }: {
-  rows: CommunityReply[]
-  columns: Column<CommunityReply>[]
+  rows: CompanyReply[]
+  columns: Column<CompanyReply>[]
 }) => {
   const [rowsPerPage, setRowsPerPage] = useState('20')
   const { page, paginatedRows, setPage, handlePageChange } = usePagination(
@@ -63,7 +63,7 @@ const TableList = ({
     setPage(1)
   }
 
-  const renderValue = (value: CommunityReply[keyof CommunityReply] | undefined) => {
+  const renderValue = (value: CompanyReply[keyof CompanyReply] | undefined) => {
     if (Array.isArray(value)) {
       return JSON.stringify(value)
     } else if (value && typeof value === 'object') {
@@ -113,7 +113,7 @@ const TableList = ({
               paginatedRows.map(row => (
                 <TableRow key={row.id} sx={tableRowStyle}>
                   {columns.map(column => {
-                    const value = row[column.key as keyof CommunityReply]
+                    const value = row[column.key as keyof CompanyReply]
                     return (
                       <TableCell
                         key={column.key}
