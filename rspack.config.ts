@@ -14,7 +14,9 @@ export default defineConfig({
     main: './src/main.tsx'
   },
   output: {
-    publicPath: '/'
+    publicPath: '/',
+    path: path.resolve(__dirname, 'dist'), // 确保输出路径正确
+    filename: '[name].[contenthash].js' // 使用内容哈希，确保每次修改时输出不同的文件
   },
   resolve: {
     extensions: ['...', '.ts', '.tsx', '.jsx'],
@@ -77,7 +79,7 @@ export default defineConfig({
       template: './index.html',
       inject: 'body'
     }),
-    new RefreshPlugin()
+    new RefreshPlugin() // React 刷新插件
   ].filter(Boolean),
   optimization: {
     minimize: true, // 启用代码压缩
@@ -108,6 +110,7 @@ export default defineConfig({
   devServer: {
     port: 5127,
     historyApiFallback: true,
+    hot: true, // 启用热更新
     proxy: [
       {
         context: ['/api'],
