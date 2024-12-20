@@ -9,6 +9,7 @@ const InitUserInfo: UserInfoReply = {
   id: '',
   username: '',
   code: '',
+  platform: '1',
   permission: {
     resources: [],
     menus: [],

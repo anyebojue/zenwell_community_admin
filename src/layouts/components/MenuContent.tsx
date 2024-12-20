@@ -1,5 +1,6 @@
 import { memo, Fragment, useState, useCallback, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import getAllRoutes, { IRouter } from 'routes'
 import {
   List,
@@ -15,6 +16,7 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material'
 
 const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
   const location = useLocation()
+  const info = useSelector((state: RootState) => state.info.userInfo)
   const visibleRoutes = getAllRoutes.filter(item => !item.meta?.hidden)
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -142,6 +144,12 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
     )
   }
 
+  const platformMap = {
+    '0': '物业端',
+    '1': '平台端',
+    '2': '开发端'
+  }
+
   return (
     <List
       sx={{ width: '100%', maxWidth: 370, paddingTop: 0 }}
@@ -156,7 +164,7 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
               fontSize: '0.75rem'
             }}
           >
-            平台端
+            {platformMap[info.platform as keyof typeof platformMap] || '???'}
           </ListSubheader>
         )
       }
