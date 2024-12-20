@@ -4,6 +4,7 @@ import { Add, Close } from '@mui/icons-material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import { buttonStyles } from 'components/DeleteModal'
+import { useNavigate } from 'react-router-dom'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
 
@@ -15,6 +16,8 @@ const contentBoxStyle = (theme: Theme) => ({
 })
 
 const CompanyIndex = () => {
+  const navigate = useNavigate()
+
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
@@ -39,6 +42,7 @@ const CompanyIndex = () => {
                 color="error"
                 startIcon={<Close />}
                 sx={buttonStyles('#2660ad', '#1d428a')}
+                onClick={() => navigate(-1)}
               >
                 返回
               </Button>

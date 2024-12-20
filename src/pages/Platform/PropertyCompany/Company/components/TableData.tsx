@@ -1,4 +1,4 @@
-import { memo, ReactNode, useCallback, useEffect } from 'react'
+import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CompanyReply } from 'api/model/platform/propertyCompanyModel'
 import { companyfind } from 'modules/platform/propertyCompany'
@@ -6,6 +6,7 @@ import { Box, Tooltip, IconButton, Chip } from '@mui/material'
 import { Edit, ExitToApp } from '@mui/icons-material'
 import message from 'components/Message'
 import TableList from './TableList'
+import ExitCell from './ExitCell'
 
 const renderStatusChip = (value: CompanyReply) => {
   const statusMap: Record<string, { label: string; color: 'success' | 'default' }> = {
@@ -20,14 +21,18 @@ const renderStatusChip = (value: CompanyReply) => {
   return <Chip label={status.label} color={status.color} size="small" />
 }
 
-const renderActionButtons = () => (
+const renderActionButtons = ({
+  setExitOpen
+}: {
+  setExitOpen: Dispatch<SetStateAction<boolean>>
+}) => (
   <Box>
     {[
       {
         title: '退出小区',
         color: 'info' as const,
         icon: <ExitToApp fontSize="small" />,
-        onClick: () => message.info('未实现')
+        onClick: () => setExitOpen(true)
       },
       {
         title: '修改',
@@ -57,6 +62,8 @@ interface TableDataProps {}
 const TableData: React.FC<TableDataProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, companyList } = useSelector((state: RootState) => state.PropertyCompanySlice)
+  const [exitOpen, setExitOpen] = useState(false)
+  const [dialogValue, setDialogValue] = useState<CompanyReply>()
 
   const columns: Column<CompanyReply>[] = [
     {
@@ -93,7 +100,7 @@ const TableData: React.FC<TableDataProps> = () => {
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => renderActionButtons()
+      renderCell: () => renderActionButtons({ setExitOpen })
     }
   ]
 
@@ -112,7 +119,12 @@ const TableData: React.FC<TableDataProps> = () => {
     fetchData()
   }, [fetchData])
 
-  return <TableList rows={companyList} columns={columns} />
+  return (
+    <>
+      <TableList rows={companyList} columns={columns} setDialogValue={setDialogValue} />
+      <ExitCell dialogValue={dialogValue} exitOpen={exitOpen} setExitOpen={setExitOpen} />
+    </>
+  )
 }
 
 export default memo(TableData)

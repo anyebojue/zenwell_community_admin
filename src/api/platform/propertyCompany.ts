@@ -7,6 +7,7 @@ import {
 
 const ApiPrefix = {
   FindCompany: '/auth/store_community_relation',
+  DeleteCompany: '/auth/store_community_relation',
   FindPropertyCompany: '/auth/store',
   CreatePropertyCompany: '/auth/store',
   UpdatePropertyCompany: '/auth/store',
@@ -14,7 +15,7 @@ const ApiPrefix = {
 }
 
 /**
- * 查询接口
+ * 加入的小区查询接口
  * @param params User
  * @returns
  */
@@ -23,6 +24,19 @@ export const FindCompany = (params: PaginationParams) => {
     .get<FindCompanyReply>({
       url: ApiPrefix.FindCompany,
       params
+    })
+    .then(res => res.data)
+}
+
+/**
+ * 退出小区接口
+ * @param id
+ * @returns
+ */
+export const DeleteCompany = (id: string) => {
+  return request
+    .delete({
+      url: `${ApiPrefix.DeleteCompany}/${id}`
     })
     .then(res => res.data)
 }

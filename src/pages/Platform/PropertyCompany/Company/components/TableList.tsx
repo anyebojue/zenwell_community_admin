@@ -1,4 +1,4 @@
-import { memo, useState, useMemo, ChangeEvent } from 'react'
+import { memo, useState, useMemo, ChangeEvent, Dispatch, SetStateAction } from 'react'
 import { CompanyReply } from 'api/model/platform/propertyCompanyModel'
 import {
   Pagination,
@@ -30,10 +30,12 @@ const usePagination = <T,>(data: T[], rowsPerPage: number) => {
 
 const TableList = ({
   rows,
-  columns
+  columns,
+  setDialogValue
 }: {
   rows: CompanyReply[]
   columns: Column<CompanyReply>[]
+  setDialogValue: Dispatch<SetStateAction<CompanyReply | undefined>>
 }) => {
   const [rowsPerPage, setRowsPerPage] = useState('20')
   const { page, paginatedRows, setPage, handlePageChange } = usePagination(
@@ -111,7 +113,7 @@ const TableList = ({
           <TableBody>
             {paginatedRows.length > 0 ? (
               paginatedRows.map(row => (
-                <TableRow key={row.id} sx={tableRowStyle}>
+                <TableRow onClick={() => setDialogValue(row)} key={row.id} sx={tableRowStyle}>
                   {columns.map(column => {
                     const value = row[column.key as keyof CompanyReply]
                     return (
