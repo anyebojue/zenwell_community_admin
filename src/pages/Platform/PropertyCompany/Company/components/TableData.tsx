@@ -6,6 +6,7 @@ import { Box, Tooltip, IconButton, Chip } from '@mui/material'
 import { Edit, ExitToApp } from '@mui/icons-material'
 import message from 'components/Message'
 import { find } from 'modules/platform/community'
+import { useLocation } from 'react-router-dom'
 import TableList from './TableList'
 import ExitCell from './ExitCell'
 
@@ -15,7 +16,7 @@ const renderStatusChip = (value: CompanyReply) => {
     '0': { label: '未审核', color: 'default' }
   }
 
-  const status = statusMap[String(value.community.state) || ''] || {
+  const status = statusMap[String(value.community?.state) || ''] || {
     label: '未知状态',
     color: 'default'
   }
@@ -62,6 +63,7 @@ interface TableDataProps {}
 
 const TableData: React.FC<TableDataProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
+  const location = useLocation()
   const { page, companyList } = useSelector((state: RootState) => state.PropertyCompanySlice)
   const [exitOpen, setExitOpen] = useState(false)
   const [dialogValue, setDialogValue] = useState<CompanyReply>()
@@ -71,25 +73,25 @@ const TableData: React.FC<TableDataProps> = () => {
       key: 'community.id',
       headerName: '小区ID',
       align: 'center',
-      renderCell: row => row.community.id || '-'
+      renderCell: row => row.community?.id || '-'
     },
     {
       key: 'community.name',
       headerName: '小区名称',
       align: 'center',
-      renderCell: row => row.community.name || '-'
+      renderCell: row => row.community?.name || '-'
     },
     {
       key: 'community.nearbyLandmarks',
       headerName: '附近地标',
       align: 'center',
-      renderCell: row => row.community.nearbyLandmarks || '-'
+      renderCell: row => row.community?.nearbyLandmarks || '-'
     },
     {
       key: 'community.cityCode',
       headerName: '城市编码',
       align: 'center',
-      renderCell: row => row.community.cityCode || '-'
+      renderCell: row => row.community?.cityCode || '-'
     },
     {
       key: 'community.state',
@@ -109,13 +111,15 @@ const TableData: React.FC<TableDataProps> = () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
       await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
-      await dispatch(companyfind({ 'page.num': page.num, 'page.size': page.size }))
+      await dispatch(
+        companyfind({ 'page.num': page.num, 'page.size': page.size, storeId: location.state?.id })
+      )
     } catch {
       message.error('列表加载失败，请刷新页面或检查网络问题')
     } finally {
       closeLoading()
     }
-  }, [dispatch, page.num, page.size])
+  }, [dispatch, page.num, page.size, location.state?.id])
 
   useEffect(() => {
     fetchData()

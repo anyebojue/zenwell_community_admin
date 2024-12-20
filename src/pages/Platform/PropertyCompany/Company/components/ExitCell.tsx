@@ -13,6 +13,7 @@ import { CompanyReply } from 'api/model/platform/propertyCompanyModel'
 import { useDispatch, useSelector } from 'react-redux'
 import message from 'components/Message'
 import { companydeleteById, companyfind } from 'modules/platform/propertyCompany'
+import { useLocation } from 'react-router-dom'
 
 interface ExitCellProps {
   exitOpen: boolean
@@ -29,6 +30,7 @@ export const buttonStyles = (backgroundColor: string, hoverColor: string) => ({
 
 const ExitCell: React.FC<ExitCellProps> = ({ exitOpen, setExitOpen, dialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const location = useLocation()
   const { page } = useSelector((state: RootState) => state.PropertyCompanySlice)
   const [loading, setLoading] = useState(false)
 
@@ -38,7 +40,9 @@ const ExitCell: React.FC<ExitCellProps> = ({ exitOpen, setExitOpen, dialogValue 
       await dispatch(companydeleteById(dialogValue?.id!))
       setExitOpen(false)
       message.success('退出成功')
-      await dispatch(companyfind({ 'page.num': page.num, 'page.size': page.size }))
+      await dispatch(
+        companyfind({ 'page.num': page.num, 'page.size': page.size, storeId: location.state?.id })
+      )
       setLoading(false)
     } catch (err) {
       if (err instanceof Error) message.error(err.message)
@@ -53,7 +57,7 @@ const ExitCell: React.FC<ExitCellProps> = ({ exitOpen, setExitOpen, dialogValue 
         <span style={{ margin: '10px' }}>请确认您的操作！</span>
       </DialogTitle>
       <DialogContent>
-        <DialogContentText>你确定要退出【{dialogValue?.community.name}】么？</DialogContentText>
+        <DialogContentText>你确定要退出【{dialogValue?.community?.name}】么？</DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button variant="contained" color="error" onClick={() => setExitOpen(false)}>

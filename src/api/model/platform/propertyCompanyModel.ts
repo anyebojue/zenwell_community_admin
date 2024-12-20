@@ -3,13 +3,13 @@ import { CommunityReply } from './communityModel'
 import { EmployeesReply } from './employeesModel'
 
 export interface CompanyReply {
-  id: string
-  createdAt: string
-  updatedAt: string
-  storeId: string
-  communityId: string
-  community: CommunityReply
-  store: PropertyCompanyReply
+  id?: string
+  createdAt?: string
+  updatedAt?: string
+  storeId?: string
+  communityId?: string
+  community?: CommunityReply
+  store?: PropertyCompanyReply
 }
 
 export interface PropertyCompanyReply {

@@ -1,5 +1,6 @@
 import { request } from 'utils/request/axios'
 import {
+  CompanyReply,
   FindCompanyReply,
   FindPropertyCompanyReply,
   PropertyCompanyParams
@@ -20,7 +21,7 @@ const ApiPrefix = {
  * @param params User
  * @returns
  */
-export const FindCompany = (params: PaginationParams) => {
+export const FindCompany = (params: PaginationParams & CompanyReply) => {
   return request
     .get<FindCompanyReply>({
       url: ApiPrefix.FindCompany,

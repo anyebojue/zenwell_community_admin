@@ -39,10 +39,13 @@ const initialState: IInitialState = {
   companyList: []
 }
 
-export const companyfind = createAsyncThunk(`company/find`, async (params: PaginationParams) => {
-  const res = await FindCompany(params)
-  return res
-})
+export const companyfind = createAsyncThunk(
+  `company/find`,
+  async (params: PaginationParams & CompanyReply) => {
+    const res = await FindCompany(params)
+    return res
+  }
+)
 
 export const companycreate = createAsyncThunk(
   `company/create`,

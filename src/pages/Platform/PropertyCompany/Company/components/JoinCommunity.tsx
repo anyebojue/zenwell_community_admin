@@ -15,6 +15,7 @@ import {
   Stack
 } from '@mui/material'
 import message from 'components/Message'
+import { useLocation } from 'react-router-dom'
 
 interface JoinCommunityProps {
   openJoinCommunity: boolean
@@ -35,6 +36,7 @@ const JoinCommunity: React.FC<JoinCommunityProps> = ({
   storeId
 }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const location = useLocation()
   const { page, list } = useSelector((state: RootState) => state.CommunitySlice)
   const [loading, setLoading] = useState(false)
   const [communityId, setCommunityId] = useState('0')
@@ -45,7 +47,9 @@ const JoinCommunity: React.FC<JoinCommunityProps> = ({
       await dispatch(companycreate({ storeId, communityId }))
       setOpenJoinCommunity(false)
       message.success('加入成功')
-      await dispatch(companyfind({ 'page.num': page.num, 'page.size': page.size }))
+      await dispatch(
+        companyfind({ 'page.num': page.num, 'page.size': page.size, storeId: location.state?.id })
+      )
       setLoading(false)
     } catch (err) {
       if (err instanceof Error) message.error(err.message)
