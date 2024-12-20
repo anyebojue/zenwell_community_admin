@@ -96,16 +96,23 @@ export const PropertyCompanySlice = createSlice({
     reset: () => initialState
   },
   extraReducers: builder => {
+    // 请求加载时的数据
     builder.addCase(companyfind.pending, state => {
       state.companyList = []
     })
+    // 请求成功的数据
     builder.addCase(find.fulfilled, (state, action) => {
       state.page = action.payload.page
       state.list = action.payload.list
     })
+    // 请求成功的数据
     builder.addCase(companyfind.fulfilled, (state, action) => {
       state.page = action.payload.page
       state.companyList = action.payload.list
+    })
+    // 请求失败后的数据
+    builder.addCase(companyfind.rejected, state => {
+      state.companyList = []
     })
   }
 })
