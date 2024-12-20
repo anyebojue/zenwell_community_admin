@@ -21,14 +21,18 @@
 |   ├── components              全局组件
 |   ├── configs                 请求配置
 |   ├── hooks                   全局hooks
-|   ├── layouts
-|   ├── modules                 redux
+|   ├── layouts                 侧边栏和顶部
+|   ├── modules                 状态管理
 |   ├── pages                   页面文件目录
 |   |   └── index               index 页面目录
-|   |       ├── index.js        index 页面逻辑
+|   |       ├── index.ts        index 页面逻辑
 |   |       └── index.css       index 页面样式
 |   ├── routers                 路由配置
-│   └── styles                  全局样式
+|   ├── styles                  全局样式
+|   ├── theme                   主题配置
+|   ├── types                   全局类型
+|   ├── utils                   全局配置
+│   └── main.tsx                入口文件
 |
 ├── .gitignore
 ├── .prettierignore
