@@ -7,6 +7,7 @@ import {
 } from 'api/model/platform/propertyCompanyModel'
 import {
   FindCompany,
+  CreateCompany,
   DeleteCompany,
   FindPropertyCompany,
   CreatePropertyCompany,
@@ -42,6 +43,14 @@ export const companyfind = createAsyncThunk(`company/find`, async (params: Pagin
   const res = await FindCompany(params)
   return res
 })
+
+export const companycreate = createAsyncThunk(
+  `company/create`,
+  async (data: { storeId: string; communityId: string }) => {
+    const res = await CreateCompany(data)
+    return res
+  }
+)
 
 export const companydeleteById = createAsyncThunk(`company/deleteByIds`, async (id: string) => {
   const res = await DeleteCompany(id)

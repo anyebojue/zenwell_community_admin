@@ -5,6 +5,7 @@ import { companyfind } from 'modules/platform/propertyCompany'
 import { Box, Tooltip, IconButton, Chip } from '@mui/material'
 import { Edit, ExitToApp } from '@mui/icons-material'
 import message from 'components/Message'
+import { find } from 'modules/platform/community'
 import TableList from './TableList'
 import ExitCell from './ExitCell'
 
@@ -107,6 +108,7 @@ const TableData: React.FC<TableDataProps> = () => {
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
+      await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
       await dispatch(companyfind({ 'page.num': page.num, 'page.size': page.size }))
     } catch {
       message.error('列表加载失败，请刷新页面或检查网络问题')

@@ -10,68 +10,11 @@ import TableList from './TableList'
 import RestrictedEntry from './RestrictedEntry'
 import ResetPassword from './ResetPassword'
 
-const renderActionButtons = (
-  navigate: ReturnType<typeof useNavigate>,
-  setOpenDialog: Dispatch<SetStateAction<boolean>>,
-  setDelOpen: Dispatch<SetStateAction<boolean>>,
-  setRestrictOpen: Dispatch<SetStateAction<boolean>>,
-  setPasswordOpen: Dispatch<SetStateAction<boolean>>
-) => {
-  return (
-    <Stack width={110} direction="row" flexWrap="wrap">
-      {[
-        {
-          title: '管理小区',
-          color: 'primary' as const,
-          icon: <ManageAccounts fontSize="small" />,
-          onClick: () => navigate('/property-company/company')
-        },
-        {
-          title: '修改',
-          color: 'secondary' as const,
-          icon: <Edit fontSize="small" />,
-          onClick: () => setOpenDialog(true)
-        },
-        {
-          title: '删除',
-          color: 'error' as const,
-          icon: <Delete fontSize="small" />,
-          onClick: () => setDelOpen(true)
-        },
-        {
-          title: '登录',
-          color: 'success' as const,
-          icon: <Login fontSize="small" />,
-          onClick: () => message.info('未实现')
-        },
-        {
-          title: '限制登录',
-          color: 'warning' as const,
-          icon: <Block fontSize="small" />,
-          onClick: () => setRestrictOpen(true)
-        },
-        {
-          title: '重置密码',
-          color: 'info' as const,
-          icon: <RestartAlt fontSize="small" />,
-          onClick: () => setPasswordOpen(true)
-        }
-      ].map((action, index) => (
-        <Tooltip title={action.title} key={index}>
-          <IconButton size="small" color={action.color} onClick={action.onClick}>
-            {action.icon}
-          </IconButton>
-        </Tooltip>
-      ))}
-    </Stack>
-  )
-}
-
 export interface Column<T> {
   headerName: string
-  key: string
-  align?: 'left' | 'right' | 'center'
-  renderCell?: (_value: T[keyof T]) => ReactNode
+  key: Exclude<keyof T, symbol> | `${Exclude<keyof T, symbol>}.${string}` | 'operate' // 过滤掉 symbol 类型
+  align?: 'left' | 'center' | 'right'
+  renderCell?: (row: T) => ReactNode
 }
 
 interface TableDataProps {
@@ -111,8 +54,54 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () =>
-        renderActionButtons(navigate, setOpenDialog, setDelOpen, setRestrictOpen, setPasswordOpen)
+      renderCell: row => (
+        <Stack width={110} direction="row" flexWrap="wrap">
+          {[
+            {
+              title: '管理小区',
+              color: 'primary' as const,
+              icon: <ManageAccounts fontSize="small" />,
+              onClick: () => navigate('/property-company/company', { state: { id: row?.id } })
+            },
+            {
+              title: '修改',
+              color: 'secondary' as const,
+              icon: <Edit fontSize="small" />,
+              onClick: () => setOpenDialog(true)
+            },
+            {
+              title: '删除',
+              color: 'error' as const,
+              icon: <Delete fontSize="small" />,
+              onClick: () => setDelOpen(true)
+            },
+            {
+              title: '登录',
+              color: 'success' as const,
+              icon: <Login fontSize="small" />,
+              onClick: () => message.info('未实现')
+            },
+            {
+              title: '限制登录',
+              color: 'warning' as const,
+              icon: <Block fontSize="small" />,
+              onClick: () => setRestrictOpen(true)
+            },
+            {
+              title: '重置密码',
+              color: 'info' as const,
+              icon: <RestartAlt fontSize="small" />,
+              onClick: () => setPasswordOpen(true)
+            }
+          ].map((action, index) => (
+            <Tooltip title={action.title} key={index}>
+              <IconButton size="small" color={action.color} onClick={action.onClick}>
+                {action.icon}
+              </IconButton>
+            </Tooltip>
+          ))}
+        </Stack>
+      )
     }
   ]
 

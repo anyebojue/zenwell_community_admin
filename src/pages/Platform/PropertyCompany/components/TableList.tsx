@@ -83,6 +83,16 @@ const TableList = ({
   const allSelected = selectedRows.size === rows.length && rows.length > 0
   const someSelected = selectedRows.size > 0 && selectedRows.size < rows.length
 
+  const renderValue = (value: PropertyCompanyReply[keyof PropertyCompanyReply] | undefined) => {
+    if (Array.isArray(value)) {
+      return JSON.stringify(value)
+    } else if (value && typeof value === 'object') {
+      return JSON.stringify(value)
+    } else {
+      return value || '-'
+    }
+  }
+
   return (
     <Box
       sx={theme => ({
@@ -154,7 +164,7 @@ const TableList = ({
                           borderBottom: theme => `1px solid ${theme.palette.divider}`
                         }}
                       >
-                        {column.renderCell ? column.renderCell(value) : value}
+                        {column.renderCell ? column.renderCell(row) : renderValue(value)}
                       </TableCell>
                     )
                   })}

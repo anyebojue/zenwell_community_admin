@@ -7,6 +7,7 @@ import {
 
 const ApiPrefix = {
   FindCompany: '/auth/store_community_relation',
+  CreateCompany: '/auth/store_community_relation',
   DeleteCompany: '/auth/store_community_relation',
   FindPropertyCompany: '/auth/store',
   CreatePropertyCompany: '/auth/store',
@@ -24,6 +25,20 @@ export const FindCompany = (params: PaginationParams) => {
     .get<FindCompanyReply>({
       url: ApiPrefix.FindCompany,
       params
+    })
+    .then(res => res.data)
+}
+
+/**
+ * 加入小区接口
+ * @param data storeId communityId
+ * @returns
+ */
+export const CreateCompany = (data: { storeId: string; communityId: string }) => {
+  return request
+    .post({
+      url: ApiPrefix.CreateCompany,
+      data
     })
     .then(res => res.data)
 }

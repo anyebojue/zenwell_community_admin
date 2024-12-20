@@ -1,12 +1,13 @@
-import { memo } from 'react'
+import { memo, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Box, Button, Stack, Theme, Typography } from '@mui/material'
 import { Add, Close } from '@mui/icons-material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import { buttonStyles } from 'components/DeleteModal'
-import { useNavigate } from 'react-router-dom'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
+import JoinCommunity from './components/JoinCommunity'
 
 const contentBoxStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -17,6 +18,9 @@ const contentBoxStyle = (theme: Theme) => ({
 
 const CompanyIndex = () => {
   const navigate = useNavigate()
+  const location = useLocation()
+  const [openJoinCommunity, setOpenJoinCommunity] = useState(false)
+  const id = location.state?.id
 
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
@@ -33,6 +37,7 @@ const CompanyIndex = () => {
                 color="error"
                 startIcon={<Add />}
                 sx={buttonStyles('#2660ad', '#1d428a')}
+                onClick={() => setOpenJoinCommunity(true)}
               >
                 加入小区
               </Button>
@@ -52,6 +57,11 @@ const CompanyIndex = () => {
         </Box>
       </Box>
       <Copyright />
+      <JoinCommunity
+        storeId={id}
+        openJoinCommunity={openJoinCommunity}
+        setOpenJoinCommunity={setOpenJoinCommunity}
+      />
     </Box>
   )
 }
