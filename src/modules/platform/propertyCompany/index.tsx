@@ -96,6 +96,9 @@ export const PropertyCompanySlice = createSlice({
     reset: () => initialState
   },
   extraReducers: builder => {
+    builder.addCase(companyfind.pending, state => {
+      state.companyList = []
+    })
     builder.addCase(find.fulfilled, (state, action) => {
       state.page = action.payload.page
       state.list = action.payload.list

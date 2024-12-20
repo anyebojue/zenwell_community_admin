@@ -110,10 +110,10 @@ const TableData: React.FC<TableDataProps> = () => {
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
       await dispatch(
         companyfind({ 'page.num': page.num, 'page.size': page.size, storeId: location.state?.id })
       )
+      await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
     } catch {
       message.error('列表加载失败，请刷新页面或检查网络问题')
     } finally {
