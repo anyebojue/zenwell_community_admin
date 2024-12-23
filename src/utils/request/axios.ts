@@ -47,9 +47,9 @@ class Request {
 
         // 从 localStorage 获取 JWT token 并添加到请求头
         const token = localStorage.getItem('zenwell_token')
-        if (token && !config.url.includes('/login')) {
-          config.headers['Authorization'] = `Bearer ${token}`
-        }
+        // if (token && !config.url.includes('/login')) {
+        config.headers['Authorization'] = `Bearer ${token}`
+        // }
 
         return config
       },

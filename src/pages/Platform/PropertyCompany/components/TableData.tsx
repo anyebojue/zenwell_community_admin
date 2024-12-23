@@ -1,11 +1,24 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { PropertyCompanyReply } from 'api/model/platform/propertyCompanyModel'
+import { getUserInfo } from 'modules/global'
 import { find } from 'modules/platform/propertyCompany'
-import { Tooltip, IconButton, Stack } from '@mui/material'
+import { LoginTo } from 'api/login'
+import { PropertyCompanyReply } from 'api/model/platform/propertyCompanyModel'
+import {
+  Tooltip,
+  IconButton,
+  Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  DialogActions,
+  Button
+} from '@mui/material'
 import { Block, Delete, Edit, ManageAccounts, RestartAlt, Login } from '@mui/icons-material'
 import message from 'components/Message'
-import { useNavigate } from 'react-router-dom'
+import { buttonStyles } from 'components/DeleteModal'
 import TableList from './TableList'
 import RestrictedEntry from './RestrictedEntry'
 import ResetPassword from './ResetPassword'
@@ -36,9 +49,11 @@ const TableData: React.FC<TableDataProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
+  const info = useSelector((state: RootState) => state.info.userInfo)
   const { page, list } = useSelector((state: RootState) => state.PropertyCompanySlice)
   const [restrictOpen, setRestrictOpen] = useState(false)
   const [passwordOpen, setPasswordOpen] = useState(false)
+  const [open, setOpen] = useState(false)
 
   const columns: Column<PropertyCompanyReply>[] = [
     { key: 'id', headerName: '编号', align: 'center' },
@@ -79,7 +94,7 @@ const TableData: React.FC<TableDataProps> = ({
               title: '登录',
               color: 'success' as const,
               icon: <Login fontSize="small" />,
-              onClick: () => message.info('未实现')
+              onClick: () => setOpen(true)
             },
             {
               title: '限制登录',
@@ -142,6 +157,83 @@ const TableData: React.FC<TableDataProps> = ({
         passwordOpen={passwordOpen}
         setPasswordOpen={setPasswordOpen}
       />
+      <Dialog
+        fullWidth
+        open={open}
+        onClose={() => setOpen(false)}
+        PaperProps={{
+          component: 'form',
+          onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
+            event.preventDefault()
+            const form = event.target as HTMLFormElement
+            const formData = new FormData(form)
+            const formJson: Record<string, string> = {}
+            formData.forEach((value, key) => {
+              formJson[key] = value as string
+            })
+            const closeLoading = message.loading('正在登录中...')
+            try {
+              const res = await LoginTo({
+                username: info.username,
+                password: formJson.password,
+                to: dialogValue?.tel || ''
+              })
+              localStorage.setItem('zenwell_token', res.token)
+              closeLoading()
+              message.success('登录成功')
+              navigate('/')
+              dispatch(getUserInfo())
+            } catch {
+              closeLoading()
+              message.error('请检查用户名或密码是否正确')
+            }
+          }
+        }}
+      >
+        <DialogTitle>密码确认</DialogTitle>
+        <DialogContent>
+          <TextField
+            sx={{ display: 'none' }}
+            autoFocus
+            required
+            margin="dense"
+            id="username"
+            name="username"
+            label="密码"
+            type="text"
+            fullWidth
+            variant="standard"
+            autoComplete="new-username"
+            value={dialogValue?.tel}
+          />
+          <TextField
+            placeholder="必填，请输入当前账号密码"
+            autoFocus
+            required
+            margin="dense"
+            id="password"
+            name="password"
+            label="密码"
+            type="password"
+            fullWidth
+            variant="standard"
+            autoComplete="new-password"
+          />
+        </DialogContent>
+        <DialogActions sx={{ pr: 3, pb: 2 }}>
+          <Button variant="contained" color="error" onClick={() => setOpen(false)}>
+            取消
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            color="error"
+            sx={buttonStyles('#2660ad', '#1d428a')}
+          >
+            登录
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   )
 }

@@ -1,8 +1,8 @@
+import { useNavigate } from 'react-router-dom'
 import { Avatar, Button, Divider, Drawer, Stack, Typography } from '@mui/material'
 import { drawerClasses } from '@mui/material/Drawer'
 import { LogoutRounded, Close } from '@mui/icons-material'
 import avatar from 'assets/global/windows.jpg'
-import { useNavigate } from 'react-router-dom'
 import MenuContent from './MenuContent'
 import MenuButton from './MenuButton'
 

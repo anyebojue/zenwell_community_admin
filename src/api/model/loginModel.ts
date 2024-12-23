@@ -1,3 +1,9 @@
+export interface LoginToParams {
+  username: string
+  password: string
+  to: string
+}
+
 export interface LoginParams {
   username: string
   password: string

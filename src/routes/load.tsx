@@ -18,7 +18,7 @@ const NavigateIndex: React.FC = () => {
     case '1':
       return <Navigate to="/control" replace />
     case '0':
-      return <Navigate to="/community" replace />
+      return <Navigate to="/communitys/my-communitys" replace />
     default:
       return null
   }

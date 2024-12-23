@@ -6,6 +6,7 @@ import control from './modules/platform/control'
 import community from './modules/platform/community'
 import propertyCompany from './modules/platform/propertyCompany'
 import organization from './modules/platform/organization'
+import communitys from './modules/property/communitys'
 
 export interface IRouter {
   /** 链接路径 */
@@ -57,7 +58,7 @@ const useAllRoutes = (): IRouter[] => {
     case '2':
       return [...baseRoutes, ...menu]
     case '0':
-      return [...baseRoutes, ...menu]
+      return [...baseRoutes, ...communitys]
     default:
       return [...baseRoutes]
   }
