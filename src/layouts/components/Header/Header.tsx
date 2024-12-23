@@ -14,7 +14,6 @@ const Header = ({
   onToggleMenu: () => void
 }) => {
   const info = useSelector((state: RootState) => state.info.userInfo)
-  console.log(info)
 
   return (
     <Stack

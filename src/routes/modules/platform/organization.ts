@@ -1,5 +1,5 @@
 import BadgeIcon from '@mui/icons-material/Badge'
-import { load } from 'routes/load'
+import { load } from '../../load'
 import { IRouter } from '../../index'
 
 const organization: IRouter[] = [

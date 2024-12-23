@@ -5,7 +5,7 @@ import { IRouter } from '../../index'
 const menuRoute: IRouter[] = [
   {
     path: '/menu',
-    element: load('Platform/menu'),
+    element: load('Develop/Menu'),
     meta: {
       title: '配置菜单',
       Icon: Apartment,

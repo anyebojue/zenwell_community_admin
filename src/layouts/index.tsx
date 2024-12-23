@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRoutes, useLocation, useNavigate } from 'react-router-dom'
-import type { IRouter } from 'routes'
-import routesConfig from 'routes'
+import useAllRoutes, { IRouter } from 'routes'
 import useDynamicTabs from 'hooks/useDynamicTabs'
 import { getUserInfo, permissionMenuPaths } from 'modules/global'
 import { CssBaseline, Box, Stack, Tabs, Tab } from '@mui/material'
@@ -38,9 +37,10 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const location = useLocation()
+  const routes = useAllRoutes()
   const isLoginPage = location.pathname === '/login'
   const [isMenuOpen, setIsMenuOpen] = useState(true)
-  const convertedRoutes = convertRoutes(routesConfig as IRouter[])
+  const convertedRoutes = convertRoutes(routes as IRouter[])
   const routing = useRoutes(convertedRoutes)
   const info = useSelector((state: RootState) => state.info.userInfo)
   const isFullPage = convertedRoutes.some(
@@ -80,7 +80,7 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
     }
     // 检查权限
     if (info.id !== '' && !isLoginPage) {
-      const paths = permissionMenuPaths(info.permission.menus)
+      const paths = permissionMenuPaths(info.permission.menus, routes)
       if (paths.length === 0) {
         navigate('/login')
         return
@@ -89,7 +89,7 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
         navigate(paths[0])
       }
     }
-  }, [dispatch, navigate, info, isLoginPage, location.pathname])
+  }, [dispatch, navigate, info, isLoginPage, location.pathname, routes])
 
   return (
     <AppTheme disableCustomTheme={disableCustomTheme} themeComponents={xThemeComponents}>

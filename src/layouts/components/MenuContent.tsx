@@ -1,7 +1,7 @@
 import { memo, Fragment, useState, useCallback, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import getAllRoutes, { IRouter } from 'routes'
+import useAllRoutes, { IRouter } from 'routes'
 import {
   List,
   ListItemButton,
@@ -17,7 +17,8 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material'
 const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
   const location = useLocation()
   const info = useSelector((state: RootState) => state.info.userInfo)
-  const visibleRoutes = getAllRoutes.filter(item => !item.meta?.hidden)
+  const routes = useAllRoutes()
+  const visibleRoutes = routes.filter(item => !item.meta?.hidden)
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 

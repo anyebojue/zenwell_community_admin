@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import routes from 'routes'
+import { IRouter } from 'routes'
 import { UserInfoReply } from 'api/model/infoModel'
 import { userInfo } from 'api/info'
 
@@ -35,11 +35,10 @@ export const getUserInfo = createAsyncThunk(`${namespace}/getUserInfo`, async ()
   return res
 })
 
-export const permissionMenuPaths = (menus: string[]) => {
+export const permissionMenuPaths = (menus: string[], routeList: IRouter[]) => {
   const routesPaths: string[] = []
-  const all = routes
   if (menus.includes('*')) {
-    all.forEach(route => {
+    routeList.forEach(route => {
       routesPaths.push(route.path)
       route.children?.forEach(childRouter => {
         const menu = `${route.path}/${childRouter.path}`
@@ -49,7 +48,7 @@ export const permissionMenuPaths = (menus: string[]) => {
       })
     })
   } else {
-    all.forEach(route => {
+    routeList.forEach(route => {
       route.children?.forEach(childRouter => {
         const menu = `${route.path}/${childRouter.path}`
         if (menus.indexOf('*') !== -1 || menus.indexOf(menu) !== -1) {
@@ -77,13 +76,14 @@ export const info = createSlice({
   extraReducers: builder => {
     builder
       .addCase(getUserInfo.pending, state => {
-        state.error = false // 可以选择在加载时设置标志
+        state.userInfo.platform = ''
+        state.error = false
       })
       .addCase(getUserInfo.fulfilled, (state, action) => {
         state.userInfo = action.payload
       })
       .addCase(getUserInfo.rejected, state => {
-        state.error = true // 处理错误情况
+        state.error = true
       })
   }
 })

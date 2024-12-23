@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { useLocation } from 'react-router-dom'
-import getAllRoutes, { IRouter } from 'routes'
+import useAllRoutes, { IRouter } from 'routes'
 import { styled, Typography, Breadcrumbs, breadcrumbsClasses } from '@mui/material'
 import { NavigateNextRounded } from '@mui/icons-material'
 import { useSelector } from 'react-redux'
@@ -33,6 +33,7 @@ const findRoute = (path: string, routes: IRouter[]): IRouter['meta'] | null => {
 const NavbarBreadcrumbs = () => {
   const location = useLocation()
   const info = useSelector((state: RootState) => state.info.userInfo)
+  const routes = useAllRoutes()
   const pathParts = location.pathname.split('/').filter(Boolean)
   const platformMap = {
     '0': '物业端',
@@ -42,7 +43,7 @@ const NavbarBreadcrumbs = () => {
   const breadcrumbs = pathParts.reduce(
     (acc, _, index) => {
       const fullPath = `/${pathParts.slice(0, index + 1).join('/')}`
-      const routeMeta = findRoute(fullPath, getAllRoutes)
+      const routeMeta = findRoute(fullPath, routes)
       acc.push({
         title: routeMeta?.title || '未命名',
         path: fullPath

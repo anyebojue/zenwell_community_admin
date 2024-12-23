@@ -1,5 +1,7 @@
 import React, { ReactNode } from 'react'
-import { load, navigateIndex } from './load'
+import { useSelector } from 'react-redux'
+import { load, NavigateIndex } from './load'
+import menu from './modules/develop/menu'
 import control from './modules/platform/control'
 import community from './modules/platform/community'
 import propertyCompany from './modules/platform/propertyCompany'
@@ -30,12 +32,12 @@ export interface IRouter {
 const baseRoutes: IRouter[] = [
   {
     path: '/',
-    element: navigateIndex,
+    element: React.createElement(NavigateIndex),
     meta: { hidden: true }
   },
   {
     path: '*',
-    element: navigateIndex,
+    element: React.createElement(NavigateIndex),
     meta: { hidden: true }
   },
   {
@@ -46,12 +48,19 @@ const baseRoutes: IRouter[] = [
   }
 ]
 
-const getAllRoutes = (): IRouter[] => [
-  ...baseRoutes,
-  ...control,
-  ...community,
-  ...propertyCompany,
-  ...organization
-]
+// 获取完整路由
+const useAllRoutes = (): IRouter[] => {
+  const info = useSelector((state: RootState) => state.info.userInfo)
+  switch (info.platform) {
+    case '1':
+      return [...baseRoutes, ...control, ...community, ...propertyCompany, ...organization]
+    case '2':
+      return [...baseRoutes, ...menu]
+    case '0':
+      return [...baseRoutes, ...menu]
+    default:
+      return [...baseRoutes]
+  }
+}
 
-export default getAllRoutes()
+export default useAllRoutes
