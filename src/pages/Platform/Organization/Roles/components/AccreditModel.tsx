@@ -1,6 +1,5 @@
 import { Dispatch, memo, SetStateAction, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OrganizationInfoParams } from 'api/model/platform/organizationInfoModel'
 import { findRolesGroup, relevanceCommunity } from 'modules/platform/roles'
 import {
   Button,
@@ -43,15 +42,15 @@ const AccreditModel: React.FC<AAccreditModelProps> = ({
     }
     try {
       setLoading(true)
-      const res = (await dispatch(
+      const res = await dispatch(
         relevanceCommunity({
           userGroupId: dialogValue.id,
           communityId: [...selectedRows].join(',')
         })
-      )) as PayloadActionWithError<OrganizationInfoParams>
+      )
       if (res.meta.requestStatus === 'rejected') {
-        if (res.error) {
-          throw new Error(res.error.message || '关联失败')
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
         }
       } else if (res.meta.requestStatus === 'fulfilled') {
         message.success('关联成功')

@@ -1,6 +1,6 @@
 import { Dispatch, memo, SetStateAction, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RolesParams, RolesReply } from 'api/model/platform/rolesModel'
+import { RolesReply } from 'api/model/platform/rolesModel'
 import { EmployeesReply } from 'api/model/platform/employeesModel'
 import { update } from 'modules/platform/roles'
 import { find } from 'modules/platform/roles'
@@ -44,7 +44,7 @@ const RelevanceModel: React.FC<AssociatedProps> = ({
     }
     try {
       setLoading(true)
-      const res = (await dispatch(
+      const res = await dispatch(
         update({
           users: dialogEmployessValue.id,
           id: dialogValue.id,
@@ -52,10 +52,10 @@ const RelevanceModel: React.FC<AssociatedProps> = ({
           plate: dialogValue.plate,
           word: dialogValue.word
         })
-      )) as PayloadActionWithError<RolesParams>
+      )
       if (res.meta.requestStatus === 'rejected') {
-        if (res.error) {
-          throw new Error(res.error.message || '关联失败')
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
         }
       } else if (res.meta.requestStatus === 'fulfilled') {
         message.success('关联成功')

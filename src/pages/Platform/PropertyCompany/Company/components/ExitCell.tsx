@@ -37,7 +37,10 @@ const ExitCell: React.FC<ExitCellProps> = ({ exitOpen, setExitOpen, dialogValue 
   const onExitCell = async () => {
     setLoading(true)
     try {
-      await dispatch(companydeleteById(dialogValue?.id!))
+      const res = await dispatch(companydeleteById(dialogValue?.id!))
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
       setExitOpen(false)
       message.success('退出成功')
       await dispatch(

@@ -1,9 +1,6 @@
 import { Dispatch, memo, SetStateAction, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  PropertyCompanyParams,
-  PropertyCompanyReply
-} from 'api/model/platform/propertyCompanyModel'
+import { PropertyCompanyReply } from 'api/model/platform/propertyCompanyModel'
 import { find, update } from 'modules/platform/employees'
 import {
   Button,
@@ -42,10 +39,12 @@ const RestrictedEntry: React.FC<DeleteModalProps> = ({
   const onPassword = async () => {
     try {
       setPasswordLoading(true)
-      const res = (await dispatch(
+      const res = await dispatch(
         update({ id: dialogValue?.user.id, password: dialogValue?.user.mobile })
-      )) as PayloadActionWithError<PropertyCompanyParams>
-      if (res.error?.message) throw new Error(res.error?.message)
+      )
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
       await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
       message.success('操作成功')
       setPasswordOpen(false)

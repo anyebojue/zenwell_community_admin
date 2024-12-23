@@ -54,7 +54,10 @@ const Accredit: React.FC<AccreditProps> = ({ dialogValue }) => {
     async (ids: string[]) => {
       setLoading(true)
       try {
-        await dispatch(deleteRolesGroupByIds(ids))
+        const res = await dispatch(deleteRolesGroupByIds(ids))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
         setDelOpen(false)
         message.success('删除成功')
         await dispatch(

@@ -94,8 +94,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
         }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
-        const res = (await dispatch(action)) as PayloadActionWithError<OrganizationInfoParams>
-        if (res.meta.requestStatus === 'rejected' && res.error) {
+        const res = await dispatch(action)
+        if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
         await dispatch(find({ pId: '0' }))

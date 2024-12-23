@@ -94,13 +94,16 @@ const TableData: React.FC<TableDataProps> = ({
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      await dispatch(
+      const res = await dispatch(
         findOrgUser({
           'page.num': page.num,
           'page.size': page.size,
           orgId: dialogValue.id || '9027438861059358721'
         })
       )
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
     } catch {
       message.error('列表加载失败，请刷新页面或检查网络问题')
     } finally {
@@ -131,7 +134,10 @@ const TableData: React.FC<TableDataProps> = ({
     async (ids: string[]) => {
       setLoading(true)
       try {
-        await dispatch(deleteOrgUserByIds(ids))
+        const res = await dispatch(deleteOrgUserByIds(ids))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
         setDelOpen(false)
         message.success('删除成功')
         fetchData()

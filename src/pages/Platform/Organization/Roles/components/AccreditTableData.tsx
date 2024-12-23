@@ -84,13 +84,16 @@ const AccreditTableData: React.FC<AccreditTableDataProps> = ({
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      await dispatch(
+      const res = await dispatch(
         findRolesGroup({
           'page.num': page.num,
           'page.size': page.size,
           userGroupId: dialogValue.id || '9027404928166920193'
         })
       )
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
     } catch {
       message.error('列表加载失败，请刷新页面或检查网络问题')
     } finally {

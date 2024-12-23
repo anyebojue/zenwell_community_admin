@@ -1,8 +1,5 @@
 import { Dispatch, memo, SetStateAction, useState } from 'react'
-import {
-  PropertyCompanyParams,
-  PropertyCompanyReply
-} from 'api/model/platform/propertyCompanyModel'
+import { PropertyCompanyReply } from 'api/model/platform/propertyCompanyModel'
 import {
   Button,
   Dialog,
@@ -57,8 +54,10 @@ const RestrictedEntry: React.FC<DeleteModalProps> = ({
     }
     try {
       setRestrictLoading(true)
-      const res = (await dispatch(update(params))) as PayloadActionWithError<PropertyCompanyParams>
-      if (res.error?.message) throw new Error(res.error?.message)
+      const res = await dispatch(update(params))
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
       await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
       message.success('操作成功')
       setRestrictOpen(false)

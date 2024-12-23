@@ -1,9 +1,6 @@
 import { Dispatch, memo, SetStateAction, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  OrganizationInfoParams,
-  OrganizationInfoReply
-} from 'api/model/platform/organizationInfoModel'
+import { OrganizationInfoReply } from 'api/model/platform/organizationInfoModel'
 import { EmployeesReply } from 'api/model/platform/employeesModel'
 import { findOrgUser, relevanceOrgUser } from 'modules/platform/organizationInfo'
 import {
@@ -45,12 +42,12 @@ const Associated: React.FC<AssociatedProps> = ({
     }
     try {
       setLoading(true)
-      const res = (await dispatch(
+      const res = await dispatch(
         relevanceOrgUser({ orgId: dialogValue.id, userId: [...selectedRows].join(',') })
-      )) as PayloadActionWithError<OrganizationInfoParams>
+      )
       if (res.meta.requestStatus === 'rejected') {
-        if (res.error) {
-          throw new Error(res.error.message || '关联失败')
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
         }
       } else if (res.meta.requestStatus === 'fulfilled') {
         message.success('关联成功')

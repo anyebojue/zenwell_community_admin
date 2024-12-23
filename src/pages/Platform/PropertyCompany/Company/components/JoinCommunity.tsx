@@ -44,7 +44,10 @@ const JoinCommunity: React.FC<JoinCommunityProps> = ({
   const onJoinCommunity = async () => {
     setLoading(true)
     try {
-      await dispatch(companycreate({ storeId, communityId }))
+      const res = await dispatch(companycreate({ storeId, communityId }))
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
       setOpenJoinCommunity(false)
       message.success('加入成功')
       await dispatch(

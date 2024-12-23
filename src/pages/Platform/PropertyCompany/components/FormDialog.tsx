@@ -70,8 +70,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
         const params = { ...formData }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
-        const res = (await dispatch(action)) as PayloadActionWithError<PropertyCompanyParams>
-        if (res.meta.requestStatus === 'rejected' && res.error) {
+        const res = await dispatch(action)
+        if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
         await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))

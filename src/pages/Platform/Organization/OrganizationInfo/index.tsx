@@ -57,7 +57,10 @@ const InfoIndex = () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     setLoading(true)
     try {
-      await dispatch(find({ pId: '0' }))
+      const res = await dispatch(find({ pId: '0' }))
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
     } catch {
       message.error('列表加载失败，请刷新页面或检查网络问题')
     } finally {
@@ -82,7 +85,10 @@ const InfoIndex = () => {
     async (ids: string[]) => {
       setLoading(true)
       try {
-        await dispatch(deleteByIds(ids))
+        const res = await dispatch(deleteByIds(ids))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
         setDelOpen(false)
         message.success('删除成功')
         await dispatch(find({ pId: '0' }))
