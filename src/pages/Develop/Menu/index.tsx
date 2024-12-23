@@ -2,22 +2,14 @@ import { memo, useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { MenuReply } from 'api/model/develop/menuModel'
 import { deleteByIds, find } from 'modules/develop/menu'
-import { Box, Button, Theme, Typography } from '@mui/material'
-import { Add } from '@mui/icons-material'
+import { Box } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
-import DeleteModal, { buttonStyles } from 'components/DeleteModal'
+import DeleteModal from 'components/DeleteModal'
 import message from 'components/Message'
 import FormSearch from './components/FormSearch'
 import FormDialog from './components/FormDialog'
 import TableData from './components/TableData'
-
-const contentBoxStyle = (theme: Theme) => ({
-  background: theme.palette.background.default,
-  borderRadius: '15px',
-  padding: '15px 15px',
-  width: '100%'
-})
 
 const MenuIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -72,33 +64,19 @@ const MenuIndex = () => {
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
       <Box sx={{ width: '100%' }}>
-        <FormSearch setDelOpen={setDelOpen} selectedRows={selectedRows} />
-        <Box sx={contentBoxStyle}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h6">员工管理</Typography>
-            <Button
-              size="small"
-              variant="contained"
-              color="error"
-              startIcon={<Add />}
-              sx={buttonStyles('#2660ad', '#1d428a')}
-              onClick={() => {
-                setOpenDialog(true)
-                setDialogType('add')
-              }}
-            >
-              添加
-            </Button>
-          </Box>
-          <TableData
-            setDialogType={setDialogType}
-            setDialogValue={setDialogValue}
-            selectedRows={selectedRows}
-            setSelectedRows={setSelectedRows}
-            setOpenDialog={setOpenDialog}
-            setDelOpen={setDelOpen}
-          />
-        </Box>
+        <FormSearch
+          setDialogType={setDialogType}
+          setDelOpen={setDelOpen}
+          selectedRows={selectedRows}
+        />
+        <TableData
+          setDialogType={setDialogType}
+          setDialogValue={setDialogValue}
+          selectedRows={selectedRows}
+          setSelectedRows={setSelectedRows}
+          setOpenDialog={setOpenDialog}
+          setDelOpen={setDelOpen}
+        />
       </Box>
       <Copyright />
 

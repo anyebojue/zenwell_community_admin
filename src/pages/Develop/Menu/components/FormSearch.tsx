@@ -25,18 +25,21 @@ const textFieldStyles = {
 }
 
 interface SearchFormProps {
+  setDialogType: Dispatch<SetStateAction<string>>
   selectedRows: Set<string | undefined>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => {
+const FormSearch: React.FC<SearchFormProps> = ({ setDialogType, selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.MenuSlice)
 
   const [openDialog, setOpenDialog] = useState(false)
   const [searchParams, setSearchParams] = useState<MenuParams>({
     name: '',
-    plate: ''
+    btn: '',
+    plate: '',
+    menu: ''
   })
 
   const handleInputChange = (field: keyof MenuParams) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -160,7 +163,10 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
           color="error"
           startIcon={<Add />}
           sx={buttonStyles('#2660ad', '#1d428a')}
-          onClick={() => setOpenDialog(true)}
+          onClick={() => {
+            setOpenDialog(true)
+            setDialogType('add')
+          }}
         >
           新增
         </Button>
