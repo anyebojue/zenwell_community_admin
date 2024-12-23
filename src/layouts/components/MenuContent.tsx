@@ -165,7 +165,7 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
               fontSize: '0.75rem'
             }}
           >
-            {platformMap[info.platform as keyof typeof platformMap] || '???'}
+            {platformMap[info.platform as keyof typeof platformMap]}
           </ListSubheader>
         )
       }

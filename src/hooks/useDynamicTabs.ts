@@ -28,6 +28,11 @@ const useDynamicTabs = (routeList: IRouter[]) => {
 
   // 监听路径变化，动态更新标签页
   useEffect(() => {
+    if (!window.localStorage.getItem('zenwell_token')) {
+      setTabs([])
+      return
+    }
+
     const currentPath = location.pathname
     const title = getRouteTitle(currentPath)
 
@@ -53,6 +58,7 @@ const useDynamicTabs = (routeList: IRouter[]) => {
       setActiveTabIndex(prevTabs.length)
       return [...prevTabs, { id: Date.now(), label: title, path: currentPath }]
     })
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname])
 

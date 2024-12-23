@@ -83,7 +83,7 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
       const paths = permissionMenuPaths(info.permission.menus, routes)
       if (paths.length === 0) {
         navigate('/login')
-        return
+        return message.warning('您没有权限访问')
       }
       if (!paths.includes(location.pathname)) {
         navigate(paths[0])

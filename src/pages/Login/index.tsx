@@ -133,7 +133,7 @@ const LoginIndex = () => {
               用户名
             </FormLabel>
             <TextField
-              defaultValue="super"
+              defaultValue="plate_super"
               {...register('username', { required: '请输入用户名' })}
               id="username"
               placeholder="请输入用户名"
@@ -157,7 +157,7 @@ const LoginIndex = () => {
               密码
             </FormLabel>
             <TextField
-              defaultValue="zenwell123"
+              defaultValue="123456"
               {...register('password', { required: '请输入密码' })}
               id="password"
               type="password"

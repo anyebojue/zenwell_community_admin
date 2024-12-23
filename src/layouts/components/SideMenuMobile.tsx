@@ -2,6 +2,7 @@ import { Avatar, Button, Divider, Drawer, Stack, Typography } from '@mui/materia
 import { drawerClasses } from '@mui/material/Drawer'
 import { LogoutRounded, Close } from '@mui/icons-material'
 import avatar from 'assets/global/windows.jpg'
+import { useNavigate } from 'react-router-dom'
 import MenuContent from './MenuContent'
 import MenuButton from './MenuButton'
 
@@ -11,6 +12,12 @@ interface SideMenuMobileProps {
 }
 
 export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobileProps) {
+  const navigate = useNavigate()
+  const handleLogout = () => {
+    navigate('/login')
+    window.localStorage.removeItem('zenwell_token')
+  }
+
   return (
     <Drawer
       anchor="right"
@@ -50,7 +57,12 @@ export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobilePro
           <Divider />
         </Stack>
         <Stack sx={{ p: 2 }}>
-          <Button variant="outlined" fullWidth startIcon={<LogoutRounded />}>
+          <Button
+            onClick={() => handleLogout}
+            variant="outlined"
+            fullWidth
+            startIcon={<LogoutRounded />}
+          >
             退出登录
           </Button>
         </Stack>
