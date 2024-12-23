@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { Stack, drawerClasses, Avatar, Typography, IconButton } from '@mui/material'
 import { Menu, Translate } from '@mui/icons-material'
 import ColorModeIconDropdown from 'theme/ColorModeIconDropdown'
-import avatar from 'assets/global/windows.jpg'
+import { useSelector } from 'react-redux'
 import Search from './Search'
 import OptionsMenu from './OptionsMenu'
 
@@ -13,6 +13,9 @@ const Header = ({
   isMenuOpen: boolean
   onToggleMenu: () => void
 }) => {
+  const info = useSelector((state: RootState) => state.info.userInfo)
+  console.log(info)
+
   return (
     <Stack
       direction="row"
@@ -63,9 +66,9 @@ const Header = ({
         </IconButton>
         <ColorModeIconDropdown />
         <OptionsMenu />
-        <Avatar sizes="small" alt="Riley Carter" src={avatar} sx={{ width: 32, height: 32 }} />
-        <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '16px' }}>
-          WhiteFox
+        <Avatar sizes="small" alt="Riley Carter" src="" sx={{ width: 32, height: 32 }} />
+        <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '16px', pr: 2 }}>
+          {info.username}
         </Typography>
       </Stack>
     </Stack>
