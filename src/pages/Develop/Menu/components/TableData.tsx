@@ -67,9 +67,10 @@ const TableData: React.FC<TableDataProps> = ({
   const { page, list } = useSelector((state: RootState) => state.MenuSlice)
 
   const columns: Column<MenuReply>[] = [
-    { key: 'id', headerName: '员工编号', align: 'center' },
-    { key: 'name', headerName: '顺序', align: 'center' },
+    { key: 'id', headerName: '编号', align: 'center' },
+    { key: 'sort', headerName: '顺序', align: 'center' },
     { key: 'name', headerName: '菜单名称', align: 'center' },
+    { key: 'icon', headerName: '图标', align: 'center' },
     {
       key: 'plate',
       headerName: '平台',
@@ -80,11 +81,11 @@ const TableData: React.FC<TableDataProps> = ({
     },
     { key: 'menu', headerName: '页面', align: 'center' },
     {
-      key: 'plate',
+      key: 'isShow',
       headerName: '是否显示',
       align: 'center',
       renderCell: (row: MenuReply) => {
-        return row.plate === '0' ? '否' : '是'
+        return row.isShow ? '是' : '否'
       }
     },
     {

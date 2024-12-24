@@ -1,28 +1,34 @@
 import { Page } from '../pageModel'
 
 export interface MenuReply {
-  id?: string
-  code?: string
-  name?: string
-  word?: string
-  resource?: string
-  menu?: string
   btn?: string
+  code?: string
+  icon?: string
+  id?: string
+  isShow?: number
+  menu?: string
+  name?: string
   pId?: string
   plate?: string
+  resource?: string
+  sort?: string
+  word?: string
   children?: MenuReply[]
 }
 
 export interface MenuParams {
-  id?: string
-  code?: string
-  name?: string
-  word?: string
-  resource?: string
-  menu?: string
   btn?: string
+  code?: string
+  icon?: string
+  id?: string
+  isShow?: number
+  menu?: string
+  name?: string
   pId?: string
   plate?: string
+  resource?: string
+  sort?: string
+  word?: string
 }
 
 export interface FindMenuReply {
