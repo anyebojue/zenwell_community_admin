@@ -1,10 +1,10 @@
 import React, { memo, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { ChangePassword } from 'api/info'
 import { Box, FormLabel, Stack, TextField, Button, Typography } from '@mui/material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import { useSelector } from 'react-redux'
 
 interface FormData {
   oldPassword: string
@@ -19,7 +19,8 @@ const InputField: React.FC<{
   value: string
   required: boolean
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-}> = ({ label, type, id, value, required, onChange }) => (
+  autocomplete: string
+}> = ({ label, type, id, value, required, onChange, autocomplete }) => (
   <Box sx={{ display: 'flex', alignItems: 'center' }}>
     <FormLabel sx={{ fontWeight: 'bold', width: '20%' }}>{label}：</FormLabel>
     <TextField
@@ -31,6 +32,7 @@ const InputField: React.FC<{
       value={value}
       onChange={onChange}
       fullWidth
+      autoComplete={autocomplete}
       sx={{
         '& .MuiInputBase-root': {
           borderRadius: 1
@@ -40,7 +42,7 @@ const InputField: React.FC<{
   </Box>
 )
 
-const FormDialog: React.FC = () => {
+const ChangePasswordIndex: React.FC = () => {
   const navigate = useNavigate()
   const info = useSelector((state: RootState) => state.info.userInfo)
   const [formData, setFormData] = useState<FormData>({
@@ -50,10 +52,34 @@ const FormDialog: React.FC = () => {
   })
   const [error, setError] = useState<string>('')
 
-  const formFields: { label: string; type: string; id: keyof FormData; required: boolean }[] = [
-    { label: '原始密码', type: 'password', id: 'oldPassword', required: true },
-    { label: '新密码', type: 'password', id: 'newPassword', required: true },
-    { label: '确认密码', type: 'password', id: 'confirmPassword', required: true }
+  const formFields: {
+    label: string
+    type: string
+    id: keyof FormData
+    required: boolean
+    autocomplete: string
+  }[] = [
+    {
+      label: '原始密码',
+      type: 'password',
+      id: 'oldPassword',
+      required: true,
+      autocomplete: 'current-password'
+    },
+    {
+      label: '新密码',
+      type: 'password',
+      id: 'newPassword',
+      required: true,
+      autocomplete: 'new-password'
+    },
+    {
+      label: '确认密码',
+      type: 'password',
+      id: 'confirmPassword',
+      required: true,
+      autocomplete: 'new-password'
+    }
   ]
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +98,8 @@ const FormDialog: React.FC = () => {
     return ''
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
     const errorMessage = validateForm()
     if (errorMessage) {
       setError(errorMessage)
@@ -106,34 +133,51 @@ const FormDialog: React.FC = () => {
           {error}
         </Typography>
       )}
-      <Stack spacing={3}>
-        {formFields.map(({ label, type, id, required }) => (
-          <InputField
-            key={id}
-            label={label}
-            type={type}
-            id={id}
-            value={formData[id]}
-            required={required}
-            onChange={handleInputChange}
-          />
-        ))}
-      </Stack>
-      <Button
-        size="small"
-        variant="contained"
-        color="error"
-        sx={{
-          width: '100%',
-          mt: 5,
-          ...buttonStyles('#2660ad', '#1d428a')
-        }}
-        onClick={handleSubmit}
-      >
-        确认修改
-      </Button>
+      <form onSubmit={handleSubmit}>
+        <TextField
+          sx={{ display: 'none' }}
+          autoFocus
+          required
+          margin="dense"
+          id="username"
+          name="username"
+          label="密码"
+          type="text"
+          fullWidth
+          variant="standard"
+          autoComplete="new-username"
+          value={info.username}
+        />
+        <Stack spacing={3}>
+          {formFields.map(({ label, type, id, required, autocomplete }) => (
+            <InputField
+              key={id}
+              label={label}
+              type={type}
+              id={id}
+              value={formData[id]}
+              required={required}
+              onChange={handleInputChange}
+              autocomplete={autocomplete}
+            />
+          ))}
+        </Stack>
+        <Button
+          type="submit"
+          size="small"
+          variant="contained"
+          color="error"
+          sx={{
+            width: '100%',
+            mt: 5,
+            ...buttonStyles('#2660ad', '#1d428a')
+          }}
+        >
+          确认修改
+        </Button>
+      </form>
     </Box>
   )
 }
 
-export default memo(FormDialog)
+export default memo(ChangePasswordIndex)
