@@ -16,14 +16,20 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
   }
 }))
 
-const findRoute = (path: string, routes: IRouter[]): IRouter['meta'] | null => {
+// 修改后的 findRoute，正确处理相对路径
+const findRoute = (path: string, routes: IRouter[], parentPath = ''): IRouter['meta'] | null => {
   for (const route of routes) {
-    if (route.path === path) {
+    // 拼接父路由和子路由路径
+    const fullPath = parentPath + route.path
+
+    // 判断是否匹配当前路径
+    if (path === fullPath) {
       return route.meta
     }
+
+    // 如果有子路由，递归查找子路由
     if (route.children) {
-      // 递归查找子路由
-      const childRoute = findRoute(path, route.children)
+      const childRoute = findRoute(path, route.children, fullPath + '/')
       if (childRoute) return childRoute
     }
   }
@@ -40,17 +46,24 @@ const NavbarBreadcrumbs = () => {
     '1': '平台端',
     '2': '开发端'
   }
+
+  // 递归生成面包屑路径，遍历路径的每一部分，确保包括父路由和子路由
   const breadcrumbs = pathParts.reduce(
     (acc, _, index) => {
       const fullPath = `/${pathParts.slice(0, index + 1).join('/')}`
       const routeMeta = findRoute(fullPath, routes)
+
+      // 将路径和标题加入面包屑
       acc.push({
         title: routeMeta?.title || '未命名',
         path: fullPath
       })
       return acc
     },
-    [{ title: platformMap[info.platform as keyof typeof platformMap] || '???', path: '/' }]
+    [
+      // 初始面包屑为平台信息
+      { title: platformMap[info.platform as keyof typeof platformMap] || '???', path: '/' }
+    ]
   )
 
   return (
