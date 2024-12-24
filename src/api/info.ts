@@ -2,12 +2,30 @@ import { request } from 'utils/request/axios'
 import { UserInfoReply } from './model/infoModel'
 
 const ApiPrefix = {
+  ChangePassword: '/auth/pwd',
   UserLogin: '/auth/info',
   UploadImage: '/file/uploads'
 }
 
 interface UploadImageResponse {
   url: string
+}
+
+/**
+ * 修改密码
+ * @returns
+ */
+export const ChangePassword = (data: {
+  username: string
+  oldPassword: string
+  newPassword: string
+}) => {
+  return request
+    .post({
+      url: ApiPrefix.ChangePassword,
+      data
+    })
+    .then(res => res.data)
 }
 
 /**

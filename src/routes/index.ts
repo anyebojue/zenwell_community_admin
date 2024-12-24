@@ -6,6 +6,7 @@ import control from './modules/platform/control'
 import community from './modules/platform/community'
 import propertyCompany from './modules/platform/propertyCompany'
 import organization from './modules/platform/organization'
+import systemSetting from './modules/platform/systemSetting'
 import communitys from './modules/property/communitys'
 
 export interface IRouter {
@@ -54,7 +55,14 @@ const useAllRoutes = (): IRouter[] => {
   const info = useSelector((state: RootState) => state.info.userInfo)
   switch (info.platform) {
     case '1':
-      return [...baseRoutes, ...control, ...community, ...propertyCompany, ...organization]
+      return [
+        ...baseRoutes,
+        ...control,
+        ...community,
+        ...propertyCompany,
+        ...organization,
+        ...systemSetting
+      ]
     case '2':
       return [...baseRoutes, ...menu]
     case '0':

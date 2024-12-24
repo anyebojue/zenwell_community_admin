@@ -126,7 +126,7 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
                 />
               ))}
             </Tabs>
-            <Box sx={{ px: 3, pb: 3, bgcolor: 'background.paper' }}>{routing}</Box>
+            <Box sx={{ px: 3, pb: 5, bgcolor: 'background.paper', height: '100%' }}>{routing}</Box>
           </Stack>
           <AppNavbar />
         </Box>
