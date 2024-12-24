@@ -21,6 +21,7 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
   const visibleRoutes = routes.filter(item => !item.meta?.hidden)
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [activePopoverIndex, setActivePopoverIndex] = useState<number | null>(null)
 
   const isActiveLink = useCallback(
     (path: string) => location.pathname === path || location.pathname.startsWith(`${path}/`),
@@ -46,10 +47,12 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
   const handleClick = useCallback((index: number, event: React.MouseEvent<HTMLElement>) => {
     setOpenIndex(prevIndex => (prevIndex === index ? null : index))
     setAnchorEl(event.currentTarget)
+    setActivePopoverIndex(index)
   }, [])
 
   const handleClosePopover = useCallback(() => {
     setAnchorEl(null)
+    setActivePopoverIndex(null)
   }, [])
 
   const getMenuItemStyle = (isParentActive: boolean) => ({
@@ -110,7 +113,7 @@ const MenuContent = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
             )}
             {!isMenuOpen && (
               <Popover
-                open={Boolean(anchorEl)}
+                open={activePopoverIndex === index}
                 anchorEl={anchorEl}
                 onClose={handleClosePopover}
                 anchorOrigin={{
