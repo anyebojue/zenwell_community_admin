@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
 import { MenuParams, MenuReply } from 'api/model/develop/menuModel'
-import { FindMenu, CreateMenu, UpdateMenu, DeleteMenu } from 'api/develop/menu'
+import { FindMenu, CreateMenu, UpdateMenu, DeleteMenu, FindMenus } from 'api/develop/menu'
 
 const namespace = 'Menu'
 
@@ -24,6 +24,14 @@ const initialState: IInitialState = {
   },
   list: []
 }
+
+export const findMenus = createAsyncThunk(
+  `${namespace}/find`,
+  async (params: MenuParams & PaginationParams) => {
+    const res = await FindMenus(params)
+    return res
+  }
+)
 
 export const find = createAsyncThunk(
   `${namespace}/find`,

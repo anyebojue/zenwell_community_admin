@@ -2,10 +2,25 @@ import { request } from 'utils/request/axios'
 import { FindMenuReply, MenuParams } from '../model/develop/menuModel'
 
 const ApiPrefix = {
+  FindMenus: '/auth/actions',
   FindMenu: '/auth/action',
   CreateMenu: '/auth/action',
   UpdateMenu: '/auth/action',
   DeleteMenu: '/auth/action'
+}
+
+/**
+ * 查询接口
+ * @param params User
+ * @returns
+ */
+export const FindMenus = (params: MenuParams & PaginationParams) => {
+  return request
+    .get<FindMenuReply>({
+      url: ApiPrefix.FindMenus,
+      params
+    })
+    .then(res => res.data)
 }
 
 /**
