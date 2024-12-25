@@ -2,9 +2,9 @@ import BuildCircleIcon from '@mui/icons-material/BuildCircle'
 import { load } from '../../load'
 import { IRouter } from '../../index'
 
-const organization: IRouter[] = [
+const systemSetting: IRouter[] = [
   {
-    path: '/systemSetting',
+    path: '/SystemSetting',
     element: null,
     meta: {
       title: '系统设置',
@@ -13,7 +13,7 @@ const organization: IRouter[] = [
     },
     children: [
       {
-        path: 'change-password',
+        path: 'ChangePassword',
         element: load('Platform/SystemSetting/ChangePassword'),
         meta: {
           title: '修改密码'
@@ -23,4 +23,4 @@ const organization: IRouter[] = [
   }
 ]
 
-export default organization
+export default systemSetting
