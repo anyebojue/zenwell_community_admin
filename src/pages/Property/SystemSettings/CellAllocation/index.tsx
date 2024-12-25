@@ -12,7 +12,7 @@ const treeViewStyle = (theme: Theme) => ({
   width: '20%'
 })
 
-const ChangePasswordIndex: React.FC = () => {
+const CellAllocationIndex: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<string>('1')
   const [formData, setFormData] = useState<Record<string, string>>(() => {
     const initialFields = FORM_FIELDS[selectedItem] || []
@@ -72,4 +72,4 @@ const ChangePasswordIndex: React.FC = () => {
   )
 }
 
-export default memo(ChangePasswordIndex)
+export default memo(CellAllocationIndex)
