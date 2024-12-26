@@ -50,7 +50,9 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
   const [searchParams, setSearchParams] = useState<CommunityParams>({
     id: '',
     name: '',
-    city_code: ''
+    city_code: '',
+    province_code: '',
+    county_code: ''
   })
 
   useEffect(() => {

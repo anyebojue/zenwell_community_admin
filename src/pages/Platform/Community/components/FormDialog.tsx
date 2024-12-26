@@ -91,28 +91,22 @@ const FormDialog: React.FC<FormDialogProps> = ({
   }, [initialFormData])
 
   useEffect(() => {
-    if (formData.province_code) {
+    if (formData.province_code && formData.city_code) {
       setCities(
         cityList.filter(
           item => item.parentAreaCode === formData.province_code && item.areaLevel === '202'
         )
       )
-    } else {
-      setCities([])
-    }
-  }, [formData.province_code, cityList])
-
-  useEffect(() => {
-    if (formData.city_code) {
       setCounties(
         cityList.filter(
           item => item.parentAreaCode === formData.city_code && item.areaLevel === '303'
         )
       )
     } else {
+      setCities([])
       setCounties([])
     }
-  }, [formData.city_code, cityList])
+  }, [formData.province_code, formData.city_code, cityList])
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
