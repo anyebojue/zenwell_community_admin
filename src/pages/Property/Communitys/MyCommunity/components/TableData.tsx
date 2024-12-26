@@ -1,7 +1,6 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CommunityReply } from 'api/model/platform/communityModel'
-import { getCityArea } from 'modules/global'
 import { find } from 'modules/platform/community'
 import { Box, Tooltip, IconButton } from '@mui/material'
 import { Edit } from '@mui/icons-material'
@@ -65,17 +64,6 @@ const TableData: React.FC<TableDataProps> = ({
     }
   ]
 
-  const fetchCityData = useCallback(async () => {
-    try {
-      const res = await dispatch(getCityArea({ 'page.disable': true }))
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
-      }
-    } catch {
-      message.error('获取全国城市列表失败，请刷新页面或检查网络问题')
-    }
-  }, [dispatch])
-
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
@@ -91,9 +79,8 @@ const TableData: React.FC<TableDataProps> = ({
   }, [dispatch, page.num, page.size])
 
   useEffect(() => {
-    fetchCityData()
     fetchData()
-  }, [fetchCityData, fetchData])
+  }, [fetchData])
 
   return (
     <TableList
