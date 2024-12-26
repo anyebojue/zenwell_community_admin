@@ -1,7 +1,9 @@
 import { request } from 'utils/request/axios'
 import { UserInfoReply } from './model/infoModel'
+import { FindCityAreaReply } from './model/cityModel'
 
 const ApiPrefix = {
+  CityArea: '/auth/city_area',
   ChangePassword: '/auth/pwd',
   UserLogin: '/auth/info',
   UploadImage: '/file/uploads'
@@ -9,6 +11,20 @@ const ApiPrefix = {
 
 interface UploadImageResponse {
   url: string
+}
+
+/**
+ * 全国城市接口
+ * @params
+ * @returns
+ */
+export const CityArea = (params: PaginationParams) => {
+  return request
+    .get<FindCityAreaReply>({
+      url: ApiPrefix.CityArea,
+      params
+    })
+    .then(res => res.data)
 }
 
 /**

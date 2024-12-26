@@ -1,9 +1,16 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { IRouter } from 'routes'
+import { Page } from 'api/model/pageModel'
 import { UserInfoReply } from 'api/model/infoModel'
-import { userInfo } from 'api/info'
+import { CityArea, userInfo } from 'api/info'
+import { CityAreaReply } from 'api/model/cityModel'
 
 const namespace = 'info'
+
+const PAGE = {
+  NUM: '1',
+  SIZE: '20'
+}
 
 const InitUserInfo: UserInfoReply = {
   id: '',
@@ -24,11 +31,32 @@ const InitUserInfo: UserInfoReply = {
   }
 }
 
+interface CityAreaResponse {
+  page: Page
+  list: CityAreaReply[]
+}
+
+const CityAreaInitialState: CityAreaResponse = {
+  page: {
+    num: PAGE.NUM,
+    size: PAGE.SIZE,
+    total: '0',
+    disable: false
+  },
+  list: []
+}
+
 const initialState = {
   token: localStorage.getItem('zenwell_token') || '',
   userInfo: { ...InitUserInfo },
-  error: false
+  error: false,
+  cityData: CityAreaInitialState
 }
+
+export const getCityArea = createAsyncThunk(`getCityArea`, async (params: PaginationParams) => {
+  const res = await CityArea(params)
+  return res
+})
 
 export const getUserInfo = createAsyncThunk(`${namespace}/getUserInfo`, async () => {
   const res = await userInfo()
@@ -84,6 +112,10 @@ export const info = createSlice({
       })
       .addCase(getUserInfo.rejected, state => {
         state.error = true
+      })
+      .addCase(getCityArea.fulfilled, (state, action) => {
+        state.cityData.page = action.payload.page
+        state.cityData.list = action.payload.list
       })
   }
 })

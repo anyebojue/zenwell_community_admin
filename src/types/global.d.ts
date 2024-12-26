@@ -11,6 +11,7 @@ declare global {
   interface PaginationParams {
     'page.num'?: string
     'page.size'?: string
+    'page.disable'?: boolean
   }
   interface Error {
     code?: number // 可选的错误码

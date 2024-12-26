@@ -32,6 +32,8 @@ export interface CommunityParams {
   fee_price?: number //每月单价
   b_id?: string //社区编码
   state?: string // 审核状态
+  province_code?: string
+  county_code?: string
 }
 
 export interface FindCommunityReply {

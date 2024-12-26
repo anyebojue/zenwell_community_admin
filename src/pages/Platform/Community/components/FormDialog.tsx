@@ -1,11 +1,11 @@
 import React, {
   Dispatch,
-  memo,
   SetStateAction,
   useCallback,
   useEffect,
   useMemo,
-  useState
+  useState,
+  memo
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CommunityParams, CommunityReply } from 'api/model/platform/communityModel'
@@ -26,6 +26,7 @@ import {
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
+import { CityAreaReply } from 'api/model/cityModel'
 
 interface FormDialogProps {
   dialogValue?: CommunityReply
@@ -33,8 +34,6 @@ interface FormDialogProps {
   dialogType: string
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
-
-const city = [{ value: '0', label: '北京' }]
 
 const FormDialog: React.FC<FormDialogProps> = ({
   dialogValue,
@@ -44,12 +43,14 @@ const FormDialog: React.FC<FormDialogProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.CommunitySlice)
+  const { cityData } = useSelector((state: RootState) => state.info)
   const [loading, setLoading] = useState(false)
 
-  const initialFormData = useMemo(
-    () => ({
+  const cityList = cityData.list
+
+  const initialFormData = useMemo(() => {
+    const commonFields = {
       name: dialogType === 'edit' ? dialogValue?.name || '' : '',
-      city_code: dialogType === 'edit' ? dialogValue?.cityCode || '' : '',
       address: dialogType === 'edit' ? dialogValue?.address || '' : '',
       nearby_landmarks: dialogType === 'edit' ? dialogValue?.nearbyLandmarks || '' : '',
       tel: dialogType === 'edit' ? dialogValue?.tel || '' : '',
@@ -57,21 +58,69 @@ const FormDialog: React.FC<FormDialogProps> = ({
       fee_price: dialogType === 'edit' ? dialogValue?.feePrice || 0 : 0,
       b_id: dialogType === 'edit' ? dialogValue?.bId || '' : '',
       state: dialogType === 'edit' ? dialogValue?.state || '0' : '0'
-    }),
-    [dialogType, dialogValue]
-  )
+    }
+
+    const cityCodes =
+      dialogType === 'edit' && dialogValue
+        ? {
+            province_code:
+              cityList.find(
+                item =>
+                  item.areaCode ===
+                  cityList.find(items => items.areaCode === dialogValue?.cityCode)?.parentAreaCode
+              )?.parentAreaCode || '',
+            city_code:
+              cityList.find(item => item.areaCode === dialogValue?.cityCode)?.parentAreaCode || '',
+            county_code:
+              cityList.find(item => item.areaCode === dialogValue?.cityCode)?.areaCode || ''
+          }
+        : {
+            province_code: '',
+            city_code: '',
+            county_code: ''
+          }
+
+    return { ...commonFields, ...cityCodes }
+  }, [dialogType, dialogValue, cityList])
+
   const [formData, setFormData] = useState<CommunityParams>(initialFormData)
+  const [cities, setCities] = useState<CityAreaReply[]>([])
+  const [counties, setCounties] = useState<CityAreaReply[]>([])
 
   useEffect(() => {
     setFormData(initialFormData)
   }, [initialFormData])
+
+  useEffect(() => {
+    if (formData.province_code) {
+      setCities(
+        cityList.filter(
+          item => item.parentAreaCode === formData.province_code && item.areaLevel === '202'
+        )
+      )
+    } else {
+      setCities([])
+    }
+  }, [formData.province_code, cityList])
+
+  useEffect(() => {
+    if (formData.city_code) {
+      setCounties(
+        cityList.filter(
+          item => item.parentAreaCode === formData.city_code && item.areaLevel === '303'
+        )
+      )
+    } else {
+      setCounties([])
+    }
+  }, [formData.city_code, cityList])
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
       setLoading(true)
       try {
-        const params = { ...formData }
+        const params = { ...formData, city_code: formData.county_code }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)
@@ -125,30 +174,71 @@ const FormDialog: React.FC<FormDialogProps> = ({
                 required={required}
                 id={id}
                 value={formData[id as keyof CommunityParams]}
-                onChange={e => setFormData({ ...formData, [id]: e.target.value })}
+                onChange={e => setFormData(prev => ({ ...prev, [id]: e.target.value }))}
               />
             </Box>
           ))}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>小区地区：</FormLabel>
-            {['省', '市', '县'].map(label => (
-              <FormControl sx={{ width: '22%' }} variant="outlined" key={label}>
-                <TextField
-                  select
-                  size="small"
-                  label={`请选择${label}`}
-                  value={formData.city_code}
-                  onChange={e => setFormData({ ...formData, city_code: e.target.value })}
-                  variant="outlined"
-                >
-                  {city.map(option => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
+            <FormControl sx={{ width: '22%' }} variant="outlined">
+              <TextField
+                select
+                size="small"
+                label="请选择省"
+                value={formData.province_code}
+                onChange={e =>
+                  setFormData(prev => ({
+                    ...prev,
+                    province_code: e.target.value,
+                    city_code: '',
+                    county_code: ''
+                  }))
+                }
+                variant="outlined"
+              >
+                {cityList
+                  .filter(item => item.areaLevel === '101')
+                  .map(option => (
+                    <MenuItem key={option.areaCode} value={option.areaCode}>
+                      {option.areaName}
                     </MenuItem>
                   ))}
-                </TextField>
-              </FormControl>
-            ))}
+              </TextField>
+            </FormControl>
+            <FormControl sx={{ width: '22%' }} variant="outlined">
+              <TextField
+                select
+                size="small"
+                label="请选择市"
+                value={formData.city_code}
+                onChange={e =>
+                  setFormData(prev => ({ ...prev, city_code: e.target.value, county_code: '' }))
+                }
+                variant="outlined"
+              >
+                {cities.map(option => (
+                  <MenuItem key={option.areaCode} value={option.areaCode}>
+                    {option.areaName}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </FormControl>
+            <FormControl sx={{ width: '22%' }} variant="outlined">
+              <TextField
+                select
+                size="small"
+                label="请选择县"
+                value={formData.county_code}
+                onChange={e => setFormData(prev => ({ ...prev, county_code: e.target.value }))}
+                variant="outlined"
+              >
+                {counties.map(option => (
+                  <MenuItem key={option.areaCode} value={option.areaCode}>
+                    {option.areaName}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </FormControl>
           </Box>
         </Stack>
       </DialogContent>
