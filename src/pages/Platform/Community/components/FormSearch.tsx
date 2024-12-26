@@ -1,8 +1,17 @@
-import { ChangeEvent, Dispatch, memo, SetStateAction, useState, useCallback } from 'react'
+import {
+  ChangeEvent,
+  Dispatch,
+  memo,
+  SetStateAction,
+  useState,
+  useCallback,
+  useEffect
+} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CommunityParams } from 'api/model/platform/communityModel'
+import { CityAreaReply } from 'api/model/cityModel'
 import { find } from 'modules/platform/community'
-import { Box, FormControl, Button, MenuItem, Stack, TextField } from '@mui/material'
+import { Box, FormControl, Button, MenuItem, Stack, TextField, FormLabel } from '@mui/material'
 import { Add, Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
@@ -24,8 +33,6 @@ const textFieldStyles = {
   }
 }
 
-const city = [{ value: '0', label: '北京' }]
-
 interface SearchFormProps {
   selectedRows: Set<string | undefined>
   setDelOpen: Dispatch<SetStateAction<boolean>>
@@ -34,6 +41,10 @@ interface SearchFormProps {
 const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.CommunitySlice)
+  const { cityData } = useSelector((state: RootState) => state.info)
+  const cityList = [...cityData.list].reverse()
+  const [cities, setCities] = useState<CityAreaReply[]>([])
+  const [counties, setCounties] = useState<CityAreaReply[]>([])
 
   const [openDialog, setOpenDialog] = useState(false)
   const [searchParams, setSearchParams] = useState<CommunityParams>({
@@ -42,15 +53,31 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
     city_code: ''
   })
 
-  const handleInputChange =
-    (field: keyof CommunityParams) => (event: ChangeEvent<HTMLInputElement>) => {
-      setSearchParams(prevData => ({
-        ...prevData,
-        [field]: event.target.value
-      }))
+  useEffect(() => {
+    if (searchParams.province_code) {
+      setCities(
+        cityList.filter(
+          item => item.parentAreaCode === searchParams.province_code && item.areaLevel === '202'
+        )
+      )
+    } else {
+      setCities([])
     }
+  }, [searchParams.province_code, cityList])
 
-  const handleSelectChange =
+  useEffect(() => {
+    if (searchParams.city_code) {
+      setCounties(
+        cityList.filter(
+          item => item.parentAreaCode === searchParams.city_code && item.areaLevel === '303'
+        )
+      )
+    } else {
+      setCounties([])
+    }
+  }, [searchParams.city_code, cityList])
+
+  const handleInputChange =
     (field: keyof CommunityParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
@@ -78,7 +105,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
   )
 
   const handleSearch = () => {
-    fetchData(searchParams)
+    fetchData({ ...searchParams, city_code: searchParams.county_code })
   }
 
   return (
@@ -106,27 +133,70 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             onChange={handleInputChange('name')}
           />
         </FormControl>
-        <Stack direction="row" spacing={1}>
-          {['city_code', 'city_code', 'city_code'].map((field, index) => (
-            <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined" key={index}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <FormLabel>小区地区：</FormLabel>
+          <Stack direction="row" spacing={1}>
+            <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
               <TextField
                 select
                 size="small"
-                label={`请选择${['省', '市', '县'][index]}`}
-                value={searchParams[field as keyof CommunityParams]}
-                onChange={handleSelectChange(field as keyof CommunityParams)}
+                label="请选择省"
+                value={searchParams.province_code}
+                onChange={e =>
+                  setSearchParams(prev => ({
+                    ...prev,
+                    province_code: e.target.value,
+                    city_code: '',
+                    county_code: ''
+                  }))
+                }
                 variant="outlined"
-                sx={textFieldStyles}
               >
-                {city.map(option => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
+                {cityList
+                  .filter(item => item.areaLevel === '101')
+                  .map(option => (
+                    <MenuItem key={option.areaCode} value={option.areaCode}>
+                      {option.areaName}
+                    </MenuItem>
+                  ))}
+              </TextField>
+            </FormControl>
+            <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+              <TextField
+                select
+                size="small"
+                label="请选择市"
+                value={searchParams.city_code}
+                onChange={e =>
+                  setSearchParams(prev => ({ ...prev, city_code: e.target.value, county_code: '' }))
+                }
+                variant="outlined"
+              >
+                {cities.map(option => (
+                  <MenuItem key={option.areaCode} value={option.areaCode}>
+                    {option.areaName}
                   </MenuItem>
                 ))}
               </TextField>
             </FormControl>
-          ))}
-        </Stack>
+            <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+              <TextField
+                select
+                size="small"
+                label="请选择县"
+                value={searchParams.county_code}
+                onChange={e => setSearchParams(prev => ({ ...prev, county_code: e.target.value }))}
+                variant="outlined"
+              >
+                {counties.map(option => (
+                  <MenuItem key={option.areaCode} value={option.areaCode}>
+                    {option.areaName}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </FormControl>
+          </Stack>
+        </Box>
       </Stack>
       <Stack direction="row" spacing={1} component="form" sx={{ mb: 2 }}>
         <Button

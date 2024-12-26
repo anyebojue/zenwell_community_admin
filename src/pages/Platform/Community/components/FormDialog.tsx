@@ -44,9 +44,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.CommunitySlice)
   const { cityData } = useSelector((state: RootState) => state.info)
+  const cityList = [...cityData.list].reverse()
   const [loading, setLoading] = useState(false)
-
-  const cityList = cityData.list
 
   const initialFormData = useMemo(() => {
     const commonFields = {
