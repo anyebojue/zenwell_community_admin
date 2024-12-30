@@ -22,13 +22,7 @@ const InitUserInfo: UserInfoReply = {
     menus: [],
     btns: []
   },
-  company: {
-    id: '-1',
-    name: '',
-    content: '',
-    createdAt: '',
-    updatedAt: ''
-  }
+  community: []
 }
 
 interface CityAreaResponse {

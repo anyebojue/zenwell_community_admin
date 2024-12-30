@@ -86,11 +86,21 @@ export default defineConfig({
     usedExports: true, // 启用树摇
     splitChunks: {
       chunks: 'all',
-      minSize: 30000, // 最小拆分大小
+      minSize: 20000, // 最小拆分大小
       maxSize: 500000, // 单个文件最大限制
       minChunks: 1, // 至少引用一次时拆分
       automaticNameDelimiter: '-',
       cacheGroups: {
+        defaultVendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10,
+          reuseExistingChunk: true
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true
+        },
         react: {
           test: /[\\/]node_modules[\\/]react|react-dom/,
           name: 'react',
@@ -98,8 +108,9 @@ export default defineConfig({
         },
         mui: {
           test: /[\\/]node_modules[\\/]@mui[\\/]/,
-          name: 'mui',
-          chunks: 'all'
+          chunks: 'all',
+          priority: -10,
+          reuseExistingChunk: true
         }
       }
     }

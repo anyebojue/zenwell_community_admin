@@ -15,7 +15,8 @@ export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobilePro
   const navigate = useNavigate()
   const handleLogout = () => {
     navigate('/login')
-    window.localStorage.removeItem('zenwell_token')
+    localStorage.removeItem('zenwell_token')
+    localStorage.removeItem('current_community')
   }
 
   return (

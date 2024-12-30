@@ -1,3 +1,5 @@
+import { CommunityReply } from './platform/communityModel'
+
 export interface UserInfoReply {
   id: string
   username: string
@@ -8,11 +10,5 @@ export interface UserInfoReply {
     menus: Array<string>
     btns: Array<string>
   }
-  company: {
-    id: string
-    name: string
-    content: string
-    createdAt: string
-    updatedAt: string
-  }
+  community: CommunityReply[]
 }

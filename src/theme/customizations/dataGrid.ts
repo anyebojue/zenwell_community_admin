@@ -20,10 +20,10 @@ export const dataGridCustomizations: DataGridProComponents<Theme> & DataGridComp
         borderColor: theme.palette.divider,
         backgroundColor: theme.palette.background.default,
         [`& .${gridClasses.columnHeader}`]: {
-          backgroundColor: theme.palette.background.paper
+          backgroundColor: theme.palette.background.default
         },
         [`& .${gridClasses.footerContainer}`]: {
-          backgroundColor: theme.palette.background.paper
+          backgroundColor: theme.palette.background.default
         },
         [`& .${checkboxClasses.root}`]: {
           padding: theme.spacing(0.5),

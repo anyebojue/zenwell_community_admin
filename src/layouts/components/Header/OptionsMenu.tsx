@@ -31,7 +31,8 @@ const OptionsMenu = () => {
   const handleLogout = () => {
     setAnchorEl(null)
     navigate('/login')
-    window.localStorage.removeItem('zenwell_token')
+    localStorage.removeItem('zenwell_token')
+    localStorage.removeItem('current_community')
   }
   return (
     <Fragment>
