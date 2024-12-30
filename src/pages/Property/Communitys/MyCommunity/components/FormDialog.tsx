@@ -46,9 +46,13 @@ const FormDialog: React.FC<FormDialogProps> = ({
     () => ({
       name: dialogType === 'edit' ? dialogValue?.name || '' : '',
       address: dialogType === 'edit' ? dialogValue?.address || '' : '',
-      tel: dialogType === 'edit' ? dialogValue?.tel || '' : '',
       nearby_landmarks: dialogType === 'edit' ? dialogValue?.nearbyLandmarks || '' : '',
-      map_x: dialogType === 'edit' ? dialogValue?.mapX || '' : ''
+      city_code: dialogType === 'edit' ? dialogValue?.cityCode || '' : '',
+      map_x: dialogType === 'edit' ? dialogValue?.mapX || '' : '',
+      map_y: dialogType === 'edit' ? dialogValue?.mapY || '' : '',
+      tel: dialogType === 'edit' ? dialogValue?.tel || '' : '',
+      qr_code: dialogType === 'edit' ? dialogValue?.qrCode || '' : '',
+      community_area: dialogType === 'edit' ? dialogValue?.communityArea || '' : ''
     }),
     [dialogType, dialogValue]
   )
@@ -84,15 +88,15 @@ const FormDialog: React.FC<FormDialogProps> = ({
   )
 
   const formFields = [
-    { label: '小区名称', type: 'text', id: 'name', required: true },
-    { label: '小区地址', type: 'text', id: 'address', required: true },
-    { label: '小区地标', type: 'text', id: 'tel', required: true },
-    { label: '城市编码', type: 'text', id: 'store_type_cd', required: true },
-    { label: '地区X坐标', type: 'text', id: 'nearby_landmarks', required: true },
-    { label: '地区Y坐标', type: 'text', id: 'map_x', required: true },
-    { label: '客服电话', type: 'text', id: 'map_x', required: true },
-    { label: '客服二维码', type: 'text', id: 'map_x', required: true },
-    { label: '小区面积', type: 'text', id: 'map_x', required: true }
+    { label: '小区名称', type: 'text', id: 'name', required: true, disabled: true },
+    { label: '小区地址', type: 'text', id: 'address', required: true, disabled: true },
+    { label: '小区地标', type: 'text', id: 'nearby_landmarks', required: true, disabled: true },
+    { label: '城市编码', type: 'text', id: 'city_code', required: true, disabled: true },
+    { label: '地区X坐标', type: 'text', id: 'map_x', required: true, disabled: true },
+    { label: '地区Y坐标', type: 'text', id: 'map_y', required: true, disabled: true },
+    { label: '客服电话', type: 'text', id: 'tel', required: true },
+    { label: '客服二维码', type: 'text', id: 'qr_code', required: true },
+    { label: '小区面积', type: 'text', id: 'community_area', required: true }
   ]
 
   return (
@@ -106,13 +110,14 @@ const FormDialog: React.FC<FormDialogProps> = ({
       <DialogTitle>{dialogType === 'add' ? '新增' : '编辑'}</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
-          {formFields.map(({ label, type, id, required }) => (
+          {formFields.map(({ label, type, id, required, disabled }) => (
             <Box
               sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
               key={id}
             >
               <FormLabel>{label}：</FormLabel>
               <TextField
+                disabled={disabled}
                 type={type}
                 sx={{ width: '80%' }}
                 size="small"
