@@ -6,18 +6,18 @@ import {
   IconButton,
   Select,
   MenuItem,
-  drawerClasses,
   Button,
   Dialog,
   DialogTitle,
   DialogContent,
-  TextField
+  TextField,
+  SelectChangeEvent,
+  drawerClasses
 } from '@mui/material'
 import { Close, Menu, Send, Translate } from '@mui/icons-material'
 import ColorModeIconDropdown from 'theme/ColorModeIconDropdown'
 import { useSelector } from 'react-redux'
 import { DataGrid } from '@mui/x-data-grid'
-import { buttonStyles } from 'components/DeleteModal'
 import { CommunityReply } from 'api/model/platform/communityModel'
 import { useNavigate } from 'react-router-dom'
 import Search from './Search'
@@ -55,25 +55,36 @@ const Header = ({ isMenuOpen, onToggleMenu }: HeaderProps) => {
 
   useEffect(() => {
     if (info.community.length) {
-      setCommunity(info.community[0].id)
-      setFilteredCommunities(info.community)
+      const currentCommunity = localStorage.getItem('current_community')
+      const communityData = currentCommunity ? JSON.parse(currentCommunity) : null
+      if (communityData) {
+        setCommunity(communityData.id)
+        setFilteredCommunities(info.community)
+      }
     } else {
       setCommunity('')
     }
   }, [info.community])
 
-  const handleCommunityChange = (e: React.ChangeEvent<{ value: unknown }>) => {
+  const handleCommunityChange = (e: SelectChangeEvent<string>) => {
     const value = e.target.value
     if (value === '') {
       setOpenDialog(true)
     } else {
       setCommunity(value as string)
+      const selectedCommunity = info.community.find(item => item.id === value)
+      if (selectedCommunity) {
+        localStorage.setItem('current_community', JSON.stringify(selectedCommunity))
+        window.location.reload()
+        navigate('/communitys/my-communitys')
+      }
     }
   }
 
-  const handleSearch = () => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value)
     const filtered = info.community.filter(item =>
-      item.name?.toLowerCase().includes(searchText.toLowerCase())
+      item.name?.toLowerCase().includes(e.target.value.toLowerCase())
     )
     setFilteredCommunities(filtered)
   }
@@ -125,7 +136,7 @@ const Header = ({ isMenuOpen, onToggleMenu }: HeaderProps) => {
               }}
               size="small"
               value={community}
-              onChange={() => handleCommunityChange}
+              onChange={handleCommunityChange}
               displayEmpty
             >
               {info.community.map(item => (
@@ -163,21 +174,11 @@ const Header = ({ isMenuOpen, onToggleMenu }: HeaderProps) => {
           <TextField
             placeholder="请输入小区名称"
             size="small"
-            type="text"
             variant="outlined"
             sx={textFieldStyles}
             value={searchText}
-            onChange={e => setSearchText(e.target.value)}
+            onChange={handleSearch}
           />
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            sx={buttonStyles('#2660ad', '#1d428a')}
-            onClick={handleSearch}
-          >
-            搜索
-          </Button>
           <DataGrid
             sx={{ mt: 2 }}
             disableRowSelectionOnClick
