@@ -1,90 +1,171 @@
-import { memo, useCallback, useState, useMemo } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CommunityReply } from 'api/model/platform/communityModel'
-import { deleteByIds, find } from 'modules/platform/community'
-import { Box } from '@mui/material'
-import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
-import Copyright from 'layouts/components/Copyright'
+import { Box, FormLabel, Stack, TextField, Button, Typography } from '@mui/material'
+import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import DeleteModal from 'components/DeleteModal'
-import TableData from './components/TableData'
-import FormDialog from './components/FormDialog'
+import { find, update } from 'modules/property/systemSettings'
+import { SystemSettingsParams } from 'api/model/property/systemSettingsModel'
 
-const CommunityIndex = () => {
+interface FormData {
+  app_id: string
+  app_secret: string
+}
+
+const InputField: React.FC<{
+  label: string
+  type: string
+  id: keyof FormData
+  value: string
+  required: boolean
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  autocomplete: string
+}> = ({ label, type, id, value, required, onChange, autocomplete }) => (
+  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+    <FormLabel sx={{ fontWeight: 'bold', width: '20%' }}>{label}：</FormLabel>
+    <TextField
+      placeholder="必填，请输入"
+      type={type}
+      size="small"
+      required={required}
+      id={id}
+      value={value}
+      onChange={onChange}
+      fullWidth
+      autoComplete={autocomplete}
+      sx={{ '& .MuiInputBase-root': { borderRadius: 1 } }}
+    />
+  </Box>
+)
+
+const ChangePasswordIndex: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.CommunitySlice)
-  const [dialogValue, setDialogValue] = useState<CommunityReply>()
-  const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
-  const [openDialog, setOpenDialog] = useState(false)
-  const [delOpen, setDelOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const { list } = useSelector((state: RootState) => state.SystemSettingsSlice)
+  const [settingValue, setSettingValue] = useState<SystemSettingsParams>({})
+  const [formData, setFormData] = useState<FormData>({ app_id: '', app_secret: '' })
+  const [error, setError] = useState<string>('')
 
-  const getDeleteData = useCallback(() => {
-    if (selectedRows.size > 0) {
-      return list
-        .filter(item => selectedRows.has(item.id))
-        .map(item => ({ id: item.id!, name: item.name! }))
-        .filter(item => item.id && item.name)
+  const fetchData = useCallback(async () => {
+    const closeLoading = message.loading('正在加载列表中，请稍后...')
+    try {
+      const res = await dispatch(find({ 'page.disable': true, describe: 'liteapp' }))
+      if ('error' in res && res.error?.message) throw new Error(res.error.message)
+    } catch {
+      message.error('列表加载失败，请刷新页面或检查网络问题')
+    } finally {
+      closeLoading()
     }
-    if (dialogValue) {
-      return dialogValue.id && dialogValue.name
-        ? [{ id: dialogValue.id, name: dialogValue.name }]
-        : []
-    }
-    return []
-  }, [selectedRows, list, dialogValue])
+  }, [dispatch])
 
-  const deleteData = useMemo(() => getDeleteData(), [getDeleteData])
-  const deleteIds = deleteData.map(item => item.id)
-  const deleteNames = deleteData.map(item => item.name)
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
 
-  const handleDelete = useCallback(
-    async (ids: string[]) => {
-      setLoading(true)
+  useEffect(() => {
+    if (list.length > 0) {
       try {
-        const res = await dispatch(deleteByIds(ids))
-        if ('error' in res && res.error?.message) {
-          throw new Error(res.error.message)
-        }
-        setDelOpen(false)
-        message.success('删除成功')
-        await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
-        setLoading(false)
-      } catch (err) {
-        if (err instanceof Error) message.error(err.message)
-        setLoading(false)
+        const data = JSON.parse(list[0]?.values || '{}')
+        setSettingValue(list[0])
+        setFormData({ app_id: data.app_id || '', app_secret: data.app_secret || '' })
+      } catch {
+        message.error('数据解析失败，请检查网络是否畅通')
       }
+    }
+  }, [list])
+
+  const formFields: Array<{
+    label: string
+    type: string
+    id: keyof FormData
+    required: boolean
+    autocomplete: string
+  }> = [
+    {
+      label: 'AppID 小程序ID',
+      type: 'text',
+      id: 'app_id',
+      required: true,
+      autocomplete: 'current-password'
     },
-    [dispatch, page.num, page.size]
-  )
+    {
+      label: 'AppSecret 小程序密钥',
+      type: 'password',
+      id: 'app_secret',
+      required: true,
+      autocomplete: 'new-password'
+    }
+  ]
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target
+    setFormData(prevData => ({ ...prevData, [id]: value }))
+  }
+
+  const validateForm = () => {
+    const { app_id, app_secret } = formData
+    return app_id && app_secret ? '' : '所有字段均为必填项'
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const errorMessage = validateForm()
+    if (errorMessage) {
+      setError(errorMessage)
+      return
+    }
+
+    setError('')
+    const closeLoading = message.loading('正在修改密码...')
+    try {
+      const params = { ...settingValue, values: JSON.stringify(formData) }
+      const res = await dispatch(update(params))
+      if ('error' in res && res.error?.message) throw new Error(res.error.message)
+      message.success('修改成功')
+    } catch {
+      message.error('修改失败，请检查网络是否畅通')
+    } finally {
+      closeLoading()
+    }
+  }
 
   return (
-    <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
-      <NavbarBreadcrumbs />
-      <TableData
-        setDialogValue={setDialogValue}
-        selectedRows={selectedRows}
-        setSelectedRows={setSelectedRows}
-        setOpenDialog={setOpenDialog}
-        setDelOpen={setDelOpen}
-      />
-      <Copyright />
-
-      <FormDialog
-        dialogValue={dialogValue}
-        openDialog={openDialog}
-        dialogType="edit"
-        setOpenDialog={setOpenDialog}
-      />
-      <DeleteModal
-        loading={loading}
-        delOpen={delOpen}
-        setDelOpen={setDelOpen}
-        userName={deleteNames}
-        onDelete={() => handleDelete(deleteIds)}
-      />
+    <Box sx={{ mt: 2, maxWidth: 1100, padding: 3 }}>
+      <Typography variant="h6" gutterBottom align="center" sx={{ pb: 3 }}>
+        小程序设置
+      </Typography>
+      {error && (
+        <Typography color="error" align="center" sx={{ pb: 2 }}>
+          {error}
+        </Typography>
+      )}
+      <form onSubmit={handleSubmit}>
+        <Stack spacing={3}>
+          {formFields.map(({ label, type, id, required, autocomplete }) => (
+            <InputField
+              key={id}
+              label={label}
+              type={type}
+              id={id}
+              value={formData[id]}
+              required={required}
+              onChange={handleInputChange}
+              autocomplete={autocomplete}
+            />
+          ))}
+        </Stack>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
+          <Button
+            type="submit"
+            size="small"
+            variant="contained"
+            color="error"
+            sx={{ width: '30%', ...buttonStyles('#2660ad', '#1d428a') }}
+          >
+            确认修改
+          </Button>
+        </Box>
+      </form>
     </Box>
   )
 }
 
-export default memo(CommunityIndex)
+export default memo(ChangePasswordIndex)
