@@ -1,5 +1,4 @@
 import { memo, useState, useMemo, ChangeEvent, Dispatch, SetStateAction } from 'react'
-import { OrgUserReply } from 'api/model/platform/organizationInfoModel'
 import {
   Pagination,
   Table,
@@ -14,9 +13,10 @@ import {
   Box,
   Paper,
   SelectChangeEvent,
-  Theme,
-  Checkbox
+  Checkbox,
+  Theme
 } from '@mui/material'
+import { CommunityAnnouncementReply } from 'api/model/property/communityAnnouncementModel'
 import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {
@@ -32,18 +32,21 @@ const usePagination = <T,>(data: T[], rowsPerPage: number) => {
 const TableList = ({
   rows,
   columns,
-  setDialogUserValue,
+  setDialogValue,
   selectedRows,
   setSelectedRows
 }: {
-  rows: OrgUserReply[]
-  columns: Column<OrgUserReply>[]
-  setDialogUserValue: Dispatch<SetStateAction<OrgUserReply>>
+  rows: CommunityAnnouncementReply[]
+  columns: Column<CommunityAnnouncementReply>[]
+  setDialogValue: Dispatch<SetStateAction<CommunityAnnouncementReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
 }) => {
-  const [rowsPerPage, setRowsPerPage] = useState(20)
-  const { page, paginatedRows, setPage, handlePageChange } = usePagination(rows, rowsPerPage)
+  const [rowsPerPage, setRowsPerPage] = useState('20')
+  const { page, paginatedRows, setPage, handlePageChange } = usePagination(
+    rows,
+    Number(rowsPerPage)
+  )
 
   const tableHeaderStyle = (theme: Theme) => ({
     backgroundColor: theme.palette.action.hover,
@@ -62,8 +65,8 @@ const TableList = ({
     }
   })
 
-  const handleRowsPerPageChange = (event: SelectChangeEvent<number>) => {
-    setRowsPerPage(Number(event.target.value))
+  const handleRowsPerPageChange = (event: SelectChangeEvent<string>) => {
+    setRowsPerPage(event.target.value)
     setPage(1)
   }
 
@@ -79,16 +82,6 @@ const TableList = ({
 
   const allSelected = selectedRows.size === rows.length && rows.length > 0
   const someSelected = selectedRows.size > 0 && selectedRows.size < rows.length
-
-  const renderValue = (value: OrgUserReply[keyof OrgUserReply] | undefined) => {
-    if (Array.isArray(value)) {
-      return JSON.stringify(value)
-    } else if (value && typeof value === 'object') {
-      return JSON.stringify(value)
-    } else {
-      return value || '-'
-    }
-  }
 
   return (
     <Box
@@ -137,7 +130,7 @@ const TableList = ({
           <TableBody>
             {paginatedRows.length > 0 ? (
               paginatedRows.map(row => (
-                <TableRow onClick={() => setDialogUserValue(row)} key={row.id} sx={tableRowStyle}>
+                <TableRow onClick={() => setDialogValue(row)} key={row.id} sx={tableRowStyle}>
                   <TableCell
                     padding="checkbox"
                     sx={{
@@ -152,14 +145,16 @@ const TableList = ({
                     />
                   </TableCell>
                   {columns.map(column => {
-                    const value = row[column.key as keyof OrgUserReply]
+                    const value = row[column.key as keyof CommunityAnnouncementReply]
                     return (
                       <TableCell
                         key={column.key}
                         align={column.align}
-                        sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}
+                        sx={{
+                          borderBottom: theme => `1px solid ${theme.palette.divider}`
+                        }}
                       >
-                        {column.renderCell ? column.renderCell(row) : renderValue(value)}
+                        {column.renderCell ? column.renderCell(value) : value}
                       </TableCell>
                     )
                   })}
@@ -216,7 +211,7 @@ const TableList = ({
             ))}
           </Select>
           <Pagination
-            count={Math.ceil(rows.length / rowsPerPage)}
+            count={Math.ceil(rows.length / Number(rowsPerPage))}
             page={page}
             onChange={handlePageChange}
             color="primary"

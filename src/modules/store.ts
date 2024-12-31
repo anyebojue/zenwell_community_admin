@@ -6,6 +6,7 @@ import PropertyCompanySlice from './platform/propertyCompany'
 import OrganizationInfoSlice from './platform/organizationInfo'
 import EmployeesSlice from './platform/employees'
 import RolesSlice from './platform/roles'
+import CommunityAnnouncementSlice from './property/communityAnnouncement'
 
 const store = configureStore({
   reducer: {
@@ -15,7 +16,8 @@ const store = configureStore({
     PropertyCompanySlice,
     OrganizationInfoSlice,
     EmployeesSlice,
-    RolesSlice
+    RolesSlice,
+    CommunityAnnouncementSlice
   },
   // 关闭序列化检测
   middleware: getDefaultMiddleware =>

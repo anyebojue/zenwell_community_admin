@@ -1,11 +1,12 @@
-import { ChangeEvent, memo, useState, useCallback } from 'react'
+import { ChangeEvent, memo, useState, useCallback, Dispatch, SetStateAction } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OrganizationInfoReply, OrgUserReply } from 'api/model/platform/organizationInfoModel'
-import { findOrgUser } from 'modules/platform/organizationInfo'
+import { CommunityAnnouncementParams } from 'api/model/property/communityAnnouncementModel'
+import { find } from 'modules/property/communityAnnouncement'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
-import { History, Search } from '@mui/icons-material'
+import { Add, Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
+import FormDialog from './FormDialog'
 
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {
@@ -24,18 +25,23 @@ const textFieldStyles = {
 }
 
 interface FormSearchProps {
-  dialogValue: OrganizationInfoReply
+  selectedButton: number
+  selectedRows: Set<string | undefined>
+  setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
+const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.OrganizationInfoSlice)
-  const [searchParams, setSearchParams] = useState<OrgUserReply>({
-    name: ''
+  const info = useSelector((state: RootState) => state.info.userInfo)
+  const { page } = useSelector((state: RootState) => state.CommunityAnnouncementSlice)
+
+  const [openDialog, setOpenDialog] = useState(false)
+  const [searchParams, setSearchParams] = useState<CommunityAnnouncementParams>({
+    title: ''
   })
 
   const handleInputChange =
-    (field: keyof OrgUserReply) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof CommunityAnnouncementParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -43,15 +49,22 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
     }
 
   const fetchData = useCallback(
-    async (params: OrgUserReply & PaginationParams) => {
+    async (params: CommunityAnnouncementParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
+        const current_community = localStorage.getItem('current_community')
+        let communityId
+        if (current_community) {
+          communityId = JSON.parse(current_community).id
+        } else {
+          communityId = info.community[0].id
+        }
         const res = await dispatch(
-          findOrgUser({
+          find({
             'page.num': page.num,
             'page.size': page.size,
-            ...params,
-            orgId: dialogValue.id || '9027438861059358721'
+            communityId,
+            ...params
           })
         )
         if ('error' in res && res.error?.message) {
@@ -63,7 +76,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
         closeLoading()
       }
     },
-    [dispatch, page.num, page.size, dialogValue.id]
+    [dispatch, info.community, page.num, page.size]
   )
 
   const handleSearch = () => {
@@ -80,8 +93,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.name}
-            onChange={handleInputChange('name')}
+            value={searchParams.title}
+            onChange={handleInputChange('title')}
           />
         </FormControl>
         <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
@@ -102,10 +115,9 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
             startIcon={<History />}
             sx={buttonStyles('darkgray', '#696969')}
             onClick={() => {
-              setSearchParams({ name: '', orgId: '9027438861059358721' })
+              setSearchParams({ title: '' })
               fetchData({
-                name: '',
-                orgId: '9027438861059358721',
+                title: '',
                 'page.num': page.num,
                 'page.size': page.size
               })
@@ -113,8 +125,39 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
           >
             重置
           </Button>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            startIcon={<Add />}
+            sx={buttonStyles('#2660ad', '#1d428a')}
+            onClick={() => setOpenDialog(true)}
+          >
+            新增
+          </Button>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            startIcon={<Delete />}
+            sx={buttonStyles('#B22222', '#8B0000')}
+            onClick={() => {
+              if (![...selectedRows].length) {
+                return message.warning('请选择至少一项')
+              }
+              setDelOpen(true)
+            }}
+          >
+            批量删除
+          </Button>
         </Stack>
       </Stack>
+      <FormDialog
+        selectedButton={selectedButton}
+        openDialog={openDialog}
+        dialogType="add"
+        setOpenDialog={setOpenDialog}
+      />
     </Box>
   )
 }
