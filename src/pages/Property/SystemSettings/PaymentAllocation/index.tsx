@@ -20,7 +20,8 @@ const InputField: React.FC<{
   value: string
   required: boolean
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-}> = ({ label, type, id, value, required, onChange }) => (
+  multiline?: boolean
+}> = ({ label, type, id, value, required, onChange, multiline }) => (
   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
     <FormLabel sx={{ fontWeight: 'bold', width: '20%' }}>{label}：</FormLabel>
     <TextField
@@ -32,7 +33,12 @@ const InputField: React.FC<{
       value={value}
       onChange={onChange}
       fullWidth
-      sx={{ '& .MuiInputBase-root': { borderRadius: 1 } }}
+      multiline={multiline}
+      rows={multiline ? 4 : 1}
+      sx={{
+        '& .MuiInputBase-root': { borderRadius: 1 },
+        '& .MuiInputBase-root textarea': { padding: '10px' }
+      }}
     />
   </Box>
 )
@@ -87,6 +93,7 @@ const ChangePasswordIndex: React.FC = () => {
     type: string
     id: keyof FormData
     required: boolean
+    multiline?: boolean
   }> = [
     {
       label: '微信支付商户号 MCHID',
@@ -104,13 +111,15 @@ const ChangePasswordIndex: React.FC = () => {
       label: 'apiclient_cert.pem',
       type: 'text',
       id: 'cert_pem',
-      required: true
+      required: true,
+      multiline: true
     },
     {
       label: 'apiclient_key.pem',
       type: 'text',
       id: 'key_pem',
-      required: true
+      required: true,
+      multiline: true
     }
   ]
 
@@ -158,7 +167,7 @@ const ChangePasswordIndex: React.FC = () => {
       )}
       <form onSubmit={handleSubmit}>
         <Stack spacing={3}>
-          {formFields.map(({ label, type, id, required }) => (
+          {formFields.map(({ label, type, id, required, multiline }) => (
             <InputField
               key={id}
               label={label}
@@ -167,6 +176,7 @@ const ChangePasswordIndex: React.FC = () => {
               value={formData[id]}
               required={required}
               onChange={handleInputChange}
+              multiline={multiline}
             />
           ))}
         </Stack>
