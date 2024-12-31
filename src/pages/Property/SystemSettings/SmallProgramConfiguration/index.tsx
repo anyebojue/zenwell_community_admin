@@ -1,10 +1,10 @@
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { SystemSettingsParams } from 'api/model/property/systemSettingsModel'
+import { find, update } from 'modules/property/systemSettings'
 import { Box, FormLabel, Stack, TextField, Button, Typography } from '@mui/material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import { find, update } from 'modules/property/systemSettings'
-import { SystemSettingsParams } from 'api/model/property/systemSettingsModel'
 
 interface FormData {
   app_id: string
