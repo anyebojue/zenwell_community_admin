@@ -48,7 +48,7 @@ interface HeaderProps {
 const Header = ({ isMenuOpen, onToggleMenu }: HeaderProps) => {
   const navigate = useNavigate()
   const info = useSelector((state: RootState) => state.info.userInfo)
-  const [community, setCommunity] = useState<string | undefined>('')
+  const [community, setCommunity] = useState<string | undefined>()
   const [openDialog, setOpenDialog] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [filteredCommunities, setFilteredCommunities] = useState(info.community)
@@ -60,6 +60,8 @@ const Header = ({ isMenuOpen, onToggleMenu }: HeaderProps) => {
       if (communityData) {
         setCommunity(communityData.id)
         setFilteredCommunities(info.community)
+      } else {
+        setCommunity(info.community[0].id)
       }
     } else {
       setCommunity('')
