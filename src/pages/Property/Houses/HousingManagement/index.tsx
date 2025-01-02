@@ -115,40 +115,6 @@ const HousingManagementIndex = () => {
     []
   )
 
-  const handleEditBuilding = () => {
-    if (dialogValue?.unit?.length) {
-      setOpenFloorDialog(true)
-      setDialogType('edit')
-    } else {
-      message.warning('请先选择楼栋')
-    }
-  }
-
-  const handleDeleteBuilding = () => {
-    if (dialogValue?.unit?.length) {
-      setDelOpen(true)
-    } else {
-      message.warning('请先选择楼栋')
-    }
-  }
-
-  const handleEditUnit = () => {
-    if (dialogValue?.unit?.length && dialogValue?.unit?.length > 0) {
-      message.warning('请先选择单元')
-    } else {
-      setDialogType('edit')
-      setOpenUnitDialog(true)
-    }
-  }
-
-  const handleDeleteUnit = () => {
-    if (dialogValue?.unit?.length && dialogValue?.unit?.length > 0) {
-      message.warning('请先选择单元')
-    } else {
-      setDelOpen(true)
-    }
-  }
-
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
@@ -176,7 +142,14 @@ const HousingManagementIndex = () => {
           color="error"
           startIcon={<Edit />}
           sx={buttonCommonStyle()}
-          onClick={handleEditBuilding}
+          onClick={() => {
+            if (dialogValue?.unit?.length) {
+              setOpenFloorDialog(true)
+              setDialogType('edit')
+            } else {
+              message.warning('请先选择楼栋')
+            }
+          }}
         >
           修改楼栋
         </Button>
@@ -186,7 +159,13 @@ const HousingManagementIndex = () => {
           color="error"
           startIcon={<Delete />}
           sx={buttonCommonStyle()}
-          onClick={handleDeleteBuilding}
+          onClick={() => {
+            if (dialogValue?.unit?.length) {
+              setDelOpen(true)
+            } else {
+              message.warning('请先选择楼栋')
+            }
+          }}
         >
           删除楼栋
         </Button>
@@ -197,8 +176,12 @@ const HousingManagementIndex = () => {
           startIcon={<Add />}
           sx={buttonCommonStyle()}
           onClick={() => {
-            setOpenUnitDialog(true)
-            setDialogType('add')
+            if (dialogValue?.unit?.length) {
+              setOpenUnitDialog(true)
+              setDialogType('add')
+            } else {
+              message.warning('请先选择楼栋')
+            }
           }}
         >
           添加单元
@@ -209,7 +192,14 @@ const HousingManagementIndex = () => {
           color="error"
           startIcon={<Edit />}
           sx={buttonCommonStyle()}
-          onClick={handleEditUnit}
+          onClick={() => {
+            if (dialogValue?.unit?.length && dialogValue?.unit?.length > 0) {
+              message.warning('请先选择单元')
+            } else {
+              setDialogType('edit')
+              setOpenUnitDialog(true)
+            }
+          }}
         >
           修改单元
         </Button>
@@ -219,7 +209,13 @@ const HousingManagementIndex = () => {
           color="error"
           startIcon={<Delete />}
           sx={buttonCommonStyle()}
-          onClick={handleDeleteUnit}
+          onClick={() => {
+            if (dialogValue?.unit?.length && dialogValue?.unit?.length > 0) {
+              message.warning('请先选择单元')
+            } else {
+              setDelOpen(true)
+            }
+          }}
         >
           删除单元
         </Button>
