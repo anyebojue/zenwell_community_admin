@@ -66,7 +66,11 @@ const FormDialog: React.FC<FormDialogProps> = ({
       event.preventDefault()
       setLoading(true)
       try {
-        const params = { ...formData, userId: info.id, floorId: dialogValue?.floorId }
+        const params = {
+          ...formData,
+          userId: info.id,
+          floorId: dialogType === 'add' ? dialogValue?.id : dialogValue?.floorId
+        }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)
