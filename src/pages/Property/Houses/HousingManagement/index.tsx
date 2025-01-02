@@ -143,7 +143,7 @@ const HousingManagementIndex = () => {
           startIcon={<Edit />}
           sx={buttonCommonStyle()}
           onClick={() => {
-            if (dialogValue?.unit?.length) {
+            if (dialogValue?.unit) {
               setOpenFloorDialog(true)
               setDialogType('edit')
             } else {
@@ -160,7 +160,7 @@ const HousingManagementIndex = () => {
           startIcon={<Delete />}
           sx={buttonCommonStyle()}
           onClick={() => {
-            if (dialogValue?.unit?.length) {
+            if (dialogValue?.unit) {
               setDelOpen(true)
             } else {
               message.warning('请先选择楼栋')
@@ -176,7 +176,7 @@ const HousingManagementIndex = () => {
           startIcon={<Add />}
           sx={buttonCommonStyle()}
           onClick={() => {
-            if (dialogValue?.unit?.length) {
+            if (dialogValue?.unit) {
               setOpenUnitDialog(true)
               setDialogType('add')
             } else {
@@ -193,11 +193,11 @@ const HousingManagementIndex = () => {
           startIcon={<Edit />}
           sx={buttonCommonStyle()}
           onClick={() => {
-            if (dialogValue?.unit?.length && dialogValue?.unit?.length > 0) {
-              message.warning('请先选择单元')
-            } else {
+            if (!dialogValue?.unit) {
               setDialogType('edit')
               setOpenUnitDialog(true)
+            } else {
+              message.warning('请先选择单元')
             }
           }}
         >
@@ -210,10 +210,10 @@ const HousingManagementIndex = () => {
           startIcon={<Delete />}
           sx={buttonCommonStyle()}
           onClick={() => {
-            if (dialogValue?.unit?.length && dialogValue?.unit?.length > 0) {
-              message.warning('请先选择单元')
-            } else {
+            if (!dialogValue?.unit) {
               setDelOpen(true)
+            } else {
+              message.warning('请先选择单元')
             }
           }}
         >
@@ -298,7 +298,7 @@ const HousingManagementIndex = () => {
         loading={loading}
         delOpen={delOpen}
         setDelOpen={setDelOpen}
-        userName={[dialogValue.name as string]}
+        userName={[dialogValue.name || ('小区单元' as string)]}
         onDelete={() => handleDelete([dialogValue.id as string])}
       />
     </Box>
