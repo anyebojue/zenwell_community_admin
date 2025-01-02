@@ -1,12 +1,11 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OrganizationInfoReply, OrgUserReply } from 'api/model/platform/organizationInfoModel'
+import { HousingManagementReply, UnitReply } from 'api/model/property/housingManagementModel'
 import { findOrgUser } from 'modules/platform/organizationInfo'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import { CommunityParams } from 'api/model/platform/communityModel'
 
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {
@@ -25,26 +24,25 @@ const textFieldStyles = {
 }
 
 interface FormSearchProps {
-  dialogValue: OrganizationInfoReply
+  dialogValue: HousingManagementReply
 }
 
 const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.OrganizationInfoSlice)
-  const [searchParams, setSearchParams] = useState<OrgUserReply>({
-    name: ''
+  const [searchParams, setSearchParams] = useState<UnitReply>({
+    unitNum: ''
   })
 
-  const handleInputChange =
-    (field: keyof OrgUserReply) => (event: ChangeEvent<HTMLInputElement>) => {
-      setSearchParams(prevData => ({
-        ...prevData,
-        [field]: event.target.value
-      }))
-    }
+  const handleInputChange = (field: keyof UnitReply) => (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchParams(prevData => ({
+      ...prevData,
+      [field]: event.target.value
+    }))
+  }
 
   const fetchData = useCallback(
-    async (params: OrgUserReply & PaginationParams) => {
+    async (params: UnitReply & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
@@ -71,13 +69,12 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
     fetchData(searchParams)
   }
 
-  const handleSelectChange =
-    (field: keyof CommunityParams) => (event: ChangeEvent<HTMLInputElement>) => {
-      setSearchParams(prevData => ({
-        ...prevData,
-        [field]: event.target.value
-      }))
-    }
+  const handleSelectChange = (field: keyof UnitReply) => (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchParams(prevData => ({
+      ...prevData,
+      [field]: event.target.value
+    }))
+  }
 
   return (
     <Box>
@@ -89,8 +86,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.name}
-            onChange={handleInputChange('name')}
+            value={searchParams.unitNum}
+            onChange={handleInputChange('unitNum')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -98,8 +95,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
             select
             size="small"
             label="请选择状态"
-            value={searchParams.name}
-            onChange={handleSelectChange('name')}
+            value={searchParams.status}
+            onChange={handleSelectChange('status')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -125,8 +122,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
             select
             size="small"
             label="请选择房屋类型"
-            value={searchParams.name}
-            onChange={handleSelectChange('name')}
+            value={searchParams.lift}
+            onChange={handleSelectChange('lift')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -147,8 +144,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
             select
             size="small"
             label="请选择"
-            value={searchParams.name}
-            onChange={handleSelectChange('name')}
+            value={searchParams.unitArea}
+            onChange={handleSelectChange('unitArea')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -181,10 +178,9 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
           startIcon={<History />}
           sx={buttonStyles('darkgray', '#696969')}
           onClick={() => {
-            setSearchParams({ name: '', orgId: '9027438861059358721' })
+            setSearchParams({ unitNum: '' })
             fetchData({
-              name: '',
-              orgId: '9027438861059358721',
+              unitNum: '',
               'page.num': page.num,
               'page.size': page.size
             })

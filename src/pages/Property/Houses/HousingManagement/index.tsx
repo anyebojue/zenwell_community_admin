@@ -1,15 +1,14 @@
 import { memo, useCallback, useEffect, useState, useMemo } from 'react'
-import { TreeViewBaseItem } from '@mui/x-tree-view/models'
+import { useDispatch, useSelector } from 'react-redux'
+import { HousingManagementReply, UnitReply } from 'api/model/property/housingManagementModel'
+import { deleteByIds, find } from 'modules/property/housingManagement'
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
 import { Box, Button, Stack, Theme } from '@mui/material'
 import { Add, Delete, Edit, FileCopy } from '@mui/icons-material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
-import { useDispatch, useSelector } from 'react-redux'
 import message from 'components/Message'
-import { deleteByIds, find } from 'modules/platform/organizationInfo'
-import { OrganizationInfoReply, OrgUserReply } from 'api/model/platform/organizationInfoModel'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
 import FormDialog from './components/FormDialog'
@@ -30,30 +29,32 @@ const buttonCommonStyle = (color: string = '#2660ad', height: string = '32px') =
 
 const HousingManagementIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { list } = useSelector((state: RootState) => state.OrganizationInfoSlice)
+  const { list } = useSelector((state: RootState) => state.HousingManagementSlice)
   const [openDialog, setOpenDialog] = useState(false)
   const [dialogType, setDialogType] = useState('')
-  const [dialogValue, setDialogValue] = useState<OrganizationInfoReply>({})
-  const [dialogUserValue, setDialogUserValue] = useState<OrgUserReply>({})
+  const [dialogValue, setDialogValue] = useState<HousingManagementReply>({})
+  const [dialogUserValue, setDialogUserValue] = useState<UnitReply>({})
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
 
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const transformData = useMemo(() => {
-    const transformNode = (node: OrganizationInfoReply): TreeViewBaseItem => ({
-      id: node.id as string,
-      label: node.name as string,
-      children: node.children?.length ? node.children.map(transformNode) : []
-    })
-    return list?.map(transformNode) || []
+  const MUI_X_PRODUCTS = useMemo(() => {
+    return list.map(item => ({
+      id: item.id,
+      label: item.name,
+      children: item.unit?.map(unit => ({
+        id: unit.id,
+        label: `${unit.unitNum}单元`
+      }))
+    }))
   }, [list])
 
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     setLoading(true)
     try {
-      const res = await dispatch(find({ pId: '0' }))
+      const res = await dispatch(find({ 'page.disable': true }))
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
@@ -87,7 +88,7 @@ const HousingManagementIndex = () => {
         }
         setDelOpen(false)
         message.success('删除成功')
-        await dispatch(find({ pId: '0' }))
+        await dispatch(find({ 'page.disable': true }))
       } catch (err) {
         if (err instanceof Error) message.error(err.message)
       } finally {
@@ -98,11 +99,11 @@ const HousingManagementIndex = () => {
   )
 
   const findItemById = useCallback(
-    (items: OrganizationInfoReply[], targetId: string): OrganizationInfoReply | null => {
+    (items: HousingManagementReply[], targetId: string): HousingManagementReply | null => {
       for (const item of items) {
         if (item.id === targetId) return item
-        if (item.children?.length) {
-          const foundInChildren = findItemById(item.children, targetId)
+        if (item.unit?.length) {
+          const foundInChildren = findItemById(item.unit, targetId)
           if (foundInChildren) return foundInChildren
         }
       }
@@ -234,8 +235,8 @@ const HousingManagementIndex = () => {
       <Stack sx={{ mt: 2, mb: 1.5, width: '100%' }} direction="row" spacing={3}>
         <Box sx={treeViewStyle}>
           <RichTreeView
-            items={transformData}
-            defaultExpandedItems={['9027438861059358721']}
+            items={MUI_X_PRODUCTS}
+            defaultExpandedItems={['9030190676301578241']}
             selectedItems={dialogValue?.id || ''}
             onSelectedItemsChange={(_, selectedItemId) => {
               if (!selectedItemId) return
