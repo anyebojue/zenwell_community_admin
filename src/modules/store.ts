@@ -8,6 +8,7 @@ import EmployeesSlice from './platform/employees'
 import RolesSlice from './platform/roles'
 import CommunityAnnouncementSlice from './property/communityAnnouncement'
 import HousingManagementSlice from './property/housingManagement'
+import UnitSlice from './property/unit'
 import SystemSettingsSlice from './property/systemSettings'
 
 const store = configureStore({
@@ -21,6 +22,7 @@ const store = configureStore({
     RolesSlice,
     CommunityAnnouncementSlice,
     HousingManagementSlice,
+    UnitSlice,
     SystemSettingsSlice
   },
   // 关闭序列化检测

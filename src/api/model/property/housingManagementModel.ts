@@ -1,18 +1,5 @@
 import { Page } from '../pageModel'
-
-export interface UnitReply {
-  id?: string
-  createdAt?: string
-  updatedAt?: string
-  status?: number
-  remark?: string
-  unitNum?: string
-  floorId?: string
-  layerCount?: number
-  lift?: number
-  userId?: string
-  unitArea?: number
-}
+import { UnitReply } from './unitModel'
 
 export interface HousingManagementReply {
   id?: string

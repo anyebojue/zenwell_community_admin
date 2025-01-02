@@ -8,11 +8,9 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  HousingManagementReply,
-  HousingManagementParams
-} from 'api/model/property/housingManagementModel'
-import { create, find, update } from 'modules/property/housingManagement'
+import { UnitParams, UnitReply } from 'api/model/property/unitModel'
+import { create, update } from 'modules/property/unit'
+import { find } from 'modules/property/housingManagement'
 import {
   Box,
   CircularProgress,
@@ -23,39 +21,41 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle
+  DialogTitle,
+  MenuItem
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
-  dialogValue?: HousingManagementReply
-  openDialog: boolean
+  dialogValue?: UnitReply
+  openUnitDialog: boolean
   dialogType: string
-  setOpenDialog: Dispatch<SetStateAction<boolean>>
+  setOpenUnitDialog: Dispatch<SetStateAction<boolean>>
 }
 
 const FormDialog: React.FC<FormDialogProps> = ({
   dialogValue,
-  openDialog,
+  openUnitDialog,
   dialogType,
-  setOpenDialog
+  setOpenUnitDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const info = useSelector((state: RootState) => state.info.userInfo)
   const [loading, setLoading] = useState(false)
 
-  const initialFormData = useMemo(
-    () => ({
-      floorNum: dialogType === 'edit' ? dialogValue?.floorNum || '' : '',
-      name: dialogType === 'edit' ? dialogValue?.name || '' : '',
-      floorArea: dialogType === 'edit' ? dialogValue?.floorArea || '' : '',
-      sort: dialogType === 'edit' ? dialogValue?.sort || 0 : 0,
+  const initialFormData = useMemo(() => {
+    const defaultValues = {
+      unitNum: dialogType === 'edit' ? dialogValue?.unitNum || '' : '',
+      layerCount: dialogType === 'edit' ? dialogValue?.layerCount || 0 : 0,
+      unitArea: dialogType === 'edit' ? dialogValue?.unitArea || '' : '',
+      lift: dialogType === 'edit' ? dialogValue?.lift || '' : '',
       remark: dialogType === 'edit' ? dialogValue?.remark || '' : ''
-    }),
-    [dialogType, dialogValue]
-  )
-  const [formData, setFormData] = useState<HousingManagementParams>(initialFormData)
+    }
+    return defaultValues
+  }, [dialogType, dialogValue])
+
+  const [formData, setFormData] = useState<UnitParams>(initialFormData)
 
   useEffect(() => {
     setFormData(initialFormData)
@@ -66,18 +66,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
       event.preventDefault()
       setLoading(true)
       try {
-        const current_community = localStorage.getItem('current_community')
-        let communityId
-        if (current_community) {
-          communityId = JSON.parse(current_community).id
-        } else {
-          communityId = info.community[0].id
-        }
-        const params = {
-          ...formData,
-          userId: info.id,
-          communityId
-        }
+        const params = { ...formData, userId: info.id, floorId: dialogValue?.floorId }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)
@@ -86,7 +75,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
         }
         await dispatch(find({ 'page.disable': true }))
         message.success(dialogType === 'add' ? '新建成功' : '编辑成功')
-        setOpenDialog(false)
+        setOpenUnitDialog(false)
         setFormData(initialFormData)
       } catch (err: unknown) {
         if (err instanceof Error) message.error(err.message)
@@ -97,29 +86,28 @@ const FormDialog: React.FC<FormDialogProps> = ({
     [
       formData,
       info.id,
-      info.community,
-      dialogType,
+      dialogValue?.floorId,
       dialogValue?.id,
+      dialogType,
       dispatch,
-      setOpenDialog,
+      setOpenUnitDialog,
       initialFormData
     ]
   )
 
   const formFields = [
-    { label: '楼栋编号', type: 'text', id: 'floorNum', required: true },
-    { label: '楼栋名称', type: 'text', id: 'name', required: true },
-    { label: '建筑面积', type: 'text', id: 'floorArea', required: true },
-    { label: '排序', type: 'text', id: 'sort', required: true },
-    { label: '备注', type: 'text', id: 'remark', required: false }
+    { label: '单元编号', type: 'text', id: 'unitNum', required: true },
+    { label: '总层数', type: 'text', id: 'layerCount', required: true },
+    { label: '建筑面积', type: 'text', id: 'unitArea', required: true },
+    { label: '备注', type: 'text', id: 'remark', required: true }
   ]
 
   return (
     <Dialog
       fullWidth
       maxWidth="sm"
-      open={openDialog}
-      onClose={() => setOpenDialog(false)}
+      open={openUnitDialog}
+      onClose={() => setOpenUnitDialog(false)}
       PaperProps={{ component: 'form', onSubmit: handleSubmit }}
     >
       <DialogTitle>{dialogType === 'add' ? '新增' : '编辑'}</DialogTitle>
@@ -137,15 +125,35 @@ const FormDialog: React.FC<FormDialogProps> = ({
                 size="small"
                 required={required}
                 id={id}
-                value={formData[id as keyof HousingManagementParams]}
+                value={formData[id as keyof UnitParams]}
                 onChange={e => setFormData({ ...formData, [id]: e.target.value })}
               />
             </Box>
           ))}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>电梯：</FormLabel>
+            <TextField
+              sx={{ width: '80%' }}
+              select
+              size="small"
+              value={formData.lift}
+              onChange={e => setFormData({ ...formData, lift: e.target.value })}
+              variant="outlined"
+            >
+              {[
+                { value: '0', label: '无' },
+                { value: '1', label: '有' }
+              ].map(option => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" color="error" onClick={() => setOpenDialog(false)}>
+        <Button variant="contained" color="error" onClick={() => setOpenUnitDialog(false)}>
           取消
         </Button>
         <Button

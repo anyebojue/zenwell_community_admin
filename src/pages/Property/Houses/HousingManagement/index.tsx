@@ -1,6 +1,5 @@
 import { memo, useCallback, useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { HousingManagementReply, UnitReply } from 'api/model/property/housingManagementModel'
 import { deleteByIds, find } from 'modules/property/housingManagement'
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
 import { Box, Button, Stack, Theme } from '@mui/material'
@@ -9,9 +8,12 @@ import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
+import { UnitReply } from 'api/model/property/unitModel'
+import { HousingManagementReply } from 'api/model/property/housingManagementModel'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
-import FormDialog from './components/FormDialog'
+import FloorFormDialog from './components/FloorFormDialog'
+import UnitFormDialog from './components/UnitFormDialog'
 
 const treeViewStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -30,7 +32,8 @@ const buttonCommonStyle = (color: string = '#2660ad', height: string = '32px') =
 const HousingManagementIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { list } = useSelector((state: RootState) => state.HousingManagementSlice)
-  const [openDialog, setOpenDialog] = useState(false)
+  const [openFloorDialog, setOpenFloorDialog] = useState(false)
+  const [openUnitDialog, setOpenUnitDialog] = useState(false)
   const [dialogType, setDialogType] = useState('')
   const [dialogValue, setDialogValue] = useState<HousingManagementReply>({})
   const [dialogUserValue, setDialogUserValue] = useState<UnitReply>({})
@@ -112,6 +115,40 @@ const HousingManagementIndex = () => {
     []
   )
 
+  const handleEditBuilding = () => {
+    if (dialogValue?.unit?.length) {
+      setOpenFloorDialog(true)
+      setDialogType('edit')
+    } else {
+      message.warning('请先选择楼栋')
+    }
+  }
+
+  const handleDeleteBuilding = () => {
+    if (dialogValue?.unit?.length) {
+      setDelOpen(true)
+    } else {
+      message.warning('请先选择楼栋')
+    }
+  }
+
+  const handleEditUnit = () => {
+    if (dialogValue?.unit?.length && dialogValue?.unit?.length > 0) {
+      message.warning('请先选择单元')
+    } else {
+      setDialogType('edit')
+      setOpenUnitDialog(true)
+    }
+  }
+
+  const handleDeleteUnit = () => {
+    if (dialogValue?.unit?.length && dialogValue?.unit?.length > 0) {
+      message.warning('请先选择单元')
+    } else {
+      setDelOpen(true)
+    }
+  }
+
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
@@ -127,7 +164,7 @@ const HousingManagementIndex = () => {
           startIcon={<Add />}
           sx={buttonCommonStyle()}
           onClick={() => {
-            setOpenDialog(true)
+            setOpenFloorDialog(true)
             setDialogType('add')
           }}
         >
@@ -139,10 +176,7 @@ const HousingManagementIndex = () => {
           color="error"
           startIcon={<Edit />}
           sx={buttonCommonStyle()}
-          onClick={() => {
-            setOpenDialog(true)
-            setDialogType('edit')
-          }}
+          onClick={handleEditBuilding}
         >
           修改楼栋
         </Button>
@@ -152,7 +186,7 @@ const HousingManagementIndex = () => {
           color="error"
           startIcon={<Delete />}
           sx={buttonCommonStyle()}
-          onClick={() => setDelOpen(true)}
+          onClick={handleDeleteBuilding}
         >
           删除楼栋
         </Button>
@@ -163,7 +197,7 @@ const HousingManagementIndex = () => {
           startIcon={<Add />}
           sx={buttonCommonStyle()}
           onClick={() => {
-            setOpenDialog(true)
+            setOpenUnitDialog(true)
             setDialogType('add')
           }}
         >
@@ -175,10 +209,7 @@ const HousingManagementIndex = () => {
           color="error"
           startIcon={<Edit />}
           sx={buttonCommonStyle()}
-          onClick={() => {
-            setOpenDialog(true)
-            setDialogType('edit')
-          }}
+          onClick={handleEditUnit}
         >
           修改单元
         </Button>
@@ -188,7 +219,7 @@ const HousingManagementIndex = () => {
           color="error"
           startIcon={<Delete />}
           sx={buttonCommonStyle()}
-          onClick={() => setDelOpen(true)}
+          onClick={handleDeleteUnit}
         >
           删除单元
         </Button>
@@ -199,7 +230,6 @@ const HousingManagementIndex = () => {
           startIcon={<Add />}
           sx={buttonCommonStyle()}
           onClick={() => {
-            setOpenDialog(true)
             setDialogType('add')
           }}
         >
@@ -212,7 +242,6 @@ const HousingManagementIndex = () => {
           startIcon={<Add />}
           sx={buttonCommonStyle()}
           onClick={() => {
-            setOpenDialog(true)
             setDialogType('add')
           }}
         >
@@ -225,7 +254,6 @@ const HousingManagementIndex = () => {
           startIcon={<FileCopy />}
           sx={buttonCommonStyle()}
           onClick={() => {
-            setOpenDialog(true)
             setDialogType('add')
           }}
         >
@@ -258,10 +286,16 @@ const HousingManagementIndex = () => {
         </Box>
       </Stack>
       <Copyright />
-      <FormDialog
+      <FloorFormDialog
         dialogValue={dialogValue}
-        openDialog={openDialog}
-        setOpenDialog={setOpenDialog}
+        openFloorDialog={openFloorDialog}
+        setOpenFloorDialog={setOpenFloorDialog}
+        dialogType={dialogType}
+      />
+      <UnitFormDialog
+        dialogValue={dialogValue}
+        openUnitDialog={openUnitDialog}
+        setOpenUnitDialog={setOpenUnitDialog}
         dialogType={dialogType}
       />
       <DeleteModal
