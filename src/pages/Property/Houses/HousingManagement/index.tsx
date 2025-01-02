@@ -1,5 +1,7 @@
 import { memo, useCallback, useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { HousingManagementReply } from 'api/model/property/housingManagementModel'
+import { RoomReply } from 'api/model/property/roomModel'
 import { deleteByIds, find } from 'modules/property/housingManagement'
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
 import { Box, Button, Stack, Theme } from '@mui/material'
@@ -8,8 +10,6 @@ import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import { UnitReply } from 'api/model/property/unitModel'
-import { HousingManagementReply } from 'api/model/property/housingManagementModel'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
 import FloorFormDialog from './components/FloorFormDialog'
@@ -36,7 +36,7 @@ const HousingManagementIndex = () => {
   const [openUnitDialog, setOpenUnitDialog] = useState(false)
   const [dialogType, setDialogType] = useState('')
   const [dialogValue, setDialogValue] = useState<HousingManagementReply>({})
-  const [dialogUserValue, setDialogUserValue] = useState<UnitReply>({})
+  const [dialogRoomValue, setDialogRoomValue] = useState<RoomReply>({})
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
 
   const [delOpen, setDelOpen] = useState(false)
@@ -274,8 +274,8 @@ const HousingManagementIndex = () => {
           <FormSearch dialogValue={dialogValue} />
           <TableData
             dialogValue={dialogValue}
-            dialogUserValue={dialogUserValue}
-            setDialogUserValue={setDialogUserValue}
+            dialogRoomValue={dialogRoomValue}
+            setDialogRoomValue={setDialogRoomValue}
             selectedRows={selectedRows}
             setSelectedRows={setSelectedRows}
           />

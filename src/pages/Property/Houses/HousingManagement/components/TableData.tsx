@@ -9,12 +9,13 @@ import {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OrganizationInfoReply, OrgUserReply } from 'api/model/platform/organizationInfoModel'
-import { deleteOrgUserByIds, findOrgUser } from 'modules/platform/organizationInfo'
+import { RoomReply } from 'api/model/property/roomModel'
+import { deleteByIds, find } from 'modules/property/room'
 import { Box, Tooltip, IconButton } from '@mui/material'
 import { Article, Delete, Edit } from '@mui/icons-material'
 import message from 'components/Message'
 import DeleteModal from 'components/DeleteModal'
+import { HousingManagementReply } from 'api/model/property/housingManagementModel'
 import TableList from './TableList'
 
 const renderActionButtons = ({ setDelOpen }: { setDelOpen: Dispatch<SetStateAction<boolean>> }) => {
@@ -70,22 +71,22 @@ export interface Column<T> {
 }
 
 interface TableDataProps {
-  dialogValue: OrganizationInfoReply
-  dialogUserValue: OrgUserReply
-  setDialogUserValue: Dispatch<SetStateAction<OrgUserReply>>
+  dialogValue: HousingManagementReply
+  dialogRoomValue: RoomReply
+  setDialogRoomValue: Dispatch<SetStateAction<RoomReply>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
 }
 
 const TableData: React.FC<TableDataProps> = ({
   dialogValue,
-  dialogUserValue,
-  setDialogUserValue,
+  dialogRoomValue,
+  setDialogRoomValue,
   selectedRows,
   setSelectedRows
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, orgUserList } = useSelector((state: RootState) => state.OrganizationInfoSlice)
+  const { page, list } = useSelector((state: RootState) => state.RoomSlice)
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -93,10 +94,10 @@ const TableData: React.FC<TableDataProps> = ({
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
       const res = await dispatch(
-        findOrgUser({
+        find({
           'page.num': page.num,
           'page.size': page.size,
-          orgId: dialogValue.id || '9027438861059358721'
+          ...(dialogValue.name ? { floor: dialogValue.id } : { unitId: dialogValue.id })
         })
       )
       if ('error' in res && res.error?.message) {
@@ -107,22 +108,22 @@ const TableData: React.FC<TableDataProps> = ({
     } finally {
       closeLoading()
     }
-  }, [dispatch, page.num, page.size, dialogValue.id])
+  }, [dialogValue.id, dialogValue.name, dispatch, page.num, page.size])
 
   const getDeleteData = useCallback(() => {
     if (selectedRows.size > 0) {
-      return orgUserList
+      return list
         .filter(item => selectedRows.has(item.id))
-        .map(item => ({ id: item.id!, name: item.users?.username! }))
+        .map(item => ({ id: item.id!, name: item.roomNum! }))
         .filter(item => item.id && item.name)
     }
-    if (dialogUserValue) {
-      return dialogUserValue.id && dialogUserValue.users?.username
-        ? [{ id: dialogUserValue.id, name: dialogUserValue.users?.username }]
+    if (dialogRoomValue) {
+      return dialogRoomValue.id && dialogRoomValue.roomNum
+        ? [{ id: dialogRoomValue.id, name: dialogRoomValue.roomNum }]
         : []
     }
     return []
-  }, [selectedRows, orgUserList, dialogUserValue])
+  }, [selectedRows, list, dialogRoomValue])
 
   const deleteData = useMemo(() => getDeleteData(), [getDeleteData])
   const deleteIds = deleteData.map(item => item.id)
@@ -132,7 +133,7 @@ const TableData: React.FC<TableDataProps> = ({
     async (ids: string[]) => {
       setLoading(true)
       try {
-        const res = await dispatch(deleteOrgUserByIds(ids))
+        const res = await dispatch(deleteByIds(ids))
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
@@ -148,36 +149,58 @@ const TableData: React.FC<TableDataProps> = ({
     [dispatch, fetchData]
   )
 
-  const columns: Column<OrgUserReply>[] = [
+  const columns: Column<RoomReply>[] = [
     {
-      key: 'users.username',
-      headerName: '名称',
+      key: 'roomNum',
+      headerName: '房屋',
       align: 'center',
-      renderCell: (row: OrgUserReply) => row.users?.username || '无用户名'
+      renderCell: row => `--${row.roomNum}`
     },
     {
-      key: 'users.mobile',
-      headerName: '手机号',
-      align: 'center',
-      renderCell: (row: OrgUserReply) => row.users?.mobile || '无手机号'
+      key: 'layer',
+      headerName: '楼层',
+      align: 'center'
     },
     {
-      key: 'users.position',
-      headerName: '岗位',
-      align: 'center',
-      renderCell: (row: OrgUserReply) => row.users?.position || '无岗位'
+      key: 'layer',
+      headerName: '业主',
+      align: 'center'
     },
     {
-      key: 'users.address',
-      headerName: '地址',
-      align: 'center',
-      renderCell: (row: OrgUserReply) => row.users?.address || '无地址'
+      key: 'roomSubType',
+      headerName: '类型',
+      align: 'center'
     },
     {
-      key: 'users.sex',
-      headerName: '性别',
+      key: 'builtUpArea',
+      headerName: '建筑/室内面积',
       align: 'center',
-      renderCell: (row: OrgUserReply) => (row.users?.sex === 0 ? '女' : '男')
+      renderCell: row => `${row.builtUpArea} / ${row.roomArea}`
+    },
+    {
+      key: 'roomRent',
+      headerName: '租金',
+      align: 'center'
+    },
+    {
+      key: 'state',
+      headerName: '房屋状态',
+      align: 'center'
+    },
+    {
+      key: 'createdAt',
+      headerName: '入住时间',
+      align: 'center'
+    },
+    {
+      key: 'layer',
+      headerName: '业主成员',
+      align: 'center'
+    },
+    {
+      key: 'layer',
+      headerName: '业主车辆',
+      align: 'center'
     },
     {
       key: 'operate',
@@ -194,9 +217,9 @@ const TableData: React.FC<TableDataProps> = ({
   return (
     <>
       <TableList
-        rows={orgUserList}
+        rows={list}
         columns={columns}
-        setDialogUserValue={setDialogUserValue}
+        setDialogUserValue={setDialogRoomValue}
         selectedRows={selectedRows}
         setSelectedRows={setSelectedRows}
       />
