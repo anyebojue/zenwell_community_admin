@@ -32,13 +32,13 @@ const usePagination = <T,>(data: T[], rowsPerPage: number) => {
 const TableList = ({
   rows,
   columns,
-  setDialogUserValue,
+  setDialogRoomValue,
   selectedRows,
   setSelectedRows
 }: {
   rows: OrgUserReply[]
   columns: Column<OrgUserReply>[]
-  setDialogUserValue: Dispatch<SetStateAction<OrgUserReply>>
+  setDialogRoomValue: Dispatch<SetStateAction<OrgUserReply>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
 }) => {
@@ -137,7 +137,7 @@ const TableList = ({
           <TableBody>
             {paginatedRows.length > 0 ? (
               paginatedRows.map(row => (
-                <TableRow onClick={() => setDialogUserValue(row)} key={row.id} sx={tableRowStyle}>
+                <TableRow onClick={() => setDialogRoomValue(row)} key={row.id} sx={tableRowStyle}>
                   <TableCell
                     padding="checkbox"
                     sx={{

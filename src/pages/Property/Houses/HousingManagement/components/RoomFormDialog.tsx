@@ -45,10 +45,11 @@ const FormDialog: React.FC<FormDialogProps> = ({
   const info = useSelector((state: RootState) => state.info.userInfo)
   const { list: floorList } = useSelector((state: RootState) => state.HousingManagementSlice)
   const [loading, setLoading] = useState(false)
+  console.log(dialogRoomValue)
 
   const initialFormData = useMemo(
     () => ({
-      floorId: dialogType === 'edit' ? dialogRoomValue?.floorId || '' : '',
+      floorId: dialogType === 'edit' ? dialogRoomValue?.unit?.floorId || '' : '',
       unitId: dialogType === 'edit' ? dialogRoomValue?.unitId || '' : '',
       roomNum: dialogType === 'edit' ? dialogRoomValue?.roomNum || '' : '',
       layer: dialogType === 'edit' ? dialogRoomValue?.layer || '' : '',

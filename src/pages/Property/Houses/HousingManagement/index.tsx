@@ -36,7 +36,7 @@ const HousingManagementIndex = () => {
   const [openFloorDialog, setOpenFloorDialog] = useState(false)
   const [openUnitDialog, setOpenUnitDialog] = useState(false)
   const [openRoomDialog, setOpenRoomDialog] = useState(false)
-  const [dialogType, setDialogType] = useState('')
+  const [dialogType, setDialogType] = useState('edit')
   const [dialogValue, setDialogValue] = useState<HousingManagementReply>({})
   const [dialogRoomValue, setDialogRoomValue] = useState<RoomReply>({})
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
@@ -279,6 +279,7 @@ const HousingManagementIndex = () => {
             dialogValue={dialogValue}
             dialogRoomValue={dialogRoomValue}
             setDialogRoomValue={setDialogRoomValue}
+            setOpenRoomDialog={setOpenRoomDialog}
             selectedRows={selectedRows}
             setSelectedRows={setSelectedRows}
           />

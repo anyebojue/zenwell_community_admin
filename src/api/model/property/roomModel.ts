@@ -1,4 +1,5 @@
 import { Page } from '../pageModel'
+import { UnitReply } from './unitModel'
 
 export interface RoomReply {
   floorId?: string
@@ -8,6 +9,7 @@ export interface RoomReply {
   communityId?: string // 小区ID
   roomNum?: string // 房屋编号
   unitId?: string // 单元ID
+  unit?: UnitReply
   layer?: string // 层数
   section?: number // 室
   apartment?: string // 户型

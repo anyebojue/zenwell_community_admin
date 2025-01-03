@@ -18,7 +18,13 @@ import DeleteModal from 'components/DeleteModal'
 import { HousingManagementReply } from 'api/model/property/housingManagementModel'
 import TableList from './TableList'
 
-const renderActionButtons = ({ setDelOpen }: { setDelOpen: Dispatch<SetStateAction<boolean>> }) => {
+const renderActionButtons = ({
+  setOpenRoomDialog,
+  setDelOpen
+}: {
+  setOpenRoomDialog: Dispatch<SetStateAction<boolean>>
+  setDelOpen: Dispatch<SetStateAction<boolean>>
+}) => {
   return (
     <Box>
       {[
@@ -26,7 +32,7 @@ const renderActionButtons = ({ setDelOpen }: { setDelOpen: Dispatch<SetStateActi
           title: '修改',
           color: 'secondary' as const,
           icon: <Edit fontSize="small" />,
-          onClick: () => message.info('未实现')
+          onClick: () => setOpenRoomDialog(true)
         },
         {
           title: '删除',
@@ -74,6 +80,7 @@ interface TableDataProps {
   dialogValue: HousingManagementReply
   dialogRoomValue: RoomReply
   setDialogRoomValue: Dispatch<SetStateAction<RoomReply>>
+  setOpenRoomDialog: Dispatch<SetStateAction<boolean>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
 }
@@ -82,6 +89,7 @@ const TableData: React.FC<TableDataProps> = ({
   dialogValue,
   dialogRoomValue,
   setDialogRoomValue,
+  setOpenRoomDialog,
   selectedRows,
   setSelectedRows
 }) => {
@@ -206,7 +214,7 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => renderActionButtons({ setDelOpen })
+      renderCell: () => renderActionButtons({ setOpenRoomDialog, setDelOpen })
     }
   ]
 
@@ -219,7 +227,7 @@ const TableData: React.FC<TableDataProps> = ({
       <TableList
         rows={list}
         columns={columns}
-        setDialogUserValue={setDialogRoomValue}
+        setDialogRoomValue={setDialogRoomValue}
         selectedRows={selectedRows}
         setSelectedRows={setSelectedRows}
       />
