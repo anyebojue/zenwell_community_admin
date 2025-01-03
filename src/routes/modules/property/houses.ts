@@ -18,6 +18,13 @@ const houses: IRouter[] = [
         meta: {
           title: '房屋管理'
         }
+      },
+      {
+        path: 'OwnerInformation',
+        element: load('Property/Houses/OwnerInformation'),
+        meta: {
+          title: '业主信息'
+        }
       }
     ]
   }
