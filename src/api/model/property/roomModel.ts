@@ -1,6 +1,7 @@
 import { Page } from '../pageModel'
 
 export interface RoomReply {
+  floorId?: string
   id?: string
   createdAt?: string
   updatedAt?: string
@@ -20,10 +21,11 @@ export interface RoomReply {
   state?: string // 房屋状态，如房屋出售等，请查看state 表
   outNo?: string // 外部导入ID
   remark?: string // 备注
-  status?: number // 数据状态，0 在用，1 失效
+  status?: string // 数据状态，0 在用，1 失效
 }
 
 export interface RoomParams {
+  floorId?: string
   id?: string
   communityId?: string // 小区ID
   roomNum?: string // 房屋编号
@@ -41,7 +43,7 @@ export interface RoomParams {
   state?: string // 房屋状态，如房屋出售等，请查看state 表
   outNo?: string // 外部导入ID
   remark?: string // 备注
-  status?: number // 数据状态，0 在用，1 失效
+  status?: string // 数据状态，0 在用，1 失效
 }
 
 export interface FindRoomReply {

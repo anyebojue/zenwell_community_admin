@@ -30,15 +30,15 @@ import { buttonStyles } from 'components/DeleteModal'
 interface FormDialogProps {
   dialogValue?: UnitReply
   openUnitDialog: boolean
-  dialogType: string
   setOpenUnitDialog: Dispatch<SetStateAction<boolean>>
+  dialogType: string
 }
 
 const FormDialog: React.FC<FormDialogProps> = ({
   dialogValue,
   openUnitDialog,
-  dialogType,
-  setOpenUnitDialog
+  setOpenUnitDialog,
+  dialogType
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const info = useSelector((state: RootState) => state.info.userInfo)

@@ -1,11 +1,12 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { HousingManagementReply, UnitReply } from 'api/model/property/housingManagementModel'
-import { findOrgUser } from 'modules/platform/organizationInfo'
+import { HousingManagementReply } from 'api/model/property/housingManagementModel'
+import { find } from 'modules/property/room'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
+import { RoomParams } from 'api/model/property/roomModel'
 
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {
@@ -30,11 +31,13 @@ interface FormSearchProps {
 const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.OrganizationInfoSlice)
-  const [searchParams, setSearchParams] = useState<UnitReply>({
-    unitNum: ''
+  const [searchParams, setSearchParams] = useState<RoomParams>({
+    state: '',
+    roomSubType: '',
+    unitId: ''
   })
 
-  const handleInputChange = (field: keyof UnitReply) => (event: ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (field: keyof RoomParams) => (event: ChangeEvent<HTMLInputElement>) => {
     setSearchParams(prevData => ({
       ...prevData,
       [field]: event.target.value
@@ -42,15 +45,14 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
   }
 
   const fetchData = useCallback(
-    async (params: UnitReply & PaginationParams) => {
+    async (params: RoomParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
-          findOrgUser({
+          find({
             'page.num': page.num,
             'page.size': page.size,
-            ...params,
-            orgId: dialogValue.id || '9027438861059358721'
+            ...params
           })
         )
         if ('error' in res && res.error?.message) {
@@ -62,19 +64,20 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
         closeLoading()
       }
     },
-    [dispatch, page.num, page.size, dialogValue.id]
+    [dispatch, page.num, page.size]
   )
 
   const handleSearch = () => {
     fetchData(searchParams)
   }
 
-  const handleSelectChange = (field: keyof UnitReply) => (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchParams(prevData => ({
-      ...prevData,
-      [field]: event.target.value
-    }))
-  }
+  const handleSelectChange =
+    (field: keyof RoomParams) => (event: ChangeEvent<HTMLInputElement>) => {
+      setSearchParams(prevData => ({
+        ...prevData,
+        [field]: event.target.value
+      }))
+    }
 
   return (
     <Box>
@@ -86,8 +89,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.unitNum}
-            onChange={handleInputChange('unitNum')}
+            value={searchParams.unitId}
+            onChange={handleInputChange('unitId')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -95,8 +98,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
             select
             size="small"
             label="请选择状态"
-            value={searchParams.status}
-            onChange={handleSelectChange('status')}
+            value={searchParams.state}
+            onChange={handleSelectChange('state')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -122,8 +125,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
             select
             size="small"
             label="请选择房屋类型"
-            value={searchParams.lift}
-            onChange={handleSelectChange('lift')}
+            value={searchParams.roomSubType}
+            onChange={handleSelectChange('roomSubType')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -144,14 +147,14 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
             select
             size="small"
             label="请选择"
-            value={searchParams.unitArea}
-            onChange={handleSelectChange('unitArea')}
+            value={searchParams.unitId}
+            onChange={handleSelectChange('unitId')}
             variant="outlined"
             sx={textFieldStyles}
           >
             {[
-              { value: 0, label: '当前楼栋单元' },
-              { value: 1, label: '全部楼栋单元' }
+              { value: dialogValue.id, label: '当前楼栋单元' },
+              { value: '', label: '全部楼栋单元' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -178,9 +181,11 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
           startIcon={<History />}
           sx={buttonStyles('darkgray', '#696969')}
           onClick={() => {
-            setSearchParams({ unitNum: '' })
+            setSearchParams({ state: '', roomSubType: '', unitId: '' })
             fetchData({
-              unitNum: '',
+              state: '',
+              roomSubType: '',
+              unitId: '',
               'page.num': page.num,
               'page.size': page.size
             })

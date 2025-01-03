@@ -14,6 +14,7 @@ import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
 import FloorFormDialog from './components/FloorFormDialog'
 import UnitFormDialog from './components/UnitFormDialog'
+import RoomFormDialog from './components/RoomFormDialog'
 
 const treeViewStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -34,6 +35,7 @@ const HousingManagementIndex = () => {
   const { list } = useSelector((state: RootState) => state.HousingManagementSlice)
   const [openFloorDialog, setOpenFloorDialog] = useState(false)
   const [openUnitDialog, setOpenUnitDialog] = useState(false)
+  const [openRoomDialog, setOpenRoomDialog] = useState(false)
   const [dialogType, setDialogType] = useState('')
   const [dialogValue, setDialogValue] = useState<HousingManagementReply>({})
   const [dialogRoomValue, setDialogRoomValue] = useState<RoomReply>({})
@@ -227,6 +229,7 @@ const HousingManagementIndex = () => {
           sx={buttonCommonStyle()}
           onClick={() => {
             setDialogType('add')
+            setOpenRoomDialog(true)
           }}
         >
           添加房屋
@@ -292,6 +295,13 @@ const HousingManagementIndex = () => {
         dialogValue={dialogValue}
         openUnitDialog={openUnitDialog}
         setOpenUnitDialog={setOpenUnitDialog}
+        dialogType={dialogType}
+      />
+      <RoomFormDialog
+        dialogValue={dialogValue}
+        dialogRoomValue={dialogRoomValue}
+        openRoomDialog={openRoomDialog}
+        setOpenRoomDialog={setOpenRoomDialog}
         dialogType={dialogType}
       />
       <DeleteModal

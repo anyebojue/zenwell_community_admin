@@ -97,7 +97,7 @@ const TableData: React.FC<TableDataProps> = ({
         find({
           'page.num': page.num,
           'page.size': page.size,
-          ...(dialogValue.name ? { floor: dialogValue.id } : { unitId: dialogValue.id })
+          ...(dialogValue.name ? { floorId: dialogValue.id } : { unitId: dialogValue.id })
         })
       )
       if ('error' in res && res.error?.message) {
