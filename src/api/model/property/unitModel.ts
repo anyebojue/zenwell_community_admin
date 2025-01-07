@@ -1,4 +1,5 @@
 import { Page } from '../pageModel'
+import { HousingManagementReply } from './housingManagementModel'
 
 export interface UnitReply {
   id?: string
@@ -7,6 +8,7 @@ export interface UnitReply {
   status?: number
   remark?: string // 备注
   unitNum?: string // 单元编号
+  floor?: HousingManagementReply // 楼栋ID
   floorId?: string // 楼栋ID
   layerCount?: number //总层数
   lift?: string // 电梯 0无 1有

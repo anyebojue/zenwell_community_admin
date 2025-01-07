@@ -11,54 +11,53 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { RoomReply } from 'api/model/property/roomModel'
 import { deleteByIds, find } from 'modules/property/room'
-import { Box, Tooltip, IconButton } from '@mui/material'
-import { Article, Delete, Edit } from '@mui/icons-material'
+import { Box, Tooltip, IconButton, Chip } from '@mui/material'
+import { Delete, Edit, ExitToApp, House, Key } from '@mui/icons-material'
 import message from 'components/Message'
 import DeleteModal from 'components/DeleteModal'
 import { HousingManagementReply } from 'api/model/property/housingManagementModel'
 import TableList from './TableList'
 
 const renderActionButtons = ({
+  dialogValue,
   setOpenRoomDialog,
   setDelOpen
 }: {
+  dialogValue: HousingManagementReply
   setOpenRoomDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }) => {
+  const actions = [
+    {
+      title: '修改',
+      color: 'secondary' as const,
+      icon: <Edit fontSize="small" />,
+      onClick: () => setOpenRoomDialog(true)
+    },
+    {
+      title: '删除',
+      color: 'error' as const,
+      icon: <Delete fontSize="small" />,
+      onClick: () => setDelOpen(true)
+    },
+    {
+      title: dialogValue.userId ? '退房' : '交房',
+      color: 'secondary' as const,
+      icon: dialogValue.userId ? <ExitToApp fontSize="small" /> : <Key fontSize="small" />,
+      onClick: () => (dialogValue.userId ? message.info('未实现') : message.info('未实现'))
+    }
+  ]
+  if (dialogValue.userId) {
+    actions.push({
+      title: '业务受理',
+      color: 'secondary' as const,
+      icon: <House fontSize="small" />,
+      onClick: () => message.info('未实现')
+    })
+  }
   return (
     <Box>
-      {[
-        {
-          title: '修改',
-          color: 'secondary' as const,
-          icon: <Edit fontSize="small" />,
-          onClick: () => setOpenRoomDialog(true)
-        },
-        {
-          title: '删除',
-          color: 'error' as const,
-          icon: <Delete fontSize="small" />,
-          onClick: () => setDelOpen(true)
-        },
-        {
-          title: '退房',
-          color: 'secondary' as const,
-          icon: <Article fontSize="small" />,
-          onClick: () => message.info('未实现')
-        },
-        {
-          title: '交房',
-          color: 'secondary' as const,
-          icon: <Article fontSize="small" />,
-          onClick: () => message.info('未实现')
-        },
-        {
-          title: '业务受理',
-          color: 'secondary' as const,
-          icon: <Article fontSize="small" />,
-          onClick: () => message.info('未实现')
-        }
-      ].map((action, index) => (
+      {actions.map((action, index) => (
         <Tooltip title={action.title} key={index}>
           <IconButton size="small" color={action.color} onClick={action.onClick}>
             {action.icon}
@@ -162,7 +161,7 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'roomNum',
       headerName: '房屋',
       align: 'center',
-      renderCell: row => `--${row.roomNum}`
+      renderCell: row => `${row.unit?.floor?.name}-${row.unit?.unitNum}-${row.roomNum}`
     },
     {
       key: 'layer',
@@ -177,7 +176,20 @@ const TableData: React.FC<TableDataProps> = ({
     {
       key: 'roomSubType',
       headerName: '类型',
-      align: 'center'
+      align: 'center',
+      renderCell: row => {
+        return row.roomSubType === '110' ? (
+          <Chip label="住宅" />
+        ) : row.roomSubType === '120' ? (
+          <Chip label="办公室" />
+        ) : row.roomSubType === '119' ? (
+          <Chip label="宿舍" />
+        ) : row.roomSubType === '128' ? (
+          <Chip label="储物间" />
+        ) : (
+          <Chip label="其他" />
+        )
+      }
     },
     {
       key: 'builtUpArea',
@@ -193,7 +205,30 @@ const TableData: React.FC<TableDataProps> = ({
     {
       key: 'state',
       headerName: '房屋状态',
-      align: 'center'
+      align: 'center',
+      renderCell: row => {
+        return row.roomSubType === '2001' ? (
+          <Chip label="已入住" />
+        ) : row.roomSubType === '2002' ? (
+          <Chip label="未销售" />
+        ) : row.roomSubType === '2003' ? (
+          <Chip label="已交房" />
+        ) : row.roomSubType === '2004' ? (
+          <Chip label="未入住" />
+        ) : row.roomSubType === '2005' ? (
+          <Chip label="已装修" />
+        ) : row.roomSubType === '2006' ? (
+          <Chip label="已出租" />
+        ) : row.roomSubType === '2007' ? (
+          <Chip label="已出售" />
+        ) : row.roomSubType === '2008' ? (
+          <Chip label="空闲" />
+        ) : row.roomSubType === '2009' ? (
+          <Chip label="装修中" />
+        ) : (
+          <Chip label="其他" />
+        )
+      }
     },
     {
       key: 'createdAt',
@@ -214,7 +249,7 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => renderActionButtons({ setOpenRoomDialog, setDelOpen })
+      renderCell: () => renderActionButtons({ dialogValue, setOpenRoomDialog, setDelOpen })
     }
   ]
 

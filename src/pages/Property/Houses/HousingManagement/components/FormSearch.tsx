@@ -104,15 +104,15 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
             sx={textFieldStyles}
           >
             {[
-              { value: 0, label: '未销售' },
-              { value: 1, label: '已入住' },
-              { value: 2, label: '已交房' },
-              { value: 3, label: '已装修' },
-              { value: 4, label: '未入住' },
-              { value: 5, label: '已出租' },
-              { value: 6, label: '已出售' },
-              { value: 7, label: '空闲' },
-              { value: 8, label: '装修中' }
+              { value: '2001', label: '已入住' },
+              { value: '2002', label: '未销售' },
+              { value: '2003', label: '已交房' },
+              { value: '2004', label: '未入住' },
+              { value: '2005', label: '已装修' },
+              { value: '2006', label: '已出租' },
+              { value: '2007', label: '已出售' },
+              { value: '2008', label: '空闲' },
+              { value: '2009', label: '装修中' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -131,10 +131,10 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
             sx={textFieldStyles}
           >
             {[
-              { value: 0, label: '住宅' },
-              { value: 1, label: '办公室' },
-              { value: 2, label: '宿舍' },
-              { value: 3, label: '储物间' }
+              { value: '110', label: '住宅' },
+              { value: '120', label: '办公室' },
+              { value: '119', label: '宿舍' },
+              { value: '128', label: '储物间' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
