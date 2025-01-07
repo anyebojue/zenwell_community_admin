@@ -2,10 +2,28 @@ import { request } from 'utils/request/axios'
 import { FindRoomReply, RoomParams } from '../model/property/roomModel'
 
 const ApiPrefix = {
+  ImportRoom: '/auth/file/uploads_room',
   FindRoom: '/auth/room',
   CreateRoom: '/auth/room',
   UpdateRoom: '/auth/room',
   DeleteRoom: '/auth/room'
+}
+
+/**
+ * 导入房产
+ * @param data
+ * @returns
+ */
+export const ImportRoom = (data: FormData) => {
+  return request
+    .post({
+      url: ApiPrefix.ImportRoom,
+      data,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    .then(res => res.data)
 }
 
 /**

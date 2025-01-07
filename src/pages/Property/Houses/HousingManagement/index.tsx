@@ -15,6 +15,7 @@ import TableData from './components/TableData'
 import FloorFormDialog from './components/FloorFormDialog'
 import UnitFormDialog from './components/UnitFormDialog'
 import RoomFormDialog from './components/RoomFormDialog'
+import ImportRoom from './components/ImportRoom'
 
 const treeViewStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -40,6 +41,8 @@ const HousingManagementIndex = () => {
   const [dialogValue, setDialogValue] = useState<HousingManagementReply>({})
   const [dialogRoomValue, setDialogRoomValue] = useState<RoomReply>({})
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
+
+  const [openImportRoom, setOpenImportRoom] = useState(false)
 
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -241,7 +244,7 @@ const HousingManagementIndex = () => {
           startIcon={<Add />}
           sx={buttonCommonStyle()}
           onClick={() => {
-            setDialogType('add')
+            setOpenImportRoom(true)
           }}
         >
           房产导入
@@ -312,6 +315,7 @@ const HousingManagementIndex = () => {
         userName={[dialogValue.name || ('小区单元' as string)]}
         onDelete={() => handleDelete([dialogValue.id as string])}
       />
+      <ImportRoom openImportRoom={openImportRoom} setOpenImportRoom={setOpenImportRoom} />
     </Box>
   )
 }
