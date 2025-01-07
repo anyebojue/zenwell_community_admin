@@ -20,6 +20,22 @@ const houses: IRouter[] = [
         }
       },
       {
+        path: 'CheckIn',
+        element: load('Property/Houses/CheckIn'),
+        meta: {
+          title: '交房',
+          hidden: true
+        }
+      },
+      {
+        path: 'CheckOut',
+        element: load('Property/Houses/CheckOut'),
+        meta: {
+          title: '退房',
+          hidden: true
+        }
+      },
+      {
         path: 'OwnerInformation',
         element: load('Property/Houses/OwnerInformation'),
         meta: {

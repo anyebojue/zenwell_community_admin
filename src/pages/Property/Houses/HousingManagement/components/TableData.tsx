@@ -16,57 +16,8 @@ import { Delete, Edit, ExitToApp, House, Key } from '@mui/icons-material'
 import message from 'components/Message'
 import DeleteModal from 'components/DeleteModal'
 import { HousingManagementReply } from 'api/model/property/housingManagementModel'
+import { useNavigate } from 'react-router-dom'
 import TableList from './TableList'
-
-const renderActionButtons = ({
-  dialogValue,
-  setOpenRoomDialog,
-  setDelOpen
-}: {
-  dialogValue: HousingManagementReply
-  setOpenRoomDialog: Dispatch<SetStateAction<boolean>>
-  setDelOpen: Dispatch<SetStateAction<boolean>>
-}) => {
-  const actions = [
-    {
-      title: '修改',
-      color: 'secondary' as const,
-      icon: <Edit fontSize="small" />,
-      onClick: () => setOpenRoomDialog(true)
-    },
-    {
-      title: '删除',
-      color: 'error' as const,
-      icon: <Delete fontSize="small" />,
-      onClick: () => setDelOpen(true)
-    },
-    {
-      title: dialogValue.userId ? '退房' : '交房',
-      color: 'secondary' as const,
-      icon: dialogValue.userId ? <ExitToApp fontSize="small" /> : <Key fontSize="small" />,
-      onClick: () => (dialogValue.userId ? message.info('未实现') : message.info('未实现'))
-    }
-  ]
-  if (dialogValue.userId) {
-    actions.push({
-      title: '业务受理',
-      color: 'secondary' as const,
-      icon: <House fontSize="small" />,
-      onClick: () => message.info('未实现')
-    })
-  }
-  return (
-    <Box>
-      {actions.map((action, index) => (
-        <Tooltip title={action.title} key={index}>
-          <IconButton size="small" color={action.color} onClick={action.onClick}>
-            {action.icon}
-          </IconButton>
-        </Tooltip>
-      ))}
-    </Box>
-  )
-}
 
 export interface Column<T> {
   headerName: string
@@ -93,6 +44,7 @@ const TableData: React.FC<TableDataProps> = ({
   setSelectedRows
 }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.RoomSlice)
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -249,7 +201,50 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => renderActionButtons({ dialogValue, setOpenRoomDialog, setDelOpen })
+      renderCell: row => {
+        const actions = [
+          {
+            title: '修改',
+            color: 'secondary' as const,
+            icon: <Edit fontSize="small" />,
+            onClick: () => setOpenRoomDialog(true)
+          },
+          {
+            title: '删除',
+            color: 'error' as const,
+            icon: <Delete fontSize="small" />,
+            onClick: () => setDelOpen(true)
+          },
+          {
+            title: dialogValue.userId ? '退房' : '交房',
+            color: 'secondary' as const,
+            icon: dialogValue.userId ? <ExitToApp fontSize="small" /> : <Key fontSize="small" />,
+            onClick: () =>
+              dialogValue.userId
+                ? navigate('/houses/CheckOut', { state: { value: row } })
+                : navigate('/houses/CheckIn', { state: { value: row } })
+          }
+        ]
+        if (dialogValue.userId) {
+          actions.push({
+            title: '业务受理',
+            color: 'secondary' as const,
+            icon: <House fontSize="small" />,
+            onClick: () => message.info('未实现')
+          })
+        }
+        return (
+          <Box>
+            {actions.map((action, index) => (
+              <Tooltip title={action.title} key={index}>
+                <IconButton size="small" color={action.color} onClick={action.onClick}>
+                  {action.icon}
+                </IconButton>
+              </Tooltip>
+            ))}
+          </Box>
+        )
+      }
     }
   ]
 
