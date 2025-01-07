@@ -61,6 +61,7 @@ const Associated: React.FC<AssociatedProps> = ({
         setAssociatedOpen(false)
       }
     } catch (err: unknown) {
+      setLoading(false)
       if (err instanceof Error) message.error(err.message)
     } finally {
       setLoading(false)

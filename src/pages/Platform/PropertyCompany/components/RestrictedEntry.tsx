@@ -64,6 +64,7 @@ const RestrictedEntry: React.FC<DeleteModalProps> = ({
       setDialogLocked(params.locked)
       setLockExpireTime('')
     } catch (err: unknown) {
+      setRestrictLoading(false)
       if (err instanceof Error) message.error(err.message)
     } finally {
       setRestrictLoading(false)

@@ -109,8 +109,9 @@ const CheckIn: React.FC = () => {
       if ('error' in res && res.error?.message) throw new Error(res.error.message)
       navigate(-1)
       message.success('入住成功')
-    } catch {
-      message.error('入住失败，请检查网络是否畅通')
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
     } finally {
       closeLoading()
     }

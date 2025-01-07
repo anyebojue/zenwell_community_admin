@@ -62,8 +62,10 @@ const CommunityAnnouncementIndex = () => {
           find({ 'page.num': page.num, 'page.size': page.size, communityId, type: selectedButton })
         )
         setLoading(false)
-      } catch (err) {
+      } catch (err: unknown) {
+        setLoading(false)
         if (err instanceof Error) message.error(err.message)
+      } finally {
         setLoading(false)
       }
     },

@@ -1,12 +1,24 @@
-import React, { memo, useCallback, useEffect } from 'react'
-import { Box, Button, Theme, Typography } from '@mui/material'
+import React, { memo, useCallback, useEffect, useState } from 'react'
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Theme,
+  Typography
+} from '@mui/material'
 import Grid from '@mui/material/Grid2'
 import { buttonStyles } from 'components/DeleteModal'
-import { Close } from '@mui/icons-material'
+import { Close, WarningRounded } from '@mui/icons-material'
 import message from 'components/Message'
 import { get } from 'modules/property/owner'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { update } from 'modules/property/room'
 
 const contentBoxStyle = (theme: Theme) => ({
   mt: 2.5,
@@ -18,11 +30,13 @@ const contentBoxStyle = (theme: Theme) => ({
 
 const CheckOut: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const location = useLocation()
   const data = location.state?.value
   const { owner } = useSelector((state: RootState) => state.OwnerSlice)
-
-  console.log(owner)
+  const [delOpen, setDelOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [ownerId, setOwnerId] = useState<string | undefined>()
 
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
@@ -31,8 +45,9 @@ const CheckOut: React.FC = () => {
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
-    } catch {
-      message.error('列表加载失败，请刷新页面或检查网络问题')
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
     } finally {
       closeLoading()
     }
@@ -41,6 +56,28 @@ const CheckOut: React.FC = () => {
   useEffect(() => {
     fetchData()
   }, [fetchData])
+
+  const handleOut = async () => {
+    setLoading(true)
+    const params = {
+      id: ownerId,
+      userId: '-1',
+      state: '2002',
+      startTime: new Date().toISOString().split('T')[0],
+      endTime: new Date().toISOString().split('T')[0]
+    }
+    try {
+      const res = await dispatch(update(params))
+      if ('error' in res && res.error?.message) throw new Error(res.error.message)
+      navigate(-1)
+      message.success('退房成功')
+    } catch (err: unknown) {
+      setLoading(false)
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <Box>
@@ -99,7 +136,10 @@ const CheckOut: React.FC = () => {
               color="error"
               startIcon={<Close />}
               sx={buttonStyles('#2660ad', '#1d428a')}
-              onClick={() => {}}
+              onClick={() => {
+                setDelOpen(true)
+                setOwnerId(items.id)
+              }}
             >
               我要退房
             </Button>
@@ -139,6 +179,31 @@ const CheckOut: React.FC = () => {
           </Box>
         </Box>
       ))}
+      <Dialog open={delOpen} onClose={() => setDelOpen(false)}>
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
+          <WarningRounded />
+          <span style={{ margin: '10px' }}>请确认您的操作!</span>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>确认是否退房，退房后可以再次售卖</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" color="error" onClick={() => setDelOpen(false)}>
+            取消
+          </Button>
+          <Button
+            variant="contained"
+            type="submit"
+            color="error"
+            sx={buttonStyles('#2660ad', '#1d428a')}
+            disabled={loading}
+            startIcon={loading && <CircularProgress size={24} color="inherit" />}
+            onClick={handleOut}
+          >
+            {loading ? '确定中...' : '确定'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 }

@@ -47,9 +47,9 @@ const RolesIndex = () => {
         throw new Error(res.error.message)
       }
       setLoading(false)
-    } catch {
-      message.error('列表加载失败，请刷新页面或检查网络问题')
-      setLoading(false)
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
     } finally {
       closeLoading()
     }
@@ -67,8 +67,10 @@ const RolesIndex = () => {
         message.success('删除成功')
         fetchData()
         setLoading(false)
-      } catch (err) {
+      } catch (err: unknown) {
+        setLoading(false)
         if (err instanceof Error) message.error(err.message)
+      } finally {
         setLoading(false)
       }
     },

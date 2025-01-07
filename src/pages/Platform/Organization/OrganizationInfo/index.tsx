@@ -61,8 +61,9 @@ const InfoIndex = () => {
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
-    } catch {
-      message.error('列表加载失败，请刷新页面或检查网络问题')
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
     } finally {
       closeLoading()
       setLoading(false)
@@ -92,7 +93,8 @@ const InfoIndex = () => {
         setDelOpen(false)
         message.success('删除成功')
         await dispatch(find({ pId: '0' }))
-      } catch (err) {
+      } catch (err: unknown) {
+        setLoading(false)
         if (err instanceof Error) message.error(err.message)
       } finally {
         setLoading(false)

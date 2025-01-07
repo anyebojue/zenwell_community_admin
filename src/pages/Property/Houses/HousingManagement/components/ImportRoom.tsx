@@ -55,6 +55,7 @@ const ImportRooms: React.FC<ImportRoomsProps> = ({ openImportRoom, setOpenImport
       setFile(null)
       setOpenImportRoom(false)
     } catch (err: unknown) {
+      setLoading(false)
       if (err instanceof Error) message.error(err.message)
     } finally {
       setLoading(false)

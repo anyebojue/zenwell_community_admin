@@ -49,8 +49,9 @@ const ChangePasswordIndex: React.FC = () => {
     try {
       const res = await dispatch(find({ 'page.disable': true, describe: 'liteapp' }))
       if ('error' in res && res.error?.message) throw new Error(res.error.message)
-    } catch {
-      message.error('列表加载失败，请刷新页面或检查网络问题')
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
     } finally {
       closeLoading()
     }
@@ -66,8 +67,8 @@ const ChangePasswordIndex: React.FC = () => {
         const data = JSON.parse(list[0]?.values || '{}')
         setSettingValue(list[0])
         setFormData({ app_id: data.app_id || '', app_secret: data.app_secret || '' })
-      } catch {
-        message.error('数据解析失败，请检查网络是否畅通')
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
       }
     }
   }, [list])
@@ -120,8 +121,9 @@ const ChangePasswordIndex: React.FC = () => {
       const res = await dispatch(update(params))
       if ('error' in res && res.error?.message) throw new Error(res.error.message)
       message.success('修改成功')
-    } catch {
-      message.error('修改失败，请检查网络是否畅通')
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
     } finally {
       closeLoading()
     }

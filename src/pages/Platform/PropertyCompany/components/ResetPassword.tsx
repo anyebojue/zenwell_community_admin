@@ -49,6 +49,7 @@ const RestrictedEntry: React.FC<DeleteModalProps> = ({
       message.success('操作成功')
       setPasswordOpen(false)
     } catch (err: unknown) {
+      setPasswordLoading(false)
       if (err instanceof Error) message.error(err.message)
     } finally {
       setPasswordLoading(false)

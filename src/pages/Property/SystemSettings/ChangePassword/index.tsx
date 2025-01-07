@@ -117,9 +117,11 @@ const ChangePasswordIndex: React.FC = () => {
       closeLoading()
       message.success('修改成功')
       navigate('/login')
-    } catch {
+    } catch (err: unknown) {
       closeLoading()
-      message.error('修改密码失败，请检查用户名或密码')
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      closeLoading()
     }
   }
 

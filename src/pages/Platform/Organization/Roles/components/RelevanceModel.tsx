@@ -63,6 +63,7 @@ const RelevanceModel: React.FC<AssociatedProps> = ({
         setOpen(false)
       }
     } catch (err: unknown) {
+      setLoading(false)
       if (err instanceof Error) message.error(err.message)
     } finally {
       setLoading(false)

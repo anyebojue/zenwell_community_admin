@@ -117,8 +117,9 @@ const TableData: React.FC<TableDataProps> = () => {
         throw new Error(res.error.message)
       }
       await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
-    } catch {
-      message.error('列表加载失败，请刷新页面或检查网络问题')
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
     } finally {
       closeLoading()
     }

@@ -104,8 +104,9 @@ const TableData: React.FC<TableDataProps> = ({
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
-    } catch {
-      message.error('列表加载失败，请刷新页面或检查网络问题')
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
     } finally {
       closeLoading()
     }
@@ -141,7 +142,8 @@ const TableData: React.FC<TableDataProps> = ({
         setDelOpen(false)
         message.success('删除成功')
         fetchData()
-      } catch (err) {
+      } catch (err: unknown) {
+        setLoading(false)
         if (err instanceof Error) message.error(err.message)
       } finally {
         setLoading(false)

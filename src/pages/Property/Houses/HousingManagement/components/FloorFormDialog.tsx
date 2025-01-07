@@ -89,6 +89,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
         setOpenFloorDialog(false)
         setFormData(initialFormData)
       } catch (err: unknown) {
+        setLoading(false)
         if (err instanceof Error) message.error(err.message)
       } finally {
         setLoading(false)

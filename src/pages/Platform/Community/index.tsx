@@ -51,8 +51,10 @@ const CommunityIndex = () => {
         message.success('删除成功')
         await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
         setLoading(false)
-      } catch (err) {
+      } catch (err: unknown) {
+        setLoading(false)
         if (err instanceof Error) message.error(err.message)
+      } finally {
         setLoading(false)
       }
     },

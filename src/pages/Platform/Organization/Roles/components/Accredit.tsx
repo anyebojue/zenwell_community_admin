@@ -67,7 +67,8 @@ const Accredit: React.FC<AccreditProps> = ({ dialogValue }) => {
             userGroupId: dialogValue.id || '9027404928166920193'
           })
         )
-      } catch (err) {
+      } catch (err: unknown) {
+        setLoading(false)
         if (err instanceof Error) message.error(err.message)
       } finally {
         setLoading(false)

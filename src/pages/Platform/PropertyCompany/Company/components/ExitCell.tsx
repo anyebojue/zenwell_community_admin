@@ -47,8 +47,10 @@ const ExitCell: React.FC<ExitCellProps> = ({ exitOpen, setExitOpen, dialogValue 
         companyfind({ 'page.num': page.num, 'page.size': page.size, storeId: location.state?.id })
       )
       setLoading(false)
-    } catch (err) {
+    } catch (err: unknown) {
+      setLoading(false)
       if (err instanceof Error) message.error(err.message)
+    } finally {
       setLoading(false)
     }
   }

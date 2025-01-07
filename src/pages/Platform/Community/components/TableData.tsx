@@ -98,13 +98,17 @@ const TableData: React.FC<TableDataProps> = ({
   ]
 
   const fetchCityData = useCallback(async () => {
+    const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
       const res = await dispatch(getCityArea({ 'page.disable': true }))
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
-    } catch {
-      message.error('获取全国城市列表失败，请刷新页面或检查网络问题')
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      closeLoading()
     }
   }, [dispatch])
 
@@ -115,8 +119,9 @@ const TableData: React.FC<TableDataProps> = ({
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
-    } catch {
-      message.error('列表加载失败，请刷新页面或检查网络问题')
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
     } finally {
       closeLoading()
     }

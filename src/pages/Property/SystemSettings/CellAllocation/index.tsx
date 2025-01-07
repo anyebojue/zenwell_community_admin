@@ -69,8 +69,9 @@ const CellAllocationIndex: React.FC = () => {
     try {
       const res = await dispatch(find({ 'page.disable': true, describe: 'community' }))
       if ('error' in res && res.error?.message) throw new Error(res.error.message)
-    } catch {
-      message.error('列表加载失败，请刷新页面或检查网络问题')
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
     } finally {
       closeLoading()
     }
@@ -92,8 +93,8 @@ const CellAllocationIndex: React.FC = () => {
           template_code: data.template_code || '',
           region_id: data.region_id || ''
         })
-      } catch {
-        message.error('数据解析失败，请检查网络是否畅通')
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
       }
     }
   }, [list])
@@ -169,8 +170,9 @@ const CellAllocationIndex: React.FC = () => {
       const res = await dispatch(update(params))
       if ('error' in res && res.error?.message) throw new Error(res.error.message)
       message.success('修改成功')
-    } catch {
-      message.error('修改失败，请检查网络是否畅通')
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
     } finally {
       closeLoading()
     }

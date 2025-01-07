@@ -64,6 +64,7 @@ const AccreditModel: React.FC<AAccreditModelProps> = ({
         setAssociatedOpen(false)
       }
     } catch (err: unknown) {
+      setLoading(false)
       if (err instanceof Error) message.error(err.message)
     } finally {
       setLoading(false)
