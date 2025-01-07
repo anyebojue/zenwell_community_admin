@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
 import { OwnerParams, OwnerReply } from 'api/model/property/ownerModel'
-import { FindOwner, CreateOwner, UpdateOwner, DeleteOwner } from 'api/property/owner'
+import { FindOwner, CreateOwner, UpdateOwner, DeleteOwner, GetOwner } from 'api/property/owner'
 
 const namespace = 'Owner'
 
@@ -13,6 +13,7 @@ const PAGE = {
 interface IInitialState {
   page: Page
   list: OwnerReply[]
+  owner: OwnerReply
 }
 
 const initialState: IInitialState = {
@@ -22,8 +23,14 @@ const initialState: IInitialState = {
     total: '0',
     disable: false
   },
-  list: []
+  list: [],
+  owner: {}
 }
+
+export const get = createAsyncThunk(`${namespace}/get`, async (params: { id: string }) => {
+  const res = await GetOwner(params)
+  return res
+})
 
 export const find = createAsyncThunk(
   `${namespace}/find`,
@@ -55,10 +62,15 @@ export const OwnerSlice = createSlice({
     reset: () => initialState
   },
   extraReducers: builder => {
-    builder.addCase(find.fulfilled, (state, action) => {
-      state.page = action.payload.page
-      state.list = action.payload.list
-    })
+    builder
+      .addCase(find.fulfilled, (state, action) => {
+        console.log(111111, action.payload)
+        state.page = action.payload.page
+        state.list = action.payload.list
+      })
+      .addCase(get.fulfilled, (state, action) => {
+        state.owner = action.payload as OwnerReply
+      })
   }
 })
 

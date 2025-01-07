@@ -2,10 +2,24 @@ import { request } from 'utils/request/axios'
 import { FindOwnerReply, OwnerParams } from '../model/property/ownerModel'
 
 const ApiPrefix = {
+  GetOwner: '/auth/owner',
   FindOwner: '/auth/owner',
   CreateOwner: '/auth/owner',
   UpdateOwner: '/auth/owner',
   DeleteOwner: '/auth/owner'
+}
+
+/**
+ * 查询接口
+ * @param params
+ * @returns
+ */
+export const GetOwner = (params: { id: string }) => {
+  return request
+    .get<FindOwnerReply>({
+      url: `${ApiPrefix.GetOwner}/${params.id}`
+    })
+    .then(res => res.data)
 }
 
 /**

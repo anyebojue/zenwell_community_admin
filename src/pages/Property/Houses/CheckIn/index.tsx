@@ -15,7 +15,7 @@ interface FormData {
   endTime: string
 }
 
-const ChangePasswordIndex: React.FC = () => {
+const CheckIn: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const location = useLocation()
@@ -107,9 +107,10 @@ const ChangePasswordIndex: React.FC = () => {
     try {
       const res = await dispatch(update(params))
       if ('error' in res && res.error?.message) throw new Error(res.error.message)
-      message.success('修改成功')
+      navigate(-1)
+      message.success('入住成功')
     } catch {
-      message.error('修改失败，请检查网络是否畅通')
+      message.error('入住失败，请检查网络是否畅通')
     } finally {
       closeLoading()
     }
@@ -190,4 +191,4 @@ const ChangePasswordIndex: React.FC = () => {
   )
 }
 
-export default memo(ChangePasswordIndex)
+export default memo(CheckIn)
