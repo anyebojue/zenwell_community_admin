@@ -1,39 +1,20 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairSettingReply } from 'api/model/property/repairSettingModel'
-import { find } from 'modules/property/repairSetting'
+import { CommunityAnnouncementReply } from 'api/model/property/communityAnnouncementModel'
+import { find } from 'modules/property/communityAnnouncement'
 import { Box, Tooltip, IconButton } from '@mui/material'
-import { Delete, Build, Edit } from '@mui/icons-material'
+import { FileCopy } from '@mui/icons-material'
 import message from 'components/Message'
 import TableList from './TableList'
 
-const renderActionButtons = (
-  setDialogType: Dispatch<SetStateAction<string>>,
-  setOpenDialog: Dispatch<SetStateAction<boolean>>,
-  setDelOpen: Dispatch<SetStateAction<boolean>>
-) => (
+const renderActionButtons = () => (
   <Box>
     {[
       {
-        title: '绑定维修师傅',
+        title: '详情',
         color: 'primary' as const,
-        icon: <Build fontSize="small" />,
+        icon: <FileCopy fontSize="small" />,
         onClick: () => message.info('未实现')
-      },
-      {
-        title: '修改',
-        color: 'secondary' as const,
-        icon: <Edit fontSize="small" />,
-        onClick: () => {
-          setOpenDialog(true)
-          setDialogType('edit')
-        }
-      },
-      {
-        title: '删除',
-        color: 'error' as const,
-        icon: <Delete fontSize="small" />,
-        onClick: () => setDelOpen(true)
       }
     ].map((action, index) => (
       <Tooltip title={action.title} key={index}>
@@ -47,14 +28,14 @@ const renderActionButtons = (
 
 export interface Column<T> {
   headerName: string
-  key: keyof T | 'operate'
-  align?: 'left' | 'center' | 'right'
-  renderCell?: (row: T) => ReactNode
+  key: string
+  align?: 'left' | 'right' | 'center'
+  renderCell?: (_value: T[keyof T]) => ReactNode
 }
 
 interface TableDataProps {
-  setDialogType: Dispatch<SetStateAction<string>>
-  setDialogValue: Dispatch<SetStateAction<RepairSettingReply | undefined>>
+  selectedButton: number
+  setDialogValue: Dispatch<SetStateAction<CommunityAnnouncementReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -62,88 +43,37 @@ interface TableDataProps {
 }
 
 const TableData: React.FC<TableDataProps> = ({
-  setDialogType,
+  selectedButton,
   setDialogValue,
   selectedRows,
-  setSelectedRows,
-  setOpenDialog,
-  setDelOpen
+  setSelectedRows
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.RepairSettingSlice)
+  const { page, list } = useSelector((state: RootState) => state.CommunityAnnouncementSlice)
 
-  const columns: Column<RepairSettingReply>[] = [
-    { key: 'repairTypeName', headerName: '类型名称', align: 'center' },
-    {
-      key: 'repairType',
-      headerName: '报修设置类型',
-      align: 'center',
-      renderCell: row => (row.repairWay === 0 ? '维修单' : '保洁单')
-    },
-    {
-      key: 'repairWay',
-      headerName: '派单方式',
-      align: 'center',
-      renderCell: row =>
-        row.repairWay === 100
-          ? '抢单'
-          : row.repairWay === 200
-            ? '指派'
-            : row.repairWay === 300
-              ? '轮训'
-              : ''
-    },
-    {
-      key: 'publicArea',
-      headerName: '区域',
-      align: 'center',
-      renderCell: row => (row.repairWay === 0 ? '非房屋' : '房屋')
-    },
-    {
-      key: 'isShow',
-      headerName: '业主端展示',
-      align: 'center',
-      renderCell: row => (row.isShow === 0 ? '否' : '是')
-    },
-    {
-      key: 'repairSettingType',
-      headerName: '通知方式',
-      align: 'center',
-      renderCell: row =>
-        row.repairSettingType === '0'
-          ? '微信'
-          : row.repairSettingType === '1'
-            ? '短信'
-            : row.repairSettingType === '2'
-              ? '微信+员工工牌'
-              : ''
-    },
-    {
-      key: 'returnVisitFlag',
-      headerName: '是否回访',
-      align: 'center',
-      renderCell: row =>
-        row.returnVisitFlag === 1
-          ? '不回访'
-          : row.returnVisitFlag === 2
-            ? '已评价不回访'
-            : row.returnVisitFlag === 3
-              ? '回访'
-              : ''
-    },
-    { key: 'createdAt', headerName: '创建时间', align: 'center' },
+  const columns: Column<CommunityAnnouncementReply>[] = [
+    { key: 'photo', headerName: '工单编码', align: 'center' },
+    { key: 'title', headerName: '位置', align: 'center' },
+    { key: 'type', headerName: '报修类型', align: 'center' },
+    { key: 'createdAt', headerName: '维修类型', align: 'center' },
+    { key: 'communityId', headerName: '报修人', align: 'center' },
+    { key: 'communityId', headerName: '联系方式', align: 'center' },
+    { key: 'communityId', headerName: '预约时间', align: 'center' },
+    { key: 'communityId', headerName: '提交时间', align: 'center' },
     {
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => renderActionButtons(setDialogType, setOpenDialog, setDelOpen)
+      renderCell: () => renderActionButtons()
     }
   ]
 
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      const res = await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+      const res = await dispatch(
+        find({ 'page.num': page.num, 'page.size': page.size, type: selectedButton })
+      )
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
@@ -153,7 +83,7 @@ const TableData: React.FC<TableDataProps> = ({
     } finally {
       closeLoading()
     }
-  }, [dispatch, page.num, page.size])
+  }, [dispatch, page.num, page.size, selectedButton])
 
   useEffect(() => {
     fetchData()

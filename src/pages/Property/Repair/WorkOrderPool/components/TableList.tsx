@@ -16,7 +16,7 @@ import {
   Checkbox,
   Theme
 } from '@mui/material'
-import { RepairSettingReply } from 'api/model/property/repairSettingModel'
+import { CommunityAnnouncementReply } from 'api/model/property/communityAnnouncementModel'
 import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {
@@ -36,9 +36,9 @@ const TableList = ({
   selectedRows,
   setSelectedRows
 }: {
-  rows: RepairSettingReply[]
-  columns: Column<RepairSettingReply>[]
-  setDialogValue: Dispatch<SetStateAction<RepairSettingReply | undefined>>
+  rows: CommunityAnnouncementReply[]
+  columns: Column<CommunityAnnouncementReply>[]
+  setDialogValue: Dispatch<SetStateAction<CommunityAnnouncementReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
 }) => {
@@ -82,16 +82,6 @@ const TableList = ({
 
   const allSelected = selectedRows.size === rows.length && rows.length > 0
   const someSelected = selectedRows.size > 0 && selectedRows.size < rows.length
-
-  const renderValue = (value: RepairSettingReply[keyof RepairSettingReply] | undefined) => {
-    if (Array.isArray(value)) {
-      return JSON.stringify(value)
-    } else if (value && typeof value === 'object') {
-      return JSON.stringify(value)
-    } else {
-      return value || '-'
-    }
-  }
 
   return (
     <Box
@@ -155,14 +145,16 @@ const TableList = ({
                     />
                   </TableCell>
                   {columns.map(column => {
-                    const value = row[column.key as keyof RepairSettingReply]
+                    const value = row[column.key as keyof CommunityAnnouncementReply]
                     return (
                       <TableCell
                         key={column.key}
                         align={column.align}
-                        sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}
+                        sx={{
+                          borderBottom: theme => `1px solid ${theme.palette.divider}`
+                        }}
                       >
-                        {column.renderCell ? column.renderCell(row) : renderValue(value)}
+                        {column.renderCell ? column.renderCell(value) : value}
                       </TableCell>
                     )
                   })}

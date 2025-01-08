@@ -1,31 +1,23 @@
 import { memo, useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairSettingReply } from 'api/model/property/repairSettingModel'
-import { deleteByIds, find } from 'modules/property/repairSetting'
-import { Box, Button, Theme, Typography } from '@mui/material'
-import { Add } from '@mui/icons-material'
+import { CommunityAnnouncementReply } from 'api/model/property/communityAnnouncementModel'
+import { deleteByIds, find } from 'modules/property/communityAnnouncement'
+import { Box, Button, ButtonGroup, Stack } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
-import DeleteModal, { buttonStyles } from 'components/DeleteModal'
+import DeleteModal from 'components/DeleteModal'
 import message from 'components/Message'
 import FormSearch from './components/FormSearch'
-import FormDialog from './components/FormDialog'
 import TableData from './components/TableData'
+import FormDialog from './components/FormDialog'
 
-const contentBoxStyle = (theme: Theme) => ({
-  background: theme.palette.background.default,
-  borderRadius: '15px',
-  padding: '15px 15px',
-  width: '100%'
-})
-
-const RepairSettingsIndex = () => {
+const CommunityAnnouncementIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.RepairSettingSlice)
-  const [dialogValue, setDialogValue] = useState<RepairSettingReply>()
+  const { page, list } = useSelector((state: RootState) => state.CommunityAnnouncementSlice)
+  const [dialogValue, setDialogValue] = useState<CommunityAnnouncementReply>()
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
-  const [dialogType, setDialogType] = useState('add')
   const [openDialog, setOpenDialog] = useState(false)
+  const [selectedButton, setSelectedButton] = useState<number>(0)
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -33,12 +25,12 @@ const RepairSettingsIndex = () => {
     if (selectedRows.size > 0) {
       return list
         .filter(item => selectedRows.has(item.id))
-        .map(item => ({ id: item.id!, repairTypeName: item.repairTypeName! }))
-        .filter(item => item.id && item.repairTypeName)
+        .map(item => ({ id: item.id!, title: item.title! }))
+        .filter(item => item.id && item.title)
     }
     if (dialogValue) {
-      return dialogValue.id && dialogValue.repairTypeName
-        ? [{ id: dialogValue.id, repairTypeName: dialogValue.repairTypeName }]
+      return dialogValue.id && dialogValue.title
+        ? [{ id: dialogValue.id, title: dialogValue.title }]
         : []
     }
     return []
@@ -46,7 +38,7 @@ const RepairSettingsIndex = () => {
 
   const deleteData = useMemo(() => getDeleteData(), [getDeleteData])
   const deleteIds = deleteData.map(item => item.id)
-  const deleteNames = deleteData.map(item => item.repairTypeName)
+  const deleteNames = deleteData.map(item => item.title)
 
   const handleDelete = useCallback(
     async (ids: string[]) => {
@@ -58,7 +50,7 @@ const RepairSettingsIndex = () => {
         }
         setDelOpen(false)
         message.success('删除成功')
-        await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+        await dispatch(find({ 'page.num': page.num, 'page.size': page.size, type: selectedButton }))
         setLoading(false)
       } catch (err: unknown) {
         setLoading(false)
@@ -67,33 +59,55 @@ const RepairSettingsIndex = () => {
         setLoading(false)
       }
     },
-    [dispatch, page.num, page.size]
+    [dispatch, page.num, page.size, selectedButton]
   )
 
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
-      <Box sx={{ width: '100%' }}>
-        <FormSearch setDelOpen={setDelOpen} selectedRows={selectedRows} />
-        <Box sx={contentBoxStyle}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h6">员工管理</Typography>
+      <Stack sx={{ mt: 2, mb: 1.5, width: '100%' }} direction="row" spacing={3}>
+        <ButtonGroup
+          sx={{
+            width: '200px'
+          }}
+          orientation="vertical"
+          aria-label="Vertical button group"
+        >
+          {[
+            { value: 0, label: '全部' },
+            { value: 1000, label: '未派单' },
+            { value: 1100, label: '接单' },
+            { value: 1200, label: '退单' },
+            { value: 1300, label: '转单' },
+            { value: 1400, label: '申请支付' },
+            { value: 1500, label: '支付失败' },
+            { value: 1700, label: '待评价' },
+            { value: 1800, label: '电话回访' },
+            { value: 1900, label: '办理完成' },
+            { value: 2000, label: '未办理结单' },
+            { value: 2001, label: '暂停' }
+          ].map(item => (
             <Button
-              size="small"
-              variant="contained"
-              color="error"
-              startIcon={<Add />}
-              sx={buttonStyles('#2660ad', '#1d428a')}
-              onClick={() => {
-                setOpenDialog(true)
-                setDialogType('add')
+              key={item.value}
+              size="large"
+              sx={{
+                backgroundColor: selectedButton === item.value ? '#1976d2' : '#fff',
+                color: selectedButton === item.value ? '#fff' : '#000',
+                lineHeight: 2.5,
+                '&:hover': {
+                  backgroundColor: selectedButton === item.value ? '#1565c0' : '#f0f0f0'
+                }
               }}
+              onClick={() => setSelectedButton(item.value)}
             >
-              添加
+              {item.label}
             </Button>
-          </Box>
+          ))}
+        </ButtonGroup>
+        <Box sx={{ width: '100%' }}>
+          <FormSearch selectedButton={selectedButton} />
           <TableData
-            setDialogType={setDialogType}
+            selectedButton={selectedButton}
             setDialogValue={setDialogValue}
             selectedRows={selectedRows}
             setSelectedRows={setSelectedRows}
@@ -101,13 +115,14 @@ const RepairSettingsIndex = () => {
             setDelOpen={setDelOpen}
           />
         </Box>
-      </Box>
+      </Stack>
       <Copyright />
 
       <FormDialog
+        selectedButton={selectedButton}
         dialogValue={dialogValue}
         openDialog={openDialog}
-        dialogType={dialogType}
+        dialogType="edit"
         setOpenDialog={setOpenDialog}
       />
       <DeleteModal
@@ -121,4 +136,4 @@ const RepairSettingsIndex = () => {
   )
 }
 
-export default memo(RepairSettingsIndex)
+export default memo(CommunityAnnouncementIndex)
