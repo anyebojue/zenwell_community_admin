@@ -42,7 +42,6 @@ const FormDialog: React.FC<FormDialogProps> = ({
   dialogType
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const info = useSelector((state: RootState) => state.info.userInfo)
   const { list: floorList } = useSelector((state: RootState) => state.HousingManagementSlice)
   const [loading, setLoading] = useState(false)
   console.log(dialogRoomValue)
@@ -73,18 +72,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
       event.preventDefault()
       setLoading(true)
       try {
-        const current_community = localStorage.getItem('current_community')
-        let communityId
-        if (current_community) {
-          communityId = JSON.parse(current_community).id
-        } else {
-          communityId = info.community[0].id
-        }
-        const params = {
-          ...formData,
-          userId: info.id,
-          communityId
-        }
+        const params = { ...formData }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogRoomValue?.id, ...params })
         const res = await dispatch(action)
@@ -102,16 +90,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
         setLoading(false)
       }
     },
-    [
-      formData,
-      info.id,
-      info.community,
-      dialogType,
-      dialogRoomValue?.id,
-      dispatch,
-      setOpenRoomDialog,
-      initialFormData
-    ]
+    [formData, dialogType, dialogRoomValue?.id, dispatch, setOpenRoomDialog, initialFormData]
   )
 
   const formFields = [

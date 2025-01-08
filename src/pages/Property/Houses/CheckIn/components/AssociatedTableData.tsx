@@ -28,7 +28,6 @@ const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({
   setAssociatedOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const info = useSelector((state: RootState) => state.info.userInfo)
   const { page, list } = useSelector((state: RootState) => state.OwnerSlice)
 
   const columns: Column<OwnerReply>[] = [
@@ -61,21 +60,7 @@ const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      const current_community = localStorage.getItem('current_community')
-      let communityId
-      if (current_community) {
-        communityId = JSON.parse(current_community).id
-      } else {
-        communityId = info.community[0].id
-      }
-      const res = await dispatch(
-        find({
-          'page.num': page.num,
-          'page.size': page.size,
-          communityId,
-          userId: info.id
-        })
-      )
+      const res = await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
@@ -85,7 +70,7 @@ const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({
     } finally {
       closeLoading()
     }
-  }, [dispatch, info.community, info.id, page.num, page.size])
+  }, [dispatch, page.num, page.size])
 
   useEffect(() => {
     fetchData()

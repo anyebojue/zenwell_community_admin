@@ -32,7 +32,6 @@ interface FormSearchProps {
 
 const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const info = useSelector((state: RootState) => state.info.userInfo)
   const { page } = useSelector((state: RootState) => state.CommunityAnnouncementSlice)
 
   const [openDialog, setOpenDialog] = useState(false)
@@ -52,18 +51,10 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
     async (params: CommunityAnnouncementParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
-        const current_community = localStorage.getItem('current_community')
-        let communityId
-        if (current_community) {
-          communityId = JSON.parse(current_community).id
-        } else {
-          communityId = info.community[0].id
-        }
         const res = await dispatch(
           find({
             'page.num': page.num,
             'page.size': page.size,
-            communityId,
             ...params
           })
         )
@@ -77,7 +68,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
         closeLoading()
       }
     },
-    [dispatch, info.community, page.num, page.size]
+    [dispatch, page.num, page.size]
   )
 
   const handleSearch = () => {

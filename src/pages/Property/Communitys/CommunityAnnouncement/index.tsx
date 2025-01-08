@@ -13,7 +13,6 @@ import FormDialog from './components/FormDialog'
 
 const CommunityAnnouncementIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const info = useSelector((state: RootState) => state.info.userInfo)
   const { page, list } = useSelector((state: RootState) => state.CommunityAnnouncementSlice)
   const [dialogValue, setDialogValue] = useState<CommunityAnnouncementReply>()
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
@@ -45,22 +44,13 @@ const CommunityAnnouncementIndex = () => {
     async (ids: string[]) => {
       setLoading(true)
       try {
-        const current_community = localStorage.getItem('current_community')
-        let communityId
-        if (current_community) {
-          communityId = JSON.parse(current_community).id
-        } else {
-          communityId = info.community[0].id
-        }
         const res = await dispatch(deleteByIds(ids))
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
         setDelOpen(false)
         message.success('删除成功')
-        await dispatch(
-          find({ 'page.num': page.num, 'page.size': page.size, communityId, type: selectedButton })
-        )
+        await dispatch(find({ 'page.num': page.num, 'page.size': page.size, type: selectedButton }))
         setLoading(false)
       } catch (err: unknown) {
         setLoading(false)
@@ -69,7 +59,7 @@ const CommunityAnnouncementIndex = () => {
         setLoading(false)
       }
     },
-    [dispatch, info.community, page.num, page.size, selectedButton]
+    [dispatch, page.num, page.size, selectedButton]
   )
 
   return (

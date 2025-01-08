@@ -38,15 +38,10 @@ const ImportRooms: React.FC<ImportRoomsProps> = ({ openImportRoom, setOpenImport
       return
     }
     const current_community = localStorage.getItem('current_community')
-    let communityId
-    if (current_community) {
-      communityId = JSON.parse(current_community).id
-    } else {
-      communityId = info.community[0]?.id
-    }
+    const community = JSON.parse(current_community || '')
     const formData = new FormData()
     formData.append('file', file)
-    formData.append('communityId', communityId)
+    formData.append('communityId', community?.id)
     formData.append('userId', info.id)
     setLoading(true)
     try {

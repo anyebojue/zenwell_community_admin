@@ -7,7 +7,7 @@ import React, {
   useMemo,
   useState
 } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import {
   HousingManagementReply,
   HousingManagementParams
@@ -42,7 +42,6 @@ const FormDialog: React.FC<FormDialogProps> = ({
   dialogType
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const info = useSelector((state: RootState) => state.info.userInfo)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(
@@ -66,18 +65,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
       event.preventDefault()
       setLoading(true)
       try {
-        const current_community = localStorage.getItem('current_community')
-        let communityId
-        if (current_community) {
-          communityId = JSON.parse(current_community).id
-        } else {
-          communityId = info.community[0].id
-        }
-        const params = {
-          ...formData,
-          userId: info.id,
-          communityId
-        }
+        const params = { ...formData }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)
@@ -95,16 +83,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
         setLoading(false)
       }
     },
-    [
-      formData,
-      info.id,
-      info.community,
-      dialogType,
-      dialogValue?.id,
-      dispatch,
-      setOpenFloorDialog,
-      initialFormData
-    ]
+    [formData, dialogType, dialogValue?.id, dispatch, setOpenFloorDialog, initialFormData]
   )
 
   const formFields = [

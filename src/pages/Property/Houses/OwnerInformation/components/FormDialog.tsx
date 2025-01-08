@@ -40,7 +40,6 @@ const FormDialog: React.FC<FormDialogProps> = ({
   setOpenDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const info = useSelector((state: RootState) => state.info.userInfo)
   const { page } = useSelector((state: RootState) => state.OwnerSlice)
   const [loading, setLoading] = useState(false)
 
@@ -66,18 +65,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
       event.preventDefault()
       setLoading(true)
       try {
-        const current_community = localStorage.getItem('current_community')
-        let communityId
-        if (current_community) {
-          communityId = JSON.parse(current_community).id
-        } else {
-          communityId = info.community[0].id
-        }
-        const params = {
-          ...formData,
-          userId: info.id,
-          communityId
-        }
+        const params = { ...formData }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)
@@ -97,8 +85,6 @@ const FormDialog: React.FC<FormDialogProps> = ({
     },
     [
       formData,
-      info.id,
-      info.community,
       dialogType,
       dialogValue?.id,
       dispatch,
