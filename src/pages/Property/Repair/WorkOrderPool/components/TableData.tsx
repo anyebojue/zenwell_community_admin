@@ -3,11 +3,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { CommunityAnnouncementReply } from 'api/model/property/communityAnnouncementModel'
 import { find } from 'modules/property/communityAnnouncement'
 import { Box, Tooltip, IconButton } from '@mui/material'
-import { FileCopy } from '@mui/icons-material'
+import { Delete, Edit, FileCopy } from '@mui/icons-material'
 import message from 'components/Message'
 import TableList from './TableList'
 
-const renderActionButtons = () => (
+const renderActionButtons = (
+  setOpenDialog: Dispatch<SetStateAction<boolean>>,
+  setDelOpen: Dispatch<SetStateAction<boolean>>
+) => (
   <Box>
     {[
       {
@@ -15,6 +18,18 @@ const renderActionButtons = () => (
         color: 'primary' as const,
         icon: <FileCopy fontSize="small" />,
         onClick: () => message.info('未实现')
+      },
+      {
+        title: '修改',
+        color: 'secondary' as const,
+        icon: <Edit fontSize="small" />,
+        onClick: () => setOpenDialog(true)
+      },
+      {
+        title: '删除',
+        color: 'error' as const,
+        icon: <Delete fontSize="small" />,
+        onClick: () => setDelOpen(true)
       }
     ].map((action, index) => (
       <Tooltip title={action.title} key={index}>
@@ -38,13 +53,17 @@ interface TableDataProps {
   setDialogValue: Dispatch<SetStateAction<CommunityAnnouncementReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
+  setOpenDialog: Dispatch<SetStateAction<boolean>>
+  setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const TableData: React.FC<TableDataProps> = ({
   selectedButton,
   setDialogValue,
   selectedRows,
-  setSelectedRows
+  setSelectedRows,
+  setOpenDialog,
+  setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.CommunityAnnouncementSlice)
@@ -62,7 +81,7 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => renderActionButtons()
+      renderCell: () => renderActionButtons(setOpenDialog, setDelOpen)
     }
   ]
 

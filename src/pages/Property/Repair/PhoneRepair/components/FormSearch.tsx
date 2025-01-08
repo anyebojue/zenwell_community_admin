@@ -1,9 +1,9 @@
-import { ChangeEvent, Dispatch, memo, SetStateAction, useState, useCallback } from 'react'
+import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RepairSettingParams } from 'api/model/property/repairSettingModel'
 import { find } from 'modules/property/repairSetting'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
-import { Delete, History, Search } from '@mui/icons-material'
+import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 
@@ -23,12 +23,9 @@ const textFieldStyles = {
   }
 }
 
-interface SearchFormProps {
-  selectedRows: Set<string | undefined>
-  setDelOpen: Dispatch<SetStateAction<boolean>>
-}
+interface SearchFormProps {}
 
-const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => {
+const FormSearch: React.FC<SearchFormProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.RepairSettingSlice)
 
@@ -100,7 +97,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
-            label="请输入报修电话"
+            label="请输入报修人电话"
             type="text"
             variant="outlined"
             sx={textFieldStyles}
@@ -191,21 +188,6 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             }}
           >
             重置
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Delete />}
-            sx={buttonStyles('#B22222', '#8B0000')}
-            onClick={() => {
-              if (![...selectedRows].length) {
-                return message.warning('请选择至少一项')
-              }
-              setDelOpen(true)
-            }}
-          >
-            批量删除
           </Button>
         </Stack>
       </Stack>

@@ -74,10 +74,10 @@ const RepairSettingsIndex = () => {
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
       <Box sx={{ width: '100%' }}>
-        <FormSearch setDelOpen={setDelOpen} selectedRows={selectedRows} />
+        <FormSearch />
         <Box sx={contentBoxStyle}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h6">员工管理</Typography>
+            <Typography variant="h6">电话报修</Typography>
             <Button
               size="small"
               variant="contained"

@@ -1,9 +1,9 @@
-import { ChangeEvent, memo, useState, useCallback } from 'react'
+import { ChangeEvent, memo, useState, useCallback, Dispatch, SetStateAction } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CommunityAnnouncementParams } from 'api/model/property/communityAnnouncementModel'
 import { find } from 'modules/property/communityAnnouncement'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
-import { History, Search } from '@mui/icons-material'
+import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 import FormDialog from './FormDialog'
@@ -26,9 +26,11 @@ const textFieldStyles = {
 
 interface FormSearchProps {
   selectedButton: number
+  selectedRows: Set<string | undefined>
+  setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const FormSearch: React.FC<FormSearchProps> = ({ selectedButton }) => {
+const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.CommunityAnnouncementSlice)
 
@@ -101,7 +103,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton }) => {
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
-            label="请输入报修电话"
+            label="请输入报修人电话"
             type="text"
             variant="outlined"
             sx={textFieldStyles}
@@ -241,6 +243,21 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton }) => {
           }}
         >
           重置
+        </Button>
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
+          startIcon={<Delete />}
+          sx={buttonStyles('#B22222', '#8B0000')}
+          onClick={() => {
+            if (![...selectedRows].length) {
+              return message.warning('请选择至少一项')
+            }
+            setDelOpen(true)
+          }}
+        >
+          批量删除
         </Button>
       </Stack>
       <FormDialog
