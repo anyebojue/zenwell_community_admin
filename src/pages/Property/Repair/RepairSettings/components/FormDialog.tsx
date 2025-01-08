@@ -46,11 +46,11 @@ const FormDialog: React.FC<FormDialogProps> = ({
   const initialFormData = useMemo(
     () => ({
       repairTypeName: dialogType === 'edit' ? dialogValue?.repairTypeName || '' : '',
-      repairType: dialogType === 'edit' ? dialogValue?.repairType || '0' : '0',
+      repairType: dialogType === 'edit' ? dialogValue?.repairType || '1' : '1',
       repairWay: dialogType === 'edit' ? dialogValue?.repairWay || 100 : 100,
       publicArea: dialogType === 'edit' ? dialogValue?.publicArea || 0 : 0,
       isShow: dialogType === 'edit' ? dialogValue?.isShow || 0 : 0,
-      repairSettingType: dialogType === 'edit' ? dialogValue?.repairSettingType || '0' : '0',
+      repairSettingType: dialogType === 'edit' ? dialogValue?.repairSettingType || '1' : '1',
       returnVisitFlag: dialogType === 'edit' ? dialogValue?.returnVisitFlag || 1 : 1,
       remark: dialogType === 'edit' ? dialogValue?.remark || '' : ''
     }),

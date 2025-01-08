@@ -190,14 +190,14 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
                 repairTypeName: '',
                 repairWay: 0,
                 repairType: '',
-                publicArea: -1,
+                publicArea: 0,
                 returnVisitFlag: 0
               })
               fetchData({
                 repairTypeName: '',
                 repairWay: 0,
                 repairType: '',
-                publicArea: -1,
+                publicArea: 0,
                 returnVisitFlag: 0,
                 'page.num': page.num,
                 'page.size': page.size

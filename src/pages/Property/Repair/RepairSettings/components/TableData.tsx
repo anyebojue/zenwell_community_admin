@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RepairSettingReply } from 'api/model/property/repairSettingModel'
 import { find } from 'modules/property/repairSetting'
 import { Box, Tooltip, IconButton } from '@mui/material'
-import { Delete, Article, Edit, RestartAlt } from '@mui/icons-material'
+import { Delete, Build, Edit } from '@mui/icons-material'
 import message from 'components/Message'
 import TableList from './TableList'
 
@@ -15,15 +15,9 @@ const renderActionButtons = (
   <Box>
     {[
       {
-        title: '重置密码',
-        color: 'info' as const,
-        icon: <RestartAlt fontSize="small" />,
-        onClick: () => message.info('未实现')
-      },
-      {
-        title: '详情',
+        title: '绑定维修师傅',
         color: 'primary' as const,
-        icon: <Article fontSize="small" />,
+        icon: <Build fontSize="small" />,
         onClick: () => message.info('未实现')
       },
       {
