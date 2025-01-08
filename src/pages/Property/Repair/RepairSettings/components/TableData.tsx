@@ -78,7 +78,7 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'repairType',
       headerName: '报修设置类型',
       align: 'center',
-      renderCell: row => (row.repairWay === 0 ? '维修单' : '保洁单')
+      renderCell: row => (row.repairType === '200' ? '维修单' : '保洁单')
     },
     {
       key: 'repairWay',

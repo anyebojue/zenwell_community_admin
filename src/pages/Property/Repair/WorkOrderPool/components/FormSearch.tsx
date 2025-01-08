@@ -139,8 +139,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             sx={textFieldStyles}
           >
             {[
-              { value: '1', label: '维修单' },
-              { value: '2', label: '保洁单' }
+              { value: '100', label: '维修单' },
+              { value: '200', label: '保洁单' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
