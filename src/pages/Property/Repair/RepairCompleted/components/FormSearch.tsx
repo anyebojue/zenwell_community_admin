@@ -1,9 +1,9 @@
-import { ChangeEvent, Dispatch, memo, SetStateAction, useState, useCallback } from 'react'
+import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RepairSettingParams } from 'api/model/property/repairSettingModel'
 import { find } from 'modules/property/repairSetting'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
-import { Delete, History, Search } from '@mui/icons-material'
+import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 
@@ -23,12 +23,9 @@ const textFieldStyles = {
   }
 }
 
-interface SearchFormProps {
-  selectedRows: Set<string | undefined>
-  setDelOpen: Dispatch<SetStateAction<boolean>>
-}
+interface SearchFormProps {}
 
-const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => {
+const FormSearch: React.FC<SearchFormProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.RepairSettingSlice)
 
@@ -78,7 +75,29 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
-            label="请输入员工姓名"
+            label="请输入工单编号"
+            type="text"
+            variant="outlined"
+            sx={textFieldStyles}
+            value={searchParams.repairTypeName}
+            onChange={handleInputChange('repairTypeName')}
+          />
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            size="small"
+            label="请输入报修人"
+            type="text"
+            variant="outlined"
+            sx={textFieldStyles}
+            value={searchParams.repairTypeName}
+            onChange={handleInputChange('repairTypeName')}
+          />
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            size="small"
+            label="请输入报修电话"
             type="text"
             variant="outlined"
             sx={textFieldStyles}
@@ -90,16 +109,41 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
           <TextField
             select
             size="small"
-            label="请选择派单方式"
+            label="请选择报修类型"
+            value={searchParams.repairWay || ''}
+            onChange={handleInputChange('repairWay')}
+            variant="outlined"
+            sx={textFieldStyles}
+          >
+            {[{ value: 100, label: '工单池派单' }].map(option => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            select
+            size="small"
+            label="请选择报修状态"
             value={searchParams.repairWay || ''}
             onChange={handleInputChange('repairWay')}
             variant="outlined"
             sx={textFieldStyles}
           >
             {[
-              { value: 100, label: '抢单' },
-              { value: 200, label: '指派' },
-              { value: 300, label: '轮训' }
+              { value: 1000, label: '未派单' },
+              { value: 1100, label: '接单' },
+              { value: 1200, label: '退单' },
+              { value: 1300, label: '转单' },
+              { value: 1400, label: '申请支付' },
+              { value: 1500, label: '支付失败' },
+              { value: 1700, label: '待评价' },
+              { value: 1800, label: '电话回访' },
+              { value: 1900, label: '办理完成' },
+              { value: 2000, label: '未办理结单' },
+              { value: 2001, label: '暂停' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -107,19 +151,23 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             ))}
           </TextField>
         </FormControl>
+      </Stack>
+      <Stack direction="row" spacing={3} component="form" sx={{ mb: 1.5 }}>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             select
             size="small"
-            label="请选择报修设置类型"
-            value={searchParams.repairType}
-            onChange={handleInputChange('repairType')}
+            label="请选择维修类型"
+            value={searchParams.repairWay || ''}
+            onChange={handleInputChange('repairWay')}
             variant="outlined"
             sx={textFieldStyles}
           >
             {[
-              { value: '1', label: '维修单' },
-              { value: '2', label: '保洁单' }
+              { value: '1001', label: '有偿服务' },
+              { value: '1002', label: '无偿服务' },
+              { value: '1003', label: '需要用料' },
+              { value: '1004', label: '无需用科' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -127,101 +175,45 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             ))}
           </TextField>
         </FormControl>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            select
-            size="small"
-            label="请选择区域"
-            value={searchParams.publicArea || ''}
-            onChange={handleInputChange('publicArea')}
-            variant="outlined"
-            sx={textFieldStyles}
-          >
-            {[
-              { value: 0, label: '非房屋' },
-              { value: 1, label: '房屋' }
-            ].map(option => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-        </FormControl>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            select
-            size="small"
-            label="请选择是否回访"
-            value={searchParams.returnVisitFlag || ''}
-            onChange={handleInputChange('returnVisitFlag')}
-            variant="outlined"
-            sx={textFieldStyles}
-          >
-            {[
-              { value: 1, label: '不回访' },
-              { value: 2, label: '已评价不回访' },
-              { value: 3, label: '回访' }
-            ].map(option => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-        </FormControl>
-        <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Search />}
-            sx={buttonStyles('#2660ad', '#1d428a')}
-            onClick={handleSearch}
-          >
-            查询
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<History />}
-            sx={buttonStyles('darkgray', '#696969')}
-            onClick={() => {
-              setSearchParams({
-                repairTypeName: '',
-                repairWay: 0,
-                repairType: '',
-                publicArea: 0,
-                returnVisitFlag: 0
-              })
-              fetchData({
-                repairTypeName: '',
-                repairWay: 0,
-                repairType: '',
-                publicArea: 0,
-                returnVisitFlag: 0,
-                'page.num': page.num,
-                'page.size': page.size
-              })
-            }}
-          >
-            重置
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Delete />}
-            sx={buttonStyles('#B22222', '#8B0000')}
-            onClick={() => {
-              if (![...selectedRows].length) {
-                return message.warning('请选择至少一项')
-              }
-              setDelOpen(true)
-            }}
-          >
-            批量删除
-          </Button>
-        </Stack>
+      </Stack>
+      <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
+          startIcon={<Search />}
+          sx={buttonStyles('#2660ad', '#1d428a')}
+          onClick={handleSearch}
+        >
+          查询
+        </Button>
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
+          startIcon={<History />}
+          sx={buttonStyles('darkgray', '#696969')}
+          onClick={() => {
+            setSearchParams({
+              repairTypeName: '',
+              repairWay: 0,
+              repairType: '',
+              publicArea: 0,
+              returnVisitFlag: 0
+            })
+            fetchData({
+              repairTypeName: '',
+              repairWay: 0,
+              repairType: '',
+              publicArea: 0,
+              returnVisitFlag: 0,
+              'page.num': page.num,
+              'page.size': page.size
+            })
+          }}
+        >
+          重置
+        </Button>
       </Stack>
     </Box>
   )
