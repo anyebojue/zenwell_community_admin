@@ -38,8 +38,6 @@ interface TableDataProps {
   setDialogValue: Dispatch<SetStateAction<CommunityAnnouncementReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
-  setOpenDialog: Dispatch<SetStateAction<boolean>>
-  setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const TableData: React.FC<TableDataProps> = ({
