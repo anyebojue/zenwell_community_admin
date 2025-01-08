@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RepairSettingReply } from 'api/model/property/repairSettingModel'
 import { find } from 'modules/property/repairSetting'
 import { Box, Tooltip, IconButton } from '@mui/material'
-import { CheckCircle, FileCopy } from '@mui/icons-material'
+import { DoneAll, FileCopy } from '@mui/icons-material'
 import message from 'components/Message'
 import TableList from './TableList'
 
@@ -13,7 +13,7 @@ const renderActionButtons = () => (
       {
         title: '强制回单',
         color: 'primary' as const,
-        icon: <CheckCircle fontSize="small" />,
+        icon: <DoneAll fontSize="small" />,
         onClick: () => message.info('未实现')
       },
       {
