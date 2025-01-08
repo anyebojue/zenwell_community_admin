@@ -10,6 +10,7 @@ import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
+import Associated from './components/Associated'
 
 const treeViewStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -29,6 +30,9 @@ const InfoIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const [dialogValue, setDialogValue] = useState<OwnerReply | undefined>({})
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
+  const [associatedOpen, setAssociatedOpen] = useState(false)
+  const [ownerUser, setOwnerUser] = useState<OwnerReply>()
+  console.log(ownerUser)
 
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
@@ -73,30 +77,32 @@ const InfoIndex = () => {
                 color="error"
                 startIcon={<Add />}
                 sx={buttonCommonStyle()}
-                onClick={() => {}}
-              >
-                添加成员
-              </Button>
-              <Button
-                size="small"
-                variant="contained"
-                color="error"
-                startIcon={<Add />}
-                sx={buttonCommonStyle()}
-                onClick={() => {}}
+                onClick={() => setAssociatedOpen(true)}
               >
                 选择业主
               </Button>
+              {ownerUser && (
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="error"
+                  startIcon={<Add />}
+                  sx={buttonCommonStyle()}
+                  onClick={() => {}}
+                >
+                  添加成员
+                </Button>
+              )}
             </Stack>
           </Box>
           <Box sx={{ pt: 1 }}>
             {[
-              { label: '业主ID：', value: '772025010655314581' },
-              { label: '楼层', value: '772025010655314581' },
-              { label: '房屋ID', value: '772025010655314581' },
-              { label: '建筑面积', value: '772025010655314581' },
-              { label: '户型', value: '772025010655314581' },
-              { label: '房间数', value: '772025010655314581' }
+              { label: '业主ID：', value: ownerUser?.id },
+              { label: '名称', value: ownerUser?.name },
+              { label: '性别', value: ownerUser?.sex },
+              { label: '身份证', value: ownerUser?.idCard },
+              { label: '联系方式', value: ownerUser?.link },
+              { label: '备注', value: ownerUser?.remark }
             ].map((item, index) => (
               <Box
                 key={index}
@@ -124,6 +130,12 @@ const InfoIndex = () => {
         </Box>
       </Stack>
       <Copyright />
+
+      <Associated
+        setOwnerUser={setOwnerUser}
+        associatedOpen={associatedOpen}
+        setAssociatedOpen={setAssociatedOpen}
+      />
     </Box>
   )
 }
