@@ -1,7 +1,7 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useState } from 'react'
+import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box, Tooltip, IconButton } from '@mui/material'
-import { Article, Delete } from '@mui/icons-material'
+import { Edit, Delete } from '@mui/icons-material'
 import message from 'components/Message'
 import { find } from 'modules/property/owner'
 import { OwnerReply } from 'api/model/property/ownerModel'
@@ -19,33 +19,19 @@ interface TableDataProps {
   setDialogValue: Dispatch<SetStateAction<OwnerReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
+  setOpenDialog: Dispatch<SetStateAction<boolean>>
+  setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const TableData: React.FC<TableDataProps> = ({ setDialogValue, selectedRows, setSelectedRows }) => {
+const TableData: React.FC<TableDataProps> = ({
+  setDialogValue,
+  selectedRows,
+  setSelectedRows,
+  setOpenDialog,
+  setDelOpen
+}) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.OwnerSlice)
-  const [delOpen, setDelOpen] = useState(false)
-  console.log(delOpen)
-
-  const fetchData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(
-        find({
-          'page.num': page.num,
-          'page.size': page.size
-        })
-      )
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
-      }
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch, page.num, page.size])
 
   const columns: Column<OwnerReply>[] = [
     { key: 'name', headerName: '名称', align: 'center' },
@@ -65,10 +51,10 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, selectedRows, set
         <Box>
           {[
             {
-              title: '详情',
-              color: 'primary' as const,
-              icon: <Article fontSize="small" />,
-              onClick: () => message.info('未实现')
+              title: '修改',
+              color: 'secondary' as const,
+              icon: <Edit fontSize="small" />,
+              onClick: () => setOpenDialog(true)
             },
             {
               title: '删除',
@@ -87,6 +73,21 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, selectedRows, set
       )
     }
   ]
+
+  const fetchData = useCallback(async () => {
+    const closeLoading = message.loading('正在加载列表中，请稍后...')
+    try {
+      const res = await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      closeLoading()
+    }
+  }, [dispatch, page.num, page.size])
 
   useEffect(() => {
     fetchData()
