@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { EmployeesReply } from 'api/model/platform/employeesModel'
 import { find } from 'modules/platform/roles'
 import { Box, Tooltip, IconButton } from '@mui/material'
-import { Article, Delete } from '@mui/icons-material'
+import { FileCopy, Delete } from '@mui/icons-material'
 import message from 'components/Message'
 import { RolesReply } from 'api/model/platform/rolesModel'
 import RelevanceTableList from './RelevanceTableList'
@@ -14,7 +14,7 @@ const renderActionButtons = () => (
       {
         title: '详情',
         color: 'primary' as const,
-        icon: <Article fontSize="small" />,
+        icon: <FileCopy fontSize="small" />,
         onClick: () => message.info('未实现')
       },
       {

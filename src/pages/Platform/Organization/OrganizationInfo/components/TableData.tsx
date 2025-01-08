@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { OrganizationInfoReply, OrgUserReply } from 'api/model/platform/organizationInfoModel'
 import { deleteOrgUserByIds, findOrgUser } from 'modules/platform/organizationInfo'
 import { Box, Tooltip, IconButton, Theme, Typography, Stack, Button } from '@mui/material'
-import { Add, Article, Delete, FileCopy } from '@mui/icons-material'
+import { Add, Delete, FileCopy } from '@mui/icons-material'
 import message from 'components/Message'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import TableList from './TableList'
@@ -24,7 +24,7 @@ const renderActionButtons = ({ setDelOpen }: { setDelOpen: Dispatch<SetStateActi
         {
           title: '详情',
           color: 'primary' as const,
-          icon: <Article fontSize="small" />,
+          icon: <FileCopy fontSize="small" />,
           onClick: () => message.info('未实现')
         },
         {

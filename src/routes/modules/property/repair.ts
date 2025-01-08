@@ -21,42 +21,42 @@ const repair: IRouter[] = [
       },
       {
         path: 'phone-repair',
-        element: load('Property/Repair/RepairSettings'),
+        element: load('Property/Repair/PhoneRepair'),
         meta: {
           title: '电话报修'
         }
       },
       {
         path: 'work-order-pool',
-        element: load('Property/Repair/RepairSettings'),
+        element: load('Property/Repair/WorkOrderPool'),
         meta: {
           title: '工单池'
         }
       },
       {
         path: 'repair-todo',
-        element: load('Property/Repair/RepairSettings'),
+        element: load('Property/Repair/RepairTodo'),
         meta: {
           title: '报修待办'
         }
       },
       {
         path: 'repair-completed',
-        element: load('Property/Repair/RepairSettings'),
+        element: load('Property/Repair/RepairCompleted'),
         meta: {
           title: '报修已办'
         }
       },
       {
         path: 'repair-follow-up',
-        element: load('Property/Repair/RepairSettings'),
+        element: load('Property/Repair/RepairFollowUp'),
         meta: {
           title: '报修回访'
         }
       },
       {
         path: 'force-receipt',
-        element: load('Property/Repair/RepairSettings'),
+        element: load('Property/Repair/ForceReceipt'),
         meta: {
           title: '强制回单'
         }

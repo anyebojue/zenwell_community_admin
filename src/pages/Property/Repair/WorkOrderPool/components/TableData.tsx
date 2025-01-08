@@ -1,9 +1,9 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { EmployeesReply } from 'api/model/platform/employeesModel'
-import { find } from 'modules/platform/employees'
+import { RepairSettingReply } from 'api/model/property/repairSettingModel'
+import { find } from 'modules/property/repairSetting'
 import { Box, Tooltip, IconButton } from '@mui/material'
-import { Delete, FileCopy, Edit, RestartAlt } from '@mui/icons-material'
+import { Delete, Build, Edit } from '@mui/icons-material'
 import message from 'components/Message'
 import TableList from './TableList'
 
@@ -15,15 +15,9 @@ const renderActionButtons = (
   <Box>
     {[
       {
-        title: '重置密码',
-        color: 'info' as const,
-        icon: <RestartAlt fontSize="small" />,
-        onClick: () => message.info('未实现')
-      },
-      {
-        title: '详情',
+        title: '绑定维修师傅',
         color: 'primary' as const,
-        icon: <FileCopy fontSize="small" />,
+        icon: <Build fontSize="small" />,
         onClick: () => message.info('未实现')
       },
       {
@@ -60,7 +54,7 @@ export interface Column<T> {
 
 interface TableDataProps {
   setDialogType: Dispatch<SetStateAction<string>>
-  setDialogValue: Dispatch<SetStateAction<EmployeesReply | undefined>>
+  setDialogValue: Dispatch<SetStateAction<RepairSettingReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -76,31 +70,68 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.EmployeesSlice)
+  const { page, list } = useSelector((state: RootState) => state.RepairSettingSlice)
 
-  const columns: Column<EmployeesReply>[] = [
-    { key: 'id', headerName: '员工编号', align: 'center' },
-    { key: 'username', headerName: '名称', align: 'center' },
-    { key: 'mobile', headerName: '手机号', align: 'center' },
+  const columns: Column<RepairSettingReply>[] = [
+    { key: 'repairTypeName', headerName: '类型名称', align: 'center' },
     {
-      key: 'org',
-      headerName: '关联组织',
+      key: 'repairType',
+      headerName: '报修设置类型',
       align: 'center',
-      renderCell: (row: EmployeesReply) => {
-        return Array.isArray(row.org) && row.org.length > 0 ? row.org[0].name : '-'
-      }
+      renderCell: row => (row.repairWay === 0 ? '维修单' : '保洁单')
     },
-    { key: 'position', headerName: '岗位', align: 'center' },
-    { key: 'idcard', headerName: '身份证', align: 'center' },
-    { key: 'address', headerName: '地址', align: 'center' },
     {
-      key: 'sex',
-      headerName: '性别',
+      key: 'repairWay',
+      headerName: '派单方式',
       align: 'center',
-      renderCell: (row: EmployeesReply) => {
-        return row.sex === 0 ? '女' : '男'
-      }
+      renderCell: row =>
+        row.repairWay === 100
+          ? '抢单'
+          : row.repairWay === 200
+            ? '指派'
+            : row.repairWay === 300
+              ? '轮训'
+              : ''
     },
+    {
+      key: 'publicArea',
+      headerName: '区域',
+      align: 'center',
+      renderCell: row => (row.repairWay === 0 ? '非房屋' : '房屋')
+    },
+    {
+      key: 'isShow',
+      headerName: '业主端展示',
+      align: 'center',
+      renderCell: row => (row.isShow === 0 ? '否' : '是')
+    },
+    {
+      key: 'repairSettingType',
+      headerName: '通知方式',
+      align: 'center',
+      renderCell: row =>
+        row.repairSettingType === '0'
+          ? '微信'
+          : row.repairSettingType === '1'
+            ? '短信'
+            : row.repairSettingType === '2'
+              ? '微信+员工工牌'
+              : ''
+    },
+    {
+      key: 'returnVisitFlag',
+      headerName: '是否回访',
+      align: 'center',
+      renderCell: row =>
+        row.returnVisitFlag === 1
+          ? '不回访'
+          : row.returnVisitFlag === 2
+            ? '已评价不回访'
+            : row.returnVisitFlag === 3
+              ? '回访'
+              : ''
+    },
+    { key: 'createdAt', headerName: '创建时间', align: 'center' },
     {
       key: 'operate',
       headerName: '操作',
