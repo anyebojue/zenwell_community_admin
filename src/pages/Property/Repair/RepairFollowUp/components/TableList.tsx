@@ -1,4 +1,4 @@
-import { memo, useState, useMemo, ChangeEvent, Dispatch, SetStateAction } from 'react'
+import { memo, useState, useMemo, ChangeEvent } from 'react'
 import {
   Pagination,
   Table,
@@ -13,7 +13,6 @@ import {
   Box,
   Paper,
   SelectChangeEvent,
-  Checkbox,
   Theme
 } from '@mui/material'
 import { RepairSettingReply } from 'api/model/property/repairSettingModel'
@@ -31,16 +30,10 @@ const usePagination = <T,>(data: T[], rowsPerPage: number) => {
 
 const TableList = ({
   rows,
-  columns,
-  setDialogValue,
-  selectedRows,
-  setSelectedRows
+  columns
 }: {
   rows: RepairSettingReply[]
   columns: Column<RepairSettingReply>[]
-  setDialogValue: Dispatch<SetStateAction<RepairSettingReply | undefined>>
-  selectedRows: Set<string | undefined>
-  setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
 }) => {
   const [rowsPerPage, setRowsPerPage] = useState('20')
   const { page, paginatedRows, setPage, handlePageChange } = usePagination(
@@ -69,19 +62,6 @@ const TableList = ({
     setRowsPerPage(event.target.value)
     setPage(1)
   }
-
-  const onSelectAll = (event: ChangeEvent<HTMLInputElement>) => {
-    setSelectedRows(event.target.checked ? new Set(rows.map(row => row.id)) : new Set())
-  }
-
-  const onSelectRow = (id: string | undefined) => {
-    setSelectedRows(prev =>
-      prev.has(id) ? new Set([...prev].filter(rowId => rowId !== id)) : new Set(prev).add(id)
-    )
-  }
-
-  const allSelected = selectedRows.size === rows.length && rows.length > 0
-  const someSelected = selectedRows.size > 0 && selectedRows.size < rows.length
 
   const renderValue = (value: RepairSettingReply[keyof RepairSettingReply] | undefined) => {
     if (Array.isArray(value)) {
@@ -113,15 +93,6 @@ const TableList = ({
         <Table sx={{ minWidth: 650 }} aria-label="data table" size="small">
           <TableHead>
             <TableRow sx={tableHeaderStyle}>
-              <TableCell padding="checkbox">
-                <Checkbox
-                  color="primary"
-                  checked={allSelected}
-                  indeterminate={someSelected}
-                  onChange={onSelectAll}
-                  inputProps={{ 'aria-label': 'select all rows' }}
-                />
-              </TableCell>
               {columns.map(column => (
                 <TableCell
                   key={column.headerName}
@@ -140,20 +111,7 @@ const TableList = ({
           <TableBody>
             {paginatedRows.length > 0 ? (
               paginatedRows.map(row => (
-                <TableRow onClick={() => setDialogValue(row)} key={row.id} sx={tableRowStyle}>
-                  <TableCell
-                    padding="checkbox"
-                    sx={{
-                      borderBottom: theme => `1px solid ${theme.palette.divider}`
-                    }}
-                  >
-                    <Checkbox
-                      color="primary"
-                      checked={selectedRows.has(row.id)}
-                      onChange={() => onSelectRow(row.id)}
-                      inputProps={{ 'aria-label': `select row ${row.id}` }}
-                    />
-                  </TableCell>
+                <TableRow key={row.id} sx={tableRowStyle}>
                   {columns.map(column => {
                     const value = row[column.key as keyof RepairSettingReply]
                     return (
