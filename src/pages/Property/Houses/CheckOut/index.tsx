@@ -90,7 +90,7 @@ const CheckOut: React.FC = () => {
             color="error"
             startIcon={<Close />}
             sx={buttonStyles('#2660ad', '#1d428a')}
-            onClick={() => {}}
+            onClick={() => navigate(-1)}
           >
             返回
           </Button>

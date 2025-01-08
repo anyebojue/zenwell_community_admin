@@ -69,9 +69,18 @@ export const CommunityAnnouncementSlice = createSlice({
     reset: () => initialState
   },
   extraReducers: builder => {
+    // 请求加载时的数据
+    builder.addCase(find.pending, state => {
+      state.list = []
+    })
+    // 请求成功的数据
     builder.addCase(find.fulfilled, (state, action) => {
       state.page = action.payload.page
       state.list = action.payload.list
+    })
+    // 请求失败后的数据
+    builder.addCase(find.rejected, state => {
+      state.list = []
     })
   }
 })

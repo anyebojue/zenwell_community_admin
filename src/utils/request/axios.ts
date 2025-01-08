@@ -17,6 +17,8 @@ class Request {
     // 添加请求拦截器
     this.instance.interceptors.request.use(
       async config => {
+        let params = config.params || {}
+
         // 设置延时200毫秒的计时器
         this.loadingTimeout = setTimeout(() => {
           this.showLoadingAnimation()
@@ -27,11 +29,55 @@ class Request {
           config.url = `/api${config.url}`
         }
 
+        // 去重 config.params，避免重复的参数
+        const uniqueParams: Record<string, string | number | boolean> = {}
+
+        // 遍历参数，去重
+        for (const [key, value] of Object.entries(params)) {
+          if (key !== '_t') {
+            // 如果值是数组，保留第一个值，或者直接保持原值
+            if (Array.isArray(value)) {
+              uniqueParams[key] = value[0] // 如果是数组，只取第一个
+            } else {
+              uniqueParams[key] = value as string | number | boolean // 直接保持原值
+            }
+          }
+        }
+
         // GET 和 DELETE 请求添加时间戳避免缓存
         if (config.method === 'get' || config.method === 'delete') {
           const timestamp = Date.now().toString()
-          const separator = config.url.includes('?') ? '&' : '?'
-          config.url = `${config.url}${separator}_t=${timestamp}`
+          const separator = config.url.includes('?') ? '&' : '?' // 判断是否已存在查询字符串
+
+          // 获取基础 URL 部分（清除现有的查询参数）
+          const baseUrl = config.url.split('?')[0]
+
+          // 手动构建查询字符串
+          let queryParams = []
+
+          // 获取 communityId 和 userId 等其他参数
+          const current_community = localStorage.getItem('current_community')
+          const user_info = localStorage.getItem('user_info')
+          if (!config.url.includes('/info') && current_community && user_info) {
+            const communityId = JSON.parse(current_community)
+            const info = JSON.parse(user_info)
+            queryParams.push(`communityId=${communityId.id}`)
+            queryParams.push(`userId=${info.id}`)
+          }
+
+          // 仅保留去重后的 params 中的必要参数（排除 _t）
+          for (const [key, value] of Object.entries(uniqueParams)) {
+            queryParams.push(`${key}=${encodeURIComponent(value)}`)
+          }
+
+          // 添加时间戳（_t）参数
+          queryParams.push(`_t=${timestamp}`)
+
+          // 拼接新的 URL 和查询字符串
+          config.url = `${baseUrl}${separator}${queryParams.join('&')}`
+
+          // 清空 params，以免 axios 自动处理重复的 params
+          config.params = {}
         }
 
         // POST 和 PATCH 请求自动设置 Content-Type

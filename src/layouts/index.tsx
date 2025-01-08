@@ -89,6 +89,7 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
         navigate(paths[0])
       }
     }
+    localStorage.setItem('user_info', JSON.stringify(info))
   }, [dispatch, navigate, info, isLoginPage, location.pathname, routes])
 
   return (

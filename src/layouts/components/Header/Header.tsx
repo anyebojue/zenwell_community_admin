@@ -62,6 +62,7 @@ const Header = ({ isMenuOpen, onToggleMenu }: HeaderProps) => {
         setFilteredCommunities(info.community)
       } else {
         setCommunity(info.community[0].id)
+        localStorage.setItem('current_community', JSON.stringify(info.community[0] || ''))
       }
     } else {
       setCommunity('')

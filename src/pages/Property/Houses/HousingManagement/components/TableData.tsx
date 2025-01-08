@@ -218,16 +218,16 @@ const TableData: React.FC<TableDataProps> = ({
             onClick: () => setDelOpen(true)
           },
           {
-            title: row.userId ? '退房' : '交房',
+            title: row.userId !== '-1' ? '退房' : '交房',
             color: 'secondary' as const,
-            icon: row.userId ? <ExitToApp fontSize="small" /> : <Key fontSize="small" />,
+            icon: row.userId !== '-1' ? <ExitToApp fontSize="small" /> : <Key fontSize="small" />,
             onClick: () =>
-              row.userId
+              row.userId !== '-1'
                 ? navigate('/houses/CheckOut', { state: { value: row } })
                 : navigate('/houses/CheckIn', { state: { value: row } })
           }
         ]
-        if (row.userId) {
+        if (row.userId !== '-1') {
           actions.push({
             title: '业务受理',
             color: 'secondary' as const,
