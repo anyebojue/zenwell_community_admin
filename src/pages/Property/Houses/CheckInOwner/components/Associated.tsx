@@ -1,17 +1,24 @@
 import { Dispatch, memo, SetStateAction, useState } from 'react'
 import { Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { HousingManagementReply } from 'api/model/property/housingManagementModel'
+import { RoomReply } from 'api/model/property/roomModel'
 import FormSearch from './FormSearch'
 import AssociatedTableData from './AssociatedTableData'
 
 interface AssociatedProps {
-  setSelectValue: Dispatch<SetStateAction<HousingManagementReply | undefined>>
+  activeStep: number
+  selectfloorValue: HousingManagementReply | undefined
+  setSelectUnitValue: Dispatch<SetStateAction<RoomReply | undefined>>
+  setSelectFloorValue: Dispatch<SetStateAction<HousingManagementReply | undefined>>
   associatedOpen: boolean
   setAssociatedOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const Associated: React.FC<AssociatedProps> = ({
-  setSelectValue,
+  activeStep,
+  selectfloorValue,
+  setSelectUnitValue,
+  setSelectFloorValue,
   associatedOpen,
   setAssociatedOpen
 }) => {
@@ -24,7 +31,10 @@ const Associated: React.FC<AssociatedProps> = ({
       </DialogTitle>
       <DialogContent>
         <AssociatedTableData
-          setSelectValue={setSelectValue}
+          activeStep={activeStep}
+          selectfloorValue={selectfloorValue}
+          setSelectUnitValue={setSelectUnitValue}
+          setSelectFloorValue={setSelectFloorValue}
           selectedRows={selectedRows}
           setAssociatedOpen={setAssociatedOpen}
           setSelectedRows={setSelectedRows}

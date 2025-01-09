@@ -1,10 +1,12 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { HousingManagementReply } from 'api/model/property/housingManagementModel'
-import { find } from 'modules/property/housingManagement'
+import { find as floorFind } from 'modules/property/housingManagement'
+import { find as roomFind } from 'modules/property/room'
 import message from 'components/Message'
 import { Button } from '@mui/material'
 import { buttonStyles } from 'components/DeleteModal'
+import { RoomReply } from 'api/model/property/roomModel'
 import AssociatedTableList from './AssociatedTableList'
 
 export interface Column<T> {
@@ -15,22 +17,31 @@ export interface Column<T> {
 }
 
 interface AssociatedTableDataProps {
+  activeStep: number
+  selectfloorValue: HousingManagementReply | undefined
+  setSelectUnitValue: Dispatch<SetStateAction<RoomReply | undefined>>
+  setSelectFloorValue: Dispatch<SetStateAction<HousingManagementReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
-  setSelectValue: Dispatch<SetStateAction<HousingManagementReply | undefined>>
   setAssociatedOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({
+  activeStep,
+  selectfloorValue,
+  setSelectUnitValue,
+  setSelectFloorValue,
   selectedRows,
   setSelectedRows,
-  setSelectValue,
   setAssociatedOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { page: floorPage, list: floorList } = useSelector(
+    (state: RootState) => state.HousingManagementSlice
+  )
+  const { page: roomPage, list: roomList } = useSelector((state: RootState) => state.RoomSlice)
 
-  const columns: Column<HousingManagementReply>[] = [
+  const columnsFloor: Column<HousingManagementReply>[] = [
     { key: 'id', headerName: '楼栋ID', align: 'center' },
     { key: 'name', headerName: '楼栋名称', align: 'center' },
     { key: 'name', headerName: '楼栋编号', align: 'center' },
@@ -46,7 +57,7 @@ const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({
           color="error"
           sx={{ ...buttonStyles('#2660ad', '#1d428a') }}
           onClick={() => {
-            setSelectValue(row)
+            setSelectFloorValue(row)
             setAssociatedOpen(false)
           }}
         >
@@ -56,10 +67,49 @@ const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({
     }
   ]
 
-  const fetchData = useCallback(async () => {
+  const columnsRoom: Column<RoomReply>[] = [
+    { key: 'id', headerName: '房屋ID', align: 'center' },
+    {
+      key: 'floorId',
+      headerName: '楼栋编号',
+      align: 'center',
+      renderCell: row => `${row.unit?.floor?.name}`
+    },
+    {
+      key: 'unitId',
+      headerName: '单元编号',
+      align: 'center',
+      renderCell: row => `${row.unit?.unitNum}单元`
+    },
+    { key: 'roomNum', headerName: '房屋编号', align: 'center' },
+    { key: 'layer', headerName: '楼层', align: 'center' },
+    {
+      key: 'operate',
+      headerName: '操作',
+      align: 'center',
+      renderCell: row => (
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
+          sx={{ ...buttonStyles('#2660ad', '#1d428a') }}
+          onClick={() => {
+            setSelectUnitValue(row)
+            setAssociatedOpen(false)
+          }}
+        >
+          选择
+        </Button>
+      )
+    }
+  ]
+
+  const fetchFloorData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      const res = await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+      const res = await dispatch(
+        floorFind({ 'page.num': floorPage.num, 'page.size': floorPage.size })
+      )
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
@@ -69,16 +119,37 @@ const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({
     } finally {
       closeLoading()
     }
-  }, [dispatch, page.num, page.size])
+  }, [dispatch, floorPage.num, floorPage.size])
+
+  const fetchRoomData = useCallback(async () => {
+    const closeLoading = message.loading('正在加载列表中，请稍后...')
+    try {
+      const res = await dispatch(
+        roomFind({
+          'page.num': roomPage.num,
+          'page.size': roomPage.size,
+          floorId: selectfloorValue?.id
+        })
+      )
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      closeLoading()
+    }
+  }, [dispatch, roomPage.num, roomPage.size, selectfloorValue?.id])
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    activeStep === 0 ? fetchFloorData() : fetchRoomData()
+  }, [activeStep, fetchFloorData, fetchRoomData])
 
   return (
     <AssociatedTableList
-      rows={list}
-      columns={columns}
+      rows={activeStep === 0 ? floorList : roomList}
+      columns={activeStep === 0 ? columnsFloor : columnsRoom}
       selectedRows={selectedRows}
       setSelectedRows={setSelectedRows}
     />

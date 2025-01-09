@@ -1,5 +1,6 @@
-import { memo, useState, useMemo, ChangeEvent, Dispatch, SetStateAction } from 'react'
-import { OwnerReply } from 'api/model/property/ownerModel'
+import { memo, useState, useMemo, ChangeEvent, Dispatch, SetStateAction, ReactNode } from 'react'
+import { HousingManagementReply } from 'api/model/property/housingManagementModel'
+import { RoomReply } from 'api/model/property/roomModel'
 import {
   Pagination,
   Table,
@@ -17,6 +18,7 @@ import {
   Theme,
   Checkbox
 } from '@mui/material'
+import { UnitReply } from 'api/model/property/unitModel'
 import { Column } from './AssociatedTableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {
@@ -35,13 +37,16 @@ const AssociatedTableList = ({
   selectedRows,
   setSelectedRows
 }: {
-  rows: OwnerReply[]
-  columns: Column<OwnerReply>[]
+  rows: HousingManagementReply[] | RoomReply[]
+  columns: Column<RoomReply>[] | Column<HousingManagementReply>[]
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
 }) => {
   const [rowsPerPage, setRowsPerPage] = useState(20)
-  const { page, paginatedRows, setPage, handlePageChange } = usePagination(rows, rowsPerPage)
+  const { page, paginatedRows, setPage, handlePageChange } = usePagination<(typeof rows)[0]>(
+    rows,
+    rowsPerPage
+  )
 
   const tableHeaderStyle = (theme: Theme) => ({
     backgroundColor: theme.palette.action.hover,
@@ -78,10 +83,25 @@ const AssociatedTableList = ({
   const allSelected = selectedRows.size === rows.length && rows.length > 0
   const someSelected = selectedRows.size > 0 && selectedRows.size < rows.length
 
-  const renderValue = (value: OwnerReply[keyof OwnerReply] | undefined) => {
+  const renderValue = (
+    value:
+      | string
+      | number
+      | HousingManagementReply
+      | RoomReply[]
+      | UnitReply
+      | UnitReply[]
+      | undefined
+  ): ReactNode => {
     if (Array.isArray(value)) {
-      return JSON.stringify(value)
+      return value.map(item => JSON.stringify(item)).join(', ')
     } else if (value && typeof value === 'object') {
+      if ('status' in value && typeof value.status === 'number') {
+        return JSON.stringify({
+          ...value,
+          status: value.status.toString()
+        })
+      }
       return JSON.stringify(value)
     } else {
       return value || '-'
@@ -150,14 +170,16 @@ const AssociatedTableList = ({
                     />
                   </TableCell>
                   {columns.map(column => {
-                    const value = row[column.key as keyof OwnerReply]
+                    const value = row[column.key as keyof typeof row]
                     return (
                       <TableCell
                         key={column.key}
                         align={column.align}
                         sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}
                       >
-                        {column.renderCell ? column.renderCell(row) : renderValue(value)}
+                        {column.renderCell
+                          ? column.renderCell(row as RoomReply & HousingManagementReply)
+                          : renderValue(value)}
                       </TableCell>
                     )
                   })}
