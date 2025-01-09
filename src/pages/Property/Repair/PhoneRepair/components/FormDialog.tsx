@@ -45,7 +45,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
 
   const initialFormData = useMemo(
     () => ({
-      repairObjType: dialogType === 'edit' ? dialogValue?.repairObjType || 0 : 0,
+      repairObjType: dialogType === 'edit' ? dialogValue?.repairObjType || 1 : 1,
       repairSettingId: dialogType === 'edit' ? dialogValue?.repairSettingId || '' : '',
       tel: dialogType === 'edit' ? dialogValue?.tel || '' : '',
       context: dialogType === 'edit' ? dialogValue?.context || '' : ''
@@ -63,7 +63,9 @@ const FormDialog: React.FC<FormDialogProps> = ({
       event.preventDefault()
       setLoading(true)
       try {
-        const params = { ...formData }
+        const current_community = localStorage.getItem('current_community')
+        const communityId = JSON.parse(current_community || '')
+        const params = { ...formData, communityId: communityId?.id }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)
