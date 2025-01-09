@@ -1,23 +1,16 @@
 import React, { memo, useState, useCallback } from 'react'
-import {
-  Box,
-  Button,
-  Grid,
-  Step,
-  StepLabel,
-  Stepper,
-  Typography,
-  styled,
-  Theme
-} from '@mui/material'
+import { update } from 'modules/property/room'
+import { Box, Button, Step, StepLabel, Stepper, Typography, styled, Theme } from '@mui/material'
+import Grid from '@mui/material/Grid2'
 import { StepConnector, stepConnectorClasses } from '@mui/material'
 import { StepIconProps } from '@mui/material/StepIcon'
 import { Add, Business, ContactEmergency, MapsHomeWork } from '@mui/icons-material'
 import { HousingManagementReply } from 'api/model/property/housingManagementModel'
 import { RoomReply } from 'api/model/property/roomModel'
 import message from 'components/Message'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { buttonStyles } from 'components/DeleteModal'
+import { useDispatch } from 'react-redux'
 import Associated from './components/Associated'
 
 const contentBoxStyle = (theme: Theme) => ({
@@ -108,11 +101,13 @@ const ColorlibStepIcon = (props: StepIconProps) => {
 const steps = ['选择楼栋', '选择房屋', '业主信息']
 
 const CheckInOwner = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const location = useLocation()
   const data = location.state?.value
   const [associatedOpen, setAssociatedOpen] = useState(false)
   const [selectfloorValue, setSelectFloorValue] = useState<HousingManagementReply | undefined>()
-  const [selectUnitValue, setSelectUnitValue] = useState<RoomReply | undefined>()
+  const [selectRoomValue, setSelectRoomValue] = useState<RoomReply | undefined>()
   const [activeStep, setActiveStep] = useState(0)
 
   const handleNext = useCallback(() => {
@@ -136,15 +131,15 @@ const CheckInOwner = () => {
           ]
         : activeStep === 1
           ? [
-              { label: '房屋ID', value: selectUnitValue?.id },
-              { label: '房屋编号', value: selectUnitValue?.roomNum },
-              { label: '单元', value: selectUnitValue?.unit?.unitNum },
-              { label: '楼层', value: selectUnitValue?.layer },
-              { label: '房间数', value: selectUnitValue?.section },
-              { label: '户型', value: selectUnitValue?.apartment },
-              { label: '建筑面积', value: selectUnitValue?.builtUpArea },
+              { label: '房屋ID', value: selectRoomValue?.id },
+              { label: '房屋编号', value: selectRoomValue?.roomNum },
+              { label: '单元', value: selectRoomValue?.unit?.unitNum },
+              { label: '楼层', value: selectRoomValue?.layer },
+              { label: '房间数', value: selectRoomValue?.section },
+              { label: '户型', value: selectRoomValue?.apartment },
+              { label: '建筑面积', value: selectRoomValue?.builtUpArea },
               { label: '单价', value: '元' },
-              { label: '创建员工', value: selectUnitValue?.userId }
+              { label: '创建员工', value: selectRoomValue?.userId }
             ]
           : [
               { label: '业主ID', value: data?.id },
@@ -160,7 +155,7 @@ const CheckInOwner = () => {
     return (
       <Grid container spacing={2}>
         {stepData.map((item, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
             <Typography variant="body2">
               {item.label}：{item.value}
             </Typography>
@@ -168,7 +163,32 @@ const CheckInOwner = () => {
         ))}
       </Grid>
     )
-  }, [activeStep, selectfloorValue, selectUnitValue, data])
+  }, [activeStep, selectfloorValue, selectRoomValue, data])
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const closeLoading = message.loading('正在加载中，请稍后...')
+    const params = {
+      userId: data?.id,
+      state: '2003',
+      id: selectRoomValue?.id,
+      startTime: new Date().toISOString().split('T')[0],
+      endTime: new Date(new Date().setFullYear(new Date().getFullYear() + 25))
+        .toISOString()
+        .split('T')[0]
+    }
+    try {
+      const res = await dispatch(update(params))
+      if ('error' in res && res.error?.message) throw new Error(res.error.message)
+      navigate(-1)
+      message.success('入住成功')
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      closeLoading()
+    }
+  }
 
   return (
     <Box sx={{ mt: 3 }}>
@@ -215,7 +235,7 @@ const CheckInOwner = () => {
           variant="contained"
           color="error"
           sx={{ width: '10%', ml: 2, ...buttonStyles('#2660ad', '#1d428a') }}
-          onClick={handleNext}
+          onClick={activeStep !== steps.length - 1 ? handleNext : handleSubmit}
         >
           {activeStep !== steps.length - 1 ? '下一步' : '完成'}
         </Button>
@@ -224,7 +244,7 @@ const CheckInOwner = () => {
         activeStep={activeStep}
         selectfloorValue={selectfloorValue}
         setSelectFloorValue={setSelectFloorValue}
-        setSelectUnitValue={setSelectUnitValue}
+        setSelectRoomValue={setSelectRoomValue}
         associatedOpen={associatedOpen}
         setAssociatedOpen={setAssociatedOpen}
       />

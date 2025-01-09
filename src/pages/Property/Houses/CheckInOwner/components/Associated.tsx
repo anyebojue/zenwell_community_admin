@@ -8,7 +8,7 @@ import AssociatedTableData from './AssociatedTableData'
 interface AssociatedProps {
   activeStep: number
   selectfloorValue: HousingManagementReply | undefined
-  setSelectUnitValue: Dispatch<SetStateAction<RoomReply | undefined>>
+  setSelectRoomValue: Dispatch<SetStateAction<RoomReply | undefined>>
   setSelectFloorValue: Dispatch<SetStateAction<HousingManagementReply | undefined>>
   associatedOpen: boolean
   setAssociatedOpen: Dispatch<SetStateAction<boolean>>
@@ -17,7 +17,7 @@ interface AssociatedProps {
 const Associated: React.FC<AssociatedProps> = ({
   activeStep,
   selectfloorValue,
-  setSelectUnitValue,
+  setSelectRoomValue,
   setSelectFloorValue,
   associatedOpen,
   setAssociatedOpen
@@ -33,7 +33,7 @@ const Associated: React.FC<AssociatedProps> = ({
         <AssociatedTableData
           activeStep={activeStep}
           selectfloorValue={selectfloorValue}
-          setSelectUnitValue={setSelectUnitValue}
+          setSelectRoomValue={setSelectRoomValue}
           setSelectFloorValue={setSelectFloorValue}
           selectedRows={selectedRows}
           setAssociatedOpen={setAssociatedOpen}

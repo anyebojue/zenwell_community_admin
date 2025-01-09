@@ -96,7 +96,7 @@ const CheckIn: React.FC = () => {
       return
     }
     setError('')
-    const closeLoading = message.loading('正在修改密码...')
+    const closeLoading = message.loading('正在加载中，请稍后...')
     const params = {
       userId: ownerUser?.id,
       state: '2003',

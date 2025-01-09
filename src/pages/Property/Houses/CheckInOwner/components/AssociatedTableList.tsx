@@ -1,4 +1,4 @@
-import { memo, useState, useMemo, ChangeEvent, Dispatch, SetStateAction, ReactNode } from 'react'
+import { memo, useState, useMemo, ChangeEvent, ReactNode } from 'react'
 import { HousingManagementReply } from 'api/model/property/housingManagementModel'
 import { RoomReply } from 'api/model/property/roomModel'
 import {
@@ -15,8 +15,7 @@ import {
   Box,
   Paper,
   SelectChangeEvent,
-  Theme,
-  Checkbox
+  Theme
 } from '@mui/material'
 import { UnitReply } from 'api/model/property/unitModel'
 import { Column } from './AssociatedTableData'
@@ -33,14 +32,10 @@ const usePagination = <T,>(data: T[], rowsPerPage: number) => {
 
 const AssociatedTableList = ({
   rows,
-  columns,
-  selectedRows,
-  setSelectedRows
+  columns
 }: {
   rows: HousingManagementReply[] | RoomReply[]
   columns: Column<RoomReply>[] | Column<HousingManagementReply>[]
-  selectedRows: Set<string | undefined>
-  setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
 }) => {
   const [rowsPerPage, setRowsPerPage] = useState(20)
   const { page, paginatedRows, setPage, handlePageChange } = usePagination<(typeof rows)[0]>(
@@ -69,19 +64,6 @@ const AssociatedTableList = ({
     setRowsPerPage(Number(event.target.value))
     setPage(1)
   }
-
-  const onSelectAll = (event: ChangeEvent<HTMLInputElement>) => {
-    setSelectedRows(event.target.checked ? new Set(rows.map(row => row.id)) : new Set())
-  }
-
-  const onSelectRow = (id: string | undefined) => {
-    setSelectedRows(prev =>
-      prev.has(id) ? new Set([...prev].filter(rowId => rowId !== id)) : new Set(prev).add(id)
-    )
-  }
-
-  const allSelected = selectedRows.size === rows.length && rows.length > 0
-  const someSelected = selectedRows.size > 0 && selectedRows.size < rows.length
 
   const renderValue = (
     value:
@@ -128,15 +110,6 @@ const AssociatedTableList = ({
         <Table sx={{ minWidth: 650 }} aria-label="data table" size="small">
           <TableHead>
             <TableRow sx={tableHeaderStyle}>
-              <TableCell padding="checkbox">
-                <Checkbox
-                  color="primary"
-                  checked={allSelected}
-                  indeterminate={someSelected}
-                  onChange={onSelectAll}
-                  inputProps={{ 'aria-label': 'select all rows' }}
-                />
-              </TableCell>
               {columns.map(column => (
                 <TableCell
                   key={column.headerName}
@@ -156,19 +129,6 @@ const AssociatedTableList = ({
             {paginatedRows.length > 0 ? (
               paginatedRows.map(row => (
                 <TableRow onClick={() => {}} key={row.id} sx={tableRowStyle}>
-                  <TableCell
-                    padding="checkbox"
-                    sx={{
-                      borderBottom: theme => `1px solid ${theme.palette.divider}`
-                    }}
-                  >
-                    <Checkbox
-                      color="primary"
-                      checked={selectedRows.has(row.id)}
-                      onChange={() => onSelectRow(row.id)}
-                      inputProps={{ 'aria-label': `select row ${row.id}` }}
-                    />
-                  </TableCell>
                   {columns.map(column => {
                     const value = row[column.key as keyof typeof row]
                     return (

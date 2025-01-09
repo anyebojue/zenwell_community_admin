@@ -19,7 +19,7 @@ export interface Column<T> {
 interface AssociatedTableDataProps {
   activeStep: number
   selectfloorValue: HousingManagementReply | undefined
-  setSelectUnitValue: Dispatch<SetStateAction<RoomReply | undefined>>
+  setSelectRoomValue: Dispatch<SetStateAction<RoomReply | undefined>>
   setSelectFloorValue: Dispatch<SetStateAction<HousingManagementReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
@@ -29,10 +29,8 @@ interface AssociatedTableDataProps {
 const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({
   activeStep,
   selectfloorValue,
-  setSelectUnitValue,
+  setSelectRoomValue,
   setSelectFloorValue,
-  selectedRows,
-  setSelectedRows,
   setAssociatedOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
@@ -94,7 +92,7 @@ const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({
           color="error"
           sx={{ ...buttonStyles('#2660ad', '#1d428a') }}
           onClick={() => {
-            setSelectUnitValue(row)
+            setSelectRoomValue(row)
             setAssociatedOpen(false)
           }}
         >
@@ -150,8 +148,6 @@ const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({
     <AssociatedTableList
       rows={activeStep === 0 ? floorList : roomList}
       columns={activeStep === 0 ? columnsFloor : columnsRoom}
-      selectedRows={selectedRows}
-      setSelectedRows={setSelectedRows}
     />
   )
 }
