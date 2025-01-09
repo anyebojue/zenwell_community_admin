@@ -1,13 +1,10 @@
-import { memo, useCallback, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { RepairSettingReply } from 'api/model/property/repairSettingModel'
-import { deleteByIds, find } from 'modules/property/repairSetting'
+import { memo, useState } from 'react'
+import { RepairPoolReply } from 'api/model/property/repairPoolModel'
 import { Box, Button, Theme, Typography } from '@mui/material'
 import { Add } from '@mui/icons-material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
-import DeleteModal, { buttonStyles } from 'components/DeleteModal'
-import message from 'components/Message'
+import { buttonStyles } from 'components/DeleteModal'
 import FormSearch from './components/FormSearch'
 import FormDialog from './components/FormDialog'
 import TableData from './components/TableData'
@@ -19,56 +16,10 @@ const contentBoxStyle = (theme: Theme) => ({
   width: '100%'
 })
 
-const RepairSettingsIndex = () => {
-  const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.RepairSettingSlice)
-  const [dialogValue, setDialogValue] = useState<RepairSettingReply>()
-  const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
+const RepairPoolsIndex = () => {
+  const [dialogValue, setDialogValue] = useState<RepairPoolReply>()
   const [dialogType, setDialogType] = useState('add')
   const [openDialog, setOpenDialog] = useState(false)
-  const [delOpen, setDelOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-
-  const getDeleteData = useCallback(() => {
-    if (selectedRows.size > 0) {
-      return list
-        .filter(item => selectedRows.has(item.id))
-        .map(item => ({ id: item.id!, repairTypeName: item.repairTypeName! }))
-        .filter(item => item.id && item.repairTypeName)
-    }
-    if (dialogValue) {
-      return dialogValue.id && dialogValue.repairTypeName
-        ? [{ id: dialogValue.id, repairTypeName: dialogValue.repairTypeName }]
-        : []
-    }
-    return []
-  }, [selectedRows, list, dialogValue])
-
-  const deleteData = useMemo(() => getDeleteData(), [getDeleteData])
-  const deleteIds = deleteData.map(item => item.id)
-  const deleteNames = deleteData.map(item => item.repairTypeName)
-
-  const handleDelete = useCallback(
-    async (ids: string[]) => {
-      setLoading(true)
-      try {
-        const res = await dispatch(deleteByIds(ids))
-        if ('error' in res && res.error?.message) {
-          throw new Error(res.error.message)
-        }
-        setDelOpen(false)
-        message.success('删除成功')
-        await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
-        setLoading(false)
-      } catch (err: unknown) {
-        setLoading(false)
-        if (err instanceof Error) message.error(err.message)
-      } finally {
-        setLoading(false)
-      }
-    },
-    [dispatch, page.num, page.size]
-  )
 
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
@@ -92,11 +43,7 @@ const RepairSettingsIndex = () => {
               登记
             </Button>
           </Box>
-          <TableData
-            setDialogValue={setDialogValue}
-            selectedRows={selectedRows}
-            setSelectedRows={setSelectedRows}
-          />
+          <TableData setDialogValue={setDialogValue} />
         </Box>
       </Box>
       <Copyright />
@@ -107,15 +54,8 @@ const RepairSettingsIndex = () => {
         dialogType={dialogType}
         setOpenDialog={setOpenDialog}
       />
-      <DeleteModal
-        loading={loading}
-        delOpen={delOpen}
-        setDelOpen={setDelOpen}
-        userName={deleteNames}
-        onDelete={() => handleDelete(deleteIds)}
-      />
     </Box>
   )
 }
 
-export default memo(RepairSettingsIndex)
+export default memo(RepairPoolsIndex)

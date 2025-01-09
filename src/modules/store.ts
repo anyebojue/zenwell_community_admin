@@ -12,6 +12,7 @@ import UnitSlice from './property/unit'
 import RoomSlice from './property/room'
 import OwnerSlice from './property/owner'
 import RepairSettingSlice from './property/repairSetting'
+import RepairPoolSlice from './property/repairPool'
 import SystemSettingsSlice from './property/systemSettings'
 
 const store = configureStore({
@@ -29,6 +30,7 @@ const store = configureStore({
     RoomSlice,
     OwnerSlice,
     RepairSettingSlice,
+    RepairPoolSlice,
     SystemSettingsSlice
   },
   // 关闭序列化检测

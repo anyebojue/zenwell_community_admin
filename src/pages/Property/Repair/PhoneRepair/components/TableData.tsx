@@ -1,7 +1,7 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairSettingReply } from 'api/model/property/repairSettingModel'
-import { find } from 'modules/property/repairSetting'
+import { RepairPoolReply } from 'api/model/property/repairPoolModel'
+import { find } from 'modules/property/repairPool'
 import message from 'components/Message'
 import TableList from './TableList'
 
@@ -13,24 +13,55 @@ export interface Column<T> {
 }
 
 interface TableDataProps {
-  setDialogValue: Dispatch<SetStateAction<RepairSettingReply | undefined>>
-  selectedRows: Set<string | undefined>
-  setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
+  setDialogValue: Dispatch<SetStateAction<RepairPoolReply | undefined>>
 }
 
-const TableData: React.FC<TableDataProps> = ({ setDialogValue, selectedRows, setSelectedRows }) => {
+const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.RepairSettingSlice)
+  const { page, list } = useSelector((state: RootState) => state.RepairPoolSlice)
 
-  const columns: Column<RepairSettingReply>[] = [
-    { key: 'repairTypeName', headerName: '工单编号', align: 'center' },
-    { key: 'repairTypeName', headerName: '位置', align: 'center' },
-    { key: 'repairTypeName', headerName: '报修类型', align: 'center' },
-    { key: 'repairTypeName', headerName: '报修人', align: 'center' },
-    { key: 'repairTypeName', headerName: '联系方式', align: 'center' },
-    { key: 'repairTypeName', headerName: '预约时间', align: 'center' },
-    { key: 'repairTypeName', headerName: '提交时间', align: 'center' },
-    { key: 'repairTypeName', headerName: '状态', align: 'center' }
+  const columns: Column<RepairPoolReply>[] = [
+    { key: 'id', headerName: '工单编号', align: 'center' },
+    { key: 'communityId', headerName: '位置', align: 'center' },
+    {
+      key: 'repairSetting',
+      headerName: '报修类型',
+      align: 'center',
+      renderCell: row => row.repairSetting?.repairTypeName
+    },
+    { key: 'repairName', headerName: '报修人', align: 'center' },
+    { key: 'tel', headerName: '联系方式', align: 'center' },
+    { key: 'appointmentTime', headerName: '预约时间', align: 'center' },
+    { key: 'createdAt', headerName: '提交时间', align: 'center' },
+    {
+      key: 'statusCd',
+      headerName: '状态',
+      align: 'center',
+      renderCell: row =>
+        row.statusCd === 1000
+          ? '未派单'
+          : row.statusCd === 1100
+            ? '接单'
+            : row.statusCd === 1200
+              ? '退单'
+              : row.statusCd === 1300
+                ? '转单'
+                : row.statusCd === 1400
+                  ? '申请支付'
+                  : row.statusCd === 1500
+                    ? '支付失败'
+                    : row.statusCd === 1700
+                      ? '待评价'
+                      : row.statusCd === 1800
+                        ? '电话回访'
+                        : row.statusCd === 1900
+                          ? '办理完成'
+                          : row.statusCd === 2000
+                            ? '未办理结单'
+                            : row.statusCd === 2001
+                              ? '暂停'
+                              : ''
+    }
   ]
 
   const fetchData = useCallback(async () => {
@@ -52,15 +83,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, selectedRows, set
     fetchData()
   }, [fetchData])
 
-  return (
-    <TableList
-      rows={list}
-      columns={columns}
-      setDialogValue={setDialogValue}
-      selectedRows={selectedRows}
-      setSelectedRows={setSelectedRows}
-    />
-  )
+  return <TableList rows={list} columns={columns} setDialogValue={setDialogValue} />
 }
 
 export default memo(TableData)
