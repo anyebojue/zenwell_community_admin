@@ -1,14 +1,23 @@
-import { memo, useState } from 'react'
-import { styled, Stepper, Step, StepLabel, Box, Theme, Typography, Button } from '@mui/material'
-import Grid from '@mui/material/Grid2'
-import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector'
+import React, { memo, useState, useCallback } from 'react'
+import {
+  Box,
+  Button,
+  Grid,
+  Step,
+  StepLabel,
+  Stepper,
+  Typography,
+  styled,
+  Theme
+} from '@mui/material'
+import { StepConnector, stepConnectorClasses } from '@mui/material'
 import { StepIconProps } from '@mui/material/StepIcon'
 import { Add, Business, ContactEmergency, MapsHomeWork } from '@mui/icons-material'
-import { buttonStyles } from 'components/DeleteModal'
 import { HousingManagementReply } from 'api/model/property/housingManagementModel'
-import message from 'components/Message'
 import { RoomReply } from 'api/model/property/roomModel'
+import message from 'components/Message'
 import { useLocation } from 'react-router-dom'
+import { buttonStyles } from 'components/DeleteModal'
 import Associated from './components/Associated'
 
 const contentBoxStyle = (theme: Theme) => ({
@@ -106,27 +115,63 @@ const CheckInOwner = () => {
   const [selectUnitValue, setSelectUnitValue] = useState<RoomReply | undefined>()
   const [activeStep, setActiveStep] = useState(0)
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (!selectfloorValue) return message.warning('您还没有选择楼栋')
-    if (activeStep < steps.length - 1) {
-      setActiveStep(prevStep => {
-        const nextStep = prevStep + 1
-        return nextStep
-      })
-    }
-  }
+    setActiveStep(prev => Math.min(prev + 1, steps.length - 1))
+  }, [selectfloorValue])
 
-  const handleBack = () => {
-    if (activeStep > 0) {
-      setActiveStep(prevStep => {
-        const prev = prevStep - 1
-        return prev
-      })
-    }
-  }
+  const handleBack = useCallback(() => {
+    setActiveStep(prev => Math.max(prev - 1, 0))
+  }, [])
+
+  const renderStepContent = useCallback(() => {
+    const stepData =
+      activeStep === 0
+        ? [
+            { label: '楼栋ID', value: selectfloorValue?.id },
+            { label: '楼栋名称', value: selectfloorValue?.name },
+            { label: '楼栋编号', value: selectfloorValue?.floorNum },
+            { label: '楼栋面积', value: selectfloorValue?.floorArea },
+            { label: '备注', value: selectfloorValue?.remark }
+          ]
+        : activeStep === 1
+          ? [
+              { label: '房屋ID', value: selectUnitValue?.id },
+              { label: '房屋编号', value: selectUnitValue?.roomNum },
+              { label: '单元', value: selectUnitValue?.unit?.unitNum },
+              { label: '楼层', value: selectUnitValue?.layer },
+              { label: '房间数', value: selectUnitValue?.section },
+              { label: '户型', value: selectUnitValue?.apartment },
+              { label: '建筑面积', value: selectUnitValue?.builtUpArea },
+              { label: '单价', value: '元' },
+              { label: '创建员工', value: selectUnitValue?.userId }
+            ]
+          : [
+              { label: '业主ID', value: data?.id },
+              { label: '名称', value: data?.name },
+              { label: '性别', value: data?.sex },
+              { label: '年龄', value: data?.age },
+              { label: '身份证', value: data?.idCard },
+              { label: '联系方式', value: data?.link },
+              { label: '创建员工', value: data?.userId },
+              { label: '备注', value: data?.remark }
+            ]
+
+    return (
+      <Grid container spacing={2}>
+        {stepData.map((item, index) => (
+          <Grid item xs={12} sm={6} md={4} key={index}>
+            <Typography variant="body2">
+              {item.label}：{item.value}
+            </Typography>
+          </Grid>
+        ))}
+      </Grid>
+    )
+  }, [activeStep, selectfloorValue, selectUnitValue, data])
 
   return (
-    <Box>
+    <Box sx={{ mt: 3 }}>
       <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />}>
         {steps.map(label => (
           <Step key={label}>
@@ -137,105 +182,20 @@ const CheckInOwner = () => {
       <Box sx={contentBoxStyle}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="h6">楼栋信息</Typography>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Add />}
-            sx={buttonStyles('#2660ad', '#1d428a')}
-            onClick={() => setAssociatedOpen(true)}
-          >
-            {activeStep === 0 ? '选择楼栋' : '选择房屋'}
-          </Button>
+          {activeStep !== steps.length - 1 && (
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              startIcon={<Add />}
+              sx={buttonStyles('#2660ad', '#1d428a')}
+              onClick={() => setAssociatedOpen(true)}
+            >
+              {activeStep === 0 ? '选择楼栋' : '选择房屋'}
+            </Button>
+          )}
         </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            pt: 2,
-            borderTop: '1px solid #e7eaec'
-          }}
-        >
-          <Grid
-            container
-            spacing={{ xs: 2, md: 3 }}
-            columns={{ xs: 4, sm: 8, md: 12 }}
-            sx={{ width: '100%' }}
-          >
-            {activeStep === 0 ? (
-              [
-                { label: '楼栋ID', value: selectfloorValue?.id },
-                { label: '楼栋名称', value: selectfloorValue?.name },
-                { label: '楼栋编号', value: selectfloorValue?.floorNum },
-                { label: '楼栋面积', value: selectfloorValue?.floorArea },
-                { label: '备注', value: selectfloorValue?.remark }
-              ].map((item, index) => (
-                <Grid key={index} size={{ xs: 4, sm: 4, md: 3 }} sx={{ ml: 1 }}>
-                  <Box sx={{ ml: 1 }}>
-                    {item.label}：{item.value}
-                  </Box>
-                </Grid>
-              ))
-            ) : activeStep === 1 ? (
-              [
-                { label: '房屋ID', value: selectUnitValue?.id },
-                { label: '房屋编号', value: selectUnitValue?.roomNum },
-                { label: '单元', value: selectUnitValue?.unit?.unitNum },
-                { label: '楼层', value: selectUnitValue?.layer },
-                { label: '房间数', value: selectUnitValue?.section },
-                { label: '户型', value: selectUnitValue?.apartment },
-                { label: '建筑面积', value: selectUnitValue?.builtUpArea },
-                { label: '单价', value: '元' },
-                { label: '创建员工', value: selectUnitValue?.userId }
-              ].map((item, index) => (
-                <Grid key={index} size={{ xs: 4, sm: 4, md: 3 }} sx={{ ml: 1 }}>
-                  <Box sx={{ ml: 1 }}>
-                    {item.label}：{item.value}
-                  </Box>
-                </Grid>
-              ))
-            ) : (
-              <Box sx={contentBoxStyle}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    pt: 2,
-                    borderTop: '1px solid #e7eaec'
-                  }}
-                >
-                  <Box>
-                    <img
-                      style={{ width: '200px', height: '100%' }}
-                      src="http://demo.homecommunity.cn/img/noPhoto.jpg"
-                      alt="Zenwell Logo"
-                    />
-                  </Box>
-                  <Box sx={{ ml: 7 }}>
-                    <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-                      {[
-                        { label: '业主ID', value: data.id },
-                        { label: '名称', value: data.name },
-                        { label: '性别', value: data.sex },
-                        { label: '年龄', value: data.age },
-                        { label: '身份证', value: data.idCard },
-                        { label: '联系方式', value: data.link },
-                        { label: '创建员工', value: data.userId },
-                        { label: '备注', value: data.remark }
-                      ].map((item, index) => (
-                        <Grid key={index} size={{ md: 4 }} sx={{ my: 1 }}>
-                          <Box>
-                            {item.label}：{item.value}
-                          </Box>
-                        </Grid>
-                      ))}
-                    </Grid>
-                  </Box>
-                </Box>
-              </Box>
-            )}
-          </Grid>
-        </Box>
+        <Box sx={{ pt: 2, borderTop: '1px solid #e7eaec' }}>{renderStepContent()}</Box>
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
         <Button
@@ -244,6 +204,7 @@ const CheckInOwner = () => {
           variant="contained"
           color="error"
           sx={{ width: '10%' }}
+          disabled={activeStep === 0}
           onClick={handleBack}
         >
           上一步
@@ -256,7 +217,7 @@ const CheckInOwner = () => {
           sx={{ width: '10%', ml: 2, ...buttonStyles('#2660ad', '#1d428a') }}
           onClick={handleNext}
         >
-          下一步
+          {activeStep !== steps.length - 1 ? '下一步' : '完成'}
         </Button>
       </Box>
       <Associated
