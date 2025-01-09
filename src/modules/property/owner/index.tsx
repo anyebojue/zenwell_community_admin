@@ -72,6 +72,9 @@ export const OwnerSlice = createSlice({
       state.page = action.payload.page
       state.list = action.payload.list
     })
+    builder.addCase(get.fulfilled, (state, action) => {
+      state.owner = action.payload
+    })
     // 请求失败后的数据
     builder.addCase(find.rejected, state => {
       state.list = []

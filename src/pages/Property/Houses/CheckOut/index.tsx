@@ -41,7 +41,7 @@ const CheckOut: React.FC = () => {
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      const res = await dispatch(get({ id: data.userId }))
+      const res = await dispatch(get({ id: data.userId || data.id }))
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
@@ -51,7 +51,7 @@ const CheckOut: React.FC = () => {
     } finally {
       closeLoading()
     }
-  }, [dispatch, data.userId])
+  }, [dispatch, data.userId, data.id])
 
   useEffect(() => {
     fetchData()

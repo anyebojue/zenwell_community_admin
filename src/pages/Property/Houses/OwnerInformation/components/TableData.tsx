@@ -5,55 +5,8 @@ import { OwnerReply } from 'api/model/property/ownerModel'
 import { Tooltip, IconButton, Box } from '@mui/material'
 import { Block, Delete, Edit, Login, FileCopy } from '@mui/icons-material'
 import message from 'components/Message'
+import { useNavigate } from 'react-router-dom'
 import TableList from './TableList'
-
-const renderActionButtons = ({
-  setOpenDialog,
-  setDelOpen
-}: {
-  setOpenDialog: Dispatch<SetStateAction<boolean>>
-  setDelOpen: Dispatch<SetStateAction<boolean>>
-}) => {
-  return (
-    <Box>
-      {[
-        {
-          title: '修改业主',
-          color: 'secondary' as const,
-          icon: <Edit fontSize="small" />,
-          onClick: () => setOpenDialog(true)
-        },
-        {
-          title: '删除业主',
-          color: 'error' as const,
-          icon: <Delete fontSize="small" />,
-          onClick: () => setDelOpen(true)
-        },
-        {
-          title: '入住房屋',
-          color: 'success' as const,
-          icon: <Login fontSize="small" />
-        },
-        {
-          title: '房屋解绑',
-          color: 'warning' as const,
-          icon: <Block fontSize="small" />
-        },
-        {
-          title: '详情',
-          color: 'info' as const,
-          icon: <FileCopy fontSize="small" />
-        }
-      ].map((action, index) => (
-        <Tooltip title={action.title} key={index}>
-          <IconButton size="small" color={action.color} onClick={action.onClick}>
-            {action.icon}
-          </IconButton>
-        </Tooltip>
-      ))}
-    </Box>
-  )
-}
 
 export interface Column<T> {
   headerName: string
@@ -79,6 +32,7 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.OwnerSlice)
 
   const columns: Column<OwnerReply>[] = [
@@ -97,7 +51,46 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => renderActionButtons({ setOpenDialog, setDelOpen })
+      renderCell: row => (
+        <Box>
+          {[
+            {
+              title: '修改业主',
+              color: 'secondary' as const,
+              icon: <Edit fontSize="small" />,
+              onClick: () => setOpenDialog(true)
+            },
+            {
+              title: '删除业主',
+              color: 'error' as const,
+              icon: <Delete fontSize="small" />,
+              onClick: () => setDelOpen(true)
+            },
+            {
+              title: '入住房屋',
+              color: 'success' as const,
+              icon: <Login fontSize="small" />
+            },
+            {
+              title: '房屋解绑',
+              color: 'warning' as const,
+              icon: <Block fontSize="small" />,
+              onClick: () => navigate('/houses/CheckOut', { state: { value: row } })
+            },
+            {
+              title: '详情',
+              color: 'info' as const,
+              icon: <FileCopy fontSize="small" />
+            }
+          ].map((action, index) => (
+            <Tooltip title={action.title} key={index}>
+              <IconButton size="small" color={action.color} onClick={action.onClick}>
+                {action.icon}
+              </IconButton>
+            </Tooltip>
+          ))}
+        </Box>
+      )
     }
   ]
 

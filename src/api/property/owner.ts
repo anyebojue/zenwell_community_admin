@@ -1,5 +1,5 @@
 import { request } from 'utils/request/axios'
-import { FindOwnerReply, OwnerParams } from '../model/property/ownerModel'
+import { FindOwnerReply, OwnerParams, OwnerReply } from '../model/property/ownerModel'
 
 const ApiPrefix = {
   GetOwner: '/auth/owner',
@@ -9,6 +9,8 @@ const ApiPrefix = {
   DeleteOwner: '/auth/owner'
 }
 
+type WritableDraft<T> = { -readonly [K in keyof T]: T[K] }
+
 /**
  * 查询接口
  * @param params
@@ -16,7 +18,7 @@ const ApiPrefix = {
  */
 export const GetOwner = (params: { id: string }) => {
   return request
-    .get<FindOwnerReply>({
+    .get<WritableDraft<OwnerReply>>({
       url: `${ApiPrefix.GetOwner}/${params.id}`
     })
     .then(res => res.data)
