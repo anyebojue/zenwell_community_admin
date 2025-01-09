@@ -69,7 +69,8 @@ const TableData: React.FC<TableDataProps> = ({
             {
               title: '入住房屋',
               color: 'success' as const,
-              icon: <Login fontSize="small" />
+              icon: <Login fontSize="small" />,
+              onClick: () => navigate('/houses/CheckInOwner', { state: { value: row } })
             },
             {
               title: '房屋解绑',

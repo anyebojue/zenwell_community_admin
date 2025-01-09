@@ -20,6 +20,14 @@ const houses: IRouter[] = [
         }
       },
       {
+        path: 'CheckInOwner',
+        element: load('Property/Houses/CheckInOwner'),
+        meta: {
+          title: '入住房屋',
+          hidden: true
+        }
+      },
+      {
         path: 'CheckIn',
         element: load('Property/Houses/CheckIn'),
         meta: {
