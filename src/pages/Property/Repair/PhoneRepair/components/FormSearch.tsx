@@ -27,7 +27,7 @@ interface SearchFormProps {}
 
 const FormSearch: React.FC<SearchFormProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.RepairPoolSlice)
+  const { page, list } = useSelector((state: RootState) => state.RepairSettingSlice)
 
   const [searchParams, setSearchParams] = useState<RepairPoolParams>({
     id: '',
@@ -115,9 +115,9 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             variant="outlined"
             sx={textFieldStyles}
           >
-            {[{ value: 100, label: '工单池派单' }].map(option => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
+            {list.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.repairTypeName}
               </MenuItem>
             ))}
           </TextField>

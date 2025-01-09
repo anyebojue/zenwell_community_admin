@@ -2,6 +2,7 @@ import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } fro
 import { useDispatch, useSelector } from 'react-redux'
 import { RepairPoolReply } from 'api/model/property/repairPoolModel'
 import { find } from 'modules/property/repairPool'
+import { find as findRepairSetting } from 'modules/property/repairSetting'
 import message from 'components/Message'
 import TableList from './TableList'
 
@@ -79,9 +80,27 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
     }
   }, [dispatch, page.num, page.size])
 
+  const fetchRepairSettingData = useCallback(async () => {
+    const closeLoading = message.loading('正在加载列表中，请稍后...')
+    try {
+      const res = await dispatch(
+        findRepairSetting({ 'page.num': page.num, 'page.size': page.size })
+      )
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      closeLoading()
+    }
+  }, [dispatch, page.num, page.size])
+
   useEffect(() => {
     fetchData()
-  }, [fetchData])
+    fetchRepairSettingData()
+  }, [fetchData, fetchRepairSettingData])
 
   return <TableList rows={list} columns={columns} setDialogValue={setDialogValue} />
 }

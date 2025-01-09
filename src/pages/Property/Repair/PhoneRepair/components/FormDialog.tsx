@@ -40,7 +40,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
   setOpenDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.RepairPoolSlice)
+  const { page, list } = useSelector((state: RootState) => state.RepairSettingSlice)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(
@@ -103,6 +103,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>报修范围：</FormLabel>
             <TextField
+              placeholder="请选择"
               sx={{ width: '80%' }}
               select
               size="small"
@@ -125,6 +126,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>报修类型：</FormLabel>
             <TextField
+              placeholder="请选择"
               sx={{ width: '80%' }}
               select
               size="small"
@@ -132,14 +134,9 @@ const FormDialog: React.FC<FormDialogProps> = ({
               onChange={e => setFormData({ ...formData, repairSettingId: e.target.value })}
               variant="outlined"
             >
-              {[
-                { value: '001', label: '小区' },
-                { value: '002', label: '楼栋' },
-                { value: '003', label: '单元' },
-                { value: '004', label: '房屋' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
+              {list.map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.repairTypeName}
                 </MenuItem>
               ))}
             </TextField>
