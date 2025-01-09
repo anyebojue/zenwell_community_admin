@@ -1,4 +1,4 @@
-import { memo, useState, useMemo, ChangeEvent, Dispatch, SetStateAction } from 'react'
+import { memo, useState, useMemo, ChangeEvent } from 'react'
 import {
   Pagination,
   Table,
@@ -30,12 +30,10 @@ const usePagination = <T,>(data: T[], rowsPerPage: number) => {
 
 const TableList = ({
   rows,
-  columns,
-  setDialogValue
+  columns
 }: {
   rows: RepairPoolReply[]
   columns: Column<RepairPoolReply>[]
-  setDialogValue: Dispatch<SetStateAction<RepairPoolReply | undefined>>
 }) => {
   const [rowsPerPage, setRowsPerPage] = useState('20')
   const { page, paginatedRows, setPage, handlePageChange } = usePagination(
@@ -113,7 +111,7 @@ const TableList = ({
           <TableBody>
             {paginatedRows.length > 0 ? (
               paginatedRows.map(row => (
-                <TableRow onClick={() => setDialogValue(row)} key={row.id} sx={tableRowStyle}>
+                <TableRow key={row.id} sx={tableRowStyle}>
                   {columns.map(column => {
                     const value = row[column.key as keyof RepairPoolReply]
                     return (

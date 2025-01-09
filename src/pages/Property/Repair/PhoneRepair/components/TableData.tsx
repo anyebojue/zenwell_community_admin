@@ -1,4 +1,4 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
+import { memo, ReactNode, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RepairPoolReply } from 'api/model/property/repairPoolModel'
 import { find } from 'modules/property/repairPool'
@@ -13,11 +13,9 @@ export interface Column<T> {
   renderCell?: (row: T) => ReactNode
 }
 
-interface TableDataProps {
-  setDialogValue: Dispatch<SetStateAction<RepairPoolReply | undefined>>
-}
+interface TableDataProps {}
 
-const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
+const TableData: React.FC<TableDataProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.RepairPoolSlice)
 
@@ -102,7 +100,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
     fetchRepairSettingData()
   }, [fetchData, fetchRepairSettingData])
 
-  return <TableList rows={list} columns={columns} setDialogValue={setDialogValue} />
+  return <TableList rows={list} columns={columns} />
 }
 
 export default memo(TableData)

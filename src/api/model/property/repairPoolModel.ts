@@ -71,6 +71,9 @@ export interface RepairPoolParams {
   repairMaterials?: string
   repairFee?: string
   payType?: number
+  floorId?: string
+  unitId?: string
+  roomId?: string
 }
 
 export interface FindRepairPoolReply {

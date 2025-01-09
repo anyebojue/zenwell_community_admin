@@ -1,15 +1,7 @@
-import React, {
-  Dispatch,
-  memo,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from 'react'
+import React, { Dispatch, memo, SetStateAction, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairPoolParams, RepairPoolReply } from 'api/model/property/repairPoolModel'
-import { create, find, update } from 'modules/property/repairPool'
+import { RepairPoolParams } from 'api/model/property/repairPoolModel'
+import { create, find } from 'modules/property/repairPool'
 import {
   Box,
   CircularProgress,
@@ -27,36 +19,43 @@ import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
-  dialogValue?: RepairPoolReply
   openDialog: boolean
-  dialogType: string
   setOpenDialog: Dispatch<SetStateAction<boolean>>
+  repairObjType: number
+  setRepairObjType: Dispatch<SetStateAction<number>>
+  floorValue: string
+  setFloorValue: Dispatch<SetStateAction<string>>
+  unitValue: string
+  setUnitValue: Dispatch<SetStateAction<string>>
+  roomValue: string
+  setRommValue: Dispatch<SetStateAction<string>>
 }
 
 const FormDialog: React.FC<FormDialogProps> = ({
-  dialogValue,
   openDialog,
-  dialogType,
-  setOpenDialog
+  setOpenDialog,
+  repairObjType,
+  setRepairObjType,
+  floorValue,
+  setFloorValue,
+  unitValue,
+  setUnitValue,
+  roomValue,
+  setRommValue
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.RepairSettingSlice)
+  const { list: floorList } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { list: unitList } = useSelector((state: RootState) => state.UnitSlice)
+  const { list: roomList } = useSelector((state: RootState) => state.RoomSlice)
   const [loading, setLoading] = useState(false)
 
-  const initialFormData = useMemo(
-    () => ({
-      repairObjType: dialogType === 'edit' ? dialogValue?.repairObjType || 1 : 1,
-      repairSettingId: dialogType === 'edit' ? dialogValue?.repairSettingId || '' : '',
-      tel: dialogType === 'edit' ? dialogValue?.tel || '' : '',
-      context: dialogType === 'edit' ? dialogValue?.context || '' : ''
-    }),
-    [dialogType, dialogValue]
-  )
-  const [formData, setFormData] = useState<RepairPoolParams>(initialFormData)
-
-  useEffect(() => {
-    setFormData(initialFormData)
-  }, [initialFormData])
+  const [formData, setFormData] = useState<RepairPoolParams>({
+    repairSettingId: '',
+    tel: '',
+    appointmentTime: new Date().toISOString().slice(0, 19),
+    context: ''
+  })
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
@@ -65,17 +64,24 @@ const FormDialog: React.FC<FormDialogProps> = ({
       try {
         const current_community = localStorage.getItem('current_community')
         const communityId = JSON.parse(current_community || '')
-        const params = { ...formData, communityId: communityId?.id }
-        const action =
-          dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
+        let params = { ...formData }
+        if (repairObjType === 1) {
+          params = { ...params, communityId: communityId?.id }
+        } else if (repairObjType === 2) {
+          params = { ...params, floorId: floorValue, communityId: communityId?.id }
+        } else if (repairObjType === 3) {
+          params = { ...params, unitId: unitValue, communityId: communityId?.id }
+        } else if (repairObjType === 4) {
+          params = { ...params, roomId: roomValue, communityId: communityId?.id }
+        }
+        const action = create(params)
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
         await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))
-        message.success(dialogType === 'add' ? '新建成功' : '编辑成功')
+        message.success('登记成功')
         setOpenDialog(false)
-        setFormData(initialFormData)
       } catch (err: unknown) {
         setLoading(false)
         if (err instanceof Error) message.error(err.message)
@@ -83,7 +89,17 @@ const FormDialog: React.FC<FormDialogProps> = ({
         setLoading(false)
       }
     },
-    [dispatch, dialogType, dialogValue, formData, page, setOpenDialog, initialFormData]
+    [
+      dispatch,
+      floorValue,
+      formData,
+      page.num,
+      page.size,
+      repairObjType,
+      roomValue,
+      setOpenDialog,
+      unitValue
+    ]
   )
 
   const formFields = [
@@ -99,7 +115,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
       onClose={() => setOpenDialog(false)}
       PaperProps={{ component: 'form', onSubmit: handleSubmit }}
     >
-      <DialogTitle>{dialogType === 'add' ? '新增' : '编辑'}</DialogTitle>
+      <DialogTitle>报修登记</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -109,8 +125,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.repairObjType}
-              onChange={e => setFormData({ ...formData, repairObjType: Number(e.target.value) })}
+              value={repairObjType}
+              onChange={e => setRepairObjType(Number(e.target.value))}
               variant="outlined"
             >
               {[
@@ -125,6 +141,66 @@ const FormDialog: React.FC<FormDialogProps> = ({
               ))}
             </TextField>
           </Box>
+          {(repairObjType as number) > 1 && (
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <FormLabel>归属楼栋：</FormLabel>
+              <TextField
+                placeholder="请选择"
+                sx={{ width: '80%' }}
+                select
+                size="small"
+                value={floorValue}
+                onChange={e => setFloorValue(e.target.value)}
+                variant="outlined"
+              >
+                {floorList.map(option => (
+                  <MenuItem key={option.id} value={option.id}>
+                    {option.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Box>
+          )}
+          {(repairObjType as number) > 2 && (
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <FormLabel>归属单元：</FormLabel>
+              <TextField
+                placeholder="请选择"
+                sx={{ width: '80%' }}
+                select
+                size="small"
+                value={unitValue}
+                onChange={e => setUnitValue(e.target.value)}
+                variant="outlined"
+              >
+                {unitList.map(option => (
+                  <MenuItem key={option.id} value={option.id}>
+                    {option.unitNum}单元
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Box>
+          )}
+          {(repairObjType as number) > 3 && (
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <FormLabel>归属房屋：</FormLabel>
+              <TextField
+                placeholder="请选择"
+                sx={{ width: '80%' }}
+                select
+                size="small"
+                value={roomValue}
+                onChange={e => setRommValue(e.target.value)}
+                variant="outlined"
+              >
+                {roomList.map(option => (
+                  <MenuItem key={option.id} value={option.id}>
+                    {option.roomNum}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Box>
+          )}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>报修类型：</FormLabel>
             <TextField
@@ -162,6 +238,19 @@ const FormDialog: React.FC<FormDialogProps> = ({
               />
             </Box>
           ))}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>预约时间：</FormLabel>
+            <TextField
+              sx={{ width: '80%' }}
+              size="small"
+              type="datetime-local"
+              value={
+                formData.appointmentTime || new Date().toLocaleString('en-GB').replace(',', '')
+              }
+              onChange={e => setFormData({ ...formData, appointmentTime: e.target.value })}
+              variant="outlined"
+            />
+          </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>报修内容：</FormLabel>
             <TextField
