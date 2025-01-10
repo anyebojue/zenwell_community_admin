@@ -1,7 +1,7 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairSettingParams } from 'api/model/property/repairSettingModel'
-import { find } from 'modules/property/repairSetting'
+import { RepairPoolParams } from 'api/model/property/repairPoolModel'
+import { find } from 'modules/property/repairPool'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -27,18 +27,16 @@ interface SearchFormProps {}
 
 const FormSearch: React.FC<SearchFormProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.RepairSettingSlice)
+  const { page, list } = useSelector((state: RootState) => state.RepairSettingSlice)
 
-  const [searchParams, setSearchParams] = useState<RepairSettingParams>({
-    repairTypeName: '',
-    repairWay: 0,
-    repairType: '',
-    publicArea: 0,
-    returnVisitFlag: 0
+  const [searchParams, setSearchParams] = useState<RepairPoolParams>({
+    repairName: '',
+    tel: '',
+    repairSettingId: ''
   })
 
   const handleInputChange =
-    (field: keyof RepairSettingParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof RepairPoolParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -46,11 +44,11 @@ const FormSearch: React.FC<SearchFormProps> = () => {
     }
 
   const fetchData = useCallback(
-    async (params: RepairSettingParams & PaginationParams) => {
+    async (params: RepairPoolParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
-          find({ 'page.num': page.num, 'page.size': page.size, ...params })
+          find({ 'page.num': page.num, 'page.size': page.size, ...params, statusCd: 1100 })
         )
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
@@ -79,8 +77,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.repairTypeName}
-            onChange={handleInputChange('repairTypeName')}
+            value={searchParams.repairName}
+            onChange={handleInputChange('repairName')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -90,8 +88,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.repairTypeName}
-            onChange={handleInputChange('repairTypeName')}
+            value={searchParams.tel}
+            onChange={handleInputChange('tel')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -99,14 +97,14 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             select
             size="small"
             label="请选择报修类型"
-            value={searchParams.repairWay || ''}
-            onChange={handleInputChange('repairWay')}
+            value={searchParams.repairSettingId || ''}
+            onChange={handleInputChange('repairSettingId')}
             variant="outlined"
             sx={textFieldStyles}
           >
-            {[{ value: 100, label: '工单池派单' }].map(option => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
+            {list.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.repairTypeName}
               </MenuItem>
             ))}
           </TextField>
@@ -130,18 +128,14 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             sx={buttonStyles('darkgray', '#696969')}
             onClick={() => {
               setSearchParams({
-                repairTypeName: '',
-                repairWay: 0,
-                repairType: '',
-                publicArea: 0,
-                returnVisitFlag: 0
+                repairName: '',
+                tel: '',
+                repairSettingId: ''
               })
               fetchData({
-                repairTypeName: '',
-                repairWay: 0,
-                repairType: '',
-                publicArea: 0,
-                returnVisitFlag: 0,
+                repairName: '',
+                tel: '',
+                repairSettingId: '',
                 'page.num': page.num,
                 'page.size': page.size
               })
