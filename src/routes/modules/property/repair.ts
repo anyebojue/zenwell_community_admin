@@ -20,6 +20,14 @@ const repair: IRouter[] = [
         }
       },
       {
+        path: 'repair_staff',
+        element: load('Property/Repair/RepairStaff'),
+        meta: {
+          title: '绑定维修师傅',
+          hidden: true
+        }
+      },
+      {
         path: 'phone-repair',
         element: load('Property/Repair/PhoneRepair'),
         meta: {

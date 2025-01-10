@@ -1,11 +1,10 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairSettingReply } from 'api/model/property/repairSettingModel'
-import { find } from 'modules/property/repairSetting'
+import { RepairStaffReply } from 'api/model/property/repairStaffModel'
+import { find } from 'modules/property/repairStaff'
 import { Box, Tooltip, IconButton } from '@mui/material'
-import { Delete, Build, Edit } from '@mui/icons-material'
+import { Delete, Edit } from '@mui/icons-material'
 import message from 'components/Message'
-import { useNavigate } from 'react-router-dom'
 import TableList from './TableList'
 
 export interface Column<T> {
@@ -16,8 +15,7 @@ export interface Column<T> {
 }
 
 interface TableDataProps {
-  setDialogType: Dispatch<SetStateAction<string>>
-  setDialogValue: Dispatch<SetStateAction<RepairSettingReply | undefined>>
+  setDialogValue: Dispatch<SetStateAction<RepairStaffReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -25,7 +23,6 @@ interface TableDataProps {
 }
 
 const TableData: React.FC<TableDataProps> = ({
-  setDialogType,
   setDialogValue,
   selectedRows,
   setSelectedRows,
@@ -33,68 +30,24 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const navigate = useNavigate()
-  const { page, list } = useSelector((state: RootState) => state.RepairSettingSlice)
+  const { page, list } = useSelector((state: RootState) => state.RepairStaffSlice)
 
-  const columns: Column<RepairSettingReply>[] = [
-    { key: 'repairTypeName', headerName: '类型名称', align: 'center' },
+  const columns: Column<RepairStaffReply>[] = [
+    { key: 'id', headerName: '维修师傅ID', align: 'center' },
+    { key: 'staffName', headerName: '师傅名称', align: 'center' },
     {
-      key: 'repairType',
-      headerName: '报修设置类型',
+      key: 'repairSetting',
+      headerName: '报修类型',
       align: 'center',
-      renderCell: row => (row.repairType === '200' ? '维修单' : '保洁单')
+      renderCell: row => row.repairSetting?.repairTypeName
     },
     {
-      key: 'repairWay',
-      headerName: '派单方式',
+      key: 'statusCd',
+      headerName: '状态',
       align: 'center',
-      renderCell: row =>
-        row.repairWay === 100
-          ? '抢单'
-          : row.repairWay === 200
-            ? '指派'
-            : row.repairWay === 300
-              ? '轮训'
-              : ''
+      renderCell: row => (row.statusCd === 99 ? '在线' : row.statusCd === 88 ? '离线' : '')
     },
-    {
-      key: 'publicArea',
-      headerName: '区域',
-      align: 'center',
-      renderCell: row => (row.repairWay === 0 ? '非房屋' : '房屋')
-    },
-    {
-      key: 'isShow',
-      headerName: '业主端展示',
-      align: 'center',
-      renderCell: row => (row.isShow === 0 ? '否' : '是')
-    },
-    {
-      key: 'repairSettingType',
-      headerName: '通知方式',
-      align: 'center',
-      renderCell: row =>
-        row.repairSettingType === '0'
-          ? '微信'
-          : row.repairSettingType === '1'
-            ? '短信'
-            : row.repairSettingType === '2'
-              ? '微信+员工工牌'
-              : ''
-    },
-    {
-      key: 'returnVisitFlag',
-      headerName: '是否回访',
-      align: 'center',
-      renderCell: row =>
-        row.returnVisitFlag === 1
-          ? '不回访'
-          : row.returnVisitFlag === 2
-            ? '已评价不回访'
-            : row.returnVisitFlag === 3
-              ? '回访'
-              : ''
-    },
+    { key: 'remark', headerName: '说明', align: 'center' },
     { key: 'createdAt', headerName: '创建时间', align: 'center' },
     {
       key: 'operate',
@@ -104,19 +57,10 @@ const TableData: React.FC<TableDataProps> = ({
         <Box>
           {[
             {
-              title: '绑定维修师傅',
-              color: 'primary' as const,
-              icon: <Build fontSize="small" />,
-              onClick: () => navigate('/repair/repair_staff')
-            },
-            {
-              title: '修改',
+              title: '变更',
               color: 'secondary' as const,
               icon: <Edit fontSize="small" />,
-              onClick: () => {
-                setOpenDialog(true)
-                setDialogType('edit')
-              }
+              onClick: () => setOpenDialog(true)
             },
             {
               title: '删除',
