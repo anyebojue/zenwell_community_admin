@@ -1,6 +1,6 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairSettingParams } from 'api/model/property/repairSettingModel'
+import { RepairPoolParams } from 'api/model/property/repairPoolModel'
 import { find } from 'modules/property/repairSetting'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
@@ -27,18 +27,17 @@ interface SearchFormProps {}
 
 const FormSearch: React.FC<SearchFormProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.RepairSettingSlice)
+  const { page, list } = useSelector((state: RootState) => state.RepairSettingSlice)
 
-  const [searchParams, setSearchParams] = useState<RepairSettingParams>({
-    repairTypeName: '',
-    repairWay: 0,
-    repairType: '',
-    publicArea: 0,
-    returnVisitFlag: 0
+  const [searchParams, setSearchParams] = useState<RepairPoolParams>({
+    id: '',
+    repairName: '',
+    tel: '',
+    repairSettingId: ''
   })
 
   const handleInputChange =
-    (field: keyof RepairSettingParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof RepairPoolParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -46,11 +45,11 @@ const FormSearch: React.FC<SearchFormProps> = () => {
     }
 
   const fetchData = useCallback(
-    async (params: RepairSettingParams & PaginationParams) => {
+    async (params: RepairPoolParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
-          find({ 'page.num': page.num, 'page.size': page.size, ...params })
+          find({ 'page.num': page.num, 'page.size': page.size, ...params, statusCd: 1000 })
         )
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
@@ -79,8 +78,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.repairTypeName}
-            onChange={handleInputChange('repairTypeName')}
+            value={searchParams.id}
+            onChange={handleInputChange('id')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -90,8 +89,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.repairTypeName}
-            onChange={handleInputChange('repairTypeName')}
+            value={searchParams.repairName}
+            onChange={handleInputChange('repairName')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -101,8 +100,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.repairTypeName}
-            onChange={handleInputChange('repairTypeName')}
+            value={searchParams.tel}
+            onChange={handleInputChange('tel')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -110,43 +109,14 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             select
             size="small"
             label="请选择报修类型"
-            value={searchParams.repairWay || ''}
-            onChange={handleInputChange('repairWay')}
+            value={searchParams.repairSettingId || ''}
+            onChange={handleInputChange('repairSettingId')}
             variant="outlined"
             sx={textFieldStyles}
           >
-            {[{ value: 100, label: '工单池派单' }].map(option => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-        </FormControl>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            select
-            size="small"
-            label="请选择报修状态"
-            value={searchParams.repairWay || ''}
-            onChange={handleInputChange('repairWay')}
-            variant="outlined"
-            sx={textFieldStyles}
-          >
-            {[
-              { value: 1000, label: '未派单' },
-              { value: 1100, label: '接单' },
-              { value: 1200, label: '退单' },
-              { value: 1300, label: '转单' },
-              { value: 1400, label: '申请支付' },
-              { value: 1500, label: '支付失败' },
-              { value: 1700, label: '待评价' },
-              { value: 1800, label: '电话回访' },
-              { value: 1900, label: '办理完成' },
-              { value: 2000, label: '未办理结单' },
-              { value: 2001, label: '暂停' }
-            ].map(option => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
+            {list.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.repairTypeName}
               </MenuItem>
             ))}
           </TextField>
@@ -170,18 +140,16 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             sx={buttonStyles('darkgray', '#696969')}
             onClick={() => {
               setSearchParams({
-                repairTypeName: '',
-                repairWay: 0,
-                repairType: '',
-                publicArea: 0,
-                returnVisitFlag: 0
+                id: '',
+                repairName: '',
+                tel: '',
+                repairSettingId: ''
               })
               fetchData({
-                repairTypeName: '',
-                repairWay: 0,
-                repairType: '',
-                publicArea: 0,
-                returnVisitFlag: 0,
+                id: '',
+                repairName: '',
+                tel: '',
+                repairSettingId: '',
                 'page.num': page.num,
                 'page.size': page.size
               })

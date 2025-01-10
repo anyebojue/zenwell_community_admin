@@ -15,7 +15,7 @@ import {
   SelectChangeEvent,
   Theme
 } from '@mui/material'
-import { RepairSettingReply } from 'api/model/property/repairSettingModel'
+import { RepairPoolReply } from 'api/model/property/repairPoolModel'
 import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {
@@ -32,8 +32,8 @@ const TableList = ({
   rows,
   columns
 }: {
-  rows: RepairSettingReply[]
-  columns: Column<RepairSettingReply>[]
+  rows: RepairPoolReply[]
+  columns: Column<RepairPoolReply>[]
 }) => {
   const [rowsPerPage, setRowsPerPage] = useState('20')
   const { page, paginatedRows, setPage, handlePageChange } = usePagination(
@@ -63,7 +63,7 @@ const TableList = ({
     setPage(1)
   }
 
-  const renderValue = (value: RepairSettingReply[keyof RepairSettingReply] | undefined) => {
+  const renderValue = (value: RepairPoolReply[keyof RepairPoolReply] | undefined) => {
     if (Array.isArray(value)) {
       return JSON.stringify(value)
     } else if (value && typeof value === 'object') {
@@ -113,7 +113,7 @@ const TableList = ({
               paginatedRows.map(row => (
                 <TableRow key={row.id} sx={tableRowStyle}>
                   {columns.map(column => {
-                    const value = row[column.key as keyof RepairSettingReply]
+                    const value = row[column.key as keyof RepairPoolReply]
                     return (
                       <TableCell
                         key={column.key}
