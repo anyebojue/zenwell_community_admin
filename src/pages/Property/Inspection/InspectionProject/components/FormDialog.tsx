@@ -14,7 +14,6 @@ import {
   Box,
   CircularProgress,
   FormLabel,
-  MenuItem,
   Stack,
   Button,
   TextField,
@@ -88,7 +87,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
     [dispatch, dialogType, dialogValue, formData, page, setOpenDialog, initialFormData]
   )
 
-  const formFields = [{ label: '类型名称', type: 'text', id: 'repairTypeName', required: true }]
+  const formFields = [{ label: '巡检项目', type: 'text', id: 'repairTypeName', required: true }]
 
   return (
     <Dialog
@@ -121,130 +120,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
             </Box>
           ))}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>设置类型：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.repairType}
-              onChange={e => setFormData({ ...formData, repairType: e.target.value })}
-              variant="outlined"
-            >
-              {[
-                { value: '1', label: '维修单' },
-                { value: '2', label: '保洁单' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>派单方式：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.repairWay}
-              onChange={e => setFormData({ ...formData, repairWay: Number(e.target.value) })}
-              variant="outlined"
-            >
-              {[
-                { value: 100, label: '抢单' },
-                { value: 200, label: '指派' },
-                { value: 300, label: '轮训' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>公共区域：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.publicArea}
-              onChange={e => setFormData({ ...formData, publicArea: Number(e.target.value) })}
-              variant="outlined"
-            >
-              {[
-                { value: 0, label: '非房屋' },
-                { value: 1, label: '房屋' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>业主端展示：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.isShow}
-              onChange={e => setFormData({ ...formData, isShow: Number(e.target.value) })}
-              variant="outlined"
-            >
-              {[
-                { value: '0', label: '否' },
-                { value: '1', label: '是' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>通知方式：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.repairSettingType}
-              onChange={e => setFormData({ ...formData, repairSettingType: e.target.value })}
-              variant="outlined"
-            >
-              {[
-                { value: '1', label: '微信' },
-                { value: '2', label: '短信' },
-                { value: '3', label: '微信+员工工牌' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>回访设置：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.returnVisitFlag}
-              onChange={e => setFormData({ ...formData, returnVisitFlag: Number(e.target.value) })}
-              variant="outlined"
-            >
-              {[
-                { value: 1, label: '不回访' },
-                { value: 2, label: '已评价不回访' },
-                { value: 3, label: '回访' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>{' '}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>说明：</FormLabel>
+            <FormLabel>备注：</FormLabel>
             <TextField
               placeholder="请输入"
               sx={{ width: '80%' }}
