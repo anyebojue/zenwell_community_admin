@@ -8,11 +8,8 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  CommunityAnnouncementParams,
-  CommunityAnnouncementReply
-} from 'api/model/property/communityAnnouncementModel'
-import { create, find, update } from 'modules/property/communityAnnouncement'
+import { RepairPoolParams, RepairPoolReply } from 'api/model/property/repairPoolModel'
+import { create, find, update } from 'modules/property/repairPool'
 import {
   Box,
   CircularProgress,
@@ -31,7 +28,7 @@ import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
   selectedButton: number
-  dialogValue?: CommunityAnnouncementReply
+  dialogValue?: RepairPoolReply
   openDialog: boolean
   dialogType: string
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -45,19 +42,21 @@ const FormDialog: React.FC<FormDialogProps> = ({
   setOpenDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.CommunityAnnouncementSlice)
+  const { page } = useSelector((state: RootState) => state.RepairPoolSlice)
+  const { list } = useSelector((state: RootState) => state.RepairSettingSlice)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(
     () => ({
-      title: dialogType === 'edit' ? dialogValue?.title || '' : '',
-      type: dialogType === 'edit' ? dialogValue?.type || 0 : 0,
-      photo: dialogType === 'edit' ? dialogValue?.photo || '' : '',
-      content: dialogType === 'edit' ? dialogValue?.content || '' : ''
+      repairObjType: dialogValue?.repairObjType || 0,
+      repairName: dialogValue?.repairName || '',
+      tel: dialogValue?.tel || '',
+      appointmentTime: dialogValue?.appointmentTime || '',
+      context: dialogValue?.context || ''
     }),
-    [dialogType, dialogValue]
+    [dialogValue]
   )
-  const [formData, setFormData] = useState<CommunityAnnouncementParams>(initialFormData)
+  const [formData, setFormData] = useState<RepairPoolParams>(initialFormData)
 
   useEffect(() => {
     setFormData(initialFormData)
@@ -79,7 +78,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
           find({
             'page.num': page.num || '1',
             'page.size': page.size,
-            type: selectedButton
+            statusCd: selectedButton
           })
         )
         message.success(dialogType === 'add' ? '新建成功' : '编辑成功')
@@ -106,9 +105,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
   )
 
   const formFields = [
-    { label: '公示标题', type: 'text', id: 'title', required: true },
-    { label: '头部照片', type: 'text', id: 'photo', required: true },
-    { label: '活动内容', type: 'text', id: 'content', required: true }
+    { label: '报修人', type: 'text', id: 'repairName', required: true },
+    { label: '联系方式', type: 'text', id: 'tel', required: true }
   ]
 
   return (
@@ -122,6 +120,23 @@ const FormDialog: React.FC<FormDialogProps> = ({
       <DialogTitle>{dialogType === 'add' ? '新增' : '编辑'}</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>报修类型：</FormLabel>
+            <TextField
+              sx={{ width: '80%' }}
+              select
+              size="small"
+              value={formData.repairObjType}
+              onChange={e => setFormData({ ...formData, repairObjType: Number(e.target.value) })}
+              variant="outlined"
+            >
+              {list.map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.repairTypeName}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
           {formFields.map(({ label, type, id, required }) => (
             <Box
               sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
@@ -134,32 +149,37 @@ const FormDialog: React.FC<FormDialogProps> = ({
                 size="small"
                 required={required}
                 id={id}
-                value={formData[id as keyof CommunityAnnouncementParams]}
+                value={formData[id as keyof RepairPoolParams]}
                 onChange={e => setFormData({ ...formData, [id]: e.target.value })}
                 autoComplete={type === 'password' ? 'current-password' : ''}
               />
             </Box>
           ))}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>公示类型：</FormLabel>
+            <FormLabel>预约时间：</FormLabel>
             <TextField
               sx={{ width: '80%' }}
-              select
               size="small"
-              value={formData.type}
-              onChange={e => setFormData({ ...formData, type: Number(e.target.value) })}
+              type="datetime-local"
+              value={
+                formData.appointmentTime || new Date().toLocaleString('en-GB').replace(',', '')
+              }
+              onChange={e => setFormData({ ...formData, appointmentTime: e.target.value })}
               variant="outlined"
-            >
-              {[
-                { value: 0, label: '公共收益' },
-                { value: 1, label: '规章制度' },
-                { value: 2, label: '政策相关' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
+            />
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>报修内容：</FormLabel>
+            <TextField
+              placeholder="请输入"
+              sx={{ width: '80%' }}
+              size="small"
+              value={formData.context}
+              onChange={e => setFormData({ ...formData, context: e.target.value })}
+              variant="outlined"
+              multiline
+              rows={2}
+            />
           </Box>
         </Stack>
       </DialogContent>

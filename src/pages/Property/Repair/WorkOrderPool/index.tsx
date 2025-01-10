@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CommunityAnnouncementReply } from 'api/model/property/communityAnnouncementModel'
-import { deleteByIds, find } from 'modules/property/communityAnnouncement'
+import { RepairPoolReply } from 'api/model/property/repairPoolModel'
+import { deleteByIds, find } from 'modules/property/repairPool'
 import { Box, Button, ButtonGroup, Stack } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
@@ -11,10 +11,10 @@ import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
 import FormDialog from './components/FormDialog'
 
-const CommunityAnnouncementIndex = () => {
+const RepairPoolIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.CommunityAnnouncementSlice)
-  const [dialogValue, setDialogValue] = useState<CommunityAnnouncementReply>()
+  const { page, list } = useSelector((state: RootState) => state.RepairPoolSlice)
+  const [dialogValue, setDialogValue] = useState<RepairPoolReply>()
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedButton, setSelectedButton] = useState<number>(0)
@@ -25,20 +25,17 @@ const CommunityAnnouncementIndex = () => {
     if (selectedRows.size > 0) {
       return list
         .filter(item => selectedRows.has(item.id))
-        .map(item => ({ id: item.id!, title: item.title! }))
-        .filter(item => item.id && item.title)
+        .map(item => ({ id: item.id! }))
+        .filter(item => item.id)
     }
     if (dialogValue) {
-      return dialogValue.id && dialogValue.title
-        ? [{ id: dialogValue.id, title: dialogValue.title }]
-        : []
+      return dialogValue.id ? [{ id: dialogValue.id }] : []
     }
     return []
   }, [selectedRows, list, dialogValue])
 
   const deleteData = useMemo(() => getDeleteData(), [getDeleteData])
   const deleteIds = deleteData.map(item => item.id)
-  const deleteNames = deleteData.map(item => item.title)
 
   const handleDelete = useCallback(
     async (ids: string[]) => {
@@ -50,7 +47,9 @@ const CommunityAnnouncementIndex = () => {
         }
         setDelOpen(false)
         message.success('删除成功')
-        await dispatch(find({ 'page.num': page.num, 'page.size': page.size, type: selectedButton }))
+        await dispatch(
+          find({ 'page.num': page.num, 'page.size': page.size, statusCd: selectedButton })
+        )
         setLoading(false)
       } catch (err: unknown) {
         setLoading(false)
@@ -133,11 +132,11 @@ const CommunityAnnouncementIndex = () => {
         loading={loading}
         delOpen={delOpen}
         setDelOpen={setDelOpen}
-        userName={deleteNames}
+        userName={deleteIds}
         onDelete={() => handleDelete(deleteIds)}
       />
     </Box>
   )
 }
 
-export default memo(CommunityAnnouncementIndex)
+export default memo(RepairPoolIndex)

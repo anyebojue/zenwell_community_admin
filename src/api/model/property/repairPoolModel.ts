@@ -23,32 +23,32 @@ interface RepairLogReply {
 }
 
 export interface RepairPoolReply {
-  id?: string
-  createdAt?: string
-  updatedAt?: string
-  status?: number
-  remark?: string
-  communityId?: string
-  repairSettingId?: string
-  repairName?: string
-  tel?: string
-  context?: string
-  statusCd?: number
-  repairObjType?: number
-  repairObjId?: string
-  repairObjName?: string
-  appointmentTime?: string
-  maintenanceType?: number
-  repairChannel?: number
-  repairMaterials?: string
-  repairFee?: string
-  payType?: number
-  repairSetting?: RepairSettingReply
-  repairLog?: RepairLogReply[]
-  image?: {
-    content?: string
-    picBefore?: string
-    picAfter?: string
+  id: string
+  createdAt: string
+  updatedAt: string
+  status: number
+  remark: string
+  communityId: string
+  repairSettingId: string
+  repairName: string
+  tel: string
+  context: string
+  statusCd: number
+  repairObjType: number
+  repairObjId: string
+  repairObjName: string
+  appointmentTime: string
+  maintenanceType: number
+  repairChannel: number
+  repairMaterials: string
+  repairFee: string
+  payType: number
+  repairSetting: RepairSettingReply
+  repairLog: RepairLogReply[]
+  image: {
+    content: string
+    picBefore: string
+    picAfter: string
   }
 }
 
@@ -74,6 +74,9 @@ export interface RepairPoolParams {
   floorId?: string
   unitId?: string
   roomId?: string
+  repairType?: string
+  startTime?: string
+  endTime?: string
 }
 
 export interface FindRepairPoolReply {

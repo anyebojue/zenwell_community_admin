@@ -1,7 +1,7 @@
 import { ChangeEvent, memo, useState, useCallback, Dispatch, SetStateAction } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CommunityAnnouncementParams } from 'api/model/property/communityAnnouncementModel'
-import { find } from 'modules/property/communityAnnouncement'
+import { RepairPoolParams } from 'api/model/property/repairPoolModel'
+import { find } from 'modules/property/repairPool'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -32,15 +32,23 @@ interface FormSearchProps {
 
 const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.CommunityAnnouncementSlice)
+  const { page, list } = useSelector((state: RootState) => state.RepairSettingSlice)
 
   const [openDialog, setOpenDialog] = useState(false)
-  const [searchParams, setSearchParams] = useState<CommunityAnnouncementParams>({
-    title: ''
+  const [searchParams, setSearchParams] = useState<RepairPoolParams>({
+    id: '',
+    repairName: '',
+    tel: '',
+    repairSettingId: '',
+    repairType: '',
+    communityId: '',
+    maintenanceType: 0,
+    startTime: '',
+    endTime: ''
   })
 
   const handleInputChange =
-    (field: keyof CommunityAnnouncementParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof RepairPoolParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -48,7 +56,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
     }
 
   const fetchData = useCallback(
-    async (params: CommunityAnnouncementParams & PaginationParams) => {
+    async (params: RepairPoolParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
@@ -85,8 +93,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.title}
-            onChange={handleInputChange('title')}
+            value={searchParams.id}
+            onChange={handleInputChange('id')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -96,8 +104,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.title}
-            onChange={handleInputChange('title')}
+            value={searchParams.repairName}
+            onChange={handleInputChange('repairName')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -107,8 +115,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.title}
-            onChange={handleInputChange('title')}
+            value={searchParams.tel}
+            onChange={handleInputChange('tel')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -116,14 +124,14 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             select
             size="small"
             label="请选择报修类型"
-            value={searchParams.title || ''}
-            onChange={handleInputChange('title')}
+            value={searchParams.repairSettingId || ''}
+            onChange={handleInputChange('repairSettingId')}
             variant="outlined"
             sx={textFieldStyles}
           >
-            {[{ value: 100, label: '工单池派单' }].map(option => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
+            {list.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.repairTypeName}
               </MenuItem>
             ))}
           </TextField>
@@ -133,8 +141,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             select
             size="small"
             label="请选择报修设置类型"
-            value={searchParams.title || ''}
-            onChange={handleInputChange('title')}
+            value={searchParams.repairType || ''}
+            onChange={handleInputChange('repairType')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -157,8 +165,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.title}
-            onChange={handleInputChange('title')}
+            value={searchParams.communityId}
+            onChange={handleInputChange('communityId')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -166,8 +174,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             select
             size="small"
             label="请选择维修类型"
-            value={searchParams.title || ''}
-            onChange={handleInputChange('title')}
+            value={searchParams.maintenanceType || ''}
+            onChange={handleInputChange('maintenanceType')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -190,8 +198,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             type="date"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.title}
-            onChange={handleInputChange('title')}
+            value={searchParams.startTime}
+            onChange={handleInputChange('startTime')}
             slotProps={{
               inputLabel: {
                 shrink: true
@@ -206,8 +214,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             type="date"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.title}
-            onChange={handleInputChange('title')}
+            value={searchParams.endTime}
+            onChange={handleInputChange('endTime')}
             slotProps={{
               inputLabel: {
                 shrink: true
@@ -234,9 +242,27 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
           startIcon={<History />}
           sx={buttonStyles('darkgray', '#696969')}
           onClick={() => {
-            setSearchParams({ title: '' })
+            setSearchParams({
+              id: '',
+              repairName: '',
+              tel: '',
+              repairSettingId: '',
+              repairType: '',
+              communityId: '',
+              maintenanceType: 0,
+              startTime: '',
+              endTime: ''
+            })
             fetchData({
-              title: '',
+              id: '',
+              repairName: '',
+              tel: '',
+              repairSettingId: '',
+              repairType: '',
+              communityId: '',
+              maintenanceType: 0,
+              startTime: '',
+              endTime: '',
               'page.num': page.num,
               'page.size': page.size
             })

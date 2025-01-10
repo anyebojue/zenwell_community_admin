@@ -1,56 +1,23 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CommunityAnnouncementReply } from 'api/model/property/communityAnnouncementModel'
-import { find } from 'modules/property/communityAnnouncement'
+import { RepairPoolReply } from 'api/model/property/repairPoolModel'
+import { find } from 'modules/property/repairPool'
+import { find as findRepairSetting } from 'modules/property/repairSetting'
 import { Box, Tooltip, IconButton } from '@mui/material'
 import { Delete, Edit, FileCopy } from '@mui/icons-material'
 import message from 'components/Message'
 import TableList from './TableList'
 
-const renderActionButtons = (
-  setOpenDialog: Dispatch<SetStateAction<boolean>>,
-  setDelOpen: Dispatch<SetStateAction<boolean>>
-) => (
-  <Box>
-    {[
-      {
-        title: '详情',
-        color: 'primary' as const,
-        icon: <FileCopy fontSize="small" />,
-        onClick: () => message.info('未实现')
-      },
-      {
-        title: '修改',
-        color: 'secondary' as const,
-        icon: <Edit fontSize="small" />,
-        onClick: () => setOpenDialog(true)
-      },
-      {
-        title: '删除',
-        color: 'error' as const,
-        icon: <Delete fontSize="small" />,
-        onClick: () => setDelOpen(true)
-      }
-    ].map((action, index) => (
-      <Tooltip title={action.title} key={index}>
-        <IconButton size="small" color={action.color} onClick={action.onClick}>
-          {action.icon}
-        </IconButton>
-      </Tooltip>
-    ))}
-  </Box>
-)
-
 export interface Column<T> {
   headerName: string
-  key: string
-  align?: 'left' | 'right' | 'center'
-  renderCell?: (_value: T[keyof T]) => ReactNode
+  key: keyof T | 'operate'
+  align?: 'left' | 'center' | 'right'
+  renderCell?: (row: T) => ReactNode
 }
 
 interface TableDataProps {
   selectedButton: number
-  setDialogValue: Dispatch<SetStateAction<CommunityAnnouncementReply | undefined>>
+  setDialogValue: Dispatch<SetStateAction<RepairPoolReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -66,22 +33,63 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.CommunityAnnouncementSlice)
+  const { page, list } = useSelector((state: RootState) => state.RepairPoolSlice)
+  console.log(list)
 
-  const columns: Column<CommunityAnnouncementReply>[] = [
-    { key: 'photo', headerName: '工单编码', align: 'center' },
-    { key: 'title', headerName: '位置', align: 'center' },
-    { key: 'type', headerName: '报修类型', align: 'center' },
-    { key: 'createdAt', headerName: '维修类型', align: 'center' },
-    { key: 'communityId', headerName: '报修人', align: 'center' },
-    { key: 'communityId', headerName: '联系方式', align: 'center' },
-    { key: 'communityId', headerName: '预约时间', align: 'center' },
-    { key: 'communityId', headerName: '提交时间', align: 'center' },
+  const columns: Column<RepairPoolReply>[] = [
+    { key: 'id', headerName: '工单编码', align: 'center' },
+    { key: 'communityId', headerName: '位置', align: 'center' },
+    {
+      key: 'repairSetting',
+      headerName: '报修类型',
+      align: 'center',
+      renderCell: row => row.repairSetting?.repairTypeName
+    },
+    {
+      key: 'maintenanceType',
+      headerName: '维修类型',
+      align: 'center',
+      renderCell: row =>
+        row.maintenanceType === 1001 ? '有偿服务' : row.maintenanceType === 1002 ? '无偿服务' : ''
+    },
+    { key: 'repairName', headerName: '报修人', align: 'center' },
+    { key: 'tel', headerName: '联系方式', align: 'center' },
+    { key: 'appointmentTime', headerName: '预约时间', align: 'center' },
+    { key: 'createdAt', headerName: '提交时间', align: 'center' },
     {
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => renderActionButtons(setOpenDialog, setDelOpen)
+      renderCell: () => (
+        <Box>
+          {[
+            {
+              title: '详情',
+              color: 'primary' as const,
+              icon: <FileCopy fontSize="small" />,
+              onClick: () => message.info('未实现')
+            },
+            {
+              title: '修改',
+              color: 'secondary' as const,
+              icon: <Edit fontSize="small" />,
+              onClick: () => setOpenDialog(true)
+            },
+            {
+              title: '删除',
+              color: 'error' as const,
+              icon: <Delete fontSize="small" />,
+              onClick: () => setDelOpen(true)
+            }
+          ].map((action, index) => (
+            <Tooltip title={action.title} key={index}>
+              <IconButton size="small" color={action.color} onClick={action.onClick}>
+                {action.icon}
+              </IconButton>
+            </Tooltip>
+          ))}
+        </Box>
+      )
     }
   ]
 
@@ -89,7 +97,7 @@ const TableData: React.FC<TableDataProps> = ({
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
       const res = await dispatch(
-        find({ 'page.num': page.num, 'page.size': page.size, type: selectedButton })
+        find({ 'page.num': page.num, 'page.size': page.size, statusCd: selectedButton })
       )
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
@@ -102,9 +110,27 @@ const TableData: React.FC<TableDataProps> = ({
     }
   }, [dispatch, page.num, page.size, selectedButton])
 
+  const fetchRepairSettingData = useCallback(async () => {
+    const closeLoading = message.loading('正在加载列表中，请稍后...')
+    try {
+      const res = await dispatch(
+        findRepairSetting({ 'page.num': page.num, 'page.size': page.size })
+      )
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      closeLoading()
+    }
+  }, [dispatch, page.num, page.size])
+
   useEffect(() => {
     fetchData()
-  }, [fetchData])
+    fetchRepairSettingData()
+  }, [fetchData, fetchRepairSettingData])
 
   return (
     <TableList
