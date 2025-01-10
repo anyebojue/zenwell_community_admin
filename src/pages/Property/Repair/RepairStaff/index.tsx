@@ -10,6 +10,7 @@ import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 import FormDialog from './components/FormDialog'
 import TableData from './components/TableData'
+import TreeDialog from './components/TreeDialog'
 
 const contentBoxStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -26,6 +27,7 @@ const RepairSettingsIndex = () => {
   const [openDialog, setOpenDialog] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [openTree, setOpenTree] = useState(false)
 
   const getDeleteData = useCallback(() => {
     if (selectedRows.size > 0) {
@@ -91,7 +93,7 @@ const RepairSettingsIndex = () => {
                 color="error"
                 startIcon={<Add />}
                 sx={buttonStyles('#2660ad', '#1d428a')}
-                onClick={() => setOpenDialog(true)}
+                onClick={() => setOpenTree(true)}
               >
                 添加
               </Button>
@@ -108,6 +110,7 @@ const RepairSettingsIndex = () => {
       </Box>
       <Copyright />
 
+      <TreeDialog openTree={openTree} setOpenTree={setOpenTree} />
       <FormDialog dialogValue={dialogValue} openDialog={openDialog} setOpenDialog={setOpenDialog} />
       <DeleteModal
         loading={loading}
