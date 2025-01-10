@@ -9,8 +9,9 @@ import organization from './modules/platform/organization'
 import systemSetting from './modules/platform/systemSetting'
 import communitys from './modules/property/communitys'
 import houses from './modules/property/houses'
-import systemSettings from './modules/property/systemSettings'
 import repair from './modules/property/repair'
+import organizations from './modules/property/organizations'
+import systemSettings from './modules/property/systemSettings'
 
 export interface IRouter {
   /** 链接路径 */
@@ -69,7 +70,14 @@ const useAllRoutes = (): IRouter[] => {
     case '2':
       return [...baseRoutes, ...menu]
     case '0':
-      return [...baseRoutes, ...communitys, ...houses, ...repair, ...systemSettings]
+      return [
+        ...baseRoutes,
+        ...communitys,
+        ...houses,
+        ...repair,
+        ...organizations,
+        ...systemSettings
+      ]
     default:
       return [...baseRoutes]
   }
