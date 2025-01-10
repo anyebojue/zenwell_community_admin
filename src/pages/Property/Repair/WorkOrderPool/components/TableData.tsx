@@ -4,7 +4,7 @@ import { RepairPoolReply } from 'api/model/property/repairPoolModel'
 import { find } from 'modules/property/repairPool'
 import { find as findRepairSetting } from 'modules/property/repairSetting'
 import { Box, Tooltip, IconButton } from '@mui/material'
-import { Delete, Edit, FileCopy } from '@mui/icons-material'
+import { Delete, Edit, FileCopy, Send } from '@mui/icons-material'
 import message from 'components/Message'
 import TableList from './TableList'
 
@@ -60,9 +60,17 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => (
+      renderCell: row => (
         <Box>
           {[
+            row.statusCd === 1000
+              ? {
+                  title: '派单',
+                  color: 'primary' as const,
+                  icon: <Send fontSize="small" />,
+                  onClick: () => message.info('未实现')
+                }
+              : null,
             {
               title: '详情',
               color: 'primary' as const,
@@ -82,9 +90,9 @@ const TableData: React.FC<TableDataProps> = ({
               onClick: () => setDelOpen(true)
             }
           ].map((action, index) => (
-            <Tooltip title={action.title} key={index}>
-              <IconButton size="small" color={action.color} onClick={action.onClick}>
-                {action.icon}
+            <Tooltip title={action?.title} key={index}>
+              <IconButton size="small" color={action?.color} onClick={action?.onClick}>
+                {action?.icon}
               </IconButton>
             </Tooltip>
           ))}

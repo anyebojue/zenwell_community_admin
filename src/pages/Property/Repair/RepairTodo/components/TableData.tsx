@@ -8,49 +8,6 @@ import { SwapHoriz, Undo, CheckCircle, PauseCircle, FileCopy } from '@mui/icons-
 import message from 'components/Message'
 import TableList from './TableList'
 
-const renderActionButtons = () => (
-  <Box>
-    {[
-      {
-        title: '转单',
-        color: 'primary' as const,
-        icon: <SwapHoriz fontSize="small" />,
-        onClick: () => message.info('未实现')
-      },
-      {
-        title: '退单',
-        color: 'primary' as const,
-        icon: <Undo fontSize="small" />,
-        onClick: () => message.info('未实现')
-      },
-      {
-        title: '办结',
-        color: 'primary' as const,
-        icon: <CheckCircle fontSize="small" />,
-        onClick: () => message.info('未实现')
-      },
-      {
-        title: '暂停',
-        color: 'primary' as const,
-        icon: <PauseCircle fontSize="small" />,
-        onClick: () => message.info('未实现')
-      },
-      {
-        title: '详情',
-        color: 'primary' as const,
-        icon: <FileCopy fontSize="small" />,
-        onClick: () => message.info('未实现')
-      }
-    ].map((action, index) => (
-      <Tooltip title={action.title} key={index}>
-        <IconButton size="small" color={action.color} onClick={action.onClick}>
-          {action.icon}
-        </IconButton>
-      </Tooltip>
-    ))}
-  </Box>
-)
-
 export interface Column<T> {
   headerName: string
   key: keyof T | 'operate'
@@ -111,7 +68,48 @@ const TableData: React.FC<TableDataProps> = () => {
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => renderActionButtons()
+      renderCell: () => (
+        <Box>
+          {[
+            {
+              title: '转单',
+              color: 'primary' as const,
+              icon: <SwapHoriz fontSize="small" />,
+              onClick: () => message.info('未实现')
+            },
+            {
+              title: '退单',
+              color: 'primary' as const,
+              icon: <Undo fontSize="small" />,
+              onClick: () => message.info('未实现')
+            },
+            {
+              title: '办结',
+              color: 'primary' as const,
+              icon: <CheckCircle fontSize="small" />,
+              onClick: () => message.info('未实现')
+            },
+            {
+              title: '暂停',
+              color: 'primary' as const,
+              icon: <PauseCircle fontSize="small" />,
+              onClick: () => message.info('未实现')
+            },
+            {
+              title: '详情',
+              color: 'primary' as const,
+              icon: <FileCopy fontSize="small" />,
+              onClick: () => message.info('未实现')
+            }
+          ].map((action, index) => (
+            <Tooltip title={action.title} key={index}>
+              <IconButton size="small" color={action.color} onClick={action.onClick}>
+                {action.icon}
+              </IconButton>
+            </Tooltip>
+          ))}
+        </Box>
+      )
     }
   ]
 
