@@ -104,11 +104,6 @@ const FormDialog: React.FC<FormDialogProps> = ({
     ]
   )
 
-  const formFields = [
-    { label: '报修人', type: 'text', id: 'repairName', required: true },
-    { label: '联系方式', type: 'text', id: 'tel', required: true }
-  ]
-
   return (
     <Dialog
       fullWidth
