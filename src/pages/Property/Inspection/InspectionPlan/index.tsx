@@ -77,7 +77,7 @@ const RepairSettingsIndex = () => {
         <FormSearch setDelOpen={setDelOpen} selectedRows={selectedRows} />
         <Box sx={contentBoxStyle}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h6">巡检项目</Typography>
+            <Typography variant="h6">巡检计划(凌晨2点更新)</Typography>
             <Button
               size="small"
               variant="contained"
