@@ -78,7 +78,35 @@ const TableData: React.FC<TableDataProps> = () => {
     { key: 'repairName', headerName: '报修人', align: 'center' },
     { key: 'tel', headerName: '报修人电话', align: 'center' },
     { key: 'appointmentTime', headerName: '预约时间', align: 'center' },
-    { key: 'statusCd', headerName: '状态', align: 'center' },
+    {
+      key: 'statusCd',
+      headerName: '状态',
+      align: 'center',
+      renderCell: row =>
+        row.statusCd === 1000
+          ? '未派单'
+          : row.statusCd === 1100
+            ? '接单'
+            : row.statusCd === 1200
+              ? '退单'
+              : row.statusCd === 1300
+                ? '转单'
+                : row.statusCd === 1400
+                  ? '申请支付'
+                  : row.statusCd === 1500
+                    ? '支付失败'
+                    : row.statusCd === 1700
+                      ? '待评价'
+                      : row.statusCd === 1800
+                        ? '电话回访'
+                        : row.statusCd === 1900
+                          ? '办理完成'
+                          : row.statusCd === 2000
+                            ? '未办理结单'
+                            : row.statusCd === 2001
+                              ? '暂停'
+                              : ''
+    },
     {
       key: 'operate',
       headerName: '操作',
