@@ -77,6 +77,7 @@ export interface RepairPoolParams {
   repairType?: string
   startTime?: string
   endTime?: string
+  hasReturnVisit?: string
 }
 
 export interface FindRepairPoolReply {
