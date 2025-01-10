@@ -10,6 +10,7 @@ import systemSetting from './modules/platform/systemSetting'
 import communitys from './modules/property/communitys'
 import houses from './modules/property/houses'
 import repair from './modules/property/repair'
+import inspection from './modules/property/inspection'
 import organizations from './modules/property/organizations'
 import systemSettings from './modules/property/systemSettings'
 
@@ -75,6 +76,7 @@ const useAllRoutes = (): IRouter[] => {
         ...communitys,
         ...houses,
         ...repair,
+        ...inspection,
         ...organizations,
         ...systemSettings
       ]
