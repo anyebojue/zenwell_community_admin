@@ -100,14 +100,14 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => (
+      renderCell: row => (
         <Box>
           {[
             {
               title: '绑定维修师傅',
               color: 'primary' as const,
               icon: <Build fontSize="small" />,
-              onClick: () => navigate('/repair/repair_staff')
+              onClick: () => navigate('/repair/repair_staff', { state: { id: row?.id } })
             },
             {
               title: '修改',

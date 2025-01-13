@@ -1,4 +1,5 @@
-import { memo, useCallback, useMemo, useState } from 'react'
+import { memo, useCallback, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { RepairStaffReply } from 'api/model/property/repairStaffModel'
 import { deleteByIds, find } from 'modules/property/repairStaff'
@@ -8,7 +9,6 @@ import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import { useNavigate } from 'react-router-dom'
 import FormDialog from './components/FormDialog'
 import TableData from './components/TableData'
 import TreeDialog from './components/TreeDialog'
@@ -23,32 +23,13 @@ const contentBoxStyle = (theme: Theme) => ({
 const RepairSettingsIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
-  const { page, list } = useSelector((state: RootState) => state.RepairStaffSlice)
+  const { page } = useSelector((state: RootState) => state.RepairStaffSlice)
   const [dialogValue, setDialogValue] = useState<RepairStaffReply>()
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [openDialog, setOpenDialog] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [openTree, setOpenTree] = useState(false)
-
-  const getDeleteData = useCallback(() => {
-    if (selectedRows.size > 0) {
-      return list
-        .filter(item => selectedRows.has(item.id))
-        .map(item => ({ id: item.id!, staffName: item.staffName! }))
-        .filter(item => item.id && item.staffName)
-    }
-    if (dialogValue) {
-      return dialogValue.id && dialogValue.staffName
-        ? [{ id: dialogValue.id, staffName: dialogValue.staffName }]
-        : []
-    }
-    return []
-  }, [selectedRows, list, dialogValue])
-
-  const deleteData = useMemo(() => getDeleteData(), [getDeleteData])
-  const deleteIds = deleteData.map(item => item.id)
-  const deleteNames = deleteData.map(item => item.staffName)
 
   const handleDelete = useCallback(
     async (ids: string[]) => {
@@ -118,8 +99,8 @@ const RepairSettingsIndex = () => {
         loading={loading}
         delOpen={delOpen}
         setDelOpen={setDelOpen}
-        userName={deleteNames}
-        onDelete={() => handleDelete(deleteIds)}
+        userName={[dialogValue?.staffName!]}
+        onDelete={() => handleDelete([dialogValue?.id!])}
       />
     </Box>
   )

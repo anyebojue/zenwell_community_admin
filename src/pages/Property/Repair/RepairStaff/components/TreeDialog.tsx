@@ -1,10 +1,8 @@
 import { memo, useCallback, useEffect, useState, useMemo, Dispatch, SetStateAction } from 'react'
-import { TreeViewBaseItem } from '@mui/x-tree-view/models'
-import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
 import { useDispatch, useSelector } from 'react-redux'
-import message from 'components/Message'
-import { find, findOrgUser } from 'modules/platform/organizationInfo'
-import { OrganizationInfoReply } from 'api/model/platform/organizationInfoModel'
+import { find as treeFind, findOrgUser } from 'modules/platform/organizationInfo'
+import { find, create } from 'modules/property/repairStaff'
+import { OrganizationInfoReply, OrgUserReply } from 'api/model/platform/organizationInfoModel'
 import {
   Avatar,
   Box,
@@ -16,7 +14,11 @@ import {
   ListItemText,
   Typography
 } from '@mui/material'
+import { TreeViewBaseItem } from '@mui/x-tree-view/models'
+import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
 import { Work } from '@mui/icons-material'
+import message from 'components/Message'
+import { useLocation } from 'react-router-dom'
 
 interface TreeDialogProps {
   openTree: boolean
@@ -25,9 +27,9 @@ interface TreeDialogProps {
 
 const TreeDialog: React.FC<TreeDialogProps> = ({ openTree, setOpenTree }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { list, orgUserList } = useSelector((state: RootState) => state.OrganizationInfoSlice)
+  const location = useLocation()
+  const { page, list, orgUserList } = useSelector((state: RootState) => state.OrganizationInfoSlice)
   const [dialogValue, setDialogValue] = useState<OrganizationInfoReply>({})
-  const [selectedIndex, setSelectedIndex] = useState('')
 
   const transformData = useMemo(() => {
     const transformNode = (node: OrganizationInfoReply): TreeViewBaseItem => ({
@@ -41,7 +43,7 @@ const TreeDialog: React.FC<TreeDialogProps> = ({ openTree, setOpenTree }) => {
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      const res = await dispatch(find({ 'page.disable': true, pId: '0' }))
+      const res = await dispatch(treeFind({ pId: '0' }))
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
@@ -101,8 +103,31 @@ const TreeDialog: React.FC<TreeDialogProps> = ({ openTree, setOpenTree }) => {
     [fetchOrgUserData]
   )
 
-  const handleListItemClick = (index: string) => {
-    setSelectedIndex(index)
+  const handleListItemClick = async (row: OrgUserReply) => {
+    const closeLoading = message.loading('正在加载列表中，请稍后...')
+    try {
+      const current_community = localStorage.getItem('current_community')
+      const community = JSON.parse(current_community || '')
+      const params = {
+        repairSettingId: location.state?.id,
+        staffId: row.users?.id,
+        staffName: row.users?.username,
+        communityId: community.id
+      }
+      const action = create({ id: dialogValue?.id, ...params })
+      const res = await dispatch(action)
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
+      await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+      message.success('绑定成功')
+      setOpenTree(false)
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      closeLoading()
+    }
   }
 
   return (
@@ -128,8 +153,7 @@ const TreeDialog: React.FC<TreeDialogProps> = ({ openTree, setOpenTree }) => {
             orgUserList.map(item => (
               <ListItemButton
                 key={item.id}
-                selected={selectedIndex === item.id}
-                onClick={() => handleListItemClick(item.id!)}
+                onClick={() => handleListItemClick(item)}
                 sx={{
                   transition: 'transform 0.2s ease-in-out',
                   '&:hover': {
