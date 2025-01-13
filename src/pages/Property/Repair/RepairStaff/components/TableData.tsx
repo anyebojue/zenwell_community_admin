@@ -16,19 +16,11 @@ export interface Column<T> {
 
 interface TableDataProps {
   setDialogValue: Dispatch<SetStateAction<RepairStaffReply | undefined>>
-  selectedRows: Set<string | undefined>
-  setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const TableData: React.FC<TableDataProps> = ({
-  setDialogValue,
-  selectedRows,
-  setSelectedRows,
-  setOpenDialog,
-  setDelOpen
-}) => {
+const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.RepairStaffSlice)
 
@@ -99,15 +91,7 @@ const TableData: React.FC<TableDataProps> = ({
     fetchData()
   }, [fetchData])
 
-  return (
-    <TableList
-      rows={list}
-      columns={columns}
-      setDialogValue={setDialogValue}
-      selectedRows={selectedRows}
-      setSelectedRows={setSelectedRows}
-    />
-  )
+  return <TableList rows={list} columns={columns} setDialogValue={setDialogValue} />
 }
 
 export default memo(TableData)

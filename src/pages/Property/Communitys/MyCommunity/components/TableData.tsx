@@ -33,17 +33,10 @@ export interface Column<T> {
 
 interface TableDataProps {
   setDialogValue: Dispatch<SetStateAction<CommunityReply | undefined>>
-  selectedRows: Set<string | undefined>
-  setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
-const TableData: React.FC<TableDataProps> = ({
-  setDialogValue,
-  selectedRows,
-  setSelectedRows,
-  setOpenDialog
-}) => {
+const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) => {
   const info = useSelector((state: RootState) => state.info.userInfo)
   const [list, setList] = useState(info.community)
 
@@ -73,15 +66,7 @@ const TableData: React.FC<TableDataProps> = ({
     }
   }, [info.community])
 
-  return (
-    <TableList
-      rows={list}
-      columns={columns}
-      setDialogValue={setDialogValue}
-      selectedRows={selectedRows}
-      setSelectedRows={setSelectedRows}
-    />
-  )
+  return <TableList rows={list} columns={columns} setDialogValue={setDialogValue} />
 }
 
 export default memo(TableData)

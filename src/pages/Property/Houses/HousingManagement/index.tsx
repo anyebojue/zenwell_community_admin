@@ -41,7 +41,7 @@ const HousingManagementIndex = () => {
   const [dialogValue, setDialogValue] = useState<HousingManagementReply>({})
   const [dialogRoomValue, setDialogRoomValue] = useState<RoomReply>({})
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
-
+  const [delRoomOpen, setDelRoomOpen] = useState(false)
   const [openImportRoom, setOpenImportRoom] = useState(false)
 
   const [delOpen, setDelOpen] = useState(false)
@@ -280,7 +280,11 @@ const HousingManagementIndex = () => {
           />
         </Box>
         <Box sx={{ width: '100%' }}>
-          <FormSearch dialogValue={dialogValue} />
+          <FormSearch
+            dialogValue={dialogValue}
+            selectedRows={selectedRows}
+            setDelRoomOpen={setDelRoomOpen}
+          />
           <TableData
             dialogValue={dialogValue}
             dialogRoomValue={dialogRoomValue}
@@ -288,6 +292,8 @@ const HousingManagementIndex = () => {
             setOpenRoomDialog={setOpenRoomDialog}
             selectedRows={selectedRows}
             setSelectedRows={setSelectedRows}
+            delRoomOpen={delRoomOpen}
+            setDelRoomOpen={setDelRoomOpen}
           />
         </Box>
       </Stack>

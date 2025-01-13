@@ -9,19 +9,13 @@ import FormDialog from './components/FormDialog'
 
 const MyCommunityIndex = () => {
   const [dialogValue, setDialogValue] = useState<CommunityReply>()
-  const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [openDialog, setOpenDialog] = useState(false)
 
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
       <FormSearch />
-      <TableData
-        setDialogValue={setDialogValue}
-        selectedRows={selectedRows}
-        setSelectedRows={setSelectedRows}
-        setOpenDialog={setOpenDialog}
-      />
+      <TableData setDialogValue={setDialogValue} setOpenDialog={setOpenDialog} />
       <Copyright />
 
       <FormDialog

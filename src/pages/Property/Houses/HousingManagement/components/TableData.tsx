@@ -33,6 +33,8 @@ interface TableDataProps {
   setOpenRoomDialog: Dispatch<SetStateAction<boolean>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
+  delRoomOpen: boolean
+  setDelRoomOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const TableData: React.FC<TableDataProps> = ({
@@ -41,12 +43,14 @@ const TableData: React.FC<TableDataProps> = ({
   setDialogRoomValue,
   setOpenRoomDialog,
   selectedRows,
-  setSelectedRows
+  setSelectedRows,
+  delRoomOpen,
+  setDelRoomOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.RoomSlice)
-  const [delOpen, setDelOpen] = useState(false)
+
   const [loading, setLoading] = useState(false)
 
   const fetchData = useCallback(async () => {
@@ -97,7 +101,7 @@ const TableData: React.FC<TableDataProps> = ({
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-        setDelOpen(false)
+        setDelRoomOpen(false)
         message.success('删除成功')
         fetchData()
       } catch (err: unknown) {
@@ -107,7 +111,7 @@ const TableData: React.FC<TableDataProps> = ({
         setLoading(false)
       }
     },
-    [dispatch, fetchData]
+    [dispatch, fetchData, setDelRoomOpen]
   )
 
   const columns: Column<RoomReply>[] = [
@@ -215,7 +219,7 @@ const TableData: React.FC<TableDataProps> = ({
             title: '删除',
             color: 'error' as const,
             icon: <Delete fontSize="small" />,
-            onClick: () => setDelOpen(true)
+            onClick: () => setDelRoomOpen(true)
           },
           {
             title: row.userId !== '-1' ? '退房' : '交房',
@@ -265,8 +269,8 @@ const TableData: React.FC<TableDataProps> = ({
       />
       <DeleteModal
         loading={loading}
-        delOpen={delOpen}
-        setDelOpen={setDelOpen}
+        delOpen={delRoomOpen}
+        setDelOpen={setDelRoomOpen}
         userName={deleteNames}
         onDelete={() => handleDelete(deleteIds)}
       />

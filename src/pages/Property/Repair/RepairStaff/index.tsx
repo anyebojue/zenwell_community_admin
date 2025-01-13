@@ -25,7 +25,6 @@ const RepairSettingsIndex = () => {
   const navigate = useNavigate()
   const { page } = useSelector((state: RootState) => state.RepairStaffSlice)
   const [dialogValue, setDialogValue] = useState<RepairStaffReply>()
-  const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [openDialog, setOpenDialog] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -84,8 +83,6 @@ const RepairSettingsIndex = () => {
           </Box>
           <TableData
             setDialogValue={setDialogValue}
-            selectedRows={selectedRows}
-            setSelectedRows={setSelectedRows}
             setOpenDialog={setOpenDialog}
             setDelOpen={setDelOpen}
           />

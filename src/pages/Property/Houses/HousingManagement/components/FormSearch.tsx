@@ -1,9 +1,9 @@
-import { ChangeEvent, memo, useState, useCallback } from 'react'
+import { ChangeEvent, memo, useState, useCallback, Dispatch, SetStateAction } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { HousingManagementReply } from 'api/model/property/housingManagementModel'
 import { find } from 'modules/property/room'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
-import { History, Search } from '@mui/icons-material'
+import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 import { RoomParams } from 'api/model/property/roomModel'
@@ -26,9 +26,11 @@ const textFieldStyles = {
 
 interface FormSearchProps {
   dialogValue: HousingManagementReply
+  selectedRows: Set<string | undefined>
+  setDelRoomOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
+const FormSearch: React.FC<FormSearchProps> = ({ dialogValue, selectedRows, setDelRoomOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.OrganizationInfoSlice)
   const [searchParams, setSearchParams] = useState<RoomParams>({
@@ -193,6 +195,21 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
           }}
         >
           重置
+        </Button>
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
+          startIcon={<Delete />}
+          sx={buttonStyles('#B22222', '#8B0000')}
+          onClick={() => {
+            if (![...selectedRows].length) {
+              return message.warning('请选择至少一项')
+            }
+            setDelRoomOpen(true)
+          }}
+        >
+          批量删除
         </Button>
       </Stack>
     </Box>
