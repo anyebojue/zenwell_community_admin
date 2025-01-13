@@ -88,8 +88,11 @@ const FormDialog: React.FC<FormDialogProps> = ({
       event.preventDefault()
       setLoading(true)
       try {
+        const current_community = localStorage.getItem('current_community')
+        const communityId = JSON.parse(current_community || '')
         const params = {
           ...formData,
+          communityId: communityId.id,
           pId: dialogType === 'add' ? dialogValue?.id : dialogValue?.pId
         }
         const action =

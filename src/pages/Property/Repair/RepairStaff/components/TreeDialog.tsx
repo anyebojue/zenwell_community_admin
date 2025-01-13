@@ -5,7 +5,17 @@ import { useDispatch, useSelector } from 'react-redux'
 import message from 'components/Message'
 import { find, findOrgUser } from 'modules/platform/organizationInfo'
 import { OrganizationInfoReply } from 'api/model/platform/organizationInfoModel'
-import { Avatar, Box, Dialog, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material'
+import {
+  Avatar,
+  Box,
+  Dialog,
+  Divider,
+  List,
+  ListItemAvatar,
+  ListItemButton,
+  ListItemText,
+  Typography
+} from '@mui/material'
 import { Work } from '@mui/icons-material'
 
 interface TreeDialogProps {
@@ -17,6 +27,7 @@ const TreeDialog: React.FC<TreeDialogProps> = ({ openTree, setOpenTree }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { list, orgUserList } = useSelector((state: RootState) => state.OrganizationInfoSlice)
   const [dialogValue, setDialogValue] = useState<OrganizationInfoReply>({})
+  const [selectedIndex, setSelectedIndex] = useState('')
 
   const transformData = useMemo(() => {
     const transformNode = (node: OrganizationInfoReply): TreeViewBaseItem => ({
@@ -63,8 +74,9 @@ const TreeDialog: React.FC<TreeDialogProps> = ({ openTree, setOpenTree }) => {
   useEffect(() => {
     if (openTree) {
       fetchData()
+      fetchOrgUserData('9032183211253301249')
     }
-  }, [fetchData, openTree])
+  }, [fetchData, fetchOrgUserData, openTree])
 
   useEffect(() => {
     if (!list || list.length === 0) {
@@ -89,13 +101,18 @@ const TreeDialog: React.FC<TreeDialogProps> = ({ openTree, setOpenTree }) => {
     [fetchOrgUserData]
   )
 
+  const handleListItemClick = (index: string) => {
+    setSelectedIndex(index)
+  }
+
   return (
     <Dialog fullWidth onClose={() => setOpenTree(false)} open={openTree}>
-      <Box sx={{ display: 'flex', width: '100%' }}>
+      <Box sx={{ display: 'flex', p: 2 }}>
         <RichTreeView
+          sx={{ width: '300px', mr: 2 }}
           items={transformData}
-          defaultExpandedItems={['9027438861059358721']}
-          selectedItems={dialogValue?.id || ''}
+          defaultExpandedItems={['9032183211253301249']}
+          selectedItems={dialogValue?.id ?? ''}
           onSelectedItemsChange={(_, selectedItemId) => {
             if (!selectedItemId) return
             const item = findItemById(list, selectedItemId)
@@ -103,17 +120,33 @@ const TreeDialog: React.FC<TreeDialogProps> = ({ openTree, setOpenTree }) => {
           }}
           expansionTrigger="iconContainer" // 只有点击左边的按钮才展开
         />
-        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-          {orgUserList.map(item => (
-            <ListItem key={item.id}>
-              <ListItemAvatar>
-                <Avatar>
-                  <Work />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary={item.users?.username} secondary={item.users?.mobile} />
-            </ListItem>
-          ))}
+        <Divider orientation="vertical" flexItem />
+        <List sx={{ ml: 2, width: '100%', bgcolor: 'background.paper' }}>
+          {orgUserList.length === 0 ? (
+            <Typography sx={{ textAlign: 'center', color: 'gray' }}>暂无数据</Typography>
+          ) : (
+            orgUserList.map(item => (
+              <ListItemButton
+                key={item.id}
+                selected={selectedIndex === item.id}
+                onClick={() => handleListItemClick(item.id!)}
+                sx={{
+                  transition: 'transform 0.2s ease-in-out',
+                  '&:hover': {
+                    transform: 'scale(1.05)',
+                    backgroundColor: 'rgba(0, 0, 0, 0.08)'
+                  }
+                }}
+              >
+                <ListItemAvatar>
+                  <Avatar>
+                    <Work />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary={item.users?.username} secondary={item.users?.mobile} />
+              </ListItemButton>
+            ))
+          )}
         </List>
       </Box>
     </Dialog>

@@ -8,6 +8,7 @@ import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
+import { useNavigate } from 'react-router-dom'
 import FormDialog from './components/FormDialog'
 import TableData from './components/TableData'
 import TreeDialog from './components/TreeDialog'
@@ -21,6 +22,7 @@ const contentBoxStyle = (theme: Theme) => ({
 
 const RepairSettingsIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.RepairStaffSlice)
   const [dialogValue, setDialogValue] = useState<RepairStaffReply>()
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
@@ -83,7 +85,7 @@ const RepairSettingsIndex = () => {
                 variant="contained"
                 color="error"
                 startIcon={<Close />}
-                onClick={() => setOpenDialog(true)}
+                onClick={() => navigate(-1)}
               >
                 返回
               </Button>

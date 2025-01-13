@@ -162,7 +162,7 @@ const InfoIndex = () => {
           </Stack>
           <RichTreeView
             items={transformData}
-            defaultExpandedItems={['9027438861059358721']}
+            defaultExpandedItems={['9032183211253301249']}
             selectedItems={dialogValue?.id || ''}
             onSelectedItemsChange={(_, selectedItemId) => {
               if (!selectedItemId) return
