@@ -61,13 +61,15 @@ const TableData: React.FC<TableDataProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.CommunityAnnouncementSlice)
+  const current_community = localStorage.getItem('current_community')
+  const community = JSON.parse(current_community || '')
 
   const columns: Column<CommunityAnnouncementReply>[] = [
     { key: 'photo', headerName: '头部照片', align: 'center' },
     { key: 'title', headerName: '公示标题', align: 'center' },
     { key: 'type', headerName: '公示类型', align: 'center' },
     { key: 'createdAt', headerName: '公示时间', align: 'center' },
-    { key: 'communityId', headerName: '发布人', align: 'center' },
+    { key: 'communityId', headerName: '发布人', align: 'center', renderCell: () => community.name },
     {
       key: 'operate',
       headerName: '操作',

@@ -58,8 +58,8 @@ class Request {
           // 获取 communityId 和 userId 等其他参数
           const current_community = localStorage.getItem('current_community')
           if (!config.url.includes('/info') && current_community) {
-            const communityId = JSON.parse(current_community)
-            queryParams.push(`communityId=${communityId.id}`)
+            const community = JSON.parse(current_community)
+            queryParams.push(`communityId=${community.id}`)
           }
 
           // 仅保留去重后的 params 中的必要参数（排除 _t）

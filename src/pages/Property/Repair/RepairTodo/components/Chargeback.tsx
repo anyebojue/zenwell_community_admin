@@ -69,7 +69,6 @@ const Chargeback: React.FC<ChargebackProps> = ({
       event.preventDefault()
       setLoading(true)
       try {
-        console.log(111)
         const current_community = localStorage.getItem('current_community')
         const community = JSON.parse(current_community || '')
         const params = {

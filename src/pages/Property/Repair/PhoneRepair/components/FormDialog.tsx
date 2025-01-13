@@ -63,16 +63,16 @@ const FormDialog: React.FC<FormDialogProps> = ({
       setLoading(true)
       try {
         const current_community = localStorage.getItem('current_community')
-        const communityId = JSON.parse(current_community || '')
+        const community = JSON.parse(current_community || '')
         let params = { ...formData }
         if (repairObjType === 1) {
-          params = { ...params, communityId: communityId?.id }
+          params = { ...params, communityId: community?.id }
         } else if (repairObjType === 2) {
-          params = { ...params, floorId: floorValue, communityId: communityId?.id }
+          params = { ...params, floorId: floorValue, communityId: community?.id }
         } else if (repairObjType === 3) {
-          params = { ...params, unitId: unitValue, communityId: communityId?.id }
+          params = { ...params, unitId: unitValue, communityId: community?.id }
         } else if (repairObjType === 4) {
-          params = { ...params, roomId: roomValue, communityId: communityId?.id }
+          params = { ...params, roomId: roomValue, communityId: community?.id }
         }
         const action = create(params)
         const res = await dispatch(action)

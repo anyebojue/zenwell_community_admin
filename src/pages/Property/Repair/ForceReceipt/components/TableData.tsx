@@ -48,10 +48,12 @@ interface TableDataProps {
 const TableData: React.FC<TableDataProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.RepairPoolSlice)
+  const current_community = localStorage.getItem('current_community')
+  const community = JSON.parse(current_community || '')
 
   const columns: Column<RepairPoolReply>[] = [
     { key: 'id', headerName: '工单编码', align: 'center' },
-    { key: 'communityId', headerName: '位置', align: 'center' },
+    { key: 'communityId', headerName: '位置', align: 'center', renderCell: () => community.name },
     {
       key: 'repairSetting',
       headerName: '报修类型',
