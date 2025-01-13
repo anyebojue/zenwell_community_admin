@@ -110,6 +110,7 @@ const RepairPoolIndex = () => {
             setDelOpen={setDelOpen}
           />
           <TableData
+            dialogValue={dialogValue}
             selectedButton={selectedButton}
             setDialogValue={setDialogValue}
             selectedRows={selectedRows}

@@ -117,7 +117,7 @@ const TableData: React.FC<TableDataProps> = () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
       const res = await dispatch(
-        find({ 'page.num': page.num, 'page.size': page.size, statusCd: 1000 })
+        find({ 'page.num': page.num, 'page.size': page.size, statusCd: 1100 })
       )
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)

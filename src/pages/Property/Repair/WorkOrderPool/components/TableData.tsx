@@ -1,4 +1,4 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RepairPoolReply } from 'api/model/property/repairPoolModel'
 import { find } from 'modules/property/repairPool'
@@ -7,6 +7,7 @@ import { Box, Tooltip, IconButton } from '@mui/material'
 import { Delete, Edit, FileCopy, Send } from '@mui/icons-material'
 import message from 'components/Message'
 import TableList from './TableList'
+import SendOrders from './SendOrders'
 
 export interface Column<T> {
   headerName: string
@@ -16,6 +17,7 @@ export interface Column<T> {
 }
 
 interface TableDataProps {
+  dialogValue: RepairPoolReply | undefined
   selectedButton: number
   setDialogValue: Dispatch<SetStateAction<RepairPoolReply | undefined>>
   selectedRows: Set<string | undefined>
@@ -25,6 +27,7 @@ interface TableDataProps {
 }
 
 const TableData: React.FC<TableDataProps> = ({
+  dialogValue,
   selectedButton,
   setDialogValue,
   selectedRows,
@@ -34,7 +37,7 @@ const TableData: React.FC<TableDataProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.RepairPoolSlice)
-  console.log(list)
+  const [sendOpen, setSendOpen] = useState(false)
 
   const columns: Column<RepairPoolReply>[] = [
     { key: 'id', headerName: '工单编码', align: 'center' },
@@ -68,7 +71,7 @@ const TableData: React.FC<TableDataProps> = ({
                   title: '派单',
                   color: 'primary' as const,
                   icon: <Send fontSize="small" />,
-                  onClick: () => message.info('未实现')
+                  onClick: () => setSendOpen(true)
                 }
               : null,
             {
@@ -141,13 +144,16 @@ const TableData: React.FC<TableDataProps> = ({
   }, [fetchData, fetchRepairSettingData])
 
   return (
-    <TableList
-      rows={list}
-      columns={columns}
-      setDialogValue={setDialogValue}
-      selectedRows={selectedRows}
-      setSelectedRows={setSelectedRows}
-    />
+    <>
+      <TableList
+        rows={list}
+        columns={columns}
+        setDialogValue={setDialogValue}
+        selectedRows={selectedRows}
+        setSelectedRows={setSelectedRows}
+      />
+      <SendOrders dialogValue={dialogValue} sendOpen={sendOpen} setSendOpen={setSendOpen} />
+    </>
   )
 }
 
