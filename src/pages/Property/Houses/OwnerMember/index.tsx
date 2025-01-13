@@ -150,7 +150,11 @@ const InfoIndex = () => {
           </Box>
         </Box>
         <Box sx={{ width: '350%' }}>
-          <FormSearch dialogValue={dialogValue} />
+          <FormSearch
+            dialogValue={dialogValue}
+            selectedRows={selectedRows}
+            setDelOpen={setDelOpen}
+          />
           <TableData
             dialogValue={dialogValue}
             setDialogValue={setDialogValue}

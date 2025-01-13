@@ -1,9 +1,9 @@
-import { ChangeEvent, memo, useState, useCallback } from 'react'
+import { ChangeEvent, memo, useState, useCallback, Dispatch, SetStateAction } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { OwnerReply } from 'api/model/property/ownerModel'
 import { findOrgUser } from 'modules/platform/organizationInfo'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
-import { History, Search } from '@mui/icons-material'
+import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 
@@ -25,9 +25,11 @@ const textFieldStyles = {
 
 interface FormSearchProps {
   dialogValue: OwnerReply | undefined
+  selectedRows: Set<string | undefined>
+  setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
+const FormSearch: React.FC<FormSearchProps> = ({ dialogValue, selectedRows, setDelOpen }) => {
   console.log(dialogValue)
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.OwnerSlice)
@@ -169,6 +171,21 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
           }}
         >
           重置
+        </Button>
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
+          startIcon={<Delete />}
+          sx={buttonStyles('#B22222', '#8B0000')}
+          onClick={() => {
+            if (![...selectedRows].length) {
+              return message.warning('请选择至少一项')
+            }
+            setDelOpen(true)
+          }}
+        >
+          批量删除
         </Button>
       </Stack>
     </Box>
