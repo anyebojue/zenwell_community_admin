@@ -142,6 +142,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             ))}
           </TextField>
         </FormControl>
+      </Stack>
+      <Stack direction="row" spacing={3} component="form" sx={{ mb: 1.5 }}>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             select
@@ -159,8 +161,6 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             ))}
           </TextField>
         </FormControl>
-      </Stack>
-      <Stack direction="row" spacing={3} component="form" sx={{ mb: 1.5 }}>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             select
@@ -245,6 +245,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             ))}
           </TextField>
         </FormControl>
+      </Stack>
+      <Stack direction="row" spacing={3} component="form" sx={{ mb: 1.5 }}>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             select
@@ -265,43 +267,43 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             ))}
           </TextField>
         </FormControl>
-      </Stack>
-      <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          startIcon={<Search />}
-          sx={buttonStyles('#2660ad', '#1d428a')}
-          onClick={handleSearch}
-        >
-          查询
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          startIcon={<History />}
-          sx={buttonStyles('darkgray', '#696969')}
-          onClick={() => {
-            setSearchParams({
-              id: '',
-              repairName: '',
-              tel: '',
-              repairSettingId: ''
-            })
-            fetchData({
-              id: '',
-              repairName: '',
-              tel: '',
-              repairSettingId: '',
-              'page.num': page.num,
-              'page.size': page.size
-            })
-          }}
-        >
-          重置
-        </Button>
+        <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            startIcon={<Search />}
+            sx={buttonStyles('#2660ad', '#1d428a')}
+            onClick={handleSearch}
+          >
+            查询
+          </Button>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            startIcon={<History />}
+            sx={buttonStyles('darkgray', '#696969')}
+            onClick={() => {
+              setSearchParams({
+                id: '',
+                repairName: '',
+                tel: '',
+                repairSettingId: ''
+              })
+              fetchData({
+                id: '',
+                repairName: '',
+                tel: '',
+                repairSettingId: '',
+                'page.num': page.num,
+                'page.size': page.size
+              })
+            }}
+          >
+            重置
+          </Button>
+        </Stack>
       </Stack>
     </Box>
   )

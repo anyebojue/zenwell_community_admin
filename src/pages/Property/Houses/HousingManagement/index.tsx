@@ -21,7 +21,7 @@ const treeViewStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
   borderRadius: '15px',
   padding: '15px 15px',
-  width: '100%'
+  width: '250px'
 })
 
 const buttonCommonStyle = (color: string = '#2660ad', height: string = '32px') => ({
@@ -279,7 +279,7 @@ const HousingManagementIndex = () => {
             expansionTrigger="iconContainer" // 只有点击左边的按钮才展开
           />
         </Box>
-        <Box sx={{ width: '450%' }}>
+        <Box sx={{ width: '100%' }}>
           <FormSearch dialogValue={dialogValue} />
           <TableData
             dialogValue={dialogValue}

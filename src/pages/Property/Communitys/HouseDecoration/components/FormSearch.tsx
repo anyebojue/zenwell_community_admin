@@ -168,60 +168,60 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             ))}
           </TextField>
         </FormControl>
-        <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Search />}
-            sx={buttonStyles('#2660ad', '#1d428a')}
-            onClick={handleSearch}
-          >
-            查询
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<History />}
-            sx={buttonStyles('darkgray', '#696969')}
-            onClick={() => {
-              setSearchParams({
-                repairTypeName: '',
-                repairWay: 0,
-                repairType: '',
-                publicArea: 0,
-                returnVisitFlag: 0
-              })
-              fetchData({
-                repairTypeName: '',
-                repairWay: 0,
-                repairType: '',
-                publicArea: 0,
-                returnVisitFlag: 0,
-                'page.num': page.num,
-                'page.size': page.size
-              })
-            }}
-          >
-            重置
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Delete />}
-            sx={buttonStyles('#B22222', '#8B0000')}
-            onClick={() => {
-              if (![...selectedRows].length) {
-                return message.warning('请选择至少一项')
-              }
-              setDelOpen(true)
-            }}
-          >
-            批量删除
-          </Button>
-        </Stack>
+      </Stack>
+      <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
+          startIcon={<Search />}
+          sx={buttonStyles('#2660ad', '#1d428a')}
+          onClick={handleSearch}
+        >
+          查询
+        </Button>
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
+          startIcon={<History />}
+          sx={buttonStyles('darkgray', '#696969')}
+          onClick={() => {
+            setSearchParams({
+              repairTypeName: '',
+              repairWay: 0,
+              repairType: '',
+              publicArea: 0,
+              returnVisitFlag: 0
+            })
+            fetchData({
+              repairTypeName: '',
+              repairWay: 0,
+              repairType: '',
+              publicArea: 0,
+              returnVisitFlag: 0,
+              'page.num': page.num,
+              'page.size': page.size
+            })
+          }}
+        >
+          重置
+        </Button>
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
+          startIcon={<Delete />}
+          sx={buttonStyles('#B22222', '#8B0000')}
+          onClick={() => {
+            if (![...selectedRows].length) {
+              return message.warning('请选择至少一项')
+            }
+            setDelOpen(true)
+          }}
+        >
+          批量删除
+        </Button>
       </Stack>
     </Box>
   )

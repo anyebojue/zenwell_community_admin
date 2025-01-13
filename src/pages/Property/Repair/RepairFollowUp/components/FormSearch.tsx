@@ -142,45 +142,45 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             ))}
           </TextField>
         </FormControl>
-        <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Search />}
-            sx={buttonStyles('#2660ad', '#1d428a')}
-            onClick={handleSearch}
-          >
-            查询
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<History />}
-            sx={buttonStyles('darkgray', '#696969')}
-            onClick={() => {
-              setSearchParams({
-                id: '',
-                repairName: '',
-                tel: '',
-                repairSettingId: '',
-                hasReturnVisit: ''
-              })
-              fetchData({
-                id: '',
-                repairName: '',
-                tel: '',
-                repairSettingId: '',
-                hasReturnVisit: '',
-                'page.num': page.num,
-                'page.size': page.size
-              })
-            }}
-          >
-            重置
-          </Button>
-        </Stack>
+      </Stack>
+      <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
+          startIcon={<Search />}
+          sx={buttonStyles('#2660ad', '#1d428a')}
+          onClick={handleSearch}
+        >
+          查询
+        </Button>
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
+          startIcon={<History />}
+          sx={buttonStyles('darkgray', '#696969')}
+          onClick={() => {
+            setSearchParams({
+              id: '',
+              repairName: '',
+              tel: '',
+              repairSettingId: '',
+              hasReturnVisit: ''
+            })
+            fetchData({
+              id: '',
+              repairName: '',
+              tel: '',
+              repairSettingId: '',
+              hasReturnVisit: '',
+              'page.num': page.num,
+              'page.size': page.size
+            })
+          }}
+        >
+          重置
+        </Button>
       </Stack>
     </Box>
   )

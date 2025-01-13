@@ -67,7 +67,7 @@ const RepairPoolIndex = () => {
       <Stack sx={{ mt: 2, mb: 1.5, width: '100%' }} direction="row" spacing={3}>
         <ButtonGroup
           sx={{
-            width: '200px'
+            width: '150px'
           }}
           orientation="vertical"
           aria-label="Vertical button group"
