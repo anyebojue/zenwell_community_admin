@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkzenwell_admin=self.webpackChunkzenwell_admin||[]).push([["8366"],{1057:function(e,n,l){l.r(n),l.d(n,{default:function(){return d}});var i=l(59250),s=l(17313);let d=(0,s.memo)(()=>(0,i.jsxs)(i.Fragment,{children:[(0,i.jsx)("div",{children:"111111"}),(0,i.jsx)("div",{})]}))}}]);
-//# sourceMappingURL=8366.61185b95163284a1.js.map
