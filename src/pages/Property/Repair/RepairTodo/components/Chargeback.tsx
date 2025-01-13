@@ -20,13 +20,17 @@ import { find } from 'modules/property/repairStaff'
 import { find as findPool } from 'modules/property/repairPool'
 import { update } from 'modules/property/repairPool'
 
-interface SendOrdersProps {
+interface ChargebackProps {
   dialogValue: RepairPoolReply | undefined
-  sendOpen: boolean
-  setSendOpen: Dispatch<SetStateAction<boolean>>
+  chargebackOpen: boolean
+  setChargebackOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const SendOrders: React.FC<SendOrdersProps> = ({ dialogValue, sendOpen, setSendOpen }) => {
+const Chargeback: React.FC<ChargebackProps> = ({
+  dialogValue,
+  chargebackOpen,
+  setChargebackOpen
+}) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.RepairStaffSlice)
   const [loading, setLoading] = useState(false)
@@ -51,11 +55,21 @@ const SendOrders: React.FC<SendOrdersProps> = ({ dialogValue, sendOpen, setSendO
     fetchData()
   }, [fetchData])
 
+  useEffect(() => {
+    if (dialogValue) {
+      setFormData({
+        staff_id: dialogValue?.repairLog?.[dialogValue?.repairLog.length - 1].staffId!,
+        content: ''
+      })
+    }
+  }, [dialogValue])
+
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
       setLoading(true)
       try {
+        console.log(111)
         const current_community = localStorage.getItem('current_community')
         const community = JSON.parse(current_community || '')
         const params = {
@@ -68,13 +82,14 @@ const SendOrders: React.FC<SendOrdersProps> = ({ dialogValue, sendOpen, setSendO
             staff_name: list.filter(item => item.staffId === formData.staff_id)[0]?.staffName
           }
         }
+        console.log(params)
         const action = update({ ...params })
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-        message.success('派单成功')
-        setSendOpen(false)
+        message.success('转单成功')
+        setChargebackOpen(false)
         await dispatch(findPool({ 'page.num': page.num, 'page.size': page.size }))
       } catch (err: unknown) {
         setLoading(false)
@@ -91,7 +106,7 @@ const SendOrders: React.FC<SendOrdersProps> = ({ dialogValue, sendOpen, setSendO
       list,
       page.num,
       page.size,
-      setSendOpen
+      setChargebackOpen
     ]
   )
 
@@ -99,21 +114,22 @@ const SendOrders: React.FC<SendOrdersProps> = ({ dialogValue, sendOpen, setSendO
     <Dialog
       fullWidth
       maxWidth="sm"
-      open={sendOpen}
-      onClose={() => setSendOpen(false)}
+      open={chargebackOpen}
+      onClose={() => setChargebackOpen(false)}
       PaperProps={{ component: 'form', onSubmit: handleSubmit }}
     >
-      <DialogTitle>报修派单</DialogTitle>
+      <DialogTitle>报修转单</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>报修师傅：</FormLabel>
             <TextField
+              disabled
               placeholder="请选择"
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.staff_id}
+              value={formData.staff_id || ''}
               onChange={e => setFormData({ ...formData, staff_id: e.target.value })}
               variant="outlined"
             >
@@ -140,7 +156,7 @@ const SendOrders: React.FC<SendOrdersProps> = ({ dialogValue, sendOpen, setSendO
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" color="error" onClick={() => setSendOpen(false)}>
+        <Button variant="contained" color="error" onClick={() => setChargebackOpen(false)}>
           取消
         </Button>
         <Button
@@ -158,4 +174,4 @@ const SendOrders: React.FC<SendOrdersProps> = ({ dialogValue, sendOpen, setSendO
   )
 }
 
-export default memo(SendOrders)
+export default memo(Chargeback)

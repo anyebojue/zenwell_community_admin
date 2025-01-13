@@ -20,13 +20,17 @@ import { find } from 'modules/property/repairStaff'
 import { find as findPool } from 'modules/property/repairPool'
 import { update } from 'modules/property/repairPool'
 
-interface SendOrdersProps {
+interface TransferOfOrderProps {
   dialogValue: RepairPoolReply | undefined
-  sendOpen: boolean
-  setSendOpen: Dispatch<SetStateAction<boolean>>
+  transferOpen: boolean
+  setTransferOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const SendOrders: React.FC<SendOrdersProps> = ({ dialogValue, sendOpen, setSendOpen }) => {
+const TransferOfOrder: React.FC<TransferOfOrderProps> = ({
+  dialogValue,
+  transferOpen,
+  setTransferOpen
+}) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.RepairStaffSlice)
   const [loading, setLoading] = useState(false)
@@ -48,8 +52,10 @@ const SendOrders: React.FC<SendOrdersProps> = ({ dialogValue, sendOpen, setSendO
   }, [dispatch])
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    if (transferOpen) {
+      fetchData()
+    }
+  }, [fetchData, transferOpen])
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
@@ -73,8 +79,8 @@ const SendOrders: React.FC<SendOrdersProps> = ({ dialogValue, sendOpen, setSendO
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-        message.success('派单成功')
-        setSendOpen(false)
+        message.success('转单成功')
+        setTransferOpen(false)
         await dispatch(findPool({ 'page.num': page.num, 'page.size': page.size }))
       } catch (err: unknown) {
         setLoading(false)
@@ -91,7 +97,7 @@ const SendOrders: React.FC<SendOrdersProps> = ({ dialogValue, sendOpen, setSendO
       list,
       page.num,
       page.size,
-      setSendOpen
+      setTransferOpen
     ]
   )
 
@@ -99,11 +105,11 @@ const SendOrders: React.FC<SendOrdersProps> = ({ dialogValue, sendOpen, setSendO
     <Dialog
       fullWidth
       maxWidth="sm"
-      open={sendOpen}
-      onClose={() => setSendOpen(false)}
+      open={transferOpen}
+      onClose={() => setTransferOpen(false)}
       PaperProps={{ component: 'form', onSubmit: handleSubmit }}
     >
-      <DialogTitle>报修派单</DialogTitle>
+      <DialogTitle>报修转单</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -140,7 +146,7 @@ const SendOrders: React.FC<SendOrdersProps> = ({ dialogValue, sendOpen, setSendO
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" color="error" onClick={() => setSendOpen(false)}>
+        <Button variant="contained" color="error" onClick={() => setTransferOpen(false)}>
           取消
         </Button>
         <Button
@@ -158,4 +164,4 @@ const SendOrders: React.FC<SendOrdersProps> = ({ dialogValue, sendOpen, setSendO
   )
 }
 
-export default memo(SendOrders)
+export default memo(TransferOfOrder)

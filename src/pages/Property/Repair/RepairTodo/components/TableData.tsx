@@ -1,4 +1,4 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RepairPoolReply } from 'api/model/property/repairPoolModel'
 import { find } from 'modules/property/repairPool'
@@ -7,6 +7,8 @@ import { Box, Tooltip, IconButton } from '@mui/material'
 import { SwapHoriz, Undo, CheckCircle, PauseCircle, FileCopy } from '@mui/icons-material'
 import message from 'components/Message'
 import TableList from './TableList'
+import TransferOfOrder from './TransferOfOrder'
+import Chargeback from './Chargeback'
 
 export interface Column<T> {
   headerName: string
@@ -23,6 +25,9 @@ interface TableDataProps {
 const TableData: React.FC<TableDataProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.RepairPoolSlice)
+  const [dialogValue, setDialogValue] = useState<RepairPoolReply | undefined>()
+  const [transferOpen, setTransferOpen] = useState(false)
+  const [chargebackOpen, setChargebackOpen] = useState(false)
 
   const columns: Column<RepairPoolReply>[] = [
     { key: 'communityId', headerName: '位置', align: 'center' },
@@ -75,13 +80,13 @@ const TableData: React.FC<TableDataProps> = () => {
               title: '转单',
               color: 'primary' as const,
               icon: <SwapHoriz fontSize="small" />,
-              onClick: () => message.info('未实现')
+              onClick: () => setTransferOpen(true)
             },
             {
               title: '退单',
               color: 'primary' as const,
               icon: <Undo fontSize="small" />,
-              onClick: () => message.info('未实现')
+              onClick: () => setChargebackOpen(true)
             },
             {
               title: '办结',
@@ -152,7 +157,21 @@ const TableData: React.FC<TableDataProps> = () => {
     fetchRepairSettingData()
   }, [fetchData, fetchRepairSettingData])
 
-  return <TableList rows={list} columns={columns} />
+  return (
+    <>
+      <TableList rows={list} columns={columns} setDialogValue={setDialogValue} />
+      <TransferOfOrder
+        dialogValue={dialogValue}
+        transferOpen={transferOpen}
+        setTransferOpen={setTransferOpen}
+      />
+      <Chargeback
+        dialogValue={dialogValue}
+        chargebackOpen={chargebackOpen}
+        setChargebackOpen={setChargebackOpen}
+      />
+    </>
+  )
 }
 
 export default memo(TableData)

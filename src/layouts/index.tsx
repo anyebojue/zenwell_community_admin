@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useRoutes, useLocation, useNavigate } from 'react-router-dom'
 import useAllRoutes, { IRouter } from 'routes'
 import useDynamicTabs from 'hooks/useDynamicTabs'
-import { getUserInfo, permissionMenuPaths } from 'modules/global'
+import { getUserInfo } from 'modules/global'
 import { CssBaseline, Box, Stack, Tabs, Tab } from '@mui/material'
 import { Close } from '@mui/icons-material'
 import AppTheme from 'theme/AppTheme'
@@ -79,16 +79,16 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
       return
     }
     // 检查权限
-    if (info.id !== '' && !isLoginPage) {
-      const paths = permissionMenuPaths(info.permission.menus, routes)
-      if (paths.length === 0) {
-        navigate('/login')
-        return message.warning('您没有权限访问')
-      }
-      if (!paths.includes(location.pathname)) {
-        navigate(paths[0])
-      }
-    }
+    // if (info.id !== '' && !isLoginPage) {
+    //   const paths = permissionMenuPaths(info.permission.menus, routes)
+    //   if (paths.length === 0) {
+    //     navigate('/login')
+    //     return message.warning('您没有权限访问')
+    //   }
+    //   if (!paths.includes(location.pathname)) {
+    //     navigate(paths[0])
+    //   }
+    // }
     localStorage.setItem('user_info', JSON.stringify(info))
   }, [dispatch, navigate, info, isLoginPage, location.pathname, routes])
 
