@@ -2,6 +2,7 @@ import * as path from 'path'
 import { defineConfig } from '@rspack/cli'
 import { rspack } from '@rspack/core'
 import RefreshPlugin from '@rspack/plugin-react-refresh'
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -38,15 +39,18 @@ export default defineConfig({
     }
   },
   performance: {
-    hints: isDev ? false : 'warning', // 在开发模式下禁用警告
-    maxAssetSize: 1000000, // 增加最大资源大小限制 (1000 KiB)
-    maxEntrypointSize: 1000000 // 增加最大入口点资源大小限制 (1000 KiB)
+    hints: isDev ? false : 'warning',
+    maxAssetSize: 2000000, // 提高单个资源的最大大小限制到 2 MB
+    maxEntrypointSize: 2000000 // 提高入口点的最大大小限制到 2 MB
   },
   module: {
     rules: [
       {
         test: /\.(png|jpe?g|gif|svg)$/i,
-        type: 'asset'
+        type: 'asset/resource', // 图片资源单独存储并引用 URL
+        generator: {
+          filename: 'assets/images/[name].[hash][ext]' // 控制图片文件输出路径
+        }
       },
       {
         test: /\.(jsx?|tsx?)$/,
@@ -67,7 +71,8 @@ export default defineConfig({
                   }
                 }
               },
-              env: { targets }
+              env: { targets },
+              cache: true // 启用缓存
             }
           }
         ]
@@ -79,16 +84,22 @@ export default defineConfig({
       template: './index.html',
       inject: 'body'
     }),
-    new RefreshPlugin() // React 刷新插件
+    new RefreshPlugin(), // React 刷新插件
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static', // 生成静态 HTML 文件
+      openAnalyzer: false // 不自动打开浏览器
+    })
   ].filter(Boolean),
   optimization: {
     minimize: true, // 启用代码压缩
-    usedExports: true, // 启用树摇
+    usedExports: true, // 启用树摇 Tree Shaking
     splitChunks: {
       chunks: 'all',
-      minSize: 20000, // 最小拆分大小
-      maxSize: 500000, // 单个文件最大限制
-      minChunks: 1, // 至少引用一次时拆分
+      minSize: 30000, // 默认值 30 KB，增大以减少过小的包
+      maxSize: 300000, // 将模块限制为 300 KB，避免过多的小包
+      minChunks: 2, // 至少引用两次才会被拆分
+      maxInitialRequests: 30, // 限制入口点的最大并行请求数
+      maxAsyncRequests: 30, // 限制按需加载的最大并行请求数
       automaticNameDelimiter: '-',
       cacheGroups: {
         defaultVendors: {
@@ -101,16 +112,29 @@ export default defineConfig({
           priority: -20,
           reuseExistingChunk: true
         },
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+          priority: -10
+        },
         react: {
           test: /[\\/]node_modules[\\/]react|react-dom/,
           name: 'react',
-          chunks: 'all'
+          chunks: 'all',
+          priority: -5
         },
         mui: {
           test: /[\\/]node_modules[\\/]@mui[\\/]/,
+          name: 'mui',
           chunks: 'all',
-          priority: -10,
-          reuseExistingChunk: true
+          priority: -5
+        },
+        commons: {
+          test: /[\\/]src[\\/]/, // 将业务中复用率较高的部分打包
+          name: 'commons',
+          minChunks: 2,
+          priority: -20
         }
       }
     }
