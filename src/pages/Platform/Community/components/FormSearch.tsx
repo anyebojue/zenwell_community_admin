@@ -1,15 +1,6 @@
-import {
-  ChangeEvent,
-  Dispatch,
-  memo,
-  SetStateAction,
-  useState,
-  useCallback,
-  useEffect
-} from 'react'
+import { ChangeEvent, Dispatch, memo, SetStateAction, useState, useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CommunityParams } from 'api/model/platform/communityModel'
-import { CityAreaReply } from 'api/model/cityModel'
 import { find } from 'modules/platform/community'
 import { Box, FormControl, Button, MenuItem, Stack, TextField, FormLabel } from '@mui/material'
 import { Add, Delete, History, Search } from '@mui/icons-material'
@@ -42,9 +33,8 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.CommunitySlice)
   const { cityData } = useSelector((state: RootState) => state.info)
-  const cityList = [...cityData.list].reverse()
-  const [cities, setCities] = useState<CityAreaReply[]>([])
-  const [counties, setCounties] = useState<CityAreaReply[]>([])
+
+  const cityList = useMemo(() => [...cityData.list].reverse(), [cityData.list])
 
   const [openDialog, setOpenDialog] = useState(false)
   const [searchParams, setSearchParams] = useState<CommunityParams>({
@@ -55,37 +45,34 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
     county_code: ''
   })
 
-  useEffect(() => {
-    if (searchParams.province_code) {
-      setCities(
-        cityList.filter(
-          item => item.parentAreaCode === searchParams.province_code && item.areaLevel === '202'
-        )
-      )
-    } else {
-      setCities([])
-    }
-  }, [searchParams.province_code, cityList])
+  const provinces = useMemo(() => cityList.filter(item => item.areaLevel === '101'), [cityList])
 
-  useEffect(() => {
-    if (searchParams.city_code) {
-      setCounties(
-        cityList.filter(
-          item => item.parentAreaCode === searchParams.city_code && item.areaLevel === '303'
-        )
-      )
-    } else {
-      setCounties([])
-    }
-  }, [searchParams.city_code, cityList])
+  const cities = useMemo(
+    () =>
+      searchParams.province_code
+        ? cityList.filter(
+            item => item.parentAreaCode === searchParams.province_code && item.areaLevel === '202'
+          )
+        : [],
+    [searchParams.province_code, cityList]
+  )
 
-  const handleInputChange =
+  const counties = useMemo(
+    () =>
+      searchParams.city_code
+        ? cityList.filter(
+            item => item.parentAreaCode === searchParams.city_code && item.areaLevel === '303'
+          )
+        : [],
+    [searchParams.city_code, cityList]
+  )
+
+  const handleInputChange = useCallback(
     (field: keyof CommunityParams) => (event: ChangeEvent<HTMLInputElement>) => {
-      setSearchParams(prevData => ({
-        ...prevData,
-        [field]: event.target.value
-      }))
-    }
+      setSearchParams(prev => ({ ...prev, [field]: event.target.value }))
+    },
+    []
+  )
 
   const fetchData = useCallback(
     async (params: CommunityParams & PaginationParams) => {
@@ -97,8 +84,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-      } catch (err: unknown) {
-        closeLoading()
+      } catch (err) {
         if (err instanceof Error) message.error(err.message)
       } finally {
         closeLoading()
@@ -107,13 +93,19 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
     [dispatch, page.num, page.size]
   )
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     fetchData({ ...searchParams, city_code: searchParams.county_code })
-  }
+  }, [fetchData, searchParams])
+
+  const handleReset = useCallback(() => {
+    const initialParams = { id: '', name: '', city_code: '' }
+    setSearchParams(initialParams)
+    fetchData({ ...initialParams, 'page.num': page.num, 'page.size': page.size })
+  }, [fetchData, page.num, page.size])
 
   return (
     <Box>
-      <Stack direction="row" spacing={3} component="form" sx={{ mt: 2, mb: 1.5 }}>
+      <Stack direction="row" spacing={3} sx={{ mt: 2, mb: 1.5 }}>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
@@ -136,10 +128,10 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             onChange={handleInputChange('name')}
           />
         </FormControl>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <FormLabel>小区地区：</FormLabel>
           <Stack direction="row" spacing={1}>
-            <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+            <FormControl sx={{ width: { xs: '100%', md: '25ch' } }}>
               <TextField
                 select
                 size="small"
@@ -153,18 +145,15 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
                     county_code: ''
                   }))
                 }
-                variant="outlined"
               >
-                {cityList
-                  .filter(item => item.areaLevel === '101')
-                  .map(option => (
-                    <MenuItem key={option.areaCode} value={option.areaCode}>
-                      {option.areaName}
-                    </MenuItem>
-                  ))}
+                {provinces.map(option => (
+                  <MenuItem key={option.areaCode} value={option.areaCode}>
+                    {option.areaName}
+                  </MenuItem>
+                ))}
               </TextField>
             </FormControl>
-            <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+            <FormControl sx={{ width: { xs: '100%', md: '25ch' } }}>
               <TextField
                 select
                 size="small"
@@ -173,7 +162,6 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
                 onChange={e =>
                   setSearchParams(prev => ({ ...prev, city_code: e.target.value, county_code: '' }))
                 }
-                variant="outlined"
               >
                 {cities.map(option => (
                   <MenuItem key={option.areaCode} value={option.areaCode}>
@@ -182,14 +170,13 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
                 ))}
               </TextField>
             </FormControl>
-            <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+            <FormControl sx={{ width: { xs: '100%', md: '25ch' } }}>
               <TextField
                 select
                 size="small"
                 label="请选择县"
                 value={searchParams.county_code}
                 onChange={e => setSearchParams(prev => ({ ...prev, county_code: e.target.value }))}
-                variant="outlined"
               >
                 {counties.map(option => (
                   <MenuItem key={option.areaCode} value={option.areaCode}>
@@ -201,7 +188,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
           </Stack>
         </Box>
       </Stack>
-      <Stack direction="row" spacing={1} component="form" sx={{ mb: 2 }}>
+      <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
         <Button
           size="small"
           variant="contained"
@@ -218,16 +205,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
           color="error"
           startIcon={<History />}
           sx={buttonStyles('darkgray', '#696969')}
-          onClick={() => {
-            setSearchParams({ id: '', name: '', city_code: '' })
-            fetchData({
-              id: '',
-              name: '',
-              city_code: '',
-              'page.num': page.num,
-              'page.size': page.size
-            })
-          }}
+          onClick={handleReset}
         >
           重置
         </Button>
@@ -248,8 +226,9 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
           startIcon={<Delete />}
           sx={buttonStyles('#B22222', '#8B0000')}
           onClick={() => {
-            if (![...selectedRows].length) {
-              return message.warning('请选择至少一项')
+            if (selectedRows.size === 0) {
+              message.warning('请选择至少一项')
+              return
             }
             setDelOpen(true)
           }}
