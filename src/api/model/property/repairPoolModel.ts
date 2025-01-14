@@ -78,6 +78,7 @@ export interface RepairPoolReply {
 }
 
 export interface RepairPoolParams {
+  needForceHand?: number
   id?: string
   status?: number
   remark?: string

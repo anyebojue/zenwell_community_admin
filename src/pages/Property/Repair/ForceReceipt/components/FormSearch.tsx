@@ -48,7 +48,7 @@ const FormSearch: React.FC<SearchFormProps> = () => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
-          find({ 'page.num': page.num, 'page.size': page.size, ...params, statusCd: 1100 })
+          find({ 'page.num': page.num, 'page.size': page.size, ...params, needForceHand: 1 })
         )
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
