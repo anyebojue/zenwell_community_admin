@@ -67,44 +67,51 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: row => (
-        <Box>
-          {[
-            row.statusCd && row.statusCd === 1000
-              ? {
-                  title: '派单',
-                  color: 'primary' as const,
-                  icon: <Send fontSize="small" />,
-                  onClick: () => setSendOpen(true)
-                }
-              : null,
-            {
-              title: '详情',
-              color: 'primary' as const,
-              icon: <FileCopy fontSize="small" />,
-              onClick: () => navigate('/repair/work-order-details', { state: { value: row } })
-            },
-            {
-              title: '修改',
-              color: 'secondary' as const,
-              icon: <Edit fontSize="small" />,
-              onClick: () => setOpenDialog(true)
-            },
-            {
-              title: '删除',
-              color: 'error' as const,
-              icon: <Delete fontSize="small" />,
-              onClick: () => setDelOpen(true)
-            }
-          ].map((action, index) => (
-            <Tooltip title={action?.title} key={index}>
-              <IconButton size="small" color={action?.color} onClick={action?.onClick}>
-                {action?.icon}
-              </IconButton>
-            </Tooltip>
-          ))}
-        </Box>
-      )
+      renderCell: row => {
+        const actions = [
+          {
+            title: '派单',
+            color: 'primary' as const,
+            icon: <Send fontSize="small" />,
+            onClick: () => setSendOpen(true)
+          },
+          {
+            title: '详情',
+            color: 'primary' as const,
+            icon: <FileCopy fontSize="small" />,
+            onClick: () => navigate('/repair/work-order-details', { state: { value: row } })
+          },
+          {
+            title: '修改',
+            color: 'secondary' as const,
+            icon: <Edit fontSize="small" />,
+            onClick: () => setOpenDialog(true)
+          },
+          {
+            title: '删除',
+            color: 'error' as const,
+            icon: <Delete fontSize="small" />,
+            onClick: () => setDelOpen(true)
+          }
+        ]
+        const filteredActions = actions.filter(action => {
+          if (row.statusCd === 1000) {
+            return ['派单', '详情', '修改', '删除'].includes(action.title)
+          }
+          return action.title !== '派单'
+        })
+        return (
+          <Box>
+            {filteredActions.map((action, index) => (
+              <Tooltip title={action.title} key={index}>
+                <IconButton size="small" color={action.color} onClick={action.onClick}>
+                  {action.icon}
+                </IconButton>
+              </Tooltip>
+            ))}
+          </Box>
+        )
+      }
     }
   ]
 
