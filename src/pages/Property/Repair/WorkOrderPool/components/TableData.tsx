@@ -6,6 +6,7 @@ import { find as findRepairSetting } from 'modules/property/repairSetting'
 import { Box, Tooltip, IconButton } from '@mui/material'
 import { Delete, Edit, FileCopy, Send } from '@mui/icons-material'
 import message from 'components/Message'
+import { useNavigate } from 'react-router-dom'
 import TableList from './TableList'
 import SendOrders from './SendOrders'
 
@@ -36,6 +37,7 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.RepairPoolSlice)
   const current_community = localStorage.getItem('current_community')
   const community = JSON.parse(current_community || '')
@@ -68,7 +70,7 @@ const TableData: React.FC<TableDataProps> = ({
       renderCell: row => (
         <Box>
           {[
-            row.statusCd === 1000
+            row.statusCd && row.statusCd === 1000
               ? {
                   title: '派单',
                   color: 'primary' as const,
@@ -80,7 +82,7 @@ const TableData: React.FC<TableDataProps> = ({
               title: '详情',
               color: 'primary' as const,
               icon: <FileCopy fontSize="small" />,
-              onClick: () => message.info('未实现')
+              onClick: () => navigate('/repair/work-order-details', { state: { value: row } })
             },
             {
               title: '修改',

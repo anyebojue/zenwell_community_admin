@@ -1,24 +1,11 @@
-import React, { memo, useCallback, useEffect, useState } from 'react'
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Theme,
-  Typography
-} from '@mui/material'
-import Grid from '@mui/material/Grid2'
-import { buttonStyles } from 'components/DeleteModal'
-import { Close, WarningRounded } from '@mui/icons-material'
-import message from 'components/Message'
-import { get } from 'modules/property/owner'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { memo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { update } from 'modules/property/room'
+import { RepairLogReply, RepairPoolReply } from 'api/model/property/repairPoolModel'
+import { Box, Button, Chip, Theme, Typography } from '@mui/material'
+import { DataGrid } from '@mui/x-data-grid'
+import Grid from '@mui/material/Grid2'
+import { Close } from '@mui/icons-material'
+import { buttonStyles } from 'components/DeleteModal'
 
 const contentBoxStyle = (theme: Theme) => ({
   mt: 2.5,
@@ -28,61 +15,157 @@ const contentBoxStyle = (theme: Theme) => ({
   width: '100%'
 })
 
-const CheckOut: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>()
+const statusMap: Record<number, string> = {
+  1000: '未派单',
+  1100: '接单',
+  1200: '退单',
+  1300: '转单',
+  1400: '申请支付',
+  1500: '支付失败',
+  1700: '待评价',
+  1800: '电话回访',
+  1900: '办理完成',
+  2000: '未办理结单',
+  2001: '暂停'
+}
+
+const logStatusMap: Record<number, string> = {
+  10001: '处理中',
+  10002: '结单',
+  10003: '退单',
+  10004: '转单',
+  10005: '提交',
+  10006: '已派单',
+  10007: '已评价',
+  10008: '已回访',
+  10009: '待支付',
+  11000: '待评价',
+  12000: '已支付',
+  12001: '暂停',
+  12002: '到达现场'
+}
+
+const WorkOrderDetails: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const data = location.state?.value
-  const { owner } = useSelector((state: RootState) => state.OwnerSlice)
-  const [delOpen, setDelOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [ownerId, setOwnerId] = useState<string | undefined>()
+  const currentCommunity = localStorage.getItem('current_community')
+  const community = JSON.parse(currentCommunity || '{}')
+  const data: RepairPoolReply = location.state?.value
 
-  const fetchData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(get({ id: data.userId || data.id }))
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
-      }
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch, data.userId, data.id])
-
-  useEffect(() => {
-    fetchData()
-  }, [fetchData])
-
-  const handleOut = async () => {
-    setLoading(true)
-    const params = {
-      id: ownerId,
-      userId: '-1',
-      state: '2002',
-      startTime: new Date().toISOString().split('T')[0],
-      endTime: new Date().toISOString().split('T')[0]
-    }
-    try {
-      const res = await dispatch(update(params))
-      if ('error' in res && res.error?.message) throw new Error(res.error.message)
-      navigate(-1)
-      message.success('退房成功')
-    } catch (err: unknown) {
-      setLoading(false)
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      setLoading(false)
-    }
+  const renderDetails = () => {
+    const details = [
+      { label: '工单编码', value: data.id },
+      { label: '报修类型', value: data.repairSetting?.repairTypeName },
+      { label: '报修人', value: data.repairName },
+      { label: '联系方式', value: data.tel },
+      { label: '位置', value: community.name },
+      { label: '预约时间', value: data.appointmentTime },
+      { label: '状态', value: statusMap[data.statusCd!] },
+      { label: '报修内容', value: data.context }
+    ]
+    return details.map((item, index) => (
+      <Grid key={index} size={{ md: 4 }} sx={{ my: 1 }}>
+        <Box>
+          {item.label}：{item.value}
+        </Box>
+      </Grid>
+    ))
   }
+
+  const renderImages = () => {
+    if (!data.image?.picAfter && !data.image?.picBefore) return null
+    return (
+      <Box sx={contentBoxStyle}>
+        <Typography variant="h6">工单图片</Typography>
+        <Box sx={{ display: 'flex', gap: 2, pt: 2, borderTop: '1px solid #e7eaec' }}>
+          {data.image.picAfter && (
+            <img style={{ width: '200px', height: 'auto' }} src={data.image.picAfter} alt="After" />
+          )}
+          {data.image.picBefore && (
+            <img
+              style={{ width: '200px', height: 'auto' }}
+              src={data.image.picBefore}
+              alt="Before"
+            />
+          )}
+        </Box>
+      </Box>
+    )
+  }
+
+  const renderLogTable = () => (
+    <DataGrid
+      disableRowSelectionOnClick
+      disableColumnMenu
+      rows={data.repairLog}
+      columns={[
+        { field: 'id', headerName: '序号', headerAlign: 'center', align: 'center', flex: 1 },
+        {
+          field: 'staffName',
+          headerName: '处理人',
+          headerAlign: 'center',
+          align: 'center',
+          flex: 1
+        },
+        {
+          field: 'statusCd',
+          headerName: '状态',
+          headerAlign: 'center',
+          align: 'center',
+          flex: 1,
+          renderCell: ({ row }: { row: RepairLogReply }) => (
+            <Chip label={logStatusMap[row.statusCd!]} />
+          )
+        },
+        {
+          field: 'startTime',
+          headerName: '处理开始时间',
+          width: 200,
+          headerAlign: 'center',
+          align: 'center',
+          flex: 1
+        },
+        {
+          field: 'endTime',
+          headerName: '处理结束时间',
+          width: 200,
+          headerAlign: 'center',
+          align: 'center',
+          flex: 1
+        },
+        {
+          field: 'startTime',
+          headerName: '耗时',
+          headerAlign: 'center',
+          align: 'center',
+          flex: 1,
+          renderCell: ({ row }: { row: RepairLogReply }) => {
+            if (!row.endTime || !row.startTime) {
+              return <Chip label="无数据" />
+            }
+            const startTime = new Date(row.startTime)
+            const endTime = new Date(row.endTime)
+            const diffInMs = endTime.getTime() - startTime.getTime()
+            const diffInMinutes = Math.max(0, Math.floor(diffInMs / (1000 * 60))) // 防止负值
+            const hours = Math.floor(diffInMinutes / 60)
+            const minutes = diffInMinutes % 60
+            const label = `${hours}:${minutes.toString().padStart(2, '0')}`
+            return <Chip label={label} />
+          }
+        },
+        { field: 'context', headerName: '意见', headerAlign: 'center', align: 'center', flex: 1 }
+      ]}
+      pageSizeOptions={[25]}
+      initialState={{
+        pagination: { paginationModel: { pageSize: 25 } }
+      }}
+    />
+  )
 
   return (
     <Box>
       <Box sx={contentBoxStyle}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="h6">工单详情</Typography>
           <Button
             size="small"
@@ -95,120 +178,19 @@ const CheckOut: React.FC = () => {
             返回
           </Button>
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', pt: 2, borderTop: '1px solid #e7eaec' }}>
-          <Box sx={{ ml: 7 }}>
-            <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-              {[
-                { label: '工单编码', value: owner.id },
-                { label: '报修类型', value: owner.name },
-                { label: '报修人', value: owner.sex },
-                { label: '联系方式', value: owner.age },
-                { label: '位置', value: owner.idCard },
-                { label: '预约时间', value: owner.link },
-                { label: '状态', value: owner.userId },
-                { label: '报修内容', value: owner.remark }
-              ].map((item, index) => (
-                <Grid key={index} size={{ md: 4 }} sx={{ my: 1 }}>
-                  <Box>
-                    {item.label}：{item.value}
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-          </Box>
+        <Box sx={{ mt: 2, borderTop: '1px solid #e7eaec', pt: 2 }}>
+          <Grid container spacing={2}>
+            {renderDetails()}
+          </Grid>
         </Box>
       </Box>
-
+      {renderImages()}
       <Box sx={contentBoxStyle}>
-        <Box sx={{ display: 'flex', alignItems: 'center', pt: 2, borderTop: '1px solid #e7eaec' }}>
-          <img
-            style={{ width: '200px', height: '100%' }}
-            src="http://demo.homecommunity.cn/img/noPhoto.jpg"
-            alt="Zenwell Logo"
-          />
-        </Box>
+        <Typography variant="h6">工单流转</Typography>
+        <Box sx={{ mt: 2, borderTop: '1px solid #e7eaec', pt: 2 }}>{renderLogTable()}</Box>
       </Box>
-
-      {owner.room?.map(items => (
-        <Box key={items.id} sx={contentBoxStyle}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h6">{items.roomNum}房屋 信息</Typography>
-            <Button
-              size="small"
-              variant="contained"
-              color="error"
-              startIcon={<Close />}
-              sx={buttonStyles('#2660ad', '#1d428a')}
-              onClick={() => {
-                setDelOpen(true)
-                setOwnerId(items.id)
-              }}
-            >
-              我要退房
-            </Button>
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              pt: 2,
-              borderTop: '1px solid #e7eaec'
-            }}
-          >
-            <Grid
-              container
-              spacing={{ xs: 2, md: 3 }}
-              columns={{ xs: 4, sm: 8, md: 12 }}
-              sx={{ width: '100%' }}
-            >
-              {[
-                {
-                  label: '房屋编号',
-                  value: `${items.unit?.floor?.name}-${items.unit?.unitNum}-${items.roomNum}`
-                },
-                { label: '楼层', value: items.layer },
-                { label: '房屋ID', value: items.id },
-                { label: '建筑面积', value: items.builtUpArea },
-                { label: '户型', value: items.apartment },
-                { label: '房间数', value: items.section }
-              ].map((item, index) => (
-                <Grid key={index} size={{ xs: 4, sm: 4, md: 3 }} sx={{ ml: 1 }}>
-                  <Box sx={{ ml: 1 }}>
-                    {item.label}：{item.value}
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-          </Box>
-        </Box>
-      ))}
-      <Dialog open={delOpen} onClose={() => setDelOpen(false)}>
-        <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
-          <WarningRounded />
-          <span style={{ margin: '10px' }}>请确认您的操作!</span>
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>确认是否退房，退房后可以再次售卖</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="contained" color="error" onClick={() => setDelOpen(false)}>
-            取消
-          </Button>
-          <Button
-            variant="contained"
-            type="submit"
-            color="error"
-            sx={buttonStyles('#2660ad', '#1d428a')}
-            disabled={loading}
-            startIcon={loading && <CircularProgress size={24} color="inherit" />}
-            onClick={handleOut}
-          >
-            {loading ? '确定中...' : '确定'}
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   )
 }
 
-export default memo(CheckOut)
+export default memo(WorkOrderDetails)

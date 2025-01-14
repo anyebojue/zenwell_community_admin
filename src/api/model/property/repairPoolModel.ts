@@ -1,7 +1,7 @@
 import { Page } from '../pageModel'
 import { RepairSettingReply } from './repairSettingModel'
 
-interface RepairLogReply {
+export interface RepairLogReply {
   id?: string
   createdAt?: string
   updatedAt?: string
