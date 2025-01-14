@@ -68,6 +68,13 @@ const repair: IRouter[] = [
         meta: {
           title: '强制回单'
         }
+      },
+      {
+        path: 'work-order-details',
+        element: load('Property/Repair/WorkOrderDetails'),
+        meta: {
+          title: '工单详情'
+        }
       }
     ]
   }
