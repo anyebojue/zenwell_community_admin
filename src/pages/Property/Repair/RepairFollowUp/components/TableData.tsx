@@ -1,4 +1,4 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RepairPoolReply } from 'api/model/property/repairPoolModel'
 import { find } from 'modules/property/repairPool'
@@ -8,6 +8,7 @@ import { Feedback, FileCopy } from '@mui/icons-material'
 import message from 'components/Message'
 import { useNavigate } from 'react-router-dom'
 import TableList from './TableList'
+import ReturnVisitFlag from './ReturnVisitFlag'
 
 export interface Column<T> {
   headerName: string
@@ -17,16 +18,17 @@ export interface Column<T> {
 }
 
 interface TableDataProps {
-  selectedRows: Set<string | undefined>
-  setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
+  dialogValue: RepairPoolReply | undefined
+  setDialogValue: Dispatch<SetStateAction<RepairPoolReply | undefined>>
 }
 
-const TableData: React.FC<TableDataProps> = () => {
+const TableData: React.FC<TableDataProps> = ({ dialogValue, setDialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.RepairPoolSlice)
   const current_community = localStorage.getItem('current_community')
   const community = JSON.parse(current_community || '')
+  const [returnVisitFlag, setReturnVisitFlag] = useState(false)
 
   const columns: Column<RepairPoolReply>[] = [
     { key: 'id', headerName: '工单编码', align: 'center' },
@@ -51,7 +53,7 @@ const TableData: React.FC<TableDataProps> = () => {
               title: '回访',
               color: 'primary' as const,
               icon: <Feedback fontSize="small" />,
-              onClick: () => message.info('未实现')
+              onClick: () => setReturnVisitFlag(true)
             },
             {
               title: '详情',
@@ -75,7 +77,7 @@ const TableData: React.FC<TableDataProps> = () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
       const res = await dispatch(
-        find({ 'page.num': page.num, 'page.size': page.size, statusCd: 1800 })
+        find({ 'page.num': page.num, 'page.size': page.size, repairType: '1' })
       )
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
@@ -110,7 +112,16 @@ const TableData: React.FC<TableDataProps> = () => {
     fetchRepairSettingData()
   }, [fetchData, fetchRepairSettingData])
 
-  return <TableList rows={list} columns={columns} />
+  return (
+    <>
+      <TableList rows={list} columns={columns} setDialogValue={setDialogValue} />
+      <ReturnVisitFlag
+        dialogValue={dialogValue}
+        returnVisitFlag={returnVisitFlag}
+        setReturnVisitFlag={setReturnVisitFlag}
+      />
+    </>
+  )
 }
 
 export default memo(TableData)

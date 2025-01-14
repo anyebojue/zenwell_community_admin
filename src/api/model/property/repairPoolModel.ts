@@ -1,6 +1,15 @@
 import { Page } from '../pageModel'
 import { RepairSettingReply } from './repairSettingModel'
 
+export interface RepairReturnVisitParams {
+  id?: string
+  communityId?: string
+  repairSettingId?: string
+  statusCd?: number
+  visitType?: number
+  context?: string
+}
+
 export interface RepairLogReply {
   id?: string
   createdAt?: string
@@ -78,6 +87,7 @@ export interface RepairPoolParams {
   startTime?: string
   endTime?: string
   hasReturnVisit?: string
+  returnVisitFlag?: number
 }
 
 export interface FindRepairPoolReply {

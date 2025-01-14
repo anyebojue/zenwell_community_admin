@@ -19,6 +19,7 @@ import TransferOfOrder from './TransferOfOrder'
 import Chargeback from './Chargeback'
 import Pause from './Pause'
 import Launch from './Launch'
+import Conclude from './Conclude'
 
 export interface Column<T> {
   headerName: string
@@ -41,6 +42,7 @@ const TableData: React.FC<TableDataProps> = () => {
   const [dialogValue, setDialogValue] = useState<RepairPoolReply | undefined>()
   const [transferOpen, setTransferOpen] = useState(false)
   const [chargebackOpen, setChargebackOpen] = useState(false)
+  const [concludeOpen, setConcludeOpen] = useState(false)
   const [activateOpen, setActivateOpen] = useState(false)
   const [pauseOpen, setPauseOpen] = useState(false)
 
@@ -106,7 +108,7 @@ const TableData: React.FC<TableDataProps> = () => {
             title: '办结',
             color: 'primary' as const,
             icon: <CheckCircle fontSize="small" />,
-            onClick: () => message.info('未实现')
+            onClick: () => setConcludeOpen(true)
           },
           {
             title: '暂停',
@@ -199,6 +201,11 @@ const TableData: React.FC<TableDataProps> = () => {
         dialogValue={dialogValue}
         chargebackOpen={chargebackOpen}
         setChargebackOpen={setChargebackOpen}
+      />
+      <Conclude
+        dialogValue={dialogValue}
+        concludeOpen={concludeOpen}
+        setConcludeOpen={setConcludeOpen}
       />
       <Pause dialogValue={dialogValue} pauseOpen={pauseOpen} setPauseOpen={setPauseOpen} />
       <Launch

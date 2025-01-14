@@ -74,7 +74,7 @@ const Pause: React.FC<PauseProps> = ({ dialogValue, pauseOpen, setPauseOpen }) =
         }
         message.success('暂停成功')
         setPauseOpen(false)
-        await dispatch(findPool({ 'page.num': page.num, 'page.size': page.size }))
+        await dispatch(findPool({ 'page.num': page.num, 'page.size': page.size, statusCd: 1100 }))
       } catch (err: unknown) {
         setLoading(false)
         if (err instanceof Error) message.error(err.message)

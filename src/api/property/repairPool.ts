@@ -2,10 +2,12 @@ import { request } from 'utils/request/axios'
 import {
   FindRepairPoolReply,
   RepairPoolParams,
-  RepairPoolReply
+  RepairPoolReply,
+  RepairReturnVisitParams
 } from '../model/property/repairPoolModel'
 
 const ApiPrefix = {
+  CreateRepairReturnVisit: '/auth/repair_return_visit',
   GetRepairPool: '/auth/repair_pool',
   FindRepairPool: '/auth/repair_pool',
   CreateRepairPool: '/auth/repair_pool',
@@ -14,6 +16,20 @@ const ApiPrefix = {
 }
 
 type WritableDraft<T> = { -readonly [K in keyof T]: T[K] }
+
+/**
+ * 报修回访
+ * @param data
+ * @returns
+ */
+export const CreateRepairReturnVisit = (data: RepairReturnVisitParams) => {
+  return request
+    .post({
+      url: ApiPrefix.CreateRepairReturnVisit,
+      data
+    })
+    .then(res => res.data)
+}
 
 /**
  * 查询接口

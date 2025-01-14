@@ -73,23 +73,38 @@ const WorkOrderDetails: React.FC = () => {
   }
 
   const renderImages = () => {
-    if (!data.image?.picAfter && !data.image?.picBefore) return null
     return (
-      <Box sx={contentBoxStyle}>
-        <Typography variant="h6">工单图片</Typography>
-        <Box sx={{ display: 'flex', gap: 2, pt: 2, borderTop: '1px solid #e7eaec' }}>
-          {data.image.picAfter && (
-            <img style={{ width: '200px', height: 'auto' }} src={data.image.picAfter} alt="After" />
-          )}
-          {data.image.picBefore && (
-            <img
-              style={{ width: '200px', height: 'auto' }}
-              src={data.image.picBefore}
-              alt="Before"
-            />
-          )}
-        </Box>
-      </Box>
+      <>
+        {data.image?.picAfter && (
+          <Box sx={contentBoxStyle}>
+            <Typography variant="h6">工单图片</Typography>
+            <Box sx={{ display: 'flex', gap: 2, pt: 2, borderTop: '1px solid #e7eaec' }}>
+              <img
+                style={{ width: '200px', height: 'auto' }}
+                src={data.image.picAfter}
+                alt="After"
+              />
+            </Box>
+          </Box>
+        )}
+        {data.image?.picBefore && (
+          <Box sx={contentBoxStyle}>
+            <Typography variant="h6">工单图片</Typography>
+            <Box sx={{ display: 'flex', gap: 2, pt: 2, borderTop: '1px solid #e7eaec' }}>
+              <img
+                style={{ width: '200px', height: 'auto' }}
+                src={data.image.picAfter}
+                alt="After"
+              />
+              <img
+                style={{ width: '200px', height: 'auto' }}
+                src={data.image.picBefore}
+                alt="Before"
+              />
+            </Box>
+          </Box>
+        )}
+      </>
     )
   }
 

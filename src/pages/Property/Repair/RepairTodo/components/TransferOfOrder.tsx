@@ -81,7 +81,7 @@ const TransferOfOrder: React.FC<TransferOfOrderProps> = ({
         }
         message.success('转单成功')
         setTransferOpen(false)
-        await dispatch(findPool({ 'page.num': page.num, 'page.size': page.size }))
+        await dispatch(findPool({ 'page.num': page.num, 'page.size': page.size, statusCd: 1100 }))
       } catch (err: unknown) {
         setLoading(false)
         if (err instanceof Error) message.error(err.message)

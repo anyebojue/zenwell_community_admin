@@ -1,12 +1,17 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
-import { RepairPoolParams, RepairPoolReply } from 'api/model/property/repairPoolModel'
+import {
+  RepairPoolParams,
+  RepairPoolReply,
+  RepairReturnVisitParams
+} from 'api/model/property/repairPoolModel'
 import {
   FindRepairPool,
   CreateRepairPool,
   UpdateRepairPool,
   DeleteRepairPool,
-  GetRepairPool
+  GetRepairPool,
+  CreateRepairReturnVisit
 } from 'api/property/repairPool'
 
 const namespace = 'RepairPool'
@@ -32,6 +37,14 @@ const initialState: IInitialState = {
   list: [],
   repairPool: {}
 }
+
+export const createRepairReturnVisit = createAsyncThunk(
+  `${namespace}/create`,
+  async (data: RepairReturnVisitParams) => {
+    const res = await CreateRepairReturnVisit(data)
+    return res
+  }
+)
 
 export const get = createAsyncThunk(`${namespace}/get`, async (params: { id: string }) => {
   const res = await GetRepairPool(params)

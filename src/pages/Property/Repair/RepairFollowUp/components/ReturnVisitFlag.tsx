@@ -1,4 +1,4 @@
-import React, { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from 'react'
+import React, { Dispatch, memo, SetStateAction, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RepairPoolReply } from 'api/model/property/repairPoolModel'
 import {
@@ -16,53 +16,23 @@ import {
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
-import { find } from 'modules/property/repairStaff'
-import { find as findPool } from 'modules/property/repairPool'
-import { update } from 'modules/property/repairPool'
+import { createRepairReturnVisit, find as findPool } from 'modules/property/repairPool'
 
-interface ChargebackProps {
+interface ReturnVisitFlagProps {
   dialogValue: RepairPoolReply | undefined
-  chargebackOpen: boolean
-  setChargebackOpen: Dispatch<SetStateAction<boolean>>
+  returnVisitFlag: boolean
+  setReturnVisitFlag: Dispatch<SetStateAction<boolean>>
 }
 
-const Chargeback: React.FC<ChargebackProps> = ({
+const ReturnVisitFlag: React.FC<ReturnVisitFlagProps> = ({
   dialogValue,
-  chargebackOpen,
-  setChargebackOpen
+  returnVisitFlag,
+  setReturnVisitFlag
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.RepairStaffSlice)
+  const { page } = useSelector((state: RootState) => state.RepairPoolSlice)
   const [loading, setLoading] = useState(false)
-  const [formData, setFormData] = useState({ staff_id: '', content: '' })
-
-  const fetchData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(find({ 'page.disable': true }))
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
-      }
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch])
-
-  useEffect(() => {
-    fetchData()
-  }, [fetchData])
-
-  useEffect(() => {
-    if (dialogValue) {
-      setFormData({
-        staff_id: dialogValue?.repairLog?.[dialogValue?.repairLog.length - 1].staffId!,
-        content: ''
-      })
-    }
-  }, [dialogValue])
+  const [formData, setFormData] = useState({ visitType: 0, content: '' })
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
@@ -75,21 +45,16 @@ const Chargeback: React.FC<ChargebackProps> = ({
           id: dialogValue?.id,
           communityId: community.id,
           repairSettingId: dialogValue?.repairSettingId,
-          statusCd: 1200,
-          updateStatusMsg: {
-            ...formData,
-            staff_name: list.filter(item => item.staffId === formData.staff_id)[0]?.staffName
-          }
+          ...formData
         }
-        console.log(params)
-        const action = update({ ...params })
+        const action = createRepairReturnVisit({ ...params })
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-        message.success('退单成功')
-        setChargebackOpen(false)
-        await dispatch(findPool({ 'page.num': page.num, 'page.size': page.size, statusCd: 1100 }))
+        message.success('提交成功')
+        setReturnVisitFlag(false)
+        await dispatch(findPool({ 'page.num': page.num, 'page.size': page.size, repairType: '1' }))
       } catch (err: unknown) {
         setLoading(false)
         if (err instanceof Error) message.error(err.message)
@@ -102,10 +67,9 @@ const Chargeback: React.FC<ChargebackProps> = ({
       dialogValue?.repairSettingId,
       dispatch,
       formData,
-      list,
       page.num,
       page.size,
-      setChargebackOpen
+      setReturnVisitFlag
     ]
   )
 
@@ -113,34 +77,36 @@ const Chargeback: React.FC<ChargebackProps> = ({
     <Dialog
       fullWidth
       maxWidth="sm"
-      open={chargebackOpen}
-      onClose={() => setChargebackOpen(false)}
+      open={returnVisitFlag}
+      onClose={() => setReturnVisitFlag(false)}
       PaperProps={{ component: 'form', onSubmit: handleSubmit }}
     >
-      <DialogTitle>报修退单</DialogTitle>
+      <DialogTitle>回访</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>报修师傅：</FormLabel>
+            <FormLabel>满意度：</FormLabel>
             <TextField
-              disabled
               placeholder="请选择"
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.staff_id || ''}
-              onChange={e => setFormData({ ...formData, staff_id: e.target.value })}
+              value={formData.visitType}
+              onChange={e => setFormData({ ...formData, visitType: Number(e.target.value) })}
               variant="outlined"
             >
-              {list.map(option => (
-                <MenuItem key={option.staffId} value={option.staffId}>
-                  {option.staffName}
+              {[
+                { label: '不满意', value: '0' },
+                { label: '满意', value: '1' }
+              ].map(option => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
                 </MenuItem>
               ))}
             </TextField>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>处理意见：</FormLabel>
+            <FormLabel>回访内容：</FormLabel>
             <TextField
               placeholder="请输入"
               sx={{ width: '80%' }}
@@ -155,7 +121,7 @@ const Chargeback: React.FC<ChargebackProps> = ({
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" color="error" onClick={() => setChargebackOpen(false)}>
+        <Button variant="contained" color="error" onClick={() => setReturnVisitFlag(false)}>
           取消
         </Button>
         <Button
@@ -173,4 +139,4 @@ const Chargeback: React.FC<ChargebackProps> = ({
   )
 }
 
-export default memo(Chargeback)
+export default memo(ReturnVisitFlag)
