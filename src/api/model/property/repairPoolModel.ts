@@ -10,6 +10,21 @@ export interface RepairReturnVisitParams {
   context?: string
 }
 
+export interface RepairReturnVisitReply {
+  id: string
+  createdAt: string
+  updatedAt: string
+  status: number
+  remark: string
+  repairPoolId: string
+  communityId: string
+  visitPersonId: string
+  visitPersonName: string
+  visitType: number
+  context: string
+  statusCd: number
+}
+
 export interface RepairLogReply {
   id?: string
   createdAt?: string
@@ -53,6 +68,7 @@ export interface RepairPoolReply {
   repairFee?: string
   payType?: number
   repairSetting?: RepairSettingReply
+  repairReturnVisit?: RepairReturnVisitReply
   repairLog?: RepairLogReply[]
   image?: {
     content?: string

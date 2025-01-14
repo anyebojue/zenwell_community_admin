@@ -42,7 +42,7 @@ const ReturnVisitFlag: React.FC<ReturnVisitFlagProps> = ({
         const current_community = localStorage.getItem('current_community')
         const community = JSON.parse(current_community || '')
         const params = {
-          id: dialogValue?.id,
+          repairPoolId: dialogValue?.id,
           communityId: community.id,
           repairSettingId: dialogValue?.repairSettingId,
           ...formData

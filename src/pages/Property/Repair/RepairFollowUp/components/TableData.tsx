@@ -46,30 +46,34 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue, setDialogValue }) =>
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: row => (
-        <Box>
-          {[
-            {
-              title: '回访',
-              color: 'primary' as const,
-              icon: <Feedback fontSize="small" />,
-              onClick: () => setReturnVisitFlag(true)
-            },
-            {
-              title: '详情',
-              color: 'primary' as const,
-              icon: <FileCopy fontSize="small" />,
-              onClick: () => navigate('/repair/work-order-details', { state: { value: row } })
-            }
-          ].map((action, index) => (
-            <Tooltip title={action.title} key={index}>
-              <IconButton size="small" color={action.color} onClick={action.onClick}>
-                {action.icon}
-              </IconButton>
-            </Tooltip>
-          ))}
-        </Box>
-      )
+      renderCell: row => {
+        const actions = []
+        if (row.repairReturnVisit?.id === '0') {
+          actions.push({
+            title: '回访',
+            color: 'primary' as const,
+            icon: <Feedback fontSize="small" />,
+            onClick: () => setReturnVisitFlag(true)
+          })
+        }
+        actions.push({
+          title: '详情',
+          color: 'primary' as const,
+          icon: <FileCopy fontSize="small" />,
+          onClick: () => navigate('/repair/work-order-details', { state: { value: row } })
+        })
+        return (
+          <Box>
+            {actions.map((action, index) => (
+              <Tooltip title={action.title} key={index}>
+                <IconButton size="small" color={action.color} onClick={action.onClick}>
+                  {action.icon}
+                </IconButton>
+              </Tooltip>
+            ))}
+          </Box>
+        )
+      }
     }
   ]
 
