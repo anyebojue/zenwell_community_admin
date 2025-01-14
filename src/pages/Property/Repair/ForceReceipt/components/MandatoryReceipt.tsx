@@ -51,7 +51,7 @@ const MandatoryReceipt: React.FC<MandatoryReceiptProps> = ({
           id: dialogValue?.id,
           communityId: community.id,
           repairSettingId: dialogValue?.repairSettingId,
-          statusCd: 1200,
+          statusCd: 1100,
           updateStatusMsg: {
             ...formData
           }
