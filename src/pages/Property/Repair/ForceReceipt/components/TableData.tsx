@@ -6,32 +6,8 @@ import { find as findRepairSetting } from 'modules/property/repairSetting'
 import { Box, Tooltip, IconButton } from '@mui/material'
 import { DoneAll, FileCopy } from '@mui/icons-material'
 import message from 'components/Message'
+import { useNavigate } from 'react-router-dom'
 import TableList from './TableList'
-
-const renderActionButtons = () => (
-  <Box>
-    {[
-      {
-        title: '强制回单',
-        color: 'primary' as const,
-        icon: <DoneAll fontSize="small" />,
-        onClick: () => message.info('未实现')
-      },
-      {
-        title: '详情',
-        color: 'primary' as const,
-        icon: <FileCopy fontSize="small" />,
-        onClick: () => message.info('未实现')
-      }
-    ].map((action, index) => (
-      <Tooltip title={action.title} key={index}>
-        <IconButton size="small" color={action.color} onClick={action.onClick}>
-          {action.icon}
-        </IconButton>
-      </Tooltip>
-    ))}
-  </Box>
-)
 
 export interface Column<T> {
   headerName: string
@@ -47,6 +23,7 @@ interface TableDataProps {
 
 const TableData: React.FC<TableDataProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.RepairPoolSlice)
   const current_community = localStorage.getItem('current_community')
   const community = JSON.parse(current_community || '')
@@ -97,7 +74,30 @@ const TableData: React.FC<TableDataProps> = () => {
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => renderActionButtons()
+      renderCell: row => (
+        <Box>
+          {[
+            {
+              title: '强制回单',
+              color: 'primary' as const,
+              icon: <DoneAll fontSize="small" />,
+              onClick: () => message.info('未实现')
+            },
+            {
+              title: '详情',
+              color: 'primary' as const,
+              icon: <FileCopy fontSize="small" />,
+              onClick: () => navigate('/repair/work-order-details', { state: { value: row } })
+            }
+          ].map((action, index) => (
+            <Tooltip title={action.title} key={index}>
+              <IconButton size="small" color={action.color} onClick={action.onClick}>
+                {action.icon}
+              </IconButton>
+            </Tooltip>
+          ))}
+        </Box>
+      )
     }
   ]
 

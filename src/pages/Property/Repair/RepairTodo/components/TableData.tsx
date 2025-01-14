@@ -13,6 +13,7 @@ import {
   PlayCircle
 } from '@mui/icons-material'
 import message from 'components/Message'
+import { useNavigate } from 'react-router-dom'
 import TableList from './TableList'
 import TransferOfOrder from './TransferOfOrder'
 import Chargeback from './Chargeback'
@@ -33,6 +34,7 @@ interface TableDataProps {
 
 const TableData: React.FC<TableDataProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.RepairPoolSlice)
   const current_community = localStorage.getItem('current_community')
   const community = JSON.parse(current_community || '')
@@ -122,7 +124,7 @@ const TableData: React.FC<TableDataProps> = () => {
             title: '详情',
             color: 'primary' as const,
             icon: <FileCopy fontSize="small" />,
-            onClick: () => message.info('未实现')
+            onClick: () => navigate('/repair/work-order-details', { state: { value: row } })
           }
         ]
         const filteredActions = actions.filter(action => {
