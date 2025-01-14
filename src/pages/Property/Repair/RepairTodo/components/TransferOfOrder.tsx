@@ -68,7 +68,7 @@ const TransferOfOrder: React.FC<TransferOfOrderProps> = ({
           id: dialogValue?.id,
           communityId: community.id,
           repairSettingId: dialogValue?.repairSettingId,
-          statusCd: 1100,
+          statusCd: 1300,
           updateStatusMsg: {
             ...formData,
             staff_name: list.filter(item => item.staffId === formData.staff_id)[0]?.staffName

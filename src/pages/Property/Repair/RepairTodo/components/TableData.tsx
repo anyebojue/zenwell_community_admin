@@ -4,11 +4,20 @@ import { RepairPoolReply } from 'api/model/property/repairPoolModel'
 import { find } from 'modules/property/repairPool'
 import { find as findRepairSetting } from 'modules/property/repairSetting'
 import { Box, Tooltip, IconButton } from '@mui/material'
-import { SwapHoriz, Undo, CheckCircle, PauseCircle, FileCopy } from '@mui/icons-material'
+import {
+  SwapHoriz,
+  Undo,
+  CheckCircle,
+  PauseCircle,
+  FileCopy,
+  PlayCircle
+} from '@mui/icons-material'
 import message from 'components/Message'
 import TableList from './TableList'
 import TransferOfOrder from './TransferOfOrder'
 import Chargeback from './Chargeback'
+import Pause from './Pause'
+import Launch from './Launch'
 
 export interface Column<T> {
   headerName: string
@@ -30,6 +39,8 @@ const TableData: React.FC<TableDataProps> = () => {
   const [dialogValue, setDialogValue] = useState<RepairPoolReply | undefined>()
   const [transferOpen, setTransferOpen] = useState(false)
   const [chargebackOpen, setChargebackOpen] = useState(false)
+  const [activateOpen, setActivateOpen] = useState(false)
+  const [pauseOpen, setPauseOpen] = useState(false)
 
   const columns: Column<RepairPoolReply>[] = [
     { key: 'communityId', headerName: '位置', align: 'center', renderCell: () => community.name },
@@ -75,48 +86,63 @@ const TableData: React.FC<TableDataProps> = () => {
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => (
-        <Box>
-          {[
-            {
-              title: '转单',
-              color: 'primary' as const,
-              icon: <SwapHoriz fontSize="small" />,
-              onClick: () => setTransferOpen(true)
-            },
-            {
-              title: '退单',
-              color: 'primary' as const,
-              icon: <Undo fontSize="small" />,
-              onClick: () => setChargebackOpen(true)
-            },
-            {
-              title: '办结',
-              color: 'primary' as const,
-              icon: <CheckCircle fontSize="small" />,
-              onClick: () => message.info('未实现')
-            },
-            {
-              title: '暂停',
-              color: 'primary' as const,
-              icon: <PauseCircle fontSize="small" />,
-              onClick: () => message.info('未实现')
-            },
-            {
-              title: '详情',
-              color: 'primary' as const,
-              icon: <FileCopy fontSize="small" />,
-              onClick: () => message.info('未实现')
-            }
-          ].map((action, index) => (
-            <Tooltip title={action.title} key={index}>
-              <IconButton size="small" color={action.color} onClick={action.onClick}>
-                {action.icon}
-              </IconButton>
-            </Tooltip>
-          ))}
-        </Box>
-      )
+      renderCell: row => {
+        const actions = [
+          {
+            title: '转单',
+            color: 'primary' as const,
+            icon: <SwapHoriz fontSize="small" />,
+            onClick: () => setTransferOpen(true)
+          },
+          {
+            title: '退单',
+            color: 'primary' as const,
+            icon: <Undo fontSize="small" />,
+            onClick: () => setChargebackOpen(true)
+          },
+          {
+            title: '办结',
+            color: 'primary' as const,
+            icon: <CheckCircle fontSize="small" />,
+            onClick: () => message.info('未实现')
+          },
+          {
+            title: '暂停',
+            color: 'primary' as const,
+            icon: <PauseCircle fontSize="small" />,
+            onClick: () => setPauseOpen(true)
+          },
+          {
+            title: '启动',
+            color: 'primary' as const,
+            icon: <PlayCircle fontSize="small" />,
+            onClick: () => setActivateOpen(true)
+          },
+          {
+            title: '详情',
+            color: 'primary' as const,
+            icon: <FileCopy fontSize="small" />,
+            onClick: () => message.info('未实现')
+          }
+        ]
+        const filteredActions = actions.filter(action => {
+          if (row.statusCd === 2001) {
+            return ['启动', '详情'].includes(action.title)
+          }
+          return action.title !== '启动'
+        })
+        return (
+          <Box>
+            {filteredActions.map((action, index) => (
+              <Tooltip title={action.title} key={index}>
+                <IconButton size="small" color={action.color} onClick={action.onClick}>
+                  {action.icon}
+                </IconButton>
+              </Tooltip>
+            ))}
+          </Box>
+        )
+      }
     }
   ]
 
@@ -171,6 +197,12 @@ const TableData: React.FC<TableDataProps> = () => {
         dialogValue={dialogValue}
         chargebackOpen={chargebackOpen}
         setChargebackOpen={setChargebackOpen}
+      />
+      <Pause dialogValue={dialogValue} pauseOpen={pauseOpen} setPauseOpen={setPauseOpen} />
+      <Launch
+        dialogValue={dialogValue}
+        activateOpen={activateOpen}
+        setActivateOpen={setActivateOpen}
       />
     </>
   )
