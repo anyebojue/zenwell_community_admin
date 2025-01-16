@@ -2,12 +2,13 @@ import { memo, useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { SpectionItemReply } from 'api/model/property/spectionItemModel'
 import { deleteByIds, find } from 'modules/property/spectionItem'
-import { Box, Button, Theme, Typography } from '@mui/material'
-import { Add } from '@mui/icons-material'
+import { Box, Button, Stack, Theme, Typography } from '@mui/material'
+import { Add, Close } from '@mui/icons-material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
+import { useNavigate } from 'react-router-dom'
 import FormSearch from './components/FormSearch'
 import FormDialog from './components/FormDialog'
 import TableData from './components/TableData'
@@ -21,6 +22,7 @@ const contentBoxStyle = (theme: Theme) => ({
 
 const SpectionItemsIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.SpectionItemSlice)
   const [dialogValue, setDialogValue] = useState<SpectionItemReply>()
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
@@ -77,20 +79,31 @@ const SpectionItemsIndex = () => {
         <FormSearch setDelOpen={setDelOpen} selectedRows={selectedRows} />
         <Box sx={contentBoxStyle}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h6">巡检项目</Typography>
-            <Button
-              size="small"
-              variant="contained"
-              color="error"
-              startIcon={<Add />}
-              sx={buttonStyles('#2660ad', '#1d428a')}
-              onClick={() => {
-                setOpenDialog(true)
-                setDialogType('add')
-              }}
-            >
-              添加
-            </Button>
+            <Typography variant="h6">巡检题目</Typography>
+            <Stack direction="row" spacing={1}>
+              <Button
+                size="small"
+                variant="contained"
+                color="error"
+                startIcon={<Close />}
+                onClick={() => navigate(-1)}
+              >
+                返回
+              </Button>
+              <Button
+                size="small"
+                variant="contained"
+                color="error"
+                startIcon={<Add />}
+                sx={buttonStyles('#2660ad', '#1d428a')}
+                onClick={() => {
+                  setOpenDialog(true)
+                  setDialogType('add')
+                }}
+              >
+                添加
+              </Button>
+            </Stack>
           </Box>
           <TableData
             setDialogType={setDialogType}
