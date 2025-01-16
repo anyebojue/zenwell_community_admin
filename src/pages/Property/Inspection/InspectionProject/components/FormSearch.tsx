@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, memo, SetStateAction, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairSettingParams } from 'api/model/property/repairSettingModel'
-import { find } from 'modules/property/repairSetting'
+import { SpectionParams } from 'api/model/property/spectionModel'
+import { find } from 'modules/property/spection'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
 import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -30,15 +30,15 @@ interface SearchFormProps {
 
 const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.RepairSettingSlice)
+  const { page } = useSelector((state: RootState) => state.SpectionSlice)
 
-  const [searchParams, setSearchParams] = useState<RepairSettingParams>({
+  const [searchParams, setSearchParams] = useState<SpectionParams>({
     id: '',
-    repairTypeName: ''
+    itemName: ''
   })
 
   const handleInputChange =
-    (field: keyof RepairSettingParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof SpectionParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -46,7 +46,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
     }
 
   const fetchData = useCallback(
-    async (params: RepairSettingParams & PaginationParams) => {
+    async (params: SpectionParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
@@ -90,8 +90,8 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.repairTypeName}
-            onChange={handleInputChange('repairTypeName')}
+            value={searchParams.itemName}
+            onChange={handleInputChange('itemName')}
           />
         </FormControl>
         <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
@@ -112,22 +112,8 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             startIcon={<History />}
             sx={buttonStyles('darkgray', '#696969')}
             onClick={() => {
-              setSearchParams({
-                repairTypeName: '',
-                repairWay: 0,
-                repairType: '',
-                publicArea: 0,
-                returnVisitFlag: 0
-              })
-              fetchData({
-                repairTypeName: '',
-                repairWay: 0,
-                repairType: '',
-                publicArea: 0,
-                returnVisitFlag: 0,
-                'page.num': page.num,
-                'page.size': page.size
-              })
+              setSearchParams({ id: '', itemName: '' })
+              fetchData({ id: '', itemName: '', 'page.num': page.num, 'page.size': page.size })
             }}
           >
             重置

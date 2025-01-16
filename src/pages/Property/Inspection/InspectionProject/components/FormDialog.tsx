@@ -8,8 +8,8 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairSettingParams, RepairSettingReply } from 'api/model/property/repairSettingModel'
-import { create, find, update } from 'modules/property/repairSetting'
+import { SpectionParams, SpectionReply } from 'api/model/property/spectionModel'
+import { create, find, update } from 'modules/property/spection'
 import {
   Box,
   CircularProgress,
@@ -26,7 +26,7 @@ import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
-  dialogValue?: RepairSettingReply
+  dialogValue?: SpectionReply
   openDialog: boolean
   dialogType: string
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -39,23 +39,17 @@ const FormDialog: React.FC<FormDialogProps> = ({
   setOpenDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.RepairSettingSlice)
+  const { page } = useSelector((state: RootState) => state.SpectionSlice)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(
     () => ({
-      repairTypeName: dialogType === 'edit' ? dialogValue?.repairTypeName || '' : '',
-      repairType: dialogType === 'edit' ? dialogValue?.repairType || '1' : '1',
-      repairWay: dialogType === 'edit' ? dialogValue?.repairWay || 100 : 100,
-      publicArea: dialogType === 'edit' ? dialogValue?.publicArea || 0 : 0,
-      isShow: dialogType === 'edit' ? dialogValue?.isShow || 0 : 0,
-      repairSettingType: dialogType === 'edit' ? dialogValue?.repairSettingType || '1' : '1',
-      returnVisitFlag: dialogType === 'edit' ? dialogValue?.returnVisitFlag || 1 : 1,
+      itemName: dialogType === 'edit' ? dialogValue?.itemName || '' : '',
       remark: dialogType === 'edit' ? dialogValue?.remark || '' : ''
     }),
     [dialogType, dialogValue]
   )
-  const [formData, setFormData] = useState<RepairSettingParams>(initialFormData)
+  const [formData, setFormData] = useState<SpectionParams>(initialFormData)
 
   useEffect(() => {
     setFormData(initialFormData)
@@ -66,7 +60,9 @@ const FormDialog: React.FC<FormDialogProps> = ({
       event.preventDefault()
       setLoading(true)
       try {
-        const params = { ...formData }
+        const current_community = localStorage.getItem('current_community')
+        const community = JSON.parse(current_community || '')
+        const params = { ...formData, communityId: community?.id }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)
@@ -87,7 +83,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
     [dispatch, dialogType, dialogValue, formData, page, setOpenDialog, initialFormData]
   )
 
-  const formFields = [{ label: '巡检项目', type: 'text', id: 'repairTypeName', required: true }]
+  const formFields = [{ label: '巡检项目', type: 'text', id: 'itemName', required: true }]
 
   return (
     <Dialog
@@ -113,7 +109,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
                 size="small"
                 required={required}
                 id={id}
-                value={formData[id as keyof RepairSettingParams]}
+                value={formData[id as keyof SpectionParams]}
                 onChange={e => setFormData({ ...formData, [id]: e.target.value })}
                 autoComplete={type === 'password' ? 'current-password' : ''}
               />

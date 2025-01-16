@@ -1,7 +1,7 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairSettingReply } from 'api/model/property/repairSettingModel'
-import { find } from 'modules/property/repairSetting'
+import { SpectionReply } from 'api/model/property/spectionModel'
+import { find } from 'modules/property/spection'
 import { Box, Tooltip, IconButton } from '@mui/material'
 import { Delete, Quiz, Edit } from '@mui/icons-material'
 import message from 'components/Message'
@@ -54,7 +54,7 @@ export interface Column<T> {
 
 interface TableDataProps {
   setDialogType: Dispatch<SetStateAction<string>>
-  setDialogValue: Dispatch<SetStateAction<RepairSettingReply | undefined>>
+  setDialogValue: Dispatch<SetStateAction<SpectionReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -70,11 +70,11 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.RepairSettingSlice)
+  const { page, list } = useSelector((state: RootState) => state.SpectionSlice)
 
-  const columns: Column<RepairSettingReply>[] = [
+  const columns: Column<SpectionReply>[] = [
     { key: 'id', headerName: '编号', align: 'center' },
-    { key: 'createdAt', headerName: '巡检项目', align: 'center' },
+    { key: 'itemName', headerName: '巡检项目', align: 'center' },
     { key: 'createdAt', headerName: '创建时间', align: 'center' },
     { key: 'remark', headerName: '备注', align: 'center' },
     {

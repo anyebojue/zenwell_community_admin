@@ -22,6 +22,7 @@ import Copyright from 'layouts/components/Copyright'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 import { RolesReply } from 'api/model/platform/rolesModel'
+import AMapExample from 'components/AMapExample'
 import FormDialog from './components/FormDialog'
 
 const treeViewStyle = (theme: Theme) => ({
@@ -171,7 +172,7 @@ const RolesIndex = () => {
                   { label: '创建时间', value: '2025-01-06 15:44:33' },
                   { label: '备注', value: '' }
                 ].map((item, index) => (
-                  <Grid size={{ xs: 12, sm: 6, md: 2 }} key={index}>
+                  <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
                     <Typography variant="body2">
                       {item.label}：{item.value}
                     </Typography>
@@ -205,7 +206,7 @@ const RolesIndex = () => {
               <Tab sx={{ pl: 2, pr: 2 }} label="巡检任务" value={3} />
             </Tabs>
             <Box sx={{ mt: 2 }}>
-              {activeTabIndex === 0 && '0'}
+              {activeTabIndex === 0 && <AMapExample />}
               {activeTabIndex === 1 && '1'}
               {activeTabIndex === 2 && '2'}
               {activeTabIndex === 3 && '3'}
