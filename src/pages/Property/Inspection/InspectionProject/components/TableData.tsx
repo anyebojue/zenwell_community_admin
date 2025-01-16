@@ -52,7 +52,7 @@ const TableData: React.FC<TableDataProps> = ({
               title: '题目',
               color: 'primary' as const,
               icon: <Quiz fontSize="small" />,
-              onClick: () => navigate('/inspection/inspection-project', { state: { value: row } })
+              onClick: () => navigate('/inspection/inspection-spection', { state: { value: row } })
             },
             {
               title: '修改',

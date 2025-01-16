@@ -33,12 +33,12 @@ const SpectionItemsIndex = () => {
     if (selectedRows.size > 0) {
       return list
         .filter(item => selectedRows.has(item.id))
-        .map(item => ({ id: item.id!, itemName: item.itemName! }))
-        .filter(item => item.id && item.itemName)
+        .map(item => ({ id: item.id!, name: item.name! }))
+        .filter(item => item.id && item.name)
     }
     if (dialogValue) {
-      return dialogValue.id && dialogValue.itemName
-        ? [{ id: dialogValue.id, itemName: dialogValue.itemName }]
+      return dialogValue.id && dialogValue.name
+        ? [{ id: dialogValue.id, name: dialogValue.name }]
         : []
     }
     return []
@@ -46,7 +46,7 @@ const SpectionItemsIndex = () => {
 
   const deleteData = useMemo(() => getDeleteData(), [getDeleteData])
   const deleteIds = deleteData.map(item => item.id)
-  const deleteNames = deleteData.map(item => item.itemName)
+  const deleteNames = deleteData.map(item => item.name)
 
   const handleDelete = useCallback(
     async (ids: string[]) => {
