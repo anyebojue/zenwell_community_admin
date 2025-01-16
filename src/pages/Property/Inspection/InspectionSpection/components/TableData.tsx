@@ -74,11 +74,11 @@ const TableData: React.FC<TableDataProps> = ({
       headerName: '题目类型',
       align: 'center',
       renderCell: row =>
-        row.titleType === 1001
+        row.titleType === 1
           ? '单选'
-          : row.titleType === 2002
+          : row.titleType === 2
             ? '多选'
-            : row.titleType === 3003
+            : row.titleType === 3
               ? '简答题'
               : '-'
     },

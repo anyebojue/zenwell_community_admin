@@ -49,7 +49,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
     () => ({
       name: dialogType === 'edit' ? dialogValue?.name || '' : '',
       seq: dialogType === 'edit' ? dialogValue?.seq || 0 : 0,
-      titleType: dialogType === 'edit' && dialogValue?.titleType ? dialogValue.titleType : 1001,
+      titleType: dialogType === 'edit' && dialogValue?.titleType ? dialogValue.titleType : 1,
       spectionItemVal:
         dialogType === 'edit' &&
         Array.isArray(dialogValue?.spectionItemVal) &&
@@ -168,9 +168,9 @@ const FormDialog: React.FC<FormDialogProps> = ({
               variant="outlined"
             >
               {[
-                { value: 1001, label: '单选' },
-                { value: 2002, label: '多选' },
-                { value: 3003, label: '简答题' }
+                { value: 1, label: '单选' },
+                { value: 2, label: '多选' },
+                { value: 3, label: '简答题' }
               ].map(option => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
@@ -178,7 +178,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
               ))}
             </TextField>
           </Box>
-          {formData.titleType !== 3003 &&
+          {formData.titleType !== 3 &&
             formData.titleType !== 0 &&
             formData.spectionItemVal?.map((item, index) => (
               <Box

@@ -114,9 +114,9 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             sx={textFieldStyles}
           >
             {[
-              { value: 1001, label: '单选' },
-              { value: 2002, label: '多选' },
-              { value: 3003, label: '简答题' }
+              { value: 1, label: '单选' },
+              { value: 2, label: '多选' },
+              { value: 3, label: '简答题' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
