@@ -20,10 +20,13 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle
+  DialogTitle,
+  MenuItem,
+  IconButton
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
+import { Add, Delete } from '@mui/icons-material'
 
 interface FormDialogProps {
   dialogValue?: SpectionItemReply
@@ -45,11 +48,21 @@ const FormDialog: React.FC<FormDialogProps> = ({
   const initialFormData = useMemo(
     () => ({
       name: dialogType === 'edit' ? dialogValue?.name || '' : '',
-      titleType: dialogType === 'edit' ? dialogValue?.titleType || 0 : 0,
-      seq: dialogType === 'edit' ? dialogValue?.seq || 0 : 0
+      seq: dialogType === 'edit' ? dialogValue?.seq || 0 : 0,
+      titleType: dialogType === 'edit' && dialogValue?.titleType ? dialogValue.titleType : 1001,
+      spectionItemVal:
+        dialogType === 'edit' &&
+        Array.isArray(dialogValue?.spectionItemVal) &&
+        dialogValue.spectionItemVal.length >= 2
+          ? dialogValue.spectionItemVal
+          : [
+              { itemId: '', itemValue: '' },
+              { itemId: '', itemValue: '' }
+            ]
     }),
     [dialogType, dialogValue]
   )
+
   const [formData, setFormData] = useState<SpectionItemParams>(initialFormData)
 
   useEffect(() => {
@@ -84,6 +97,31 @@ const FormDialog: React.FC<FormDialogProps> = ({
     [dispatch, dialogType, dialogValue, formData, page, setOpenDialog, initialFormData]
   )
 
+  const addOption = useCallback(() => {
+    setFormData(prev => ({
+      ...prev,
+      spectionItemVal: Array.isArray(prev.spectionItemVal)
+        ? [...prev.spectionItemVal, { itemId: '', itemValue: '' }]
+        : [
+            { itemId: '', itemValue: '' },
+            { itemId: '', itemValue: '' }
+          ]
+    }))
+  }, [])
+
+  const deleteOption = useCallback((index: number) => {
+    setFormData(prev => {
+      if (!Array.isArray(prev.spectionItemVal)) {
+        return prev
+      }
+      const updated = prev.spectionItemVal.filter((_, i) => i !== index)
+      return {
+        ...prev,
+        spectionItemVal: updated.length >= 2 ? updated : prev.spectionItemVal
+      }
+    })
+  }, [])
+
   const formFields = [
     { label: '题目', type: 'text', id: 'name', required: true },
     { label: '顺序', type: 'number', id: 'seq', required: true }
@@ -115,23 +153,82 @@ const FormDialog: React.FC<FormDialogProps> = ({
                 id={id}
                 value={formData[id as keyof SpectionItemParams]}
                 onChange={e => setFormData({ ...formData, [id]: e.target.value })}
-                autoComplete={type === 'password' ? 'current-password' : ''}
               />
             </Box>
           ))}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>备注：</FormLabel>
+            <FormLabel>题目类型：</FormLabel>
             <TextField
-              placeholder="请输入"
+              placeholder="请选择"
               sx={{ width: '80%' }}
+              select
               size="small"
-              value={formData.remark}
-              onChange={e => setFormData({ ...formData, remark: e.target.value })}
+              value={formData.titleType}
+              onChange={e => setFormData({ ...formData, titleType: Number(e.target.value) })}
               variant="outlined"
-              multiline
-              rows={2}
-            />
+            >
+              {[
+                { value: 1001, label: '单选' },
+                { value: 2002, label: '多选' },
+                { value: 3003, label: '简答题' }
+              ].map(option => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
           </Box>
+          {formData.titleType !== 3003 &&
+            formData.titleType !== 0 &&
+            formData.spectionItemVal?.map((item, index) => (
+              <Box
+                key={index + 1}
+                sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+              >
+                <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
+                  <FormLabel>选项{index + 1}：</FormLabel>
+                  <TextField
+                    placeholder="请输入"
+                    sx={{
+                      width:
+                        formData.spectionItemVal && formData.spectionItemVal.length > 2
+                          ? '70%'
+                          : index === (formData.spectionItemVal?.length ?? 0) - 1
+                            ? '75%'
+                            : '79.5%',
+                      marginLeft: '60px'
+                    }}
+                    size="small"
+                    value={item.itemValue}
+                    onChange={e => {
+                      if (Array.isArray(formData.spectionItemVal)) {
+                        const updatedOptions = [...formData.spectionItemVal]
+                        updatedOptions[index].itemValue = e.target.value
+                        setFormData({ ...formData, spectionItemVal: updatedOptions })
+                      }
+                    }}
+                    variant="outlined"
+                  />
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  {index === (formData.spectionItemVal?.length ?? 0) - 1 && (
+                    <IconButton aria-label="add" size="medium" onClick={addOption}>
+                      <Add fontSize="inherit" />
+                    </IconButton>
+                  )}
+                  {(formData.spectionItemVal?.length ?? 0) > 2 && (
+                    <IconButton
+                      aria-label="delete"
+                      size="medium"
+                      sx={{ ml: 1 }}
+                      onClick={() => deleteOption(index)}
+                    >
+                      <Delete fontSize="inherit" />
+                    </IconButton>
+                  )}
+                </Box>
+              </Box>
+            ))}
         </Stack>
       </DialogContent>
       <DialogActions>
