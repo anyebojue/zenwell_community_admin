@@ -15,6 +15,7 @@ import RepairSettingSlice from './property/repairSetting'
 import RepairPoolSlice from './property/repairPool'
 import RepairStaffSlice from './property/repairStaff'
 import SpectionSlice from './property/spection'
+import SpectionItemSlice from './property/spectionItem'
 import SystemSettingsSlice from './property/systemSettings'
 
 const store = configureStore({
@@ -35,6 +36,7 @@ const store = configureStore({
     RepairPoolSlice,
     RepairStaffSlice,
     SpectionSlice,
+    SpectionItemSlice,
     SystemSettingsSlice
   },
   // 关闭序列化检测

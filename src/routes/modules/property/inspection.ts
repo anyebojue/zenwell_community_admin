@@ -20,6 +20,14 @@ const repair: IRouter[] = [
         }
       },
       {
+        path: 'inspection-spection',
+        element: load('Property/Inspection/InspectionSpection'),
+        meta: {
+          title: '巡检题目',
+          hidden: true
+        }
+      },
+      {
         path: 'inspection-point',
         element: load('Property/Inspection/InspectionPoint'),
         meta: {
