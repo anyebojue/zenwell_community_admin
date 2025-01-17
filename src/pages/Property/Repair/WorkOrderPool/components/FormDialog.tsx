@@ -161,9 +161,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
               sx={{ width: '80%' }}
               size="small"
               type="datetime-local"
-              value={
-                formData.appointmentTime || new Date().toLocaleString('en-GB').replace(',', '')
-              }
+              value={formData.appointmentTime || new Date().toISOString().slice(0, 19)}
               onChange={e => setFormData({ ...formData, appointmentTime: e.target.value })}
               variant="outlined"
             />

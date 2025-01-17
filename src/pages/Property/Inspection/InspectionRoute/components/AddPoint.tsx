@@ -4,7 +4,7 @@ import { DataGrid } from '@mui/x-data-grid'
 import { SpectionPointReply } from 'api/model/property/spectionPointModel'
 import { SpectionRouteReply } from 'api/model/property/spectionRouteModel'
 import message from 'components/Message'
-import { createPoint, find } from 'modules/property/spectionPoint'
+import { createPoint, findPoint } from 'modules/property/spectionPoint'
 import React, { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -45,7 +45,7 @@ const AddPoint: React.FC<AddPointProps> = ({
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      const res = await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+      const res = await dispatch(findPoint({ 'page.num': page.num, 'page.size': page.size }))
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
@@ -81,8 +81,8 @@ const AddPoint: React.FC<AddPointProps> = ({
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
-      await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))
-      message.success('编辑成功')
+      await dispatch(findPoint({ 'page.num': page.num || '1', 'page.size': page.size }))
+      message.success('添加成功')
       setOpenDialog(false)
     } catch (err: unknown) {
       closeLoading()

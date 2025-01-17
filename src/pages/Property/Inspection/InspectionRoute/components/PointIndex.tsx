@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { SpectionPointReply } from 'api/model/property/spectionPointModel'
-import { deletePoint, find } from 'modules/property/spectionPoint'
+import { deletePoint, findPoint } from 'modules/property/spectionPoint'
 import { SpectionRouteReply } from 'api/model/property/spectionRouteModel'
 import message from 'components/Message'
 import { DataGrid } from '@mui/x-data-grid'
@@ -17,7 +17,7 @@ interface PointIndexProps {
 
 const PointIndex: React.FC<PointIndexProps> = ({ routeDialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.SpectionPointSlice)
+  const { page, pointList } = useSelector((state: RootState) => state.SpectionPointSlice)
   const [dialogValue, setDialogValue] = useState<SpectionPointReply>()
   const [openEditDialog, setOpenEditDialog] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
@@ -28,7 +28,7 @@ const PointIndex: React.FC<PointIndexProps> = ({ routeDialogValue }) => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
       const res = await dispatch(
-        find({
+        findPoint({
           'page.num': page.num,
           'page.size': page.size,
           inspectionRouteId: routeDialogValue.id
@@ -72,7 +72,7 @@ const PointIndex: React.FC<PointIndexProps> = ({ routeDialogValue }) => {
         }
         setDelOpen(false)
         message.success('删除成功')
-        await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+        await dispatch(findPoint({ 'page.num': page.num, 'page.size': page.size }))
         setLoading(false)
       } catch (err: unknown) {
         setLoading(false)
@@ -100,7 +100,7 @@ const PointIndex: React.FC<PointIndexProps> = ({ routeDialogValue }) => {
         sx={{ mt: 2 }}
         disableRowSelectionOnClick
         disableColumnMenu
-        rows={list}
+        rows={pointList}
         columns={[
           {
             field: 'id',

@@ -18,6 +18,10 @@ export interface SpectionPointReply {
   sortNumber?: number
   startTime?: string
   endTime?: string
+  inspectionRouteId?: string
+  inspectionPointId?: string
+  pointStartTime?: string
+  pointEndTime?: string
 }
 
 export interface SpectionPointParams {
@@ -38,6 +42,8 @@ export interface SpectionPointParams {
   endTime?: string
   inspectionRouteId?: string
   inspectionPointId?: string
+  pointStartTime?: string
+  pointEndTime?: string
 }
 
 export interface FindSpectionPointReply {

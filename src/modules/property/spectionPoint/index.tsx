@@ -7,7 +7,8 @@ import {
   UpdateSpectionPoint,
   DeleteSpectionPoint,
   CreatePoint,
-  DeletePoint
+  DeletePoint,
+  FindPoint
 } from 'api/property/spectionPoint'
 
 const namespace = 'SpectionPoint'
@@ -20,6 +21,7 @@ const PAGE = {
 interface IInitialState {
   page: Page
   list: SpectionPointReply[]
+  pointList: SpectionPointReply[]
 }
 
 const initialState: IInitialState = {
@@ -29,7 +31,8 @@ const initialState: IInitialState = {
     total: '0',
     disable: false
   },
-  list: []
+  list: [],
+  pointList: []
 }
 
 export const createPoint = createAsyncThunk(
@@ -44,6 +47,14 @@ export const deletePoint = createAsyncThunk(`${namespace}/deleteByIds`, async (i
   const res = await DeletePoint(ids)
   return res
 })
+
+export const findPoint = createAsyncThunk(
+  `${namespace}/findPoint`,
+  async (params: SpectionPointParams & PaginationParams) => {
+    const res = await FindPoint(params)
+    return res
+  }
+)
 
 export const find = createAsyncThunk(
   `${namespace}/find`,
@@ -76,19 +87,24 @@ export const SpectionPointSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-    // 请求加载时的数据
-    builder.addCase(find.pending, state => {
-      state.list = []
-    })
-    // 请求成功的数据
-    builder.addCase(find.fulfilled, (state, action) => {
-      state.page = action.payload.page
-      state.list = action.payload.list
-    })
-    // 请求失败后的数据
-    builder.addCase(find.rejected, state => {
-      state.list = []
-    })
+      // Handle loading state for `find` (SpectionPoint/find)
+      .addCase(find.pending, state => {
+        state.list = []
+      })
+      // Handle success for `find` (SpectionPoint/find)
+      .addCase(find.fulfilled, (state, action) => {
+        state.page = action.payload.page
+        state.list = action.payload.list
+      })
+      // Handle failure for `find` (SpectionPoint/find)
+      .addCase(find.rejected, state => {
+        state.list = []
+      })
+
+      // Handle success for `findPoint` (SpectionPoint/findPoint)
+      .addCase(findPoint.fulfilled, (state, action) => {
+        state.pointList = action.payload.list
+      })
   }
 })
 

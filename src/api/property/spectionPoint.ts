@@ -4,6 +4,7 @@ import { FindSpectionPointReply, SpectionPointParams } from '../model/property/s
 const ApiPrefix = {
   CreatePoint: '/auth/spection_route_point',
   DeletePoint: '/auth/spection_route_point',
+  FindPoint: '/auth/spection_route_point',
   FindSpectionPoint: '/auth/spection_point',
   CreateSpectionPoint: '/auth/spection_point',
   UpdateSpectionPoint: '/auth/spection_point',
@@ -33,6 +34,20 @@ export const DeletePoint = (ids: string[]) => {
   return request
     .delete({
       url: `${ApiPrefix.DeletePoint}/${ids.join(',')}`
+    })
+    .then(res => res.data)
+}
+
+/**
+ * 查询接口
+ * @param params
+ * @returns
+ */
+export const FindPoint = (params: SpectionPointParams & PaginationParams) => {
+  return request
+    .get<FindSpectionPointReply>({
+      url: ApiPrefix.FindPoint,
+      params
     })
     .then(res => res.data)
 }

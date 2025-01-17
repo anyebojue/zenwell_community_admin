@@ -8,8 +8,7 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { SpectionPlanParams } from 'api/model/property/spectionPlanModel'
-import { createPoint, find } from 'modules/property/spectionPoint'
+import { createPoint, findPoint } from 'modules/property/spectionPoint'
 import {
   Box,
   CircularProgress,
@@ -24,8 +23,19 @@ import {
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
-import { SpectionPointReply } from 'api/model/property/spectionPointModel'
+import { SpectionPointParams, SpectionPointReply } from 'api/model/property/spectionPointModel'
 import { SpectionRouteReply } from 'api/model/property/spectionRouteModel'
+
+const formatDateTime = (date: Date | string | undefined): string => {
+  const validDate = date ? new Date(date) : new Date()
+  const year = validDate.getFullYear()
+  const month = String(validDate.getMonth() + 1).padStart(2, '0')
+  const day = String(validDate.getDate()).padStart(2, '0')
+  const hours = String(validDate.getHours()).padStart(2, '0')
+  const minutes = String(validDate.getMinutes()).padStart(2, '0')
+  const seconds = String(validDate.getSeconds()).padStart(2, '0')
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
 
 interface FormDialogProps {
   dialogValue: SpectionPointReply | undefined
@@ -47,12 +57,12 @@ const FormDialog: React.FC<FormDialogProps> = ({
   const initialFormData = useMemo(
     () => ({
       sortNumber: dialogValue?.sortNumber || 0,
-      startTime: dialogValue?.startTime || '',
-      endTime: dialogValue?.endTime || ''
+      pointStartTime: dialogValue?.pointStartTime || formatDateTime(new Date()),
+      pointEndTime: dialogValue?.pointEndTime || formatDateTime(new Date())
     }),
     [dialogValue]
   )
-  const [formData, setFormData] = useState<SpectionPlanParams>(initialFormData)
+  const [formData, setFormData] = useState<SpectionPointReply>(initialFormData)
 
   useEffect(() => {
     setFormData(initialFormData)
@@ -77,7 +87,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-        await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))
+        await dispatch(findPoint({ 'page.num': page.num || '1', 'page.size': page.size }))
         message.success('编辑成功')
         setOpenDialog(false)
         setFormData(initialFormData)
@@ -102,6 +112,9 @@ const FormDialog: React.FC<FormDialogProps> = ({
   )
 
   const formFields = [{ label: '排序', type: 'text', id: 'sortNumber', required: true }]
+  const getFormattedTime = (time: string | undefined): string => {
+    return time ? formatDateTime(new Date(time)) : formatDateTime(new Date())
+  }
 
   return (
     <Dialog
@@ -127,7 +140,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
                 size="small"
                 required={required}
                 id={id}
-                value={formData[id as keyof SpectionPlanParams]}
+                value={formData[id as keyof SpectionPointParams]}
                 onChange={e => setFormData({ ...formData, [id]: e.target.value })}
                 autoComplete={type === 'password' ? 'current-password' : ''}
               />
@@ -136,22 +149,22 @@ const FormDialog: React.FC<FormDialogProps> = ({
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>开始时间：</FormLabel>
             <TextField
-              type="time"
               sx={{ width: '80%' }}
               size="small"
-              value={formData.startTime}
-              onChange={e => setFormData({ ...formData, startTime: e.target.value })}
+              type="datetime-local"
+              value={getFormattedTime(formData.pointStartTime)}
+              onChange={e => setFormData({ ...formData, pointStartTime: e.target.value })}
               variant="outlined"
             />
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>结束时间：</FormLabel>
             <TextField
-              type="time"
               sx={{ width: '80%' }}
               size="small"
-              value={formData.endTime}
-              onChange={e => setFormData({ ...formData, endTime: e.target.value })}
+              type="datetime-local"
+              value={getFormattedTime(formData.pointEndTime)}
+              onChange={e => setFormData({ ...formData, pointEndTime: e.target.value })}
               variant="outlined"
             />
           </Box>
