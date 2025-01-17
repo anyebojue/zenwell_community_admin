@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairSettingReply } from 'api/model/property/repairSettingModel'
-import { deleteByIds, find } from 'modules/property/repairSetting'
+import { SpectionPlanReply } from 'api/model/property/spectionPlanModel'
+import { deleteByIds, find } from 'modules/property/spectionPlan'
 import { Box, Button, Theme, Typography } from '@mui/material'
 import { Add } from '@mui/icons-material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
@@ -19,10 +19,10 @@ const contentBoxStyle = (theme: Theme) => ({
   width: '100%'
 })
 
-const RepairSettingsIndex = () => {
+const SpectionPlansIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.RepairSettingSlice)
-  const [dialogValue, setDialogValue] = useState<RepairSettingReply>()
+  const { page, list } = useSelector((state: RootState) => state.SpectionPlanSlice)
+  const [dialogValue, setDialogValue] = useState<SpectionPlanReply>()
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [dialogType, setDialogType] = useState('add')
   const [openDialog, setOpenDialog] = useState(false)
@@ -33,12 +33,12 @@ const RepairSettingsIndex = () => {
     if (selectedRows.size > 0) {
       return list
         .filter(item => selectedRows.has(item.id))
-        .map(item => ({ id: item.id!, repairTypeName: item.repairTypeName! }))
-        .filter(item => item.id && item.repairTypeName)
+        .map(item => ({ id: item.id!, inspectionPlanName: item.inspectionPlanName! }))
+        .filter(item => item.id && item.inspectionPlanName)
     }
     if (dialogValue) {
-      return dialogValue.id && dialogValue.repairTypeName
-        ? [{ id: dialogValue.id, repairTypeName: dialogValue.repairTypeName }]
+      return dialogValue.id && dialogValue.inspectionPlanName
+        ? [{ id: dialogValue.id, inspectionPlanName: dialogValue.inspectionPlanName }]
         : []
     }
     return []
@@ -46,7 +46,7 @@ const RepairSettingsIndex = () => {
 
   const deleteData = useMemo(() => getDeleteData(), [getDeleteData])
   const deleteIds = deleteData.map(item => item.id)
-  const deleteNames = deleteData.map(item => item.repairTypeName)
+  const deleteNames = deleteData.map(item => item.inspectionPlanName)
 
   const handleDelete = useCallback(
     async (ids: string[]) => {
@@ -121,4 +121,4 @@ const RepairSettingsIndex = () => {
   )
 }
 
-export default memo(RepairSettingsIndex)
+export default memo(SpectionPlansIndex)

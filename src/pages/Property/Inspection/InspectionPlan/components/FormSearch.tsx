@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, memo, SetStateAction, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairSettingParams } from 'api/model/property/repairSettingModel'
-import { find } from 'modules/property/repairSetting'
+import { SpectionPlanParams } from 'api/model/property/spectionPlanModel'
+import { find } from 'modules/property/spectionPlan'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -30,15 +30,17 @@ interface SearchFormProps {
 
 const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.RepairSettingSlice)
+  const { page } = useSelector((state: RootState) => state.SpectionPlanSlice)
 
-  const [searchParams, setSearchParams] = useState<RepairSettingParams>({
+  const [searchParams, setSearchParams] = useState<SpectionPlanParams>({
     id: '',
-    repairTypeName: ''
+    inspectionPlanName: '',
+    createUserName: '',
+    status: ''
   })
 
   const handleInputChange =
-    (field: keyof RepairSettingParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof SpectionPlanParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -46,7 +48,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
     }
 
   const fetchData = useCallback(
-    async (params: RepairSettingParams & PaginationParams) => {
+    async (params: SpectionPlanParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
@@ -90,8 +92,8 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.repairTypeName}
-            onChange={handleInputChange('repairTypeName')}
+            value={searchParams.inspectionPlanName}
+            onChange={handleInputChange('inspectionPlanName')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -101,8 +103,8 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.repairTypeName}
-            onChange={handleInputChange('repairTypeName')}
+            value={searchParams.createUserName}
+            onChange={handleInputChange('createUserName')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -110,14 +112,14 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             select
             size="small"
             label="请选择巡检状态"
-            value={searchParams.repairType || ''}
-            onChange={handleInputChange('repairType')}
+            value={searchParams.status || ''}
+            onChange={handleInputChange('status')}
             variant="outlined"
             sx={textFieldStyles}
           >
             {[
               { value: '1', label: '启用' },
-              { value: '0', label: '停用' }
+              { value: '0', label: '禁用' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -144,18 +146,16 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             sx={buttonStyles('darkgray', '#696969')}
             onClick={() => {
               setSearchParams({
-                repairTypeName: '',
-                repairWay: 0,
-                repairType: '',
-                publicArea: 0,
-                returnVisitFlag: 0
+                id: '',
+                inspectionPlanName: '',
+                createUserName: '',
+                status: ''
               })
               fetchData({
-                repairTypeName: '',
-                repairWay: 0,
-                repairType: '',
-                publicArea: 0,
-                returnVisitFlag: 0,
+                id: '',
+                inspectionPlanName: '',
+                createUserName: '',
+                status: '',
                 'page.num': page.num,
                 'page.size': page.size
               })

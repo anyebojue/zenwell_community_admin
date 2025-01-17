@@ -16,7 +16,7 @@ import {
   Checkbox,
   Theme
 } from '@mui/material'
-import { RepairSettingReply } from 'api/model/property/repairSettingModel'
+import { SpectionPlanReply } from 'api/model/property/spectionPlanModel'
 import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {
@@ -36,9 +36,9 @@ const TableList = ({
   selectedRows,
   setSelectedRows
 }: {
-  rows: RepairSettingReply[]
-  columns: Column<RepairSettingReply>[]
-  setDialogValue: Dispatch<SetStateAction<RepairSettingReply | undefined>>
+  rows: SpectionPlanReply[]
+  columns: Column<SpectionPlanReply>[]
+  setDialogValue: Dispatch<SetStateAction<SpectionPlanReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
 }) => {
@@ -83,7 +83,7 @@ const TableList = ({
   const allSelected = selectedRows.size === rows.length && rows.length > 0
   const someSelected = selectedRows.size > 0 && selectedRows.size < rows.length
 
-  const renderValue = (value: RepairSettingReply[keyof RepairSettingReply] | undefined) => {
+  const renderValue = (value: SpectionPlanReply[keyof SpectionPlanReply] | undefined) => {
     if (Array.isArray(value)) {
       return JSON.stringify(value)
     } else if (value && typeof value === 'object') {
@@ -155,7 +155,7 @@ const TableList = ({
                     />
                   </TableCell>
                   {columns.map(column => {
-                    const value = row[column.key as keyof RepairSettingReply]
+                    const value = row[column.key as keyof SpectionPlanReply]
                     return (
                       <TableCell
                         key={column.key}

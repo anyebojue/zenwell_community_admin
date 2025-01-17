@@ -1,7 +1,7 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairSettingReply } from 'api/model/property/repairSettingModel'
-import { find } from 'modules/property/repairSetting'
+import { SpectionPlanReply } from 'api/model/property/spectionPlanModel'
+import { find } from 'modules/property/spectionPlan'
 import { Box, Tooltip, IconButton } from '@mui/material'
 import { Delete, Block, Edit, FileCopy } from '@mui/icons-material'
 import message from 'components/Message'
@@ -60,7 +60,7 @@ export interface Column<T> {
 
 interface TableDataProps {
   setDialogType: Dispatch<SetStateAction<string>>
-  setDialogValue: Dispatch<SetStateAction<RepairSettingReply | undefined>>
+  setDialogValue: Dispatch<SetStateAction<SpectionPlanReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -76,20 +76,20 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.RepairSettingSlice)
+  const { page, list } = useSelector((state: RootState) => state.SpectionPlanSlice)
 
-  const columns: Column<RepairSettingReply>[] = [
-    { key: 'createdAt', headerName: '计划名称', align: 'center' },
-    { key: 'createdAt', headerName: '计划路线', align: 'center' },
-    { key: 'createdAt', headerName: '计划周期', align: 'center' },
-    { key: 'createdAt', headerName: '签到方式', align: 'center' },
-    { key: 'remark', headerName: '日期范围', align: 'center' },
-    { key: 'remark', headerName: '时间范围', align: 'center' },
-    { key: 'remark', headerName: '任务提前（分钟）', align: 'center' },
-    { key: 'remark', headerName: '制定人', align: 'center' },
-    { key: 'remark', headerName: '制定时间', align: 'center' },
-    { key: 'remark', headerName: '状态', align: 'center' },
-    { key: 'remark', headerName: '巡检人员', align: 'center' },
+  const columns: Column<SpectionPlanReply>[] = [
+    { key: 'inspectionPlanName', headerName: '计划名称', align: 'center' },
+    { key: 'inspectionRouteId', headerName: '计划路线', align: 'center' },
+    { key: 'inspectionPlanPeriod', headerName: '计划周期', align: 'center' },
+    { key: 'signType', headerName: '签到方式', align: 'center' },
+    { key: 'inspectionMonth', headerName: '日期范围', align: 'center' },
+    { key: 'inspectionDay', headerName: '时间范围', align: 'center' },
+    { key: 'beforeTime', headerName: '任务提前（分钟）', align: 'center' },
+    { key: 'createUserName', headerName: '制定人', align: 'center' },
+    { key: 'startTime', headerName: '制定时间', align: 'center' },
+    { key: 'status', headerName: '状态', align: 'center' },
+    { key: 'createUserName', headerName: '巡检人员', align: 'center' },
     {
       key: 'operate',
       headerName: '操作',
