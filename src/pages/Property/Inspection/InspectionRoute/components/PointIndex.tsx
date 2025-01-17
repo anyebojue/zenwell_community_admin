@@ -72,7 +72,13 @@ const PointIndex: React.FC<PointIndexProps> = ({ routeDialogValue }) => {
         }
         setDelOpen(false)
         message.success('删除成功')
-        await dispatch(findPoint({ 'page.num': page.num, 'page.size': page.size }))
+        await dispatch(
+          findPoint({
+            'page.num': page.num,
+            'page.size': page.size,
+            inspectionRouteId: routeDialogValue.id
+          })
+        )
         setLoading(false)
       } catch (err: unknown) {
         setLoading(false)
@@ -81,7 +87,7 @@ const PointIndex: React.FC<PointIndexProps> = ({ routeDialogValue }) => {
         setLoading(false)
       }
     },
-    [dispatch, page.num, page.size]
+    [dispatch, page.num, page.size, routeDialogValue.id]
   )
 
   return (

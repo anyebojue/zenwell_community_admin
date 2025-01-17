@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteByIds, find } from 'modules/platform/roles'
+import { deleteByIds, find } from 'modules/property/spectionPoint'
 import { RichTreeView } from '@mui/x-tree-view'
 import Grid from '@mui/material/Grid2'
 import {
@@ -21,11 +21,12 @@ import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import { RolesReply } from 'api/model/platform/rolesModel'
-import AMapExample from 'components/AMapExample'
+import { SpectionPointReply } from 'api/model/property/spectionPointModel'
 import FormDialog from './components/FormDialog'
 import PlanIndex from './components/PlanIndex'
 import TaskIndex from './components/TaskIndex'
+import DetailIndex from './components/DetailIndex'
+import RouteIndex from './components/RouteIndex'
 
 const treeViewStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -41,17 +42,15 @@ const contentBoxStyle = (theme: Theme) => ({
   width: '100%'
 })
 
-const MUI_X_PRODUCTS = [{ id: '0', label: '1号1栋路线' }]
-
 const RolesIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.RolesSlice)
+  const { page, list } = useSelector((state: RootState) => state.SpectionPointSlice)
   const theme = useTheme()
   const [activeTabIndex, setActiveTabIndex] = useState(0)
-  // const MUI_X_PRODUCTS = list.map(item => ({ id: item.id, label: item.name }))
+  const MUI_X_PRODUCTS = list.map(item => ({ id: item.id, label: item.inspectionName }))
   const [openDialog, setOpenDialog] = useState(false)
   const [dialogType, setDialogType] = useState('')
-  const [dialogValue, setDialogValue] = useState<RolesReply>({})
+  const [dialogValue, setDialogValue] = useState<SpectionPointReply>({})
   const [location, setLoading] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
 
@@ -164,17 +163,18 @@ const RolesIndex = () => {
         </Box>
         <Box sx={{ width: '450%' }}>
           <Box sx={contentBoxStyle}>
-            <Typography variant="h6">巡检路线</Typography>
+            <Typography variant="h6">巡检点</Typography>
             <Divider sx={{ p: 0.5, mb: 2 }} />
             <Box sx={{ pb: 0.2 }}>
-              <Grid container spacing={2}>
+              <Grid container spacing={1}>
                 {[
-                  { label: '巡检路线', value: '1号1栋路线' },
-                  { label: '顺序', value: '12345' },
-                  { label: '创建时间', value: '2025-01-06 15:44:33' },
-                  { label: '备注', value: '' }
+                  { label: '巡检点', value: dialogValue.inspectionName },
+                  { label: '巡检类型', value: dialogValue.pointObjType },
+                  { label: '巡检位置', value: dialogValue.latitude },
+                  { label: '巡检项目', value: dialogValue.itemId },
+                  { label: 'NFC', value: dialogValue.nfcCode }
                 ].map((item, index) => (
-                  <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
+                  <Grid size={{ xs: 1, sm: 1, md: 1 }} key={index}>
                     <Typography variant="body2">
                       {item.label}：{item.value}
                     </Typography>
@@ -202,14 +202,14 @@ const RolesIndex = () => {
               textColor="secondary"
               indicatorColor="secondary"
             >
-              <Tab sx={{ pl: 2, pr: 2 }} label="巡检点" value={0} />
-              <Tab sx={{ pl: 2, pr: 2 }} label="巡检地图" value={1} />
+              <Tab sx={{ pl: 2, pr: 2 }} label="巡检明细" value={0} />
+              <Tab sx={{ pl: 2, pr: 2 }} label="巡检路线" value={1} />
               <Tab sx={{ pl: 2, pr: 2 }} label="巡检计划" value={2} />
               <Tab sx={{ pl: 2, pr: 2 }} label="巡检任务" value={3} />
             </Tabs>
             <Box sx={{ mt: 2 }}>
-              {activeTabIndex === 0 && <AMapExample />}
-              {activeTabIndex === 1 && '1'}
+              {activeTabIndex === 0 && <DetailIndex />}
+              {activeTabIndex === 1 && <RouteIndex />}
               {activeTabIndex === 2 && <PlanIndex />}
               {activeTabIndex === 3 && <TaskIndex />}
             </Box>
@@ -227,7 +227,7 @@ const RolesIndex = () => {
         loading={location}
         delOpen={delOpen}
         setDelOpen={setDelOpen}
-        userName={[dialogValue.name as string]}
+        userName={[dialogValue.inspectionName as string]}
         onDelete={() => handleDelete([dialogValue.id as string])}
       />
     </Box>

@@ -87,7 +87,13 @@ const FormDialog: React.FC<FormDialogProps> = ({
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-        await dispatch(findPoint({ 'page.num': page.num || '1', 'page.size': page.size }))
+        await dispatch(
+          findPoint({
+            'page.num': page.num || '1',
+            'page.size': page.size,
+            inspectionRouteId: routeDialogValue.id
+          })
+        )
         message.success('编辑成功')
         setOpenDialog(false)
         setFormData(initialFormData)
@@ -112,9 +118,6 @@ const FormDialog: React.FC<FormDialogProps> = ({
   )
 
   const formFields = [{ label: '排序', type: 'text', id: 'sortNumber', required: true }]
-  const getFormattedTime = (time: string | undefined): string => {
-    return time ? formatDateTime(new Date(time)) : formatDateTime(new Date())
-  }
 
   return (
     <Dialog
@@ -152,8 +155,10 @@ const FormDialog: React.FC<FormDialogProps> = ({
               sx={{ width: '80%' }}
               size="small"
               type="datetime-local"
-              value={getFormattedTime(formData.pointStartTime)}
-              onChange={e => setFormData({ ...formData, pointStartTime: e.target.value })}
+              value={formatDateTime(formData.pointStartTime)}
+              onChange={e =>
+                setFormData({ ...formData, pointStartTime: formatDateTime(e.target.value) })
+              }
               variant="outlined"
             />
           </Box>
@@ -163,8 +168,10 @@ const FormDialog: React.FC<FormDialogProps> = ({
               sx={{ width: '80%' }}
               size="small"
               type="datetime-local"
-              value={getFormattedTime(formData.pointEndTime)}
-              onChange={e => setFormData({ ...formData, pointEndTime: e.target.value })}
+              value={formatDateTime(formData.pointEndTime)}
+              onChange={e =>
+                setFormData({ ...formData, pointEndTime: formatDateTime(e.target.value) })
+              }
               variant="outlined"
             />
           </Box>

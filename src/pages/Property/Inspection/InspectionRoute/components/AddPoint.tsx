@@ -45,7 +45,13 @@ const AddPoint: React.FC<AddPointProps> = ({
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      const res = await dispatch(findPoint({ 'page.num': page.num, 'page.size': page.size }))
+      const res = await dispatch(
+        findPoint({
+          'page.num': page.num,
+          'page.size': page.size,
+          inspectionRouteId: routeDialogValue.id
+        })
+      )
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
@@ -55,7 +61,7 @@ const AddPoint: React.FC<AddPointProps> = ({
     } finally {
       closeLoading()
     }
-  }, [dispatch, page.num, page.size])
+  }, [dispatch, page.num, page.size, routeDialogValue.id])
 
   useEffect(() => {
     fetchData()
@@ -81,7 +87,13 @@ const AddPoint: React.FC<AddPointProps> = ({
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
-      await dispatch(findPoint({ 'page.num': page.num || '1', 'page.size': page.size }))
+      await dispatch(
+        findPoint({
+          'page.num': page.num || '1',
+          'page.size': page.size,
+          inspectionRouteId: routeDialogValue.id
+        })
+      )
       message.success('添加成功')
       setOpenDialog(false)
     } catch (err: unknown) {
