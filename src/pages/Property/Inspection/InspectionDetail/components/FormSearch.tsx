@@ -1,6 +1,6 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairPoolParams } from 'api/model/property/repairPoolModel'
+import { SpectionTaskDetailParams } from 'api/model/property/spectionTaskDetailModel'
 import { find } from 'modules/property/repairSetting'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
@@ -29,15 +29,16 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.RepairSettingSlice)
 
-  const [searchParams, setSearchParams] = useState<RepairPoolParams>({
-    id: '',
-    repairName: '',
-    tel: '',
-    repairSettingId: ''
+  const [searchParams, setSearchParams] = useState<SpectionTaskDetailParams>({
+    inspectionId: '',
+    taskId: '',
+    inspectionState: 0,
+    stateCd: 0,
+    patrolType: 0
   })
 
   const handleInputChange =
-    (field: keyof RepairPoolParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof SpectionTaskDetailParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -45,7 +46,7 @@ const FormSearch: React.FC<SearchFormProps> = () => {
     }
 
   const fetchData = useCallback(
-    async (params: RepairPoolParams & PaginationParams) => {
+    async (params: SpectionTaskDetailParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
@@ -89,8 +90,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             type="date"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.startTime}
-            onChange={handleInputChange('startTime')}
+            value={searchParams.inspectionId}
+            onChange={handleInputChange('inspectionId')}
             slotProps={{
               inputLabel: {
                 shrink: true
@@ -105,8 +106,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             type="date"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.endTime}
-            onChange={handleInputChange('endTime')}
+            value={searchParams.inspectionId}
+            onChange={handleInputChange('inspectionId')}
             slotProps={{
               inputLabel: {
                 shrink: true
@@ -130,8 +131,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             select
             size="small"
             label="请选择巡检计划"
-            value={searchParams.maintenanceType || ''}
-            onChange={handleInputChange('maintenanceType')}
+            value={searchParams.inspectionId || ''}
+            onChange={handleInputChange('inspectionId')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -149,8 +150,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             select
             size="small"
             label="请选择巡检路线"
-            value={searchParams.maintenanceType || ''}
-            onChange={handleInputChange('maintenanceType')}
+            value={searchParams.inspectionId || ''}
+            onChange={handleInputChange('inspectionId')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -166,8 +167,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             select
             size="small"
             label="请选择巡检点"
-            value={searchParams.maintenanceType || ''}
-            onChange={handleInputChange('maintenanceType')}
+            value={searchParams.inspectionId || ''}
+            onChange={handleInputChange('inspectionId')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -183,8 +184,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             select
             size="small"
             label="请选择签到状态"
-            value={searchParams.maintenanceType || ''}
-            onChange={handleInputChange('maintenanceType')}
+            value={searchParams.inspectionId || ''}
+            onChange={handleInputChange('inspectionId')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -205,8 +206,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             select
             size="small"
             label="请选择巡检点状态"
-            value={searchParams.maintenanceType || ''}
-            onChange={handleInputChange('maintenanceType')}
+            value={searchParams.inspectionId || ''}
+            onChange={handleInputChange('inspectionId')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -228,8 +229,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             select
             size="small"
             label="请选择任务状态"
-            value={searchParams.maintenanceType || ''}
-            onChange={handleInputChange('maintenanceType')}
+            value={searchParams.inspectionId || ''}
+            onChange={handleInputChange('inspectionId')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -252,8 +253,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             select
             size="small"
             label="请选择巡检情况"
-            value={searchParams.maintenanceType || ''}
-            onChange={handleInputChange('maintenanceType')}
+            value={searchParams.inspectionId || ''}
+            onChange={handleInputChange('inspectionId')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -286,16 +287,18 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             sx={buttonStyles('darkgray', '#696969')}
             onClick={() => {
               setSearchParams({
-                id: '',
-                repairName: '',
-                tel: '',
-                repairSettingId: ''
+                inspectionId: '',
+                taskId: '',
+                inspectionState: 0,
+                stateCd: 0,
+                patrolType: 0
               })
               fetchData({
-                id: '',
-                repairName: '',
-                tel: '',
-                repairSettingId: '',
+                inspectionId: '',
+                taskId: '',
+                inspectionState: 0,
+                stateCd: 0,
+                patrolType: 0,
                 'page.num': page.num,
                 'page.size': page.size
               })

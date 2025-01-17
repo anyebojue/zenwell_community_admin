@@ -1,7 +1,7 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairPoolReply } from 'api/model/property/repairPoolModel'
-import { find } from 'modules/property/repairPool'
+import { SpectionTaskDetailReply } from 'api/model/property/spectionTaskDetailModel'
+import { find } from 'modules/property/spectionTaskDetail'
 import { find as findRepairSetting } from 'modules/property/repairSetting'
 import { Button } from '@mui/material'
 import message from 'components/Message'
@@ -21,25 +21,25 @@ interface TableDataProps {
 
 const TableData: React.FC<TableDataProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.RepairPoolSlice)
+  const { page, list } = useSelector((state: RootState) => state.SpectionTaskDetailSlice)
 
-  const columns: Column<RepairPoolReply>[] = [
-    { key: 'repairObjName', headerName: '任务详情ID', align: 'center' },
-    { key: 'repairObjName', headerName: '巡检点名称', align: 'center' },
-    { key: 'repairObjName', headerName: '巡检计划名称	', align: 'center' },
-    { key: 'repairObjName', headerName: '巡检路线名称	', align: 'center' },
-    { key: 'repairObjName', headerName: '巡检人 开始/结束时间', align: 'center' },
-    { key: 'repairObjName', headerName: '巡检点 开始/结束时间', align: 'center' },
-    { key: 'repairObjName', headerName: '实际巡检时间', align: 'center' },
-    { key: 'repairObjName', headerName: '实际签到状态', align: 'center' },
-    { key: 'repairObjName', headerName: '计划巡检人', align: 'center' },
-    { key: 'repairObjName', headerName: '实际巡检人', align: 'center' },
-    { key: 'repairObjName', headerName: '巡检方式', align: 'center' },
-    { key: 'repairObjName', headerName: '任务状态', align: 'center' },
-    { key: 'repairObjName', headerName: '巡检点状态', align: 'center' },
-    { key: 'repairObjName', headerName: '巡检情况', align: 'center' },
-    { key: 'repairObjName', headerName: '巡检照片', align: 'center' },
-    { key: 'repairObjName', headerName: '创建时间', align: 'center' },
+  const columns: Column<SpectionTaskDetailReply>[] = [
+    { key: 'taskId', headerName: '任务详情ID', align: 'center' },
+    { key: 'inspectionName', headerName: '巡检点名称', align: 'center' },
+    { key: 'inspectionName', headerName: '巡检计划名称', align: 'center' },
+    { key: 'inspectionName', headerName: '巡检路线名称', align: 'center' },
+    { key: 'actUserName', headerName: '巡检人 开始/结束时间', align: 'center' },
+    { key: 'pointStartTime', headerName: '巡检点 开始/结束时间', align: 'center' },
+    { key: 'pointStartTime', headerName: '实际巡检时间', align: 'center' },
+    { key: 'inspectionState', headerName: '实际签到状态', align: 'center' },
+    { key: 'actUserName', headerName: '计划巡检人', align: 'center' },
+    { key: 'actUserName', headerName: '实际巡检人', align: 'center' },
+    { key: 'actUserName', headerName: '巡检方式', align: 'center' },
+    { key: 'actUserName', headerName: '任务状态', align: 'center' },
+    { key: 'stateCd', headerName: '巡检点状态', align: 'center' },
+    { key: 'patrolType', headerName: '巡检情况', align: 'center' },
+    { key: 'actUserName', headerName: '巡检照片', align: 'center' },
+    { key: 'createdAt', headerName: '创建时间', align: 'center' },
     {
       key: 'operate',
       headerName: '操作',
@@ -55,9 +55,7 @@ const TableData: React.FC<TableDataProps> = () => {
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      const res = await dispatch(
-        find({ 'page.num': page.num, 'page.size': page.size, statusCd: 1000 })
-      )
+      const res = await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }

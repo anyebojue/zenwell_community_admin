@@ -18,6 +18,7 @@ import SpectionSlice from './property/spection'
 import SpectionItemSlice from './property/spectionItem'
 import SpectionPlanSlice from './property/spectionPlan'
 import SpectionTaskSlice from './property/spectionTask'
+import SpectionTaskDetailSlice from './property/spectionTaskDetail'
 import SystemSettingsSlice from './property/systemSettings'
 
 const store = configureStore({
@@ -41,6 +42,7 @@ const store = configureStore({
     SpectionItemSlice,
     SpectionPlanSlice,
     SpectionTaskSlice,
+    SpectionTaskDetailSlice,
     SystemSettingsSlice
   },
   // 关闭序列化检测
