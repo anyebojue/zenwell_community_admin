@@ -26,6 +26,7 @@ import AMapExample from 'components/AMapExample'
 import FormDialog from './components/FormDialog'
 import PlanIndex from './components/PlanIndex'
 import TaskIndex from './components/TaskIndex'
+import PointIndex from './components/PointIndex'
 
 const treeViewStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -206,7 +207,7 @@ const SpectionRouteIndex = () => {
               <Tab sx={{ pl: 2, pr: 2 }} label="巡检任务" value={3} />
             </Tabs>
             <Box sx={{ mt: 2 }}>
-              {activeTabIndex === 0 && '0'}
+              {activeTabIndex === 0 && <PointIndex routeDialogValue={dialogValue} />}
               {activeTabIndex === 1 && <AMapExample />}
               {activeTabIndex === 2 && <PlanIndex />}
               {activeTabIndex === 3 && <TaskIndex />}
