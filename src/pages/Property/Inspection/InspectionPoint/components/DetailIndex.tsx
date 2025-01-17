@@ -1,0 +1,162 @@
+import { memo, useCallback, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { find } from 'modules/property/spectionTaskDetail'
+import message from 'components/Message'
+import { DataGrid } from '@mui/x-data-grid'
+
+const PlanIndex = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  const { page, list } = useSelector((state: RootState) => state.SpectionTaskDetailSlice)
+
+  const fetchData = useCallback(async () => {
+    const closeLoading = message.loading('正在加载列表中，请稍后...')
+    try {
+      const res = await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      closeLoading()
+    }
+  }, [dispatch, page.num, page.size])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
+  return (
+    <DataGrid
+      sx={{ mt: 2 }}
+      disableRowSelectionOnClick
+      disableColumnMenu
+      rows={list}
+      columns={[
+        {
+          field: 'taskId',
+          headerName: '任务详情ID',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'inspectionName',
+          headerName: '巡检点名称',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'inspectionName',
+          headerName: '巡检计划名称',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'inspectionName',
+          headerName: '巡检路线名称',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'actUserName',
+          headerName: '巡检人 开始/结束时间',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'pointStartTime',
+          headerName: '巡检点 开始/结束时间',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'pointStartTime',
+          headerName: '实际巡检时间',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'inspectionState',
+          headerName: '实际签到状态',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'actUserName',
+          headerName: '计划巡检人',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'actUserName',
+          headerName: '实际巡检人',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'actUserName',
+          headerName: '巡检方式',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'actUserName',
+          headerName: '任务状态',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'stateCd',
+          headerName: '巡检点状态',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'patrolType',
+          headerName: '巡检情况',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'actUserName',
+          headerName: '巡检照片',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'createdAt',
+          headerName: '创建时间',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        }
+      ]}
+      pageSizeOptions={[20]}
+      initialState={{
+        pagination: {
+          paginationModel: {
+            pageSize: 20
+          }
+        }
+      }}
+    />
+  )
+}
+
+export default memo(PlanIndex)

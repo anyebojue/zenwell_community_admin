@@ -24,6 +24,8 @@ import message from 'components/Message'
 import { RolesReply } from 'api/model/platform/rolesModel'
 import AMapExample from 'components/AMapExample'
 import FormDialog from './components/FormDialog'
+import PlanIndex from './components/PlanIndex'
+import TaskIndex from './components/TaskIndex'
 
 const treeViewStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -208,8 +210,8 @@ const RolesIndex = () => {
             <Box sx={{ mt: 2 }}>
               {activeTabIndex === 0 && <AMapExample />}
               {activeTabIndex === 1 && '1'}
-              {activeTabIndex === 2 && '2'}
-              {activeTabIndex === 3 && '3'}
+              {activeTabIndex === 2 && <PlanIndex />}
+              {activeTabIndex === 3 && <TaskIndex />}
             </Box>
           </Box>
         </Box>
