@@ -1,7 +1,7 @@
 import { ChangeEvent, memo, useState, useCallback, Dispatch, SetStateAction } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairPoolParams } from 'api/model/property/repairPoolModel'
-import { find } from 'modules/property/repairPool'
+import { SpectionTaskParams } from 'api/model/property/spectionTaskModel'
+import { find } from 'modules/property/spectionTask'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -25,7 +25,7 @@ const textFieldStyles = {
 }
 
 interface FormSearchProps {
-  selectedButton: number
+  selectedButton: string
   selectedRows: Set<string | undefined>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
@@ -35,20 +35,15 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
   const { page } = useSelector((state: RootState) => state.RepairSettingSlice)
 
   const [openDialog, setOpenDialog] = useState(false)
-  const [searchParams, setSearchParams] = useState<RepairPoolParams>({
-    id: '',
-    repairName: '',
-    tel: '',
-    repairSettingId: '',
-    repairType: '',
-    communityId: '',
-    maintenanceType: 0,
+  const [searchParams, setSearchParams] = useState<SpectionTaskParams>({
+    name: '',
     startTime: '',
-    endTime: ''
+    endTime: '',
+    stateCd: 0
   })
 
   const handleInputChange =
-    (field: keyof RepairPoolParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof SpectionTaskParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -56,7 +51,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
     }
 
   const fetchData = useCallback(
-    async (params: RepairPoolParams & PaginationParams) => {
+    async (params: SpectionTaskParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
@@ -93,8 +88,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.id}
-            onChange={handleInputChange('id')}
+            value={searchParams.name}
+            onChange={handleInputChange('name')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -134,17 +129,15 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             select
             size="small"
             label="请选择巡检状态"
-            value={searchParams.repairType || ''}
-            onChange={handleInputChange('repairType')}
+            value={searchParams.stateCd || ''}
+            onChange={handleInputChange('stateCd')}
             variant="outlined"
             sx={textFieldStyles}
           >
             {[
-              { value: '1001', label: '未开始' },
-              { value: '1001', label: '巡检中' },
-              { value: '1001', label: '巡检完成' },
-              { value: '1001', label: '已超时' },
-              { value: '1001', label: '缺勤' }
+              { value: 0, label: '未开始' },
+              { value: 1, label: '进行中' },
+              { value: 2, label: '已完成' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -172,26 +165,16 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
           sx={buttonStyles('darkgray', '#696969')}
           onClick={() => {
             setSearchParams({
-              id: '',
-              repairName: '',
-              tel: '',
-              repairSettingId: '',
-              repairType: '',
-              communityId: '',
-              maintenanceType: 0,
-              startTime: '',
-              endTime: ''
-            })
-            fetchData({
-              id: '',
-              repairName: '',
-              tel: '',
-              repairSettingId: '',
-              repairType: '',
-              communityId: '',
-              maintenanceType: 0,
+              name: '',
               startTime: '',
               endTime: '',
+              stateCd: 0
+            })
+            fetchData({
+              name: '',
+              startTime: '',
+              endTime: '',
+              stateCd: 0,
               'page.num': page.num,
               'page.size': page.size
             })

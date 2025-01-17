@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairPoolReply } from 'api/model/property/repairPoolModel'
-import { deleteByIds, find } from 'modules/property/repairPool'
+import { SpectionTaskReply } from 'api/model/property/spectionTaskModel'
+import { deleteByIds, find } from 'modules/property/spectionTask'
 import { Box, Button, ButtonGroup, Stack } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
@@ -11,13 +11,19 @@ import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
 import FormDialog from './components/FormDialog'
 
-const RepairPoolIndex = () => {
+const SpectionTaskIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.RepairPoolSlice)
-  const [dialogValue, setDialogValue] = useState<RepairPoolReply>()
+  const { page, list } = useSelector((state: RootState) => state.SpectionTaskSlice)
+  const { list: spectionPlanList } = useSelector((state: RootState) => state.SpectionPlanSlice)
+  const updatedSpectionPlanList = useMemo(() => {
+    const updatedList = [...spectionPlanList]
+    updatedList.unshift({ id: '', inspectionPlanName: '全部' })
+    return updatedList
+  }, [spectionPlanList])
+  const [dialogValue, setDialogValue] = useState<SpectionTaskReply>()
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [openDialog, setOpenDialog] = useState(false)
-  const [selectedButton, setSelectedButton] = useState<number>(0)
+  const [selectedButton, setSelectedButton] = useState<string>('')
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -48,7 +54,7 @@ const RepairPoolIndex = () => {
         setDelOpen(false)
         message.success('删除成功')
         await dispatch(
-          find({ 'page.num': page.num, 'page.size': page.size, statusCd: selectedButton })
+          find({ 'page.num': page.num, 'page.size': page.size, inspectionPlanId: selectedButton })
         )
         setLoading(false)
       } catch (err: unknown) {
@@ -72,25 +78,21 @@ const RepairPoolIndex = () => {
           orientation="vertical"
           aria-label="Vertical button group"
         >
-          {[
-            { value: 0, label: '全部' },
-            { value: 1000, label: 'rg' },
-            { value: 2000, label: 'HRS巡检' }
-          ].map(item => (
+          {updatedSpectionPlanList.map(item => (
             <Button
-              key={item.value}
+              key={item.id}
               size="large"
               sx={{
-                backgroundColor: selectedButton === item.value ? '#1976d2' : '#fff',
-                color: selectedButton === item.value ? '#fff' : '#000',
+                backgroundColor: selectedButton === item.id ? '#1976d2' : '#fff',
+                color: selectedButton === item.id ? '#fff' : '#000',
                 lineHeight: 2.5,
                 '&:hover': {
-                  backgroundColor: selectedButton === item.value ? '#1565c0' : '#f0f0f0'
+                  backgroundColor: selectedButton === item.id ? '#1565c0' : '#f0f0f0'
                 }
               }}
-              onClick={() => setSelectedButton(item.value)}
+              onClick={() => setSelectedButton(item.id!)}
             >
-              {item.label}
+              {item.inspectionPlanName}
             </Button>
           ))}
         </ButtonGroup>
@@ -130,4 +132,4 @@ const RepairPoolIndex = () => {
   )
 }
 
-export default memo(RepairPoolIndex)
+export default memo(SpectionTaskIndex)

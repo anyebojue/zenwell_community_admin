@@ -8,8 +8,8 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairPoolParams, RepairPoolReply } from 'api/model/property/repairPoolModel'
-import { create, find, update } from 'modules/property/repairPool'
+import { SpectionTaskParams, SpectionTaskReply } from 'api/model/property/spectionTaskModel'
+import { create, find, update } from 'modules/property/spectionTask'
 import {
   Box,
   CircularProgress,
@@ -27,8 +27,8 @@ import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
-  selectedButton: number
-  dialogValue?: RepairPoolReply
+  selectedButton: string
+  dialogValue?: SpectionTaskReply
   openDialog: boolean
   dialogType: string
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -42,21 +42,17 @@ const FormDialog: React.FC<FormDialogProps> = ({
   setOpenDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.RepairPoolSlice)
+  const { page } = useSelector((state: RootState) => state.SpectionTaskSlice)
   const { list } = useSelector((state: RootState) => state.RepairSettingSlice)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(
     () => ({
-      repairObjType: dialogValue?.repairObjType || 0,
-      repairName: dialogValue?.repairName || '',
-      tel: dialogValue?.tel || '',
-      appointmentTime: dialogValue?.appointmentTime || '',
-      context: dialogValue?.context || ''
+      planUserName: dialogValue?.planUserName || ''
     }),
     [dialogValue]
   )
-  const [formData, setFormData] = useState<RepairPoolParams>(initialFormData)
+  const [formData, setFormData] = useState<SpectionTaskParams>(initialFormData)
 
   useEffect(() => {
     setFormData(initialFormData)
@@ -78,7 +74,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
           find({
             'page.num': page.num || '1',
             'page.size': page.size,
-            statusCd: selectedButton
+            inspectionPlanId: selectedButton
           })
         )
         message.success(dialogType === 'add' ? '新建成功' : '编辑成功')
@@ -121,8 +117,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.repairObjType}
-              onChange={e => setFormData({ ...formData, repairObjType: Number(e.target.value) })}
+              value={formData.inspectionPlanId}
+              onChange={e => setFormData({ ...formData, inspectionPlanId: e.target.value })}
               variant="outlined"
             >
               {list.map(option => (
@@ -133,13 +129,13 @@ const FormDialog: React.FC<FormDialogProps> = ({
             </TextField>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>报修内容：</FormLabel>
+            <FormLabel>流转说明：</FormLabel>
             <TextField
               placeholder="请输入"
               sx={{ width: '80%' }}
               size="small"
-              value={formData.context}
-              onChange={e => setFormData({ ...formData, context: e.target.value })}
+              value={formData.remark}
+              onChange={e => setFormData({ ...formData, remark: e.target.value })}
               variant="outlined"
               multiline
               rows={2}

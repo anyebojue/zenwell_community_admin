@@ -1,7 +1,7 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairPoolReply } from 'api/model/property/repairPoolModel'
-import { find } from 'modules/property/repairPool'
+import { SpectionTaskReply } from 'api/model/property/spectionTaskModel'
+import { find } from 'modules/property/spectionTask'
 import { find as findRepairSetting } from 'modules/property/repairSetting'
 import { Box, Tooltip, IconButton } from '@mui/material'
 import { Delete, SwapHoriz, FileCopy } from '@mui/icons-material'
@@ -16,8 +16,8 @@ export interface Column<T> {
 }
 
 interface TableDataProps {
-  selectedButton: number
-  setDialogValue: Dispatch<SetStateAction<RepairPoolReply | undefined>>
+  selectedButton: string
+  setDialogValue: Dispatch<SetStateAction<SpectionTaskReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -33,20 +33,19 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.RepairPoolSlice)
+  const { page, list } = useSelector((state: RootState) => state.SpectionTaskSlice)
   console.log(list)
 
-  const columns: Column<RepairPoolReply>[] = [
-    { key: 'repairObjName', headerName: '工单编码', align: 'center' },
-    { key: 'repairObjName', headerName: '任务编码', align: 'center' },
-    { key: 'repairObjName', headerName: '巡检计划', align: 'center' },
-    { key: 'repairObjName', headerName: '巡检人 开始/结束时间', align: 'center' },
-    { key: 'repairObjName', headerName: '实际巡检时间', align: 'center' },
-    { key: 'repairObjName', headerName: '计划巡检人', align: 'center' },
-    { key: 'repairObjName', headerName: '当前巡检人', align: 'center' },
-    { key: 'repairObjName', headerName: '转移描述', align: 'center' },
-    { key: 'repairObjName', headerName: '巡检方式', align: 'center' },
-    { key: 'repairObjName', headerName: '巡检状态', align: 'center' },
+  const columns: Column<SpectionTaskReply>[] = [
+    { key: 'id', headerName: '任务编码', align: 'center' },
+    { key: 'inspectionPlanId', headerName: '巡检计划', align: 'center' },
+    { key: 'startTime', headerName: '巡检人 开始/结束时间', align: 'center' },
+    { key: 'actInsTime', headerName: '实际巡检时间', align: 'center' },
+    { key: 'planUserName', headerName: '计划巡检人', align: 'center' },
+    { key: 'actUserName', headerName: '当前巡检人', align: 'center' },
+    { key: 'transferDesc', headerName: '转移描述', align: 'center' },
+    { key: 'signType', headerName: '巡检方式', align: 'center' },
+    { key: 'stateCd', headerName: '巡检状态', align: 'center' },
     {
       key: 'operate',
       headerName: '操作',
@@ -89,7 +88,7 @@ const TableData: React.FC<TableDataProps> = ({
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
       const res = await dispatch(
-        find({ 'page.num': page.num, 'page.size': page.size, statusCd: selectedButton })
+        find({ 'page.num': page.num, 'page.size': page.size, inspectionPlanId: selectedButton })
       )
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
