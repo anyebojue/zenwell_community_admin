@@ -8,8 +8,8 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RolesParams, RolesReply } from 'api/model/platform/rolesModel'
-import { create, find, update } from 'modules/platform/roles'
+import { SpectionRouteParams, SpectionRouteReply } from 'api/model/property/spectionRouteModel'
+import { create, find, update } from 'modules/property/spectionRoute'
 import {
   Box,
   CircularProgress,
@@ -20,14 +20,13 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
-  MenuItem
+  DialogTitle
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
-  dialogValue?: RolesReply
+  dialogValue?: SpectionRouteReply
   openDialog: boolean
   dialogType: string
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -40,18 +39,18 @@ const FormDialog: React.FC<FormDialogProps> = ({
   setOpenDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.RolesSlice)
+  const { page } = useSelector((state: RootState) => state.SpectionRouteSlice)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(
     () => ({
       name: dialogType === 'edit' ? dialogValue?.name || '' : '',
-      word: dialogType === 'edit' ? dialogValue?.word || '' : '',
-      plate: dialogType === 'edit' ? dialogValue?.plate || '' : ''
+      seq: dialogType === 'edit' ? dialogValue?.seq || 0 : 0,
+      remark: dialogType === 'edit' ? dialogValue?.remark || '' : ''
     }),
     [dialogType, dialogValue]
   )
-  const [formData, setFormData] = useState<RolesParams>(initialFormData)
+  const [formData, setFormData] = useState<SpectionRouteParams>(initialFormData)
 
   useEffect(() => {
     setFormData(initialFormData)
@@ -84,8 +83,9 @@ const FormDialog: React.FC<FormDialogProps> = ({
   )
 
   const formFields = [
-    { label: '角色名称', type: 'text', id: 'name', required: true },
-    { label: '关键字', type: 'text', id: 'word', required: true }
+    { label: '路线名称', type: 'text', id: 'name', required: true },
+    { label: '顺序', type: 'number', id: 'seq', required: true },
+    { label: '备注', type: 'text', id: 'remark', required: true }
   ]
 
   return (
@@ -111,32 +111,11 @@ const FormDialog: React.FC<FormDialogProps> = ({
                 size="small"
                 required={required}
                 id={id}
-                value={formData[id as keyof RolesParams]}
+                value={formData[id as keyof SpectionRouteParams]}
                 onChange={e => setFormData({ ...formData, [id]: e.target.value })}
               />
             </Box>
           ))}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>平台：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.plate}
-              onChange={e => setFormData({ ...formData, plate: e.target.value })}
-              variant="outlined"
-            >
-              {[
-                { value: '0', label: '物业' },
-                { value: '1', label: '平台' },
-                { value: '2', label: '开发' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
         </Stack>
       </DialogContent>
       <DialogActions>

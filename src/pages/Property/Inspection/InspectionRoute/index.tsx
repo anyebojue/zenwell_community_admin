@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteByIds, find } from 'modules/platform/roles'
+import { deleteByIds, find } from 'modules/property/spectionRoute'
 import { RichTreeView } from '@mui/x-tree-view'
 import Grid from '@mui/material/Grid2'
 import {
@@ -21,8 +21,11 @@ import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import { RolesReply } from 'api/model/platform/rolesModel'
+import { SpectionRouteReply } from 'api/model/property/spectionRouteModel'
+import AMapExample from 'components/AMapExample'
 import FormDialog from './components/FormDialog'
+import PlanIndex from './components/PlanIndex'
+import TaskIndex from './components/TaskIndex'
 
 const treeViewStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -38,23 +41,15 @@ const contentBoxStyle = (theme: Theme) => ({
   width: '100%'
 })
 
-const MUI_X_PRODUCTS = [
-  { id: '0', label: '小区道路' },
-  { id: '4', label: '4幢' },
-  { id: '3', label: '3幢' },
-  { id: '2', label: '2幢' },
-  { id: '1', label: '1幢' }
-]
-
-const RolesIndex = () => {
+const SpectionRouteIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.RolesSlice)
+  const { page, list } = useSelector((state: RootState) => state.SpectionRouteSlice)
   const theme = useTheme()
   const [activeTabIndex, setActiveTabIndex] = useState(0)
-  // const MUI_X_PRODUCTS = list.map(item => ({ id: item.id, label: item.name }))
+  const MUI_X_PRODUCTS = list.map(item => ({ id: item.id, label: item.name }))
   const [openDialog, setOpenDialog] = useState(false)
   const [dialogType, setDialogType] = useState('')
-  const [dialogValue, setDialogValue] = useState<RolesReply>({})
+  const [dialogValue, setDialogValue] = useState<SpectionRouteReply>({})
   const [location, setLoading] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
 
@@ -172,13 +167,12 @@ const RolesIndex = () => {
             <Box sx={{ pb: 0.2 }}>
               <Grid container spacing={2}>
                 {[
-                  { label: '巡检点', value: '小区道路' },
-                  { label: '巡检类型', value: '设备巡检' },
-                  { label: '巡检位置', value: '1222(2222)' },
-                  { label: '巡检项目', value: '道路路灯' },
-                  { label: 'NFC', value: '' }
+                  { label: '巡检路线', value: dialogValue.name },
+                  { label: '顺序', value: dialogValue.seq },
+                  { label: '创建时间', value: dialogValue.createdAt },
+                  { label: '备注', value: dialogValue.remark }
                 ].map((item, index) => (
-                  <Grid size={{ xs: 12, sm: 6, md: 2 }} key={index}>
+                  <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
                     <Typography variant="body2">
                       {item.label}：{item.value}
                     </Typography>
@@ -206,16 +200,16 @@ const RolesIndex = () => {
               textColor="secondary"
               indicatorColor="secondary"
             >
-              <Tab sx={{ pl: 2, pr: 2 }} label="巡检明细" value={0} />
-              <Tab sx={{ pl: 2, pr: 2 }} label="巡检路线" value={1} />
+              <Tab sx={{ pl: 2, pr: 2 }} label="巡检点" value={0} />
+              <Tab sx={{ pl: 2, pr: 2 }} label="巡检地图" value={1} />
               <Tab sx={{ pl: 2, pr: 2 }} label="巡检计划" value={2} />
               <Tab sx={{ pl: 2, pr: 2 }} label="巡检任务" value={3} />
             </Tabs>
             <Box sx={{ mt: 2 }}>
               {activeTabIndex === 0 && '0'}
-              {activeTabIndex === 1 && '1'}
-              {activeTabIndex === 2 && '2'}
-              {activeTabIndex === 3 && '3'}
+              {activeTabIndex === 1 && <AMapExample />}
+              {activeTabIndex === 2 && <PlanIndex />}
+              {activeTabIndex === 3 && <TaskIndex />}
             </Box>
           </Box>
         </Box>
@@ -238,4 +232,4 @@ const RolesIndex = () => {
   )
 }
 
-export default memo(RolesIndex)
+export default memo(SpectionRouteIndex)

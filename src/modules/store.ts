@@ -15,6 +15,7 @@ import RepairSettingSlice from './property/repairSetting'
 import RepairPoolSlice from './property/repairPool'
 import RepairStaffSlice from './property/repairStaff'
 import SpectionSlice from './property/spection'
+import SpectionRouteSlice from './property/spectionRoute'
 import SpectionItemSlice from './property/spectionItem'
 import SpectionPlanSlice from './property/spectionPlan'
 import SpectionTaskSlice from './property/spectionTask'
@@ -39,6 +40,7 @@ const store = configureStore({
     RepairPoolSlice,
     RepairStaffSlice,
     SpectionSlice,
+    SpectionRouteSlice,
     SpectionItemSlice,
     SpectionPlanSlice,
     SpectionTaskSlice,
