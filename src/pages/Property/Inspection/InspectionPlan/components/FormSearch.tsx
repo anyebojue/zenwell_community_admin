@@ -35,7 +35,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
   const [searchParams, setSearchParams] = useState<SpectionPlanParams>({
     id: '',
     inspectionPlanName: '',
-    createUserName: '',
+    staffName: '',
     status: ''
   })
 
@@ -103,8 +103,8 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.createUserName}
-            onChange={handleInputChange('createUserName')}
+            value={searchParams.staffName}
+            onChange={handleInputChange('staffName')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">

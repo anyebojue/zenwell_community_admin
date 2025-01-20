@@ -36,7 +36,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
 
   const [openDialog, setOpenDialog] = useState(false)
   const [searchParams, setSearchParams] = useState<SpectionTaskParams>({
-    name: '',
+    actUserName: '',
     startTime: '',
     endTime: '',
     stateCd: 0
@@ -88,8 +88,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.name}
-            onChange={handleInputChange('name')}
+            value={searchParams.actUserName}
+            onChange={handleInputChange('actUserName')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -135,9 +135,9 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             sx={textFieldStyles}
           >
             {[
-              { value: 0, label: '未开始' },
-              { value: 1, label: '进行中' },
-              { value: 2, label: '已完成' }
+              { value: 1, label: '未开始' },
+              { value: 2, label: '进行中' },
+              { value: 3, label: '已完成' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}

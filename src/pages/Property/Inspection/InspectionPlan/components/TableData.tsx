@@ -83,12 +83,27 @@ const TableData: React.FC<TableDataProps> = ({
     { key: 'inspectionRouteId', headerName: '计划路线', align: 'center' },
     { key: 'inspectionPlanPeriod', headerName: '计划周期', align: 'center' },
     { key: 'signType', headerName: '签到方式', align: 'center' },
-    { key: 'inspectionMonth', headerName: '日期范围', align: 'center' },
-    { key: 'inspectionDay', headerName: '时间范围', align: 'center' },
+    {
+      key: 'startDate',
+      headerName: '日期范围',
+      align: 'center',
+      renderCell: row => `${row.startDate} - ${row.endDate}`
+    },
+    {
+      key: 'startTime',
+      headerName: '时间范围',
+      align: 'center',
+      renderCell: row => `${row.startTime} - ${row.endTime}`
+    },
     { key: 'beforeTime', headerName: '任务提前（分钟）', align: 'center' },
     { key: 'createUserName', headerName: '制定人', align: 'center' },
-    { key: 'startTime', headerName: '制定时间', align: 'center' },
-    { key: 'status', headerName: '状态', align: 'center' },
+    { key: 'createdAt', headerName: '制定时间', align: 'center' },
+    {
+      key: 'status',
+      headerName: '状态',
+      align: 'center',
+      renderCell: row => (row.status === '0' ? '禁用' : row.status === '1' ? '启用' : '')
+    },
     { key: 'createUserName', headerName: '巡检人员', align: 'center' },
     {
       key: 'operate',
