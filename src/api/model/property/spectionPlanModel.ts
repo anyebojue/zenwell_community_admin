@@ -44,9 +44,9 @@ export interface SpectionPlanParams {
   createUserId?: string // 制定人员ID
   createUserName?: string // 制定人员姓名
   beforeTime?: number // 任务提前时间（分钟）
-  inspectionMonth?: number // 指定月份，0 表示不限
-  inspectionDay?: number // 指定天数，0 表示不限
-  inspectionWorkday?: number // 指定工作日，0 表示不限
+  inspectionMonth?: string // 指定月份，0 表示不限
+  inspectionDay?: string // 指定天数，0 表示不限
+  inspectionWorkday?: string // 指定工作日，0 表示不限
   canReexamine?: number // 允许补检 0 不允许 1 允许
   operate?: number // 数据状态 0 添加 1 修改 2 删除
   status?: string // 状态 0 禁用 1 启用

@@ -21,10 +21,25 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle
+  DialogTitle,
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
+  Divider,
+  List,
+  Typography,
+  ListItemButton,
+  ListItemAvatar,
+  Avatar,
+  ListItemText
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
+import { RichTreeView, TreeViewBaseItem } from '@mui/x-tree-view'
+import { Work } from '@mui/icons-material'
+import { OrganizationInfoReply, OrgUserReply } from 'api/model/platform/organizationInfoModel'
+import { find as treeFind, findOrgUser } from 'modules/platform/organizationInfo'
+import { find as routeFind } from 'modules/property/spectionRoute'
 
 interface FormDialogProps {
   dialogValue?: SpectionPlanReply
@@ -40,8 +55,39 @@ const FormDialog: React.FC<FormDialogProps> = ({
   setOpenDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.SpectionPlanSlice)
+  const { page, list, orgUserList } = useSelector((state: RootState) => state.OrganizationInfoSlice)
+  const { list: routeList } = useSelector((state: RootState) => state.SpectionRouteSlice)
   const [loading, setLoading] = useState(false)
+  const [selectedMonths, setSelectedMonths] = useState<number[]>([])
+  const [selectedDays, setSelectedDays] = useState<number[]>([])
+  const [selectedWeekdays, setSelectedWeekdays] = useState<number[]>([])
+  const [dialogUserValue, setDialogUserValue] = useState<OrganizationInfoReply>({})
+  const [employeeList, setEmployeeList] = useState<OrgUserReply[]>([])
+
+  const fetchRouteData = useCallback(async () => {
+    const closeLoading = message.loading('正在加载列表中，请稍后...')
+    try {
+      const res = await dispatch(routeFind({ 'page.num': page.num, 'page.size': page.size }))
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
+      setLoading(false)
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      closeLoading()
+    }
+  }, [dispatch, page.num, page.size])
+
+  const transformData = useMemo(() => {
+    const transformNode = (node: OrganizationInfoReply): TreeViewBaseItem => ({
+      id: node.id as string,
+      label: node.name as string,
+      children: node.children?.length ? node.children.map(transformNode) : []
+    })
+    return list?.map(transformNode) || []
+  }, [list])
 
   const initialFormData = useMemo(
     () => ({
@@ -65,12 +111,31 @@ const FormDialog: React.FC<FormDialogProps> = ({
     setFormData(initialFormData)
   }, [initialFormData])
 
+  const months = Array.from({ length: 12 }, (_, i) => i + 1)
+  const days = Array.from({ length: 31 }, (_, i) => i + 1)
+  const weekdays = [
+    { value: 1, label: '星期一' },
+    { value: 2, label: '星期二' },
+    { value: 3, label: '星期三' },
+    { value: 4, label: '星期四' },
+    { value: 5, label: '星期五' },
+    { value: 6, label: '星期六' },
+    { value: 7, label: '星期日' }
+  ]
+
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
       setLoading(true)
       try {
-        const params = { ...formData }
+        const params = {
+          ...formData,
+          inspectionMonth: selectedMonths.join(','),
+          inspectionDay: selectedDays.join(','),
+          inspectionWorkday: selectedWeekdays.join(','),
+          staff_id: employeeList.map(item => item.id).join(',')
+        }
+        console.log(params)
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)
@@ -88,15 +153,91 @@ const FormDialog: React.FC<FormDialogProps> = ({
         setLoading(false)
       }
     },
-    [dispatch, dialogType, dialogValue, formData, page, setOpenDialog, initialFormData]
+    [
+      formData,
+      selectedMonths,
+      selectedDays,
+      selectedWeekdays,
+      employeeList,
+      dialogType,
+      dialogValue?.id,
+      dispatch,
+      page.num,
+      page.size,
+      setOpenDialog,
+      initialFormData
+    ]
   )
 
   const formFields = [{ label: '计划名称', type: 'text', id: 'inspectionPlanName', required: true }]
 
+  const fetchData = useCallback(async () => {
+    const closeLoading = message.loading('正在加载列表中，请稍后...')
+    try {
+      const res = await dispatch(treeFind({ pId: '0' }))
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      closeLoading()
+    }
+  }, [dispatch])
+
+  const fetchOrgUserData = useCallback(
+    async (id: string) => {
+      const closeLoading = message.loading('正在加载列表中，请稍后...')
+      try {
+        const res = await dispatch(findOrgUser({ 'page.disable': true, orgId: id }))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        closeLoading()
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
+      }
+    },
+    [dispatch]
+  )
+
+  useEffect(() => {
+    fetchRouteData()
+    fetchData()
+    fetchOrgUserData('9032183211253301249')
+  }, [fetchRouteData, fetchData, fetchOrgUserData])
+
+  const findItemById = useCallback(
+    (items: OrganizationInfoReply[], targetId: string): OrganizationInfoReply | null => {
+      for (const item of items) {
+        if (item.id === targetId) return item
+        if (item.children?.length) {
+          const foundInChildren = findItemById(item.children, targetId)
+          fetchOrgUserData(foundInChildren?.id || '')
+          if (foundInChildren) return foundInChildren
+        }
+      }
+      return null
+    },
+    [fetchOrgUserData]
+  )
+
+  const handleListItemClick = async (row: OrgUserReply) => {
+    const isAlreadySelected = employeeList.some(item => item.id === row.id)
+    if (isAlreadySelected) {
+      message.warning('你已经选择了这个员工！')
+      return
+    }
+    setEmployeeList(prevList => [...prevList, row])
+  }
+
   return (
     <Dialog
       fullWidth
-      maxWidth="sm"
+      maxWidth="md"
       open={openDialog}
       onClose={() => setOpenDialog(false)}
       PaperProps={{ component: 'form', onSubmit: handleSubmit }}
@@ -129,16 +270,16 @@ const FormDialog: React.FC<FormDialogProps> = ({
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.inspectionRouteId}
-              onChange={e => setFormData({ ...formData, inspectionRouteId: e.target.value })}
+              value={formData.inspectionRouteId || ''}
+              onChange={e => {
+                console.log('Selected Route ID:', e.target.value)
+                setFormData({ ...formData, inspectionRouteId: e.target.value })
+              }}
               variant="outlined"
             >
-              {[
-                { value: 1, label: '月/天' },
-                { value: 2, label: '按周' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
+              {routeList.map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
                 </MenuItem>
               ))}
             </TextField>
@@ -160,22 +301,83 @@ const FormDialog: React.FC<FormDialogProps> = ({
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.inspectionPlanPeriod}
+              value={formData.inspectionPlanPeriod || ''}
               onChange={e =>
                 setFormData({ ...formData, inspectionPlanPeriod: Number(e.target.value) })
               }
               variant="outlined"
             >
-              {[
-                { value: 1, label: '月/天' },
-                { value: 2, label: '按周' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
+              <MenuItem value={1}>月/天</MenuItem>
+              <MenuItem value={2}>按周</MenuItem>
             </TextField>
           </Box>
+
+          {formData.inspectionPlanPeriod === 1 && (
+            <>
+              <FormLabel>选择月份：</FormLabel>
+              <FormGroup row>
+                {months.map(month => (
+                  <FormControlLabel
+                    key={month}
+                    control={
+                      <Checkbox
+                        checked={selectedMonths.includes(month)}
+                        onChange={() =>
+                          setSelectedMonths(prev =>
+                            prev.includes(month) ? prev.filter(m => m !== month) : [...prev, month]
+                          )
+                        }
+                      />
+                    }
+                    label={`${month}月`}
+                  />
+                ))}
+              </FormGroup>
+              <FormLabel>选择日期：</FormLabel>
+              <FormGroup row>
+                {days.map(day => (
+                  <FormControlLabel
+                    key={day}
+                    control={
+                      <Checkbox
+                        checked={selectedDays.includes(day)}
+                        onChange={() =>
+                          setSelectedDays(prev =>
+                            prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]
+                          )
+                        }
+                      />
+                    }
+                    label={`${day}日`}
+                  />
+                ))}
+              </FormGroup>
+            </>
+          )}
+
+          {formData.inspectionPlanPeriod === 2 && (
+            <>
+              <FormLabel>选择星期：</FormLabel>
+              <FormGroup row>
+                {weekdays.map(({ value, label }) => (
+                  <FormControlLabel
+                    key={value}
+                    control={
+                      <Checkbox
+                        checked={selectedWeekdays.includes(value)}
+                        onChange={() =>
+                          setSelectedWeekdays(prev =>
+                            prev.includes(value) ? prev.filter(w => w !== value) : [...prev, value]
+                          )
+                        }
+                      />
+                    }
+                    label={label}
+                  />
+                ))}
+              </FormGroup>
+            </>
+          )}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>开始日期：</FormLabel>
             <TextField
@@ -261,6 +463,77 @@ const FormDialog: React.FC<FormDialogProps> = ({
             </TextField>
           </Box>
         </Stack>
+        <Box>
+          <Typography sx={{ pt: 5, pb: 3 }}>选择员工：</Typography>
+          <Box sx={{ display: 'flex' }}>
+            <RichTreeView
+              sx={{ width: '600px', mr: 2 }}
+              items={transformData}
+              defaultExpandedItems={['9032183211253301249']}
+              selectedItems={dialogUserValue?.id ?? ''}
+              onSelectedItemsChange={(_, selectedItemId) => {
+                if (!selectedItemId) return
+                const item = findItemById(list, selectedItemId)
+                if (item) setDialogUserValue(item)
+              }}
+              expansionTrigger="iconContainer" // 只有点击左边的按钮才展开
+            />
+            <Divider orientation="vertical" flexItem />
+            <List sx={{ ml: 2, width: '100%', bgcolor: 'background.paper' }}>
+              {orgUserList.length === 0 ? (
+                <Typography sx={{ textAlign: 'center', color: 'gray' }}>暂无数据</Typography>
+              ) : (
+                orgUserList.map(item => (
+                  <ListItemButton
+                    key={item.id}
+                    onClick={() => handleListItemClick(item)}
+                    sx={{
+                      transition: 'transform 0.2s ease-in-out',
+                      '&:hover': {
+                        transform: 'scale(1.05)',
+                        backgroundColor: 'rgba(0, 0, 0, 0.08)'
+                      }
+                    }}
+                  >
+                    <ListItemAvatar>
+                      <Avatar>
+                        <Work />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText primary={item.users?.username} secondary={item.users?.mobile} />
+                  </ListItemButton>
+                ))
+              )}
+            </List>
+            <Divider orientation="vertical" flexItem />
+            <List sx={{ ml: 2, width: '100%', bgcolor: 'background.paper' }}>
+              {employeeList.length === 0 ? (
+                <Typography sx={{ textAlign: 'center', color: 'gray' }}>暂无数据</Typography>
+              ) : (
+                employeeList.map(item => (
+                  <ListItemButton
+                    key={item.id}
+                    onClick={() => handleListItemClick(item)}
+                    sx={{
+                      transition: 'transform 0.2s ease-in-out',
+                      '&:hover': {
+                        transform: 'scale(1.05)',
+                        backgroundColor: 'rgba(0, 0, 0, 0.08)'
+                      }
+                    }}
+                  >
+                    <ListItemAvatar>
+                      <Avatar>
+                        <Work />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText primary={item.users?.username} secondary={item.users?.mobile} />
+                  </ListItemButton>
+                ))
+              )}
+            </List>
+          </Box>
+        </Box>
       </DialogContent>
       <DialogActions>
         <Button variant="contained" color="error" onClick={() => setOpenDialog(false)}>

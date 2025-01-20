@@ -163,7 +163,30 @@ const SpectionRouteIndex = () => {
         </Box>
         <Box sx={{ width: '450%' }}>
           <Box sx={contentBoxStyle}>
-            <Typography variant="h6">巡检路线</Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography variant="h6">巡检路线</Typography>
+              <Box>
+                <Button
+                  variant="text"
+                  size="small"
+                  color="secondary"
+                  onClick={() => {
+                    setOpenDialog(true)
+                    setDialogType('edit')
+                  }}
+                >
+                  修改
+                </Button>
+                <Button
+                  variant="text"
+                  size="small"
+                  color="secondary"
+                  onClick={() => setDelOpen(true)}
+                >
+                  删除
+                </Button>
+              </Box>
+            </Box>
             <Divider sx={{ p: 0.5, mb: 2 }} />
             <Box sx={{ pb: 0.2 }}>
               <Grid container spacing={2}>
@@ -208,7 +231,7 @@ const SpectionRouteIndex = () => {
             </Tabs>
             <Box sx={{ mt: 2 }}>
               {activeTabIndex === 0 && <PointIndex routeDialogValue={dialogValue} />}
-              {activeTabIndex === 1 && <AMapExample />}
+              {activeTabIndex === 1 && <AMapExample mapHeight="500px" />}
               {activeTabIndex === 2 && <PlanIndex />}
               {activeTabIndex === 3 && <TaskIndex />}
             </Box>
