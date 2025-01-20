@@ -1,11 +1,11 @@
+import React, { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { Close } from '@mui/icons-material'
 import { Button, Dialog, DialogContent, DialogTitle, IconButton, TextField } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { SpectionPointReply } from 'api/model/property/spectionPointModel'
 import { SpectionRouteReply } from 'api/model/property/spectionRouteModel'
 import message from 'components/Message'
-import { createPoint, findPoint } from 'modules/property/spectionPoint'
-import React, { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from 'react'
+import { createPoint, find, findPoint } from 'modules/property/spectionPoint'
 import { useDispatch, useSelector } from 'react-redux'
 
 const textFieldStyles = {
@@ -46,7 +46,7 @@ const AddPoint: React.FC<AddPointProps> = ({
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
       const res = await dispatch(
-        findPoint({
+        find({
           'page.num': page.num,
           'page.size': page.size,
           inspectionRouteId: routeDialogValue.id
@@ -64,8 +64,10 @@ const AddPoint: React.FC<AddPointProps> = ({
   }, [dispatch, page.num, page.size, routeDialogValue.id])
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    if (openDialog) {
+      fetchData()
+    }
+  }, [fetchData, openDialog])
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value)
@@ -82,8 +84,7 @@ const AddPoint: React.FC<AddPointProps> = ({
         communityId: community.id,
         status: dialogValue?.status
       }
-      const action = createPoint(params)
-      const res = await dispatch(action)
+      const res = await dispatch(createPoint(params))
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }

@@ -89,9 +89,11 @@ const FormDialog: React.FC<FormDialogProps> = ({
   }, [dispatch, page.num, page.size])
 
   useEffect(() => {
-    fetchData()
-    setFormData(initialFormData)
-  }, [fetchData, initialFormData])
+    if (openDialog) {
+      fetchData()
+      setFormData(initialFormData)
+    }
+  }, [fetchData, initialFormData, openDialog])
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {

@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { SpectionPointReply } from 'api/model/property/spectionPointModel'
+import { SpectionRoutePointReply } from 'api/model/property/spectionPointModel'
 import { deletePoint, findPoint } from 'modules/property/spectionPoint'
 import { SpectionRouteReply } from 'api/model/property/spectionRouteModel'
 import message from 'components/Message'
@@ -18,7 +18,7 @@ interface PointIndexProps {
 const PointIndex: React.FC<PointIndexProps> = ({ routeDialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, pointList } = useSelector((state: RootState) => state.SpectionPointSlice)
-  const [dialogValue, setDialogValue] = useState<SpectionPointReply>()
+  const [dialogValue, setDialogValue] = useState<SpectionRoutePointReply>()
   const [openEditDialog, setOpenEditDialog] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
@@ -51,8 +51,8 @@ const PointIndex: React.FC<PointIndexProps> = ({ routeDialogValue }) => {
 
   const getDeleteData = useCallback(() => {
     if (dialogValue) {
-      return dialogValue.id && dialogValue.inspectionName
-        ? [{ id: dialogValue.id, inspectionName: dialogValue.inspectionName }]
+      return dialogValue.id
+        ? [{ id: dialogValue.id, inspectionName: dialogValue.spectionPoint.inspectionName || '' }]
         : []
     }
     return []
@@ -109,56 +109,57 @@ const PointIndex: React.FC<PointIndexProps> = ({ routeDialogValue }) => {
         rows={pointList}
         columns={[
           {
-            field: 'id',
-            headerName: '巡检点ID',
-            flex: 1,
-            headerAlign: 'center',
-            align: 'center'
-          },
-          {
-            field: 'inspectionName',
+            field: 'spectionPoint.inspectionName',
             headerName: '巡检点名称',
             flex: 1,
             headerAlign: 'center',
-            align: 'center'
+            align: 'center',
+            renderCell: params => params.row.spectionPoint.inspectionName
           },
           {
             field: 'pointObjType',
             headerName: '巡检点类型',
             flex: 1,
             headerAlign: 'center',
-            align: 'center'
+            align: 'center',
+            renderCell: params =>
+              params.row.spectionPoint.pointObjType === 1001
+                ? '设备巡检'
+                : params.row.spectionPoint.pointObjType === 2002
+                  ? '环境巡检'
+                  : ''
           },
           {
             field: 'longitude',
             headerName: '巡检位置',
             flex: 1,
             headerAlign: 'center',
-            align: 'center'
+            align: 'center',
+            renderCell: params => {
+              const { longitude, latitude } = params.row.spectionPoint
+              return (
+                <div style={{ whiteSpace: 'normal', wordWrap: 'break-word', lineHeight: 1.8 }}>
+                  {longitude} <br /> {latitude}
+                </div>
+              )
+            }
           },
           {
-            field: 'inspectionMonth',
-            headerName: '日期范围',
-            flex: 1,
-            headerAlign: 'center',
-            align: 'center'
-          },
-          {
-            field: 'createdAt',
+            field: 'pointStartTime',
             headerName: '开始时间',
             flex: 1,
             headerAlign: 'center',
             align: 'center'
           },
           {
-            field: 'createdAt',
+            field: 'pointEndTime',
             headerName: '结束时间',
             flex: 1,
             headerAlign: 'center',
             align: 'center'
           },
           {
-            field: 'createdAt',
+            field: 'sortNumber',
             headerName: '排序',
             flex: 1,
             headerAlign: 'center',

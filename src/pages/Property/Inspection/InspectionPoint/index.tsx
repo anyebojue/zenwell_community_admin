@@ -174,7 +174,7 @@ const RolesIndex = () => {
                   { label: '巡检项目', value: dialogValue.itemId },
                   { label: 'NFC', value: dialogValue.nfcCode }
                 ].map((item, index) => (
-                  <Grid size={{ xs: 1, sm: 1, md: 1 }} key={index}>
+                  <Grid size={{ xs: 1, sm: 1, md: 3 }} key={index}>
                     <Typography variant="body2">
                       {item.label}：{item.value}
                     </Typography>

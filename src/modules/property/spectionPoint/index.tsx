@@ -1,6 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
-import { SpectionPointParams, SpectionPointReply } from 'api/model/property/spectionPointModel'
+import {
+  SpectionPointParams,
+  SpectionPointReply,
+  SpectionRoutePointParams,
+  SpectionRoutePointReply
+} from 'api/model/property/spectionPointModel'
 import {
   FindSpectionPoint,
   CreateSpectionPoint,
@@ -21,7 +26,7 @@ const PAGE = {
 interface IInitialState {
   page: Page
   list: SpectionPointReply[]
-  pointList: SpectionPointReply[]
+  pointList: SpectionRoutePointReply[]
 }
 
 const initialState: IInitialState = {
@@ -50,7 +55,7 @@ export const deletePoint = createAsyncThunk(`${namespace}/deleteByIds`, async (i
 
 export const findPoint = createAsyncThunk(
   `${namespace}/findPoint`,
-  async (params: SpectionPointParams & PaginationParams) => {
+  async (params: SpectionRoutePointParams & PaginationParams) => {
     const res = await FindPoint(params)
     return res
   }

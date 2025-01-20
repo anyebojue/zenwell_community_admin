@@ -1,5 +1,10 @@
 import { request } from 'utils/request/axios'
-import { FindSpectionPointReply, SpectionPointParams } from '../model/property/spectionPointModel'
+import {
+  FindSpectionPointReply,
+  FindSpectionRoutePointReply,
+  SpectionPointParams,
+  SpectionRoutePointParams
+} from '../model/property/spectionPointModel'
 
 const ApiPrefix = {
   CreatePoint: '/auth/spection_route_point',
@@ -19,7 +24,7 @@ const ApiPrefix = {
 export const CreatePoint = (data: SpectionPointParams) => {
   return request
     .post({
-      url: ApiPrefix.CreateSpectionPoint,
+      url: ApiPrefix.CreatePoint,
       data
     })
     .then(res => res.data)
@@ -43,9 +48,9 @@ export const DeletePoint = (ids: string[]) => {
  * @param params
  * @returns
  */
-export const FindPoint = (params: SpectionPointParams & PaginationParams) => {
+export const FindPoint = (params: SpectionRoutePointParams & PaginationParams) => {
   return request
-    .get<FindSpectionPointReply>({
+    .get<FindSpectionRoutePointReply>({
       url: ApiPrefix.FindPoint,
       params
     })

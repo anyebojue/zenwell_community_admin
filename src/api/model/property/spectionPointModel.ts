@@ -1,4 +1,31 @@
 import { Page } from '../pageModel'
+import { SpectionRouteReply } from './spectionRouteModel'
+
+export interface SpectionRoutePointReply {
+  communityId?: string
+  createdAt?: string
+  id?: string
+  inspectionPointId?: string
+  inspectionRouteId?: string
+  pointEndTime?: string
+  pointStartTime?: string
+  remark?: string
+  sortNumber?: number
+  spectionPoint: SpectionPointReply
+  spectionRoute: SpectionRouteReply
+  status?: number
+  updatedAt: '2025-01-20 11:54:17'
+}
+
+export interface SpectionRoutePointParams {
+  sortNumber?: string
+  pointStartTime?: string
+  pointEndTime?: string
+  inspectionRouteId?: string
+  inspectionPointId?: string
+  communityId?: string
+  status?: number
+}
 
 export interface SpectionPointReply {
   id?: string
@@ -44,6 +71,11 @@ export interface SpectionPointParams {
   inspectionPointId?: string
   pointStartTime?: string
   pointEndTime?: string
+}
+
+export interface FindSpectionRoutePointReply {
+  page: Page
+  list: Array<SpectionRoutePointReply>
 }
 
 export interface FindSpectionPointReply {
