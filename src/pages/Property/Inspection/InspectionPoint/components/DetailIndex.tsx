@@ -42,23 +42,25 @@ const PlanIndex = () => {
           headerClassName: 'header-wrap'
         },
         {
-          field: 'inspectionName',
+          field: 'spectionTask.spectionPlan.inspection_plan_name',
           headerName: '巡检计划名称',
           flex: 1,
           headerAlign: 'center',
           align: 'center',
-          headerClassName: 'header-wrap'
+          headerClassName: 'header-wrap',
+          renderCell: params => params.row.spectionTask?.spectionPlan?.inspectionPlanName
         },
         {
-          field: 'inspectionName',
+          field: 'spectionTask.spectionPlan.spectionRoute.name',
           headerName: '巡检路线名称',
           flex: 1,
           headerAlign: 'center',
           align: 'center',
-          headerClassName: 'header-wrap'
+          headerClassName: 'header-wrap',
+          renderCell: params => params.row.spectionTask?.spectionPlan?.spectionRoute?.name
         },
         {
-          field: 'inspectionTime',
+          field: 'pointStartTime',
           headerName: '巡检人 开始/结束时间',
           flex: 1,
           headerAlign: 'center',
@@ -66,12 +68,13 @@ const PlanIndex = () => {
           headerClassName: 'header-wrap'
         },
         {
-          field: 'pointStartTime',
+          field: 'pointEndTime',
           headerName: '巡检点 开始/结束时间',
           flex: 1,
           headerAlign: 'center',
           align: 'center',
-          headerClassName: 'header-wrap'
+          headerClassName: 'header-wrap',
+          renderCell: params => `${params.row.pointStartTime} - ${params.row.pointEndTime}`
         },
         {
           field: 'inspectionTime',
@@ -90,12 +93,13 @@ const PlanIndex = () => {
           headerClassName: 'header-wrap'
         },
         {
-          field: 'actUserName',
+          field: 'spectionTask.actUserName',
           headerName: '计划巡检人',
           flex: 1,
           headerAlign: 'center',
           align: 'center',
-          headerClassName: 'header-wrap'
+          headerClassName: 'header-wrap',
+          renderCell: params => params.row.spectionTask?.actUserName
         },
         {
           field: 'actUserName',
@@ -106,20 +110,22 @@ const PlanIndex = () => {
           headerClassName: 'header-wrap'
         },
         {
-          field: 'actUserName',
+          field: 'signType',
           headerName: '巡检方式',
           flex: 1,
           headerAlign: 'center',
           align: 'center',
-          headerClassName: 'header-wrap'
+          headerClassName: 'header-wrap',
+          renderCell: params => params.row.spectionTask?.signType
         },
         {
-          field: 'actUserName',
+          field: 'spectionTask.stateCd',
           headerName: '任务状态',
           flex: 1,
           headerAlign: 'center',
           align: 'center',
-          headerClassName: 'header-wrap'
+          headerClassName: 'header-wrap',
+          renderCell: params => params.row.spectionTask?.stateCd
         },
         {
           field: 'stateCd',
@@ -138,7 +144,7 @@ const PlanIndex = () => {
           headerClassName: 'header-wrap'
         },
         {
-          field: 'actUserName',
+          field: 'img',
           headerName: '巡检照片',
           flex: 1,
           headerAlign: 'center',

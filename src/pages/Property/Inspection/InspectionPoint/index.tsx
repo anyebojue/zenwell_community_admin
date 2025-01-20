@@ -242,7 +242,7 @@ const RolesIndex = () => {
             </Tabs>
             <Box sx={{ mt: 2 }}>
               {activeTabIndex === 0 && <DetailIndex />}
-              {activeTabIndex === 1 && <RouteIndex />}
+              {activeTabIndex === 1 && <RouteIndex dialogValue={dialogValue} />}
               {activeTabIndex === 2 && <PlanIndex />}
               {activeTabIndex === 3 && <TaskIndex />}
             </Box>

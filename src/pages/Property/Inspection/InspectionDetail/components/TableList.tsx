@@ -35,11 +35,8 @@ const TableList = ({
   rows: SpectionTaskDetailReply[]
   columns: Column<SpectionTaskDetailReply>[]
 }) => {
-  const [rowsPerPage, setRowsPerPage] = useState('20')
-  const { page, paginatedRows, setPage, handlePageChange } = usePagination(
-    rows,
-    Number(rowsPerPage)
-  )
+  const [rowsPerPage, setRowsPerPage] = useState(20)
+  const { page, paginatedRows, setPage, handlePageChange } = usePagination(rows, rowsPerPage)
 
   const tableHeaderStyle = (theme: Theme) => ({
     backgroundColor: theme.palette.action.hover,
@@ -58,8 +55,8 @@ const TableList = ({
     }
   })
 
-  const handleRowsPerPageChange = (event: SelectChangeEvent<string>) => {
-    setRowsPerPage(event.target.value)
+  const handleRowsPerPageChange = (event: SelectChangeEvent<number>) => {
+    setRowsPerPage(Number(event.target.value))
     setPage(1)
   }
 

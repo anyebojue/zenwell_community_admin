@@ -9,7 +9,7 @@ import TableList from './TableList'
 
 export interface Column<T> {
   headerName: string
-  key: keyof T | 'operate'
+  key: Exclude<keyof T, symbol> | `${Exclude<keyof T, symbol>}.${string}` | 'operate'
   align?: 'left' | 'center' | 'right'
   renderCell?: (row: T) => ReactNode
 }
@@ -26,19 +26,38 @@ const TableData: React.FC<TableDataProps> = () => {
   const columns: Column<SpectionTaskDetailReply>[] = [
     { key: 'taskId', headerName: '任务详情ID', align: 'center' },
     { key: 'inspectionName', headerName: '巡检点名称', align: 'center' },
-    { key: 'inspectionName', headerName: '巡检计划名称', align: 'center' },
-    { key: 'inspectionName', headerName: '巡检路线名称', align: 'center' },
-    { key: 'actUserName', headerName: '巡检人 开始/结束时间', align: 'center' },
-    { key: 'pointStartTime', headerName: '巡检点 开始/结束时间', align: 'center' },
-    { key: 'pointStartTime', headerName: '实际巡检时间', align: 'center' },
+    {
+      key: 'spectionTask.spectionPlan.inspection_plan_name',
+      headerName: '巡检计划名称',
+      align: 'center'
+    },
+    {
+      key: 'spectionTask.spectionPlan.spectionRoute.name',
+      headerName: '巡检路线名称',
+      align: 'center',
+      renderCell: row => row.spectionTask?.spectionPlan?.spectionRoute?.name
+    },
+    { key: 'pointStartTime', headerName: '巡检人 开始/结束时间', align: 'center' },
+    {
+      key: 'pointEndTime',
+      headerName: '巡检点 开始/结束时间',
+      align: 'center',
+      renderCell: row => `${row.pointStartTime} - ${row.pointEndTime}`
+    },
+    { key: 'inspectionTime', headerName: '实际巡检时间', align: 'center' },
     { key: 'inspectionState', headerName: '实际签到状态', align: 'center' },
-    { key: 'actUserName', headerName: '计划巡检人', align: 'center' },
+    { key: 'spectionTask.actUserName', headerName: '计划巡检人', align: 'center' },
     { key: 'actUserName', headerName: '实际巡检人', align: 'center' },
-    { key: 'actUserName', headerName: '巡检方式', align: 'center' },
-    { key: 'actUserName', headerName: '任务状态', align: 'center' },
+    { key: 'signType', headerName: '巡检方式', align: 'center' },
+    {
+      key: 'spectionTask.stateCd',
+      headerName: '任务状态',
+      align: 'center',
+      renderCell: row => row.spectionTask?.stateCd
+    },
     { key: 'stateCd', headerName: '巡检点状态', align: 'center' },
     { key: 'patrolType', headerName: '巡检情况', align: 'center' },
-    { key: 'actUserName', headerName: '巡检照片', align: 'center' },
+    { key: 'img', headerName: '巡检照片', align: 'center' },
     { key: 'createdAt', headerName: '创建时间', align: 'center' },
     {
       key: 'operate',

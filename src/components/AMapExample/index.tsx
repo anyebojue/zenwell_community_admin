@@ -2,8 +2,8 @@ import React, { useEffect } from 'react'
 import AMapLoader from '@amap/amap-jsapi-loader'
 
 interface AMapExampleProps {
-  setLng: React.Dispatch<React.SetStateAction<string>>
-  setLat: React.Dispatch<React.SetStateAction<string>>
+  setLng?: React.Dispatch<React.SetStateAction<string>>
+  setLat?: React.Dispatch<React.SetStateAction<string>>
   mapHeight: string
 }
 
@@ -27,8 +27,8 @@ const AMapExample: React.FC<AMapExampleProps> = ({ setLng, setLat, mapHeight }) 
         amap.on('click', (event: AMap.MapsEvent) => {
           const { lng, lat } = event.lnglat // 获取点击的经纬度
           console.log('点击的经纬度:', { lng, lat })
-          setLng(String(lng))
-          setLat(String(lat))
+          setLng && setLng(String(lng))
+          setLat && setLat(String(lat))
 
           // 如果已有标记，先移除
           if (currentMarker) {
@@ -56,9 +56,7 @@ const AMapExample: React.FC<AMapExampleProps> = ({ setLng, setLat, mapHeight }) 
     }
   }, [setLat, setLng])
 
-  return (
-    <div id="mapContainer" style={{ width: '100%', height: `${mapHeight}`, marginTop: 10 }}></div>
-  )
+  return <div id="mapContainer" style={{ width: '100%', height: `${mapHeight}` }}></div>
 }
 
 export default AMapExample
