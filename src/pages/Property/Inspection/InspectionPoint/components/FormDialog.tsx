@@ -26,6 +26,7 @@ import {
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
+import AMapExample from 'components/AMapExample'
 
 interface FormDialogProps {
   dialogValue?: SpectionPointReply
@@ -43,18 +44,31 @@ const FormDialog: React.FC<FormDialogProps> = ({
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.SpectionSlice)
   const [loading, setLoading] = useState(false)
+  const [lng, setLng] = useState('112.5266')
+  const [lat, setLat] = useState('27.91507')
 
   const initialFormData = useMemo(
     () => ({
       inspectionName: dialogType === 'edit' ? dialogValue?.inspectionName || '' : '',
       nfcCode: dialogType === 'edit' ? dialogValue?.nfcCode || '' : '',
-      longitude: dialogType === 'edit' ? dialogValue?.longitude || '' : '',
-      latitude: dialogType === 'edit' ? dialogValue?.latitude || '' : '',
+      longitude: dialogType === 'edit' ? dialogValue?.longitude || lng : lng,
+      latitude: dialogType === 'edit' ? dialogValue?.latitude || lat : lat,
       pointObjType: dialogType === 'edit' ? dialogValue?.pointObjType || 0 : 0,
       itemId: dialogType === 'edit' ? dialogValue?.itemId || '' : '',
       remark: dialogType === 'edit' ? dialogValue?.remark || '' : ''
     }),
-    [dialogType, dialogValue]
+    [
+      dialogType,
+      dialogValue?.inspectionName,
+      dialogValue?.itemId,
+      dialogValue?.latitude,
+      dialogValue?.longitude,
+      dialogValue?.nfcCode,
+      dialogValue?.pointObjType,
+      dialogValue?.remark,
+      lat,
+      lng
+    ]
   )
   const [formData, setFormData] = useState<SpectionPointParams>(initialFormData)
 
@@ -108,8 +122,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
   const formFields = [
     { label: '巡检点名称', type: 'text', id: 'inspectionName', required: true },
     { label: 'NFC编码', type: 'text', id: 'nfcCode', required: true },
-    { label: '经度', type: 'text', id: 'longitude', required: true },
-    { label: '纬度', type: 'text', id: 'latitude', required: true }
+    { label: '经度', type: 'text', id: 'longitude', required: true, disabled: true },
+    { label: '纬度', type: 'text', id: 'latitude', required: true, disabled: true }
   ]
 
   return (
@@ -123,13 +137,14 @@ const FormDialog: React.FC<FormDialogProps> = ({
       <DialogTitle>{dialogType === 'add' ? '新增' : '编辑'}</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
-          {formFields.map(({ label, type, id, required }) => (
+          {formFields.map(({ label, type, id, required, disabled }) => (
             <Box
               sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
               key={id}
             >
               <FormLabel>{label}：</FormLabel>
               <TextField
+                disabled={disabled}
                 type={type}
                 sx={{ width: '80%' }}
                 size="small"
@@ -191,6 +206,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
             />
           </Box>
         </Stack>
+        <AMapExample setLng={setLng} setLat={setLat} mapHeight={'400px'} />
       </DialogContent>
       <DialogActions>
         <Button variant="contained" color="error" onClick={() => setOpenDialog(false)}>
