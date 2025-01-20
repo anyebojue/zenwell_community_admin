@@ -80,9 +80,25 @@ const TableData: React.FC<TableDataProps> = ({
 
   const columns: Column<SpectionPlanReply>[] = [
     { key: 'inspectionPlanName', headerName: '计划名称', align: 'center' },
-    { key: 'inspectionRouteId', headerName: '计划路线', align: 'center' },
-    { key: 'inspectionPlanPeriod', headerName: '计划周期', align: 'center' },
-    { key: 'signType', headerName: '签到方式', align: 'center' },
+    {
+      key: 'spectionRoute',
+      headerName: '计划路线',
+      align: 'center',
+      renderCell: row => row.spectionRoute?.name
+    },
+    {
+      key: 'inspectionPlanPeriod',
+      headerName: '计划周期',
+      align: 'center',
+      renderCell: row => (row.status === 1 ? '月/日' : row.status === 2 ? '按周' : '')
+    },
+    {
+      key: 'signType',
+      headerName: '签到方式',
+      align: 'center',
+      renderCell: row =>
+        row.status === 0 ? '现场定位' : row.status === 1 ? '现场拍照(默认定位)' : ''
+    },
     {
       key: 'startDate',
       headerName: '日期范围',
@@ -102,7 +118,7 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'status',
       headerName: '状态',
       align: 'center',
-      renderCell: row => (row.status === '0' ? '禁用' : row.status === '1' ? '启用' : '')
+      renderCell: row => (row.status === 0 ? '禁用' : row.status === 1 ? '启用' : '')
     },
     { key: 'createUserName', headerName: '巡检人员', align: 'center' },
     {

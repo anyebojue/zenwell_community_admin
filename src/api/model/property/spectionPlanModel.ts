@@ -51,6 +51,7 @@ export interface SpectionPlanParams {
   operate?: number // 数据状态 0 添加 1 修改 2 删除
   status?: string // 状态 0 禁用 1 启用
   staffName?: string // 巡检人
+  inspectionPointId?: string
 }
 
 export interface FindSpectionPlanReply {

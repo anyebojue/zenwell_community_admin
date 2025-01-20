@@ -50,6 +50,8 @@ export interface SpectionTaskDetailParams {
   actUserName?: string // 实际巡检人员姓名
   sendFlag?: number // 巡检提醒标记 0 未发送 1 已发送
   remark?: string // 备注
+  inspectionPointId?: string
+  inspectionRouteId?: string
 }
 
 export interface FindSpectionTaskDetailReply {

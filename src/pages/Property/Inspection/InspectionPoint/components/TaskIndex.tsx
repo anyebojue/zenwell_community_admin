@@ -6,20 +6,27 @@ import { Box } from '@mui/material'
 import message from 'components/Message'
 import { SpectionTaskReply } from 'api/model/property/spectionTaskModel'
 import AMapExample from 'components/AMapExample'
+import { SpectionPointReply } from 'api/model/property/spectionPointModel'
 
-const TaskIndex = () => {
+interface TaskIndexProps {
+  dialogValue: SpectionPointReply
+}
+
+const TaskIndex: React.FC<TaskIndexProps> = ({ dialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.SpectionTaskSlice)
   const MUI_X_PRODUCTS = list.map(item => ({
     id: item.id,
-    label: `${item.actUserName}\n${item.startTime}`
+    label: `${item.actUserName}\n${item.actInsTime}`
   }))
-  const [dialogValue, setDialogValue] = useState<SpectionTaskReply>({})
+  const [dialogTaskValue, setDialogTaskValue] = useState<SpectionTaskReply>({})
 
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      const res = await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+      const res = await dispatch(
+        find({ 'page.num': page.num, 'page.size': page.size, inspectionPointId: dialogValue.id })
+      )
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
@@ -29,7 +36,7 @@ const TaskIndex = () => {
     } finally {
       closeLoading()
     }
-  }, [dispatch, page.num, page.size])
+  }, [dialogValue.id, dispatch, page.num, page.size])
 
   useEffect(() => {
     fetchData()
@@ -37,9 +44,9 @@ const TaskIndex = () => {
 
   useEffect(() => {
     if (!list || list.length === 0) {
-      setDialogValue({})
+      setDialogTaskValue({})
     } else {
-      setDialogValue(list[0])
+      setDialogTaskValue(list[0])
     }
   }, [list])
 
@@ -47,15 +54,15 @@ const TaskIndex = () => {
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <RichTreeView
         items={MUI_X_PRODUCTS}
-        selectedItems={dialogValue?.id || ''}
+        selectedItems={dialogTaskValue?.id || ''}
         onSelectedItemsChange={(_, itemId) => {
           const data = list.filter(item => item.id === itemId)
           if (data.length > 0) {
-            setDialogValue(data[0])
+            setDialogTaskValue(data[0])
           }
         }}
       />
-      <AMapExample />
+      <AMapExample mapHeight="400px" />
     </Box>
   )
 }

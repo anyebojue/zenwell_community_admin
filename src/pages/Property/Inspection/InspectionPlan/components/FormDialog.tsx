@@ -401,7 +401,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
             />
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>开始日期：</FormLabel>
+            <FormLabel>结束日期：</FormLabel>
             <TextField
               type="date"
               sx={{ width: '80%' }}
@@ -412,7 +412,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
             />
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>开始时间：</FormLabel>
+            <FormLabel>结束时间：</FormLabel>
             <TextField
               type="time"
               sx={{ width: '80%' }}
@@ -433,8 +433,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
               variant="outlined"
             >
               {[
-                { value: 0, label: '手动' },
-                { value: 1, label: '自动' }
+                { value: 0, label: '现场定位' },
+                { value: 1, label: '现场拍照(默认定位)' }
               ].map(option => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
