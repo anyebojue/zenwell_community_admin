@@ -112,7 +112,7 @@ const TableData: React.FC<TableDataProps> = ({
       renderCell: row => `${row.startTime} - ${row.endTime}`
     },
     { key: 'beforeTime', headerName: '任务提前（分钟）', align: 'center' },
-    { key: 'createUserName', headerName: '制定人', align: 'center' },
+    { key: 'communityId', headerName: '制定人', align: 'center' },
     { key: 'createdAt', headerName: '制定时间', align: 'center' },
     {
       key: 'status',

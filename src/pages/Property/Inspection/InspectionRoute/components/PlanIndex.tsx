@@ -3,15 +3,26 @@ import { useDispatch, useSelector } from 'react-redux'
 import { find } from 'modules/property/spectionPlan'
 import message from 'components/Message'
 import { DataGrid } from '@mui/x-data-grid'
+import { SpectionRouteReply } from 'api/model/property/spectionRouteModel'
 
-const PlanIndex = () => {
+interface PlanIndexProps {
+  routeDialogValue: SpectionRouteReply
+}
+
+const PlanIndex: React.FC<PlanIndexProps> = ({ routeDialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.SpectionPlanSlice)
 
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      const res = await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+      const res = await dispatch(
+        find({
+          'page.num': page.num,
+          'page.size': page.size,
+          inspectionRouteId: routeDialogValue.id
+        })
+      )
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
@@ -21,7 +32,7 @@ const PlanIndex = () => {
     } finally {
       closeLoading()
     }
-  }, [dispatch, page.num, page.size])
+  }, [dispatch, page.num, page.size, routeDialogValue.id])
 
   useEffect(() => {
     fetchData()

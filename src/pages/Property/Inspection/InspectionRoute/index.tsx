@@ -232,8 +232,8 @@ const SpectionRouteIndex = () => {
             <Box sx={{ mt: 2 }}>
               {activeTabIndex === 0 && <PointIndex routeDialogValue={dialogValue} />}
               {activeTabIndex === 1 && <AMapExample mapHeight="500px" />}
-              {activeTabIndex === 2 && <PlanIndex />}
-              {activeTabIndex === 3 && <TaskIndex />}
+              {activeTabIndex === 2 && <PlanIndex routeDialogValue={dialogValue} />}
+              {activeTabIndex === 3 && <TaskIndex routeDialogValue={dialogValue} />}
             </Box>
           </Box>
         </Box>

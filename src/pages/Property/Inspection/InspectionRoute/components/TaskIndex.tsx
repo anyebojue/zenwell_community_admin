@@ -6,20 +6,31 @@ import { Box } from '@mui/material'
 import message from 'components/Message'
 import { SpectionTaskReply } from 'api/model/property/spectionTaskModel'
 import AMapExample from 'components/AMapExample'
+import { SpectionRouteReply } from 'api/model/property/spectionRouteModel'
 
-const TaskIndex = () => {
+interface TaskIndexProps {
+  routeDialogValue: SpectionRouteReply
+}
+
+const TaskIndex: React.FC<TaskIndexProps> = ({ routeDialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.SpectionTaskSlice)
   const MUI_X_PRODUCTS = list.map(item => ({
     id: item.id,
-    label: `${item.actUserName}\n${item.startTime}`
+    label: `${item.actUserName}\n${item.actInsTime}`
   }))
   const [dialogValue, setDialogValue] = useState<SpectionTaskReply>({})
 
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      const res = await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+      const res = await dispatch(
+        find({
+          'page.num': page.num,
+          'page.size': page.size,
+          inspectionRouteId: routeDialogValue.id
+        })
+      )
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
@@ -29,7 +40,7 @@ const TaskIndex = () => {
     } finally {
       closeLoading()
     }
-  }, [dispatch, page.num, page.size])
+  }, [dispatch, page.num, page.size, routeDialogValue.id])
 
   useEffect(() => {
     fetchData()
@@ -55,7 +66,7 @@ const TaskIndex = () => {
           }
         }}
       />
-      <AMapExample />
+      <AMapExample mapHeight="400px" />
     </Box>
   )
 }

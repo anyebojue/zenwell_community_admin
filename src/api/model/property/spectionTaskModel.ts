@@ -50,6 +50,7 @@ export interface SpectionTaskParams {
   startTime?: string
   endTime?: string
   inspectionPointId?: string
+  inspectionRouteId?: string
 }
 
 export interface FindSpectionTaskReply {
