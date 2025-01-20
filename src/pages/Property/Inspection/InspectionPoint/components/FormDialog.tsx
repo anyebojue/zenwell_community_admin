@@ -124,6 +124,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
   const formFields = [
     { label: '巡检点名称', type: 'text', id: 'inspectionName', required: true },
     { label: 'NFC编码', type: 'text', id: 'nfcCode', required: true },
+    { label: '巡检设备', type: 'text', id: 'nfcCode', required: true },
     { label: '经度', type: 'text', id: 'longitude', required: true, disabled: true },
     { label: '纬度', type: 'text', id: 'latitude', required: true, disabled: true }
   ]

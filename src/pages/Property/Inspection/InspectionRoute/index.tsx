@@ -96,6 +96,14 @@ const SpectionRouteIndex = () => {
     fetchData()
   }, [fetchData])
 
+  useEffect(() => {
+    if (!list || list.length === 0) {
+      setDialogValue({})
+    } else {
+      setDialogValue(list[0])
+    }
+  }, [list])
+
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setActiveTabIndex(newValue)
   }

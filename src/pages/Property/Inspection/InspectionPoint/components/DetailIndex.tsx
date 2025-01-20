@@ -29,122 +29,129 @@ const PlanIndex = () => {
 
   return (
     <DataGrid
-      sx={{ mt: 2 }}
       disableRowSelectionOnClick
       disableColumnMenu
       rows={list}
       columns={[
         {
-          field: 'taskId',
-          headerName: '任务详情ID',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center'
-        },
-        {
           field: 'inspectionName',
           headerName: '巡检点名称',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          headerClassName: 'header-wrap'
         },
         {
           field: 'inspectionName',
           headerName: '巡检计划名称',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          headerClassName: 'header-wrap'
         },
         {
           field: 'inspectionName',
           headerName: '巡检路线名称',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          headerClassName: 'header-wrap'
         },
         {
-          field: 'actUserName',
+          field: 'inspectionTime',
           headerName: '巡检人 开始/结束时间',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          headerClassName: 'header-wrap'
         },
         {
           field: 'pointStartTime',
           headerName: '巡检点 开始/结束时间',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          headerClassName: 'header-wrap'
         },
         {
-          field: 'pointStartTime',
+          field: 'inspectionTime',
           headerName: '实际巡检时间',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          headerClassName: 'header-wrap'
         },
         {
           field: 'inspectionState',
           headerName: '实际签到状态',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          headerClassName: 'header-wrap'
         },
         {
           field: 'actUserName',
           headerName: '计划巡检人',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          headerClassName: 'header-wrap'
         },
         {
           field: 'actUserName',
           headerName: '实际巡检人',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          headerClassName: 'header-wrap'
         },
         {
           field: 'actUserName',
           headerName: '巡检方式',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          headerClassName: 'header-wrap'
         },
         {
           field: 'actUserName',
           headerName: '任务状态',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          headerClassName: 'header-wrap'
         },
         {
           field: 'stateCd',
           headerName: '巡检点状态',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          headerClassName: 'header-wrap'
         },
         {
           field: 'patrolType',
           headerName: '巡检情况',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          headerClassName: 'header-wrap'
         },
         {
           field: 'actUserName',
           headerName: '巡检照片',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          headerClassName: 'header-wrap'
         },
         {
           field: 'createdAt',
           headerName: '创建时间',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          headerClassName: 'header-wrap'
         }
       ]}
       pageSizeOptions={[20]}

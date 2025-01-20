@@ -27,6 +27,7 @@ import PlanIndex from './components/PlanIndex'
 import TaskIndex from './components/TaskIndex'
 import DetailIndex from './components/DetailIndex'
 import RouteIndex from './components/RouteIndex'
+import DetailCode from './components/DetailCode'
 
 const treeViewStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -53,6 +54,7 @@ const RolesIndex = () => {
   const [dialogValue, setDialogValue] = useState<SpectionPointReply>({})
   const [location, setLoading] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
+  const [codeOpen, setCodeOpen] = useState(false)
 
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
@@ -163,7 +165,38 @@ const RolesIndex = () => {
         </Box>
         <Box sx={{ width: '450%' }}>
           <Box sx={contentBoxStyle}>
-            <Typography variant="h6">巡检点</Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography variant="h6">巡检点</Typography>
+              <Box>
+                <Button
+                  variant="text"
+                  size="small"
+                  color="secondary"
+                  onClick={() => {
+                    setOpenDialog(true)
+                    setDialogType('edit')
+                  }}
+                >
+                  修改
+                </Button>
+                <Button
+                  variant="text"
+                  size="small"
+                  color="secondary"
+                  onClick={() => setDelOpen(true)}
+                >
+                  删除
+                </Button>
+                <Button
+                  variant="text"
+                  size="small"
+                  color="secondary"
+                  onClick={() => setCodeOpen(true)}
+                >
+                  二维码
+                </Button>
+              </Box>
+            </Box>
             <Divider sx={{ p: 0.5, mb: 2 }} />
             <Box sx={{ pb: 0.2 }}>
               <Grid container spacing={1}>
@@ -230,6 +263,7 @@ const RolesIndex = () => {
         userName={[dialogValue.inspectionName as string]}
         onDelete={() => handleDelete([dialogValue.id as string])}
       />
+      <DetailCode dialogValue={dialogValue} openDialog={codeOpen} setOpenDialog={setCodeOpen} />
     </Box>
   )
 }
