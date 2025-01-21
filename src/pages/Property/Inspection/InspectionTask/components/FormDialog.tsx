@@ -9,22 +9,32 @@ import React, {
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { SpectionTaskParams, SpectionTaskReply } from 'api/model/property/spectionTaskModel'
-import { create, find, update } from 'modules/property/spectionTask'
+import { find, update } from 'modules/property/spectionTask'
 import {
   Box,
   CircularProgress,
   FormLabel,
-  MenuItem,
   Stack,
   Button,
   TextField,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle
+  DialogTitle,
+  Typography,
+  List,
+  Divider,
+  ListItemButton,
+  ListItemAvatar,
+  Avatar,
+  ListItemText
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
+import { RichTreeView, TreeViewBaseItem } from '@mui/x-tree-view'
+import { Work } from '@mui/icons-material'
+import { find as treeFind, findOrgUser } from 'modules/platform/organizationInfo'
+import { OrganizationInfoReply } from 'api/model/platform/organizationInfoModel'
 
 interface FormDialogProps {
   selectedButton: string
@@ -35,51 +45,104 @@ interface FormDialogProps {
 }
 
 const FormDialog: React.FC<FormDialogProps> = ({
-  selectedButton,
   dialogValue,
   openDialog,
   dialogType,
   setOpenDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.SpectionTaskSlice)
-  const { list } = useSelector((state: RootState) => state.RepairSettingSlice)
+  const { page, list, orgUserList } = useSelector((state: RootState) => state.OrganizationInfoSlice)
   const [loading, setLoading] = useState(false)
+  const [selectedUserId, setSelectedUserId] = useState('')
+  const [dialogUserValue, setDialogUserValue] = useState<OrganizationInfoReply>({})
 
-  const initialFormData = useMemo(
-    () => ({
-      planUserName: dialogValue?.planUserName || ''
-    }),
-    [dialogValue]
+  const [formData, setFormData] = useState<SpectionTaskParams>({
+    planUserId: '',
+    planUserName: '',
+    transferDesc: ''
+  })
+
+  const fetchData = useCallback(async () => {
+    const closeLoading = message.loading('正在加载列表中，请稍后...')
+    try {
+      const res = await dispatch(treeFind({ pId: '0' }))
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      closeLoading()
+    }
+  }, [dispatch])
+
+  const fetchOrgUserData = useCallback(
+    async (id: string) => {
+      const closeLoading = message.loading('正在加载列表中，请稍后...')
+      try {
+        const res = await dispatch(findOrgUser({ 'page.disable': true, orgId: id }))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        closeLoading()
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
+      }
+    },
+    [dispatch]
   )
-  const [formData, setFormData] = useState<SpectionTaskParams>(initialFormData)
+
+  const transformData = useMemo(() => {
+    const transformNode = (node: OrganizationInfoReply): TreeViewBaseItem => ({
+      id: node.id as string,
+      label: node.name as string,
+      children: node.children?.length ? node.children.map(transformNode) : []
+    })
+    return list?.map(transformNode) || []
+  }, [list])
+
+  const findItemById = useCallback(
+    (items: OrganizationInfoReply[], targetId: string): OrganizationInfoReply | null => {
+      for (const item of items) {
+        if (item.id === targetId) return item
+        if (item.children?.length) {
+          const foundInChildren = findItemById(item.children, targetId)
+          fetchOrgUserData(foundInChildren?.id || '')
+          if (foundInChildren) return foundInChildren
+        }
+      }
+      return null
+    },
+    [fetchOrgUserData]
+  )
 
   useEffect(() => {
-    setFormData(initialFormData)
-  }, [initialFormData])
+    fetchData()
+    fetchOrgUserData('9032183211253301249')
+  }, [fetchData, fetchOrgUserData])
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
       setLoading(true)
       try {
-        const params = { ...formData }
-        const action =
-          dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
+        const params = {
+          ...formData,
+          originalPlanUserId: dialogValue?.planUserId,
+          originalPlanUserName: dialogValue?.planUserName
+        }
+        console.log(params)
+        const action = update({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-        await dispatch(
-          find({
-            'page.num': page.num || '1',
-            'page.size': page.size,
-            inspectionPlanId: selectedButton
-          })
-        )
-        message.success(dialogType === 'add' ? '新建成功' : '编辑成功')
+        await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))
+        message.success('流转成功')
         setOpenDialog(false)
-        setFormData(initialFormData)
       } catch (err: unknown) {
         setLoading(false)
         if (err instanceof Error) message.error(err.message)
@@ -89,14 +152,13 @@ const FormDialog: React.FC<FormDialogProps> = ({
     },
     [
       formData,
-      dialogType,
+      dialogValue?.planUserId,
+      dialogValue?.planUserName,
       dialogValue?.id,
       dispatch,
       page.num,
       page.size,
-      selectedButton,
-      setOpenDialog,
-      initialFormData
+      setOpenDialog
     ]
   )
 
@@ -111,22 +173,62 @@ const FormDialog: React.FC<FormDialogProps> = ({
       <DialogTitle>{dialogType === 'add' ? '新增' : '编辑'}</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>流转对象：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.inspectionPlanId}
-              onChange={e => setFormData({ ...formData, inspectionPlanId: e.target.value })}
-              variant="outlined"
-            >
-              {list.map(option => (
-                <MenuItem key={option.id} value={option.id}>
-                  {option.repairTypeName}
-                </MenuItem>
-              ))}
-            </TextField>
+          <Box>
+            <Typography sx={{ pb: 3 }}>流转对象：</Typography>
+            <Box sx={{ display: 'flex' }}>
+              <RichTreeView
+                sx={{ width: '600px', mr: 2 }}
+                items={transformData}
+                defaultExpandedItems={['9032183211253301249']}
+                selectedItems={dialogUserValue?.id ?? ''}
+                onSelectedItemsChange={(_, selectedItemId) => {
+                  if (!selectedItemId) return
+                  const item = findItemById(list, selectedItemId)
+                  if (item) setDialogUserValue(item)
+                }}
+                expansionTrigger="iconContainer" // 只有点击左边的按钮才展开
+              />
+              <Divider orientation="vertical" flexItem />
+              <List sx={{ ml: 2, width: '100%', bgcolor: 'background.paper' }}>
+                {orgUserList.length === 0 ? (
+                  <Typography sx={{ textAlign: 'center', color: 'gray' }}>暂无数据</Typography>
+                ) : (
+                  orgUserList.map(item => (
+                    <ListItemButton
+                      key={item.id}
+                      onClick={() => {
+                        setSelectedUserId(item.id!)
+                        setFormData({
+                          ...formData,
+                          planUserId: item.users?.id,
+                          planUserName: item.users?.username
+                        })
+                      }}
+                      sx={{
+                        transition: 'transform 0.2s ease-in-out',
+                        '&:hover': {
+                          transform: 'scale(1.05)',
+                          backgroundColor: 'rgba(0, 0, 0, 0.08)'
+                        },
+                        backgroundColor:
+                          selectedUserId === item.id ? 'rgba(0, 0, 0, 0.12)' : 'transparent', // 根据选中状态改变背景色
+                        '&.Mui-selected': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.12)' // 选中时的高亮背景色
+                        }
+                      }}
+                      selected={selectedUserId === item.id} // 控制选中状态
+                    >
+                      <ListItemAvatar>
+                        <Avatar>
+                          <Work />
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText primary={item.users?.username} secondary={item.users?.mobile} />
+                    </ListItemButton>
+                  ))
+                )}
+              </List>
+            </Box>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>流转说明：</FormLabel>
@@ -134,8 +236,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
               placeholder="请输入"
               sx={{ width: '80%' }}
               size="small"
-              value={formData.remark}
-              onChange={e => setFormData({ ...formData, remark: e.target.value })}
+              value={formData.transferDesc}
+              onChange={e => setFormData({ ...formData, transferDesc: e.target.value })}
               variant="outlined"
               multiline
               rows={2}

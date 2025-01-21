@@ -93,6 +93,7 @@ const SpectionPlansIndex = () => {
             </Button>
           </Box>
           <TableData
+            dialogValue={dialogValue}
             setDialogType={setDialogType}
             setDialogValue={setDialogValue}
             selectedRows={selectedRows}

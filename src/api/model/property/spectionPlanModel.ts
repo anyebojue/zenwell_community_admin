@@ -49,7 +49,7 @@ export interface SpectionPlanParams {
   inspectionWorkday?: string // 指定工作日，0 表示不限
   canReexamine?: number // 允许补检 0 不允许 1 允许
   operate?: number // 数据状态 0 添加 1 修改 2 删除
-  status?: string // 状态 0 禁用 1 启用
+  status?: number // 状态 0 禁用 1 启用
   staffName?: string // 巡检人
   inspectionPointId?: string
   inspectionTaskId?: string

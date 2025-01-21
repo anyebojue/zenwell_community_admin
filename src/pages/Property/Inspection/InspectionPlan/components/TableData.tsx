@@ -1,11 +1,23 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { SpectionPlanReply } from 'api/model/property/spectionPlanModel'
-import { find } from 'modules/property/spectionPlan'
-import { Box, Tooltip, IconButton } from '@mui/material'
-import { Delete, Block, Edit, FileCopy } from '@mui/icons-material'
+import { find, update } from 'modules/property/spectionPlan'
+import {
+  Box,
+  Tooltip,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
+  CircularProgress
+} from '@mui/material'
+import { Delete, Block, Edit, FileCopy, WarningRounded, PlayArrow } from '@mui/icons-material'
 import message from 'components/Message'
 import { useNavigate } from 'react-router-dom'
+import { buttonStyles } from 'components/DeleteModal'
 import TableList from './TableList'
 
 export interface Column<T> {
@@ -16,6 +28,7 @@ export interface Column<T> {
 }
 
 interface TableDataProps {
+  dialogValue: SpectionPlanReply | undefined
   setDialogType: Dispatch<SetStateAction<string>>
   setDialogValue: Dispatch<SetStateAction<SpectionPlanReply | undefined>>
   selectedRows: Set<string | undefined>
@@ -25,6 +38,7 @@ interface TableDataProps {
 }
 
 const TableData: React.FC<TableDataProps> = ({
+  dialogValue,
   setDialogType,
   setDialogValue,
   selectedRows,
@@ -35,6 +49,8 @@ const TableData: React.FC<TableDataProps> = ({
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.SpectionPlanSlice)
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const columns: Column<SpectionPlanReply>[] = [
     { key: 'inspectionPlanName', headerName: '计划名称', align: 'center' },
@@ -102,10 +118,10 @@ const TableData: React.FC<TableDataProps> = ({
               onClick: () => setDelOpen(true)
             },
             {
-              title: '停用',
+              title: row.status === 0 ? '启用' : '停用',
               color: 'primary' as const,
-              icon: <Block fontSize="small" />,
-              onClick: () => message.info('未实现')
+              icon: row.status === 0 ? <PlayArrow fontSize="small" /> : <Block fontSize="small" />,
+              onClick: () => setOpen(true)
             },
             {
               title: '详情',
@@ -145,14 +161,62 @@ const TableData: React.FC<TableDataProps> = ({
     fetchData()
   }, [fetchData])
 
+  const handleSubmit = async () => {
+    setLoading(true)
+    try {
+      const action = update({ id: dialogValue?.id, status: dialogValue?.status === 0 ? 1 : 0 })
+      const res = await dispatch(action)
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
+      fetchData()
+      message.success(dialogValue?.status === 0 ? '启用成功' : '停用成功')
+      setOpen(false)
+    } catch (err: unknown) {
+      setLoading(false)
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
-    <TableList
-      rows={list}
-      columns={columns}
-      setDialogValue={setDialogValue}
-      selectedRows={selectedRows}
-      setSelectedRows={setSelectedRows}
-    />
+    <>
+      <TableList
+        rows={list}
+        columns={columns}
+        setDialogValue={setDialogValue}
+        selectedRows={selectedRows}
+        setSelectedRows={setSelectedRows}
+      />
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
+          <WarningRounded />
+          <span style={{ margin: '10px' }}>{dialogValue?.status === 1 ? '停用' : '启用'}</span>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            你确定{dialogValue?.status === 1 ? '停用' : '启用'}巡检计划么？
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" color="error" onClick={() => setOpen(false)}>
+            取消
+          </Button>
+          <Button
+            variant="contained"
+            type="submit"
+            color="error"
+            sx={buttonStyles('#2660ad', '#1d428a')}
+            disabled={loading}
+            startIcon={loading && <CircularProgress size={24} color="inherit" />}
+            onClick={handleSubmit}
+          >
+            {loading ? '保存中...' : '保存'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   )
 }
 
