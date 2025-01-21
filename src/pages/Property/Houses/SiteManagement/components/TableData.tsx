@@ -12,38 +12,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { SpaceReply } from 'api/model/property/spaceModel'
 import { deleteByIds, find } from 'modules/property/space'
 import { Box, Tooltip, IconButton, Theme, Typography, Stack, Button } from '@mui/material'
-import { Add, Delete, FileCopy } from '@mui/icons-material'
+import { Add, Delete, Edit, FileCopy } from '@mui/icons-material'
 import message from 'components/Message'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import { VenueReply } from 'api/model/property/venueModel'
 import TableList from './TableList'
-
-const renderActionButtons = ({ setDelOpen }: { setDelOpen: Dispatch<SetStateAction<boolean>> }) => {
-  return (
-    <Box>
-      {[
-        {
-          title: '详情',
-          color: 'primary' as const,
-          icon: <FileCopy fontSize="small" />,
-          onClick: () => message.info('未实现')
-        },
-        {
-          title: '删除',
-          color: 'error' as const,
-          icon: <Delete fontSize="small" />,
-          onClick: () => setDelOpen(true)
-        }
-      ].map((action, index) => (
-        <Tooltip title={action.title} key={index}>
-          <IconButton size="small" color={action.color} onClick={action.onClick}>
-            {action.icon}
-          </IconButton>
-        </Tooltip>
-      ))}
-    </Box>
-  )
-}
+import SpaceFormDialog from './SpaceFormDialog'
 
 const contentBoxStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -89,6 +63,8 @@ const TableData: React.FC<TableDataProps> = ({
   const { page, list } = useSelector((state: RootState) => state.SpaceSlice)
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [openDialog, setOpenDialog] = useState(false)
+  const [dialogType, setDialogType] = useState('add')
 
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
@@ -168,7 +144,33 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => renderActionButtons({ setDelOpen })
+      renderCell: () => (
+        <Box>
+          {[
+            {
+              title: '修改',
+              color: 'primary' as const,
+              icon: <Edit fontSize="small" />,
+              onClick: () => {
+                setOpenDialog(true)
+                setDialogType('edit')
+              }
+            },
+            {
+              title: '删除',
+              color: 'error' as const,
+              icon: <Delete fontSize="small" />,
+              onClick: () => setDelOpen(true)
+            }
+          ].map((action, index) => (
+            <Tooltip title={action.title} key={index}>
+              <IconButton size="small" color={action.color} onClick={action.onClick}>
+                {action.icon}
+              </IconButton>
+            </Tooltip>
+          ))}
+        </Box>
+      )
     }
   ]
 
@@ -197,6 +199,10 @@ const TableData: React.FC<TableDataProps> = ({
               color="error"
               startIcon={<Add />}
               sx={buttonCommonStyle()}
+              onClick={() => {
+                setOpenDialog(true)
+                setDialogType('add')
+              }}
             >
               添加场地
             </Button>
@@ -225,6 +231,13 @@ const TableData: React.FC<TableDataProps> = ({
           setSelectedRows={setSelectedRows}
         />
       </Box>
+      <SpaceFormDialog
+        dialogValue={dialogValue}
+        dialogSpaceValue={dialogSpaceValue}
+        openDialog={openDialog}
+        dialogType={dialogType}
+        setOpenDialog={setOpenDialog}
+      />
       <DeleteModal
         loading={loading}
         delOpen={delOpen}
