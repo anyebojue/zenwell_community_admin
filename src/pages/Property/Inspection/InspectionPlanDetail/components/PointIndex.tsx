@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { SpectionPointReply } from 'api/model/property/spectionPointModel'
-import { deletePoint, find } from 'modules/property/spectionPoint'
+import { deletePoint, findPoint } from 'modules/property/spectionPoint'
 import message from 'components/Message'
 import { DataGrid } from '@mui/x-data-grid'
 import { Box, Button, IconButton, Tooltip } from '@mui/material'
@@ -17,7 +17,7 @@ interface PointIndexProps {
 
 const PointIndex: React.FC<PointIndexProps> = ({ dialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.SpectionPointSlice)
+  const { page, pointList } = useSelector((state: RootState) => state.SpectionPointSlice)
   const [dialogPointValue, setDialogPointValue] = useState<SpectionPointReply>()
   const [openEditDialog, setOpenEditDialog] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
@@ -28,10 +28,10 @@ const PointIndex: React.FC<PointIndexProps> = ({ dialogValue }) => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
       const res = await dispatch(
-        find({
+        findPoint({
           'page.num': page.num,
           'page.size': page.size,
-          inspectionPlanId: dialogValue.id
+          inspectionRouteId: dialogValue.spectionRoute?.id
         })
       )
       if ('error' in res && res.error?.message) {
@@ -43,7 +43,7 @@ const PointIndex: React.FC<PointIndexProps> = ({ dialogValue }) => {
     } finally {
       closeLoading()
     }
-  }, [dispatch, page.num, page.size, dialogValue.id])
+  }, [dispatch, page.num, page.size, dialogValue.spectionRoute?.id])
 
   useEffect(() => {
     fetchData()
@@ -78,10 +78,10 @@ const PointIndex: React.FC<PointIndexProps> = ({ dialogValue }) => {
         setDelOpen(false)
         message.success('删除成功')
         await dispatch(
-          find({
+          findPoint({
             'page.num': page.num,
             'page.size': page.size,
-            inspectionPlanId: dialogValue.id
+            inspectionRouteId: dialogValue.spectionRoute?.id
           })
         )
         setLoading(false)
@@ -92,7 +92,7 @@ const PointIndex: React.FC<PointIndexProps> = ({ dialogValue }) => {
         setLoading(false)
       }
     },
-    [dispatch, page.num, page.size, dialogValue.id]
+    [dispatch, page.num, page.size, dialogValue.spectionRoute?.id]
   )
 
   return (
@@ -111,7 +111,7 @@ const PointIndex: React.FC<PointIndexProps> = ({ dialogValue }) => {
         sx={{ mt: 2 }}
         disableRowSelectionOnClick
         disableColumnMenu
-        rows={list}
+        rows={pointList}
         columns={[
           {
             field: 'spectionPoint.inspectionName',
@@ -119,7 +119,7 @@ const PointIndex: React.FC<PointIndexProps> = ({ dialogValue }) => {
             flex: 1,
             headerAlign: 'center',
             align: 'center',
-            renderCell: params => params.row.inspectionName
+            renderCell: params => params.row.spectionPoint.inspectionName
           },
           {
             field: 'pointObjType',
@@ -128,9 +128,9 @@ const PointIndex: React.FC<PointIndexProps> = ({ dialogValue }) => {
             headerAlign: 'center',
             align: 'center',
             renderCell: params =>
-              params.row.pointObjType === 1001
+              params.row.spectionPoint.pointObjType === 1001
                 ? '设备巡检'
-                : params.row.pointObjType === 2002
+                : params.row.spectionPoint.pointObjType === 2002
                   ? '环境巡检'
                   : ''
           },
@@ -141,7 +141,7 @@ const PointIndex: React.FC<PointIndexProps> = ({ dialogValue }) => {
             headerAlign: 'center',
             align: 'center',
             renderCell: params => {
-              const { longitude, latitude } = params.row
+              const { longitude, latitude } = params.row.spectionPoint
               return (
                 <div style={{ whiteSpace: 'normal', wordWrap: 'break-word', lineHeight: 1.8 }}>
                   {longitude} <br /> {latitude}

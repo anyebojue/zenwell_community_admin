@@ -66,14 +66,16 @@ const repair: IRouter[] = [
         path: 'inspection-plan-detail',
         element: load('Property/Inspection/InspectionPlanDetail'),
         meta: {
-          title: '巡检计划详情'
+          title: '巡检计划详情',
+          hidden: true
         }
       },
       {
         path: 'inspection-task-detail',
         element: load('Property/Inspection/InspectionTaskDetail'),
         meta: {
-          title: '巡检任务详情'
+          title: '巡检任务详情',
+          hidden: true
         }
       }
     ]
