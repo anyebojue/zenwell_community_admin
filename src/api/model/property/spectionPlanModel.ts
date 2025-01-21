@@ -52,6 +52,7 @@ export interface SpectionPlanParams {
   status?: string // 状态 0 禁用 1 启用
   staffName?: string // 巡检人
   inspectionPointId?: string
+  inspectionTaskId?: string
 }
 
 export interface FindSpectionPlanReply {

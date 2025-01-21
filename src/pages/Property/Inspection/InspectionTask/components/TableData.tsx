@@ -2,10 +2,10 @@ import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } fro
 import { useDispatch, useSelector } from 'react-redux'
 import { SpectionTaskReply } from 'api/model/property/spectionTaskModel'
 import { find } from 'modules/property/spectionTask'
-import { find as findRepairSetting } from 'modules/property/repairSetting'
 import { Box, Tooltip, IconButton } from '@mui/material'
 import { Delete, SwapHoriz, FileCopy } from '@mui/icons-material'
 import message from 'components/Message'
+import { useNavigate } from 'react-router-dom'
 import TableList from './TableList'
 
 export interface Column<T> {
@@ -33,13 +33,13 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.SpectionTaskSlice)
-  console.log(list)
 
   const columns: Column<SpectionTaskReply>[] = [
     { key: 'id', headerName: '任务编码', align: 'center' },
     { key: 'inspectionPlanId', headerName: '巡检计划', align: 'center' },
-    { key: 'startTime', headerName: '巡检人 开始/结束时间', align: 'center' },
+    { key: 'planInsTime', headerName: '巡检人 开始/结束时间', align: 'center' },
     { key: 'actInsTime', headerName: '实际巡检时间', align: 'center' },
     { key: 'planUserName', headerName: '计划巡检人', align: 'center' },
     { key: 'actUserName', headerName: '当前巡检人', align: 'center' },
@@ -50,7 +50,7 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => (
+      renderCell: row => (
         <Box>
           {[
             {
@@ -63,7 +63,8 @@ const TableData: React.FC<TableDataProps> = ({
               title: '详情',
               color: 'primary' as const,
               icon: <FileCopy fontSize="small" />,
-              onClick: () => message.info('未实现')
+              onClick: () =>
+                navigate('/inspection/inspection-task-detail', { state: { value: row } })
             },
 
             {
@@ -101,27 +102,9 @@ const TableData: React.FC<TableDataProps> = ({
     }
   }, [dispatch, page.num, page.size, selectedButton])
 
-  const fetchRepairSettingData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(
-        findRepairSetting({ 'page.num': page.num, 'page.size': page.size })
-      )
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
-      }
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch, page.num, page.size])
-
   useEffect(() => {
     fetchData()
-    fetchRepairSettingData()
-  }, [fetchData, fetchRepairSettingData])
+  }, [fetchData])
 
   return (
     <TableList

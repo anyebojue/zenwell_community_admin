@@ -52,6 +52,8 @@ export interface SpectionTaskDetailParams {
   remark?: string // 备注
   inspectionPointId?: string
   inspectionRouteId?: string
+  inspectionPlanId?: string
+  inspectionTaskId?: string
 }
 
 export interface FindSpectionTaskDetailReply {

@@ -25,7 +25,7 @@ const TaskIndex: React.FC<TaskIndexProps> = ({ dialogValue }) => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
       const res = await dispatch(
-        find({ 'page.num': page.num, 'page.size': page.size, inspectionPlanId: dialogValue.id })
+        find({ 'page.num': page.num, 'page.size': page.size, inspectionPointId: dialogValue.id })
       )
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
@@ -51,9 +51,8 @@ const TaskIndex: React.FC<TaskIndexProps> = ({ dialogValue }) => {
   }, [list])
 
   return (
-    <Box sx={{ mt: 3.5, width: '100%', height: '100%', display: 'flex' }}>
+    <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <RichTreeView
-        sx={{ width: '20%', mr: 2 }}
         items={MUI_X_PRODUCTS}
         selectedItems={dialogTaskValue?.id || ''}
         onSelectedItemsChange={(_, itemId) => {

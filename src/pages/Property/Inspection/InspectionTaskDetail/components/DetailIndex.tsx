@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { find } from 'modules/property/spectionTaskDetail'
 import message from 'components/Message'
 import { DataGrid } from '@mui/x-data-grid'
-import { SpectionPlanReply } from 'api/model/property/spectionPlanModel'
+import { SpectionTaskReply } from 'api/model/property/spectionTaskModel'
 
 interface PlanIndexProps {
-  dialogValue: SpectionPlanReply
+  dialogValue: SpectionTaskReply
 }
 
 const PlanIndex: React.FC<PlanIndexProps> = ({ dialogValue }) => {
@@ -17,7 +17,7 @@ const PlanIndex: React.FC<PlanIndexProps> = ({ dialogValue }) => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
       const res = await dispatch(
-        find({ 'page.num': page.num, 'page.size': page.size, inspectionPlanId: dialogValue.id })
+        find({ 'page.num': page.num, 'page.size': page.size, inspectionTaskId: dialogValue.id })
       )
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
