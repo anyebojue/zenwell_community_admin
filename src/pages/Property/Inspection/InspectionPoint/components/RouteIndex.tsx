@@ -17,8 +17,8 @@ const RouteIndex: React.FC<RouteIndexProps> = ({ dialogValue }) => {
   const spectionRoutes = pointList.map(item => item.spectionRoute)
 
   const MUI_X_PRODUCTS = spectionRoutes.map(item => ({
-    id: item.id!,
-    label: item.name!
+    id: item.id,
+    label: item.name
   }))
 
   const [value, setValue] = useState(() => (spectionRoutes.length > 0 ? spectionRoutes[0] : {}))

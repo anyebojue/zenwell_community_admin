@@ -19,6 +19,7 @@ import SpectionPointSlice from './property/spectionPoint'
 import SpectionRouteSlice from './property/spectionRoute'
 import SpectionItemSlice from './property/spectionItem'
 import SpectionPlanSlice from './property/spectionPlan'
+import StaffSlice from './property/staff'
 import SpectionTaskSlice from './property/spectionTask'
 import SpectionTaskDetailSlice from './property/spectionTaskDetail'
 import SystemSettingsSlice from './property/systemSettings'
@@ -45,6 +46,7 @@ const store = configureStore({
     SpectionRouteSlice,
     SpectionItemSlice,
     SpectionPlanSlice,
+    StaffSlice,
     SpectionTaskSlice,
     SpectionTaskDetailSlice,
     SystemSettingsSlice

@@ -5,51 +5,8 @@ import { find } from 'modules/property/spectionPlan'
 import { Box, Tooltip, IconButton } from '@mui/material'
 import { Delete, Block, Edit, FileCopy } from '@mui/icons-material'
 import message from 'components/Message'
+import { useNavigate } from 'react-router-dom'
 import TableList from './TableList'
-
-const renderActionButtons = (
-  setDialogType: Dispatch<SetStateAction<string>>,
-  setOpenDialog: Dispatch<SetStateAction<boolean>>,
-  setDelOpen: Dispatch<SetStateAction<boolean>>
-) => (
-  <Box>
-    {[
-      {
-        title: '修改',
-        color: 'secondary' as const,
-        icon: <Edit fontSize="small" />,
-        onClick: () => {
-          setOpenDialog(true)
-          setDialogType('edit')
-        }
-      },
-      {
-        title: '删除',
-        color: 'error' as const,
-        icon: <Delete fontSize="small" />,
-        onClick: () => setDelOpen(true)
-      },
-      {
-        title: '停用',
-        color: 'primary' as const,
-        icon: <Block fontSize="small" />,
-        onClick: () => message.info('未实现')
-      },
-      {
-        title: '详情',
-        color: 'primary' as const,
-        icon: <FileCopy fontSize="small" />,
-        onClick: () => message.info('未实现')
-      }
-    ].map((action, index) => (
-      <Tooltip title={action.title} key={index}>
-        <IconButton size="small" color={action.color} onClick={action.onClick}>
-          {action.icon}
-        </IconButton>
-      </Tooltip>
-    ))}
-  </Box>
-)
 
 export interface Column<T> {
   headerName: string
@@ -76,6 +33,7 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.SpectionPlanSlice)
 
   const columns: Column<SpectionPlanReply>[] = [
@@ -125,7 +83,46 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => renderActionButtons(setDialogType, setOpenDialog, setDelOpen)
+      renderCell: row => (
+        <Box>
+          {[
+            {
+              title: '修改',
+              color: 'secondary' as const,
+              icon: <Edit fontSize="small" />,
+              onClick: () => {
+                setOpenDialog(true)
+                setDialogType('edit')
+              }
+            },
+            {
+              title: '删除',
+              color: 'error' as const,
+              icon: <Delete fontSize="small" />,
+              onClick: () => setDelOpen(true)
+            },
+            {
+              title: '停用',
+              color: 'primary' as const,
+              icon: <Block fontSize="small" />,
+              onClick: () => message.info('未实现')
+            },
+            {
+              title: '详情',
+              color: 'primary' as const,
+              icon: <FileCopy fontSize="small" />,
+              onClick: () =>
+                navigate('/inspection/inspection-plan-detail', { state: { value: row } })
+            }
+          ].map((action, index) => (
+            <Tooltip title={action.title} key={index}>
+              <IconButton size="small" color={action.color} onClick={action.onClick}>
+                {action.icon}
+              </IconButton>
+            </Tooltip>
+          ))}
+        </Box>
+      )
     }
   ]
 

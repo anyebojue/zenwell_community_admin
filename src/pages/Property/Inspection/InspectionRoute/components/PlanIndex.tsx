@@ -53,39 +53,46 @@ const PlanIndex: React.FC<PlanIndexProps> = ({ routeDialogValue }) => {
           align: 'center'
         },
         {
-          field: 'inspectionRouteId',
+          field: 'spectionRoute',
           headerName: '计划路线',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          renderCell: ({ row }) => row.spectionRoute?.name
         },
         {
           field: 'inspectionPlanPeriod',
           headerName: '计划周期',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          renderCell: ({ row }) =>
+            row.inspectionPlanPeriod === 1 ? '月/日' : row.inspectionPlanPeriod === 2 ? '按周' : ''
         },
         {
           field: 'signType',
           headerName: '签到方式',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          renderCell: ({ row }) =>
+            row.status === 0 ? '现场定位' : row.status === 1 ? '现场拍照(默认定位)' : ''
         },
         {
-          field: 'inspectionMonth',
+          field: 'startDate',
           headerName: '日期范围',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          renderCell: ({ row }) => `${row.startDate} - ${row.endDate}`
         },
         {
-          field: 'inspectionDay',
+          field: 'startTime',
           headerName: '时间范围',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          renderCell: ({ row }) => `${row.startTime} - ${row.endTime}`
         },
         {
           field: 'beforeTime',
@@ -95,14 +102,14 @@ const PlanIndex: React.FC<PlanIndexProps> = ({ routeDialogValue }) => {
           align: 'center'
         },
         {
-          field: 'createUserName',
+          field: 'communityId',
           headerName: '制定人',
           flex: 1,
           headerAlign: 'center',
           align: 'center'
         },
         {
-          field: 'startTime',
+          field: 'createdAt',
           headerName: '制定时间',
           flex: 1,
           headerAlign: 'center',
@@ -120,7 +127,8 @@ const PlanIndex: React.FC<PlanIndexProps> = ({ routeDialogValue }) => {
           headerName: '状态',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          renderCell: ({ row }) => (row.status === 0 ? '禁用' : row.status === 1 ? '启用' : '')
         }
       ]}
       pageSizeOptions={[20]}

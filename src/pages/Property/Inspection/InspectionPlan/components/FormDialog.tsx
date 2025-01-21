@@ -133,7 +133,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
           inspectionMonth: selectedMonths.join(','),
           inspectionDay: selectedDays.join(','),
           inspectionWorkday: selectedWeekdays.join(','),
-          staff_id: employeeList.map(item => item.id).join(',')
+          staffId: employeeList.map(item => item.id).join(',')
         }
         console.log(params)
         const action =

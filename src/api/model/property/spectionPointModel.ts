@@ -14,7 +14,7 @@ export interface SpectionRoutePointReply {
   spectionPoint: SpectionPointReply
   spectionRoute: SpectionRouteReply
   status?: number
-  updatedAt: '2025-01-20 11:54:17'
+  updatedAt: string
 }
 
 export interface SpectionRoutePointParams {
@@ -71,6 +71,7 @@ export interface SpectionPointParams {
   inspectionPointId?: string
   pointStartTime?: string
   pointEndTime?: string
+  inspectionPlanId?: string
 }
 
 export interface FindSpectionRoutePointReply {

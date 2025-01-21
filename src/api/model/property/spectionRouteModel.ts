@@ -18,6 +18,7 @@ export interface SpectionRouteParams {
   seq?: number // 路线顺序
   remark?: string // 备注说明
   status?: number // 数据状态，0 在用, 1 失效
+  inspectionPlanId?: string
 }
 
 export interface FindSpectionRouteReply {
