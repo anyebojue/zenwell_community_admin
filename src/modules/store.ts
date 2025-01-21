@@ -11,6 +11,8 @@ import HousingManagementSlice from './property/housingManagement'
 import UnitSlice from './property/unit'
 import RoomSlice from './property/room'
 import OwnerSlice from './property/owner'
+import VenueSlice from './property/venue'
+import SpaceSlice from './property/space'
 import RepairSettingSlice from './property/repairSetting'
 import RepairPoolSlice from './property/repairPool'
 import RepairStaffSlice from './property/repairStaff'
@@ -38,6 +40,8 @@ const store = configureStore({
     UnitSlice,
     RoomSlice,
     OwnerSlice,
+    VenueSlice,
+    SpaceSlice,
     RepairSettingSlice,
     RepairPoolSlice,
     RepairStaffSlice,
