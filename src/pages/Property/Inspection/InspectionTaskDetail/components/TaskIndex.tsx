@@ -51,8 +51,9 @@ const TaskIndex: React.FC<TaskIndexProps> = ({ dialogValue }) => {
   }, [list])
 
   return (
-    <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
+    <Box sx={{ mt: 3.5, width: '100%', height: '100%', display: 'flex' }}>
       <RichTreeView
+        sx={{ width: '20%', mr: 2 }}
         items={MUI_X_PRODUCTS}
         selectedItems={dialogTaskValue?.id || ''}
         onSelectedItemsChange={(_, itemId) => {
