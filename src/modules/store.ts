@@ -13,6 +13,7 @@ import RoomSlice from './property/room'
 import OwnerSlice from './property/owner'
 import VenueSlice from './property/venue'
 import SpaceSlice from './property/space'
+import SpaceOpenTimeSlice from './property/spaceOpenTime'
 import RepairSettingSlice from './property/repairSetting'
 import RepairPoolSlice from './property/repairPool'
 import RepairStaffSlice from './property/repairStaff'
@@ -42,6 +43,7 @@ const store = configureStore({
     OwnerSlice,
     VenueSlice,
     SpaceSlice,
+    SpaceOpenTimeSlice,
     RepairSettingSlice,
     RepairPoolSlice,
     RepairStaffSlice,
