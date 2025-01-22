@@ -59,7 +59,12 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
       align: 'center',
       renderCell: row => row.spacePerson?.personTel
     },
-    { key: 'remark', headerName: '核销时间', align: 'center' },
+    {
+      key: 'spacePerson.appointmentTime',
+      headerName: '核销时间',
+      align: 'center',
+      renderCell: row => row.spacePerson?.appointmentTime
+    },
     { key: 'remark', headerName: '备注', align: 'center' }
   ]
 

@@ -1,7 +1,8 @@
-import { ChangeEvent, memo, useState, useCallback } from 'react'
+import { ChangeEvent, memo, useState, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { SpacePersonParams } from 'api/model/property/spacePersonModel'
 import { find } from 'modules/property/spacePerson'
+import { find as spaceFind } from 'modules/property/space'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -34,6 +35,25 @@ const FormSearch: React.FC = () => {
     stateCd: 0,
     spaceId: ''
   })
+
+  const fetchSpaceData = useCallback(async () => {
+    const closeLoading = message.loading('正在加载列表中，请稍后...')
+    try {
+      const res = await dispatch(spaceFind({ 'page.num': page.num, 'page.size': page.size }))
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      closeLoading()
+    }
+  }, [dispatch, page.num, page.size])
+
+  useEffect(() => {
+    fetchSpaceData()
+  }, [fetchSpaceData])
 
   const handleInputChange =
     (field: keyof SpacePersonParams) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -74,11 +94,16 @@ const FormSearch: React.FC = () => {
           <TextField
             size="small"
             label="请输入预约时间"
-            type="text"
+            type="date"
             variant="outlined"
             sx={textFieldStyles}
             value={searchParams.appointmentTime}
             onChange={handleInputChange('appointmentTime')}
+            slotProps={{
+              inputLabel: {
+                shrink: true
+              }
+            }}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -129,7 +154,7 @@ const FormSearch: React.FC = () => {
           <TextField
             select
             size="small"
-            label="请选择报修设置类型"
+            label="请选择预约场地"
             value={searchParams.spaceId}
             onChange={handleInputChange('spaceId')}
             variant="outlined"

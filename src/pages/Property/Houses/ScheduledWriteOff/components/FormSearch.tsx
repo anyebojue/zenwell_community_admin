@@ -75,11 +75,16 @@ const FormSearch: React.FC = () => {
           <TextField
             size="small"
             label="请输入预约时间"
-            type="text"
+            type="date"
             variant="outlined"
             sx={textFieldStyles}
             value={searchParams.appointmentTime}
             onChange={handleInputChange('appointmentTime')}
+            slotProps={{
+              inputLabel: {
+                shrink: true
+              }
+            }}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
