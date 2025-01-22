@@ -1,6 +1,7 @@
 import { memo, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { find } from 'modules/property/venue'
+import { find as spaceFind } from 'modules/property/space'
 import { find as timeFind } from 'modules/property/spaceOpenTime'
 import { RichTreeView } from '@mui/x-tree-view'
 import { Box, FormControl, Stack, TextField, Theme } from '@mui/material'
@@ -10,6 +11,22 @@ import message from 'components/Message'
 import { VenueReply } from 'api/model/property/venueModel'
 import { DataGrid } from '@mui/x-data-grid'
 import FormDialog from './components/FormDialog'
+
+const textFieldStyles = {
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      border: 'none'
+    },
+    '&:hover fieldset': {
+      border: '1px solid',
+      borderColor: 'primary.main'
+    },
+    '&.Mui-focused fieldset': {
+      border: '2px solid',
+      borderColor: 'primary.main'
+    }
+  }
+}
 
 const treeViewStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -22,10 +39,9 @@ const RolesIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { list } = useSelector((state: RootState) => state.VenueSlice)
   const { list: timeList } = useSelector((state: RootState) => state.SpaceOpenTimeSlice)
-
+  const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0])
   const [openDialog, setOpenDialog] = useState(false)
   const [dialogValue, setDialogValue] = useState<VenueReply>({})
-
   const reversedTimeList = [...timeList].reverse()
 
   const fetchData = useCallback(async () => {
@@ -73,15 +89,31 @@ const RolesIndex = () => {
 
   useEffect(() => {
     if (list?.length > 0) {
-      setDialogValue(list[0]) // 默认选中第一项
+      setDialogValue(list[0])
     }
   }, [list])
 
-  // Update dialogValue when tree selection changes
   const handleTreeSelectionChange = (itemId: string) => {
     const selectedItem = list.find(item => item.id === itemId)
     if (selectedItem) {
-      setDialogValue(selectedItem) // Update dialogValue to reflect the selected tree item
+      setDialogValue(selectedItem)
+    }
+  }
+
+  const handeleTime = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const selectedDate = e.target.value
+    const closeLoading = message.loading('正在加载中，请稍后...')
+    try {
+      const res = await dispatch(spaceFind({ startTime: selectedDate }))
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
+      setDate(selectedDate)
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      closeLoading()
     }
   }
 
@@ -92,7 +124,19 @@ const RolesIndex = () => {
         <Box sx={treeViewStyle}>
           <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
             <FormControl sx={{ width: { xs: '100%', md: '16ch' } }} variant="outlined">
-              <TextField size="small" label="请输入巡检点名称" type="text" variant="outlined" />
+              <TextField
+                size="small"
+                type="date"
+                variant="outlined"
+                sx={textFieldStyles}
+                value={date}
+                onChange={e => handeleTime(e)}
+                slotProps={{
+                  inputLabel: {
+                    shrink: true
+                  }
+                }}
+              />
             </FormControl>
           </Stack>
           <RichTreeView
