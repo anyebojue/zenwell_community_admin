@@ -12,12 +12,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { SpaceReply } from 'api/model/property/spaceModel'
 import { deleteByIds, find } from 'modules/property/space'
 import { Box, Tooltip, IconButton, Theme, Typography, Stack, Button } from '@mui/material'
-import { Add, Delete, Edit, FileCopy } from '@mui/icons-material'
+import { AccessTime, Add, Delete, Edit, FileCopy } from '@mui/icons-material'
 import message from 'components/Message'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import { VenueReply } from 'api/model/property/venueModel'
 import TableList from './TableList'
 import SpaceFormDialog from './SpaceFormDialog'
+import TimeFormDialog from './TimeFormDialog'
 
 const contentBoxStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -65,6 +66,7 @@ const TableData: React.FC<TableDataProps> = ({
   const [loading, setLoading] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
   const [dialogType, setDialogType] = useState('add')
+  const [openTimeDialog, setOpenTimeDialog] = useState(false)
 
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
@@ -148,6 +150,12 @@ const TableData: React.FC<TableDataProps> = ({
         <Box>
           {[
             {
+              title: '开放时间',
+              color: 'primary' as const,
+              icon: <AccessTime fontSize="small" />,
+              onClick: () => setOpenTimeDialog(true)
+            },
+            {
               title: '修改',
               color: 'primary' as const,
               icon: <Edit fontSize="small" />,
@@ -175,8 +183,10 @@ const TableData: React.FC<TableDataProps> = ({
   ]
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    if (dialogValue.id) {
+      fetchData()
+    }
+  }, [dialogValue.id, fetchData])
 
   return (
     <>
@@ -244,6 +254,11 @@ const TableData: React.FC<TableDataProps> = ({
         setDelOpen={setDelOpen}
         userName={deleteNames}
         onDelete={() => handleDelete(deleteIds)}
+      />
+      <TimeFormDialog
+        dialogSpaceValue={dialogSpaceValue}
+        openDialog={openTimeDialog}
+        setOpenDialog={setOpenTimeDialog}
       />
     </>
   )
