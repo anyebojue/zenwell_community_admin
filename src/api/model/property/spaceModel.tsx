@@ -1,4 +1,5 @@
 import { Page } from '../pageModel'
+import { SpaceOpenTimeReply } from './spaceOpenTimeModel'
 import { VenueReply } from './venueModel'
 
 export interface SpaceReply {
@@ -17,6 +18,7 @@ export interface SpaceReply {
   statusCd?: number // 数据状态，详细参考c_status表，S 保存，0 在用，1 失效
   venueId?: string // 场馆ID
   venue?: VenueReply
+  spaceOpenTime?: SpaceOpenTimeReply[]
 }
 
 export interface SpaceParams {

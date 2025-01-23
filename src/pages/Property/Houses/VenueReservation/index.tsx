@@ -2,14 +2,13 @@ import { memo, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { find } from 'modules/property/venue'
 import { find as spaceFind } from 'modules/property/space'
-import { find as timeFind } from 'modules/property/spaceOpenTime'
 import { RichTreeView } from '@mui/x-tree-view'
 import { Box, FormControl, Stack, TextField, Theme } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import message from 'components/Message'
 import { VenueReply } from 'api/model/property/venueModel'
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { DataGrid, GridCellParams, GridColDef } from '@mui/x-data-grid'
 import FormDialog from './components/FormDialog'
 
 const textFieldStyles = {
@@ -39,22 +38,28 @@ const RolesIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { list } = useSelector((state: RootState) => state.VenueSlice)
   const { list: spaceList } = useSelector((state: RootState) => state.SpaceSlice)
-  const { list: timeList } = useSelector((state: RootState) => state.SpaceOpenTimeSlice)
   const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0])
   const [openDialog, setOpenDialog] = useState(false)
+  const [spaceId, setSpaceId] = useState('')
+  const [spaceTime, setSpaceTime] = useState('')
   const [dialogValue, setDialogValue] = useState<VenueReply>({})
 
-  const result = timeList.map((item, index) => {
-    const newObj: { [key: string]: string | number } = {
-      id: index,
-      预约时间: String(item.hours)
+  const result = Array.from({ length: 24 }, (_, hour) => {
+    const obj: { id: string; 预约时间: string; [key: string]: string } = {
+      id: `${hour}`,
+      预约时间: `${hour}点`
     }
-    spaceList.forEach(entry => {
-      if (entry.name) {
-        newObj[entry.name] = 'isOpen'
+    spaceList.forEach(item => {
+      if (item.name) {
+        const status = item.spaceOpenTime?.some(
+          openTime => openTime.hours === hour && openTime.isOpen === 1
+        )
+          ? '可预约'
+          : '不可预约'
+        obj[item.name] = status
       }
     })
-    return newObj
+    return obj
   })
 
   const columns: GridColDef[] = [
@@ -68,14 +73,40 @@ const RolesIndex = () => {
     },
     ...Object.keys(result[0] || {})
       .filter(key => key !== '预约时间' && key !== 'id')
-      .map(key => ({
-        field: key,
-        headerName: key,
-        flex: 1,
-        headerAlign: 'center' as 'center',
-        align: 'center' as 'center',
-        type: 'string' as const
-      }))
+      .map(key => {
+        return {
+          field: key,
+          headerName: key,
+          flex: 1,
+          headerAlign: 'center' as 'center',
+          align: 'center' as 'center',
+          type: 'string' as const,
+          renderCell: (params: GridCellParams) => {
+            const isClickable = params.value === '可预约'
+            const value = params.value as string
+            const appointmentTime = params.row.预约时间
+            return (
+              <div
+                onClick={() => {
+                  if (isClickable) {
+                    const itemId = spaceList.find(item => item.name === key)?.id
+                    setSpaceTime(appointmentTime.replace('点', ''))
+                    setOpenDialog(true)
+                    setSpaceId(itemId || '')
+                  }
+                }}
+                style={{
+                  cursor: isClickable ? 'pointer' : 'default',
+                  color: isClickable ? 'blue' : 'inherit',
+                  textDecoration: isClickable ? 'underline' : 'none'
+                }}
+              >
+                {value}
+              </div>
+            )
+          }
+        }
+      })
   ]
 
   const fetchData = useCallback(async () => {
@@ -94,28 +125,10 @@ const RolesIndex = () => {
   }, [dispatch])
 
   const fetchSpaceData = useCallback(
-    async (spaceId: string) => {
+    async (id: string) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
-        const res = await dispatch(spaceFind({ 'page.disable': true, venueId: spaceId }))
-        if ('error' in res && res.error?.message) {
-          throw new Error(res.error.message)
-        }
-      } catch (err: unknown) {
-        closeLoading()
-        if (err instanceof Error) message.error(err.message)
-      } finally {
-        closeLoading()
-      }
-    },
-    [dispatch]
-  )
-
-  const fetchTimeData = useCallback(
-    async (spaceId: string) => {
-      const closeLoading = message.loading('正在加载列表中，请稍后...')
-      try {
-        const res = await dispatch(timeFind({ 'page.disable': true, spaceId }))
+        const res = await dispatch(spaceFind({ 'page.disable': true, venueId: id }))
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
@@ -136,9 +149,8 @@ const RolesIndex = () => {
   useEffect(() => {
     if (dialogValue.id) {
       fetchSpaceData(dialogValue.id)
-      fetchTimeData(dialogValue.id)
     }
-  }, [dialogValue, fetchSpaceData, fetchTimeData])
+  }, [dialogValue, fetchSpaceData])
 
   useEffect(() => {
     if (list?.length > 0) {
@@ -204,7 +216,13 @@ const RolesIndex = () => {
         />
       </Stack>
       <Copyright />
-      <FormDialog dialogValue={dialogValue} openDialog={openDialog} setOpenDialog={setOpenDialog} />
+      <FormDialog
+        dialogValue={dialogValue}
+        spaceTime={spaceTime}
+        spaceId={spaceId}
+        openDialog={openDialog}
+        setOpenDialog={setOpenDialog}
+      />
     </Box>
   )
 }

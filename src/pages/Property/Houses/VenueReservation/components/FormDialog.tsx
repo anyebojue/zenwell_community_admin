@@ -1,16 +1,8 @@
-import React, {
-  Dispatch,
-  memo,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from 'react'
+import React, { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { SpectionPointReply, SpectionPointParams } from 'api/model/property/spectionPointModel'
-import { find, update } from 'modules/property/spectionPoint'
-import { find as spectionFind } from 'modules/property/spection'
+import { SpacePersonParams } from 'api/model/property/spacePersonModel'
+import { create } from 'modules/property/spacePerson'
+import { find } from 'modules/property/space'
 import {
   Box,
   CircularProgress,
@@ -26,64 +18,49 @@ import {
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
+import { SpaceReply } from 'api/model/property/spaceModel'
 
 interface FormDialogProps {
-  dialogValue?: SpectionPointReply
+  dialogValue: SpaceReply
+  spaceId: string
+  spaceTime: string
   openDialog: boolean
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
-const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpenDialog }) => {
+const FormDialog: React.FC<FormDialogProps> = ({
+  dialogValue,
+  spaceId,
+  spaceTime,
+  openDialog,
+  setOpenDialog
+}) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.SpectionSlice)
+  const { page } = useSelector((state: RootState) => state.SpacePersonSlice)
   const [loading, setLoading] = useState(false)
-
-  const initialFormData = useMemo(
-    () => ({
-      inspectionName: dialogValue?.inspectionName || ''
-    }),
-    [dialogValue?.inspectionName]
-  )
-  const [formData, setFormData] = useState<SpectionPointParams>(initialFormData)
-
-  const fetchData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(spectionFind({ 'page.num': page.num, 'page.size': page.size }))
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
-      }
-      setLoading(false)
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch, page.num, page.size])
+  const [formData, setFormData] = useState<SpacePersonParams>({ appointmentTime: spaceTime })
 
   useEffect(() => {
-    if (openDialog) {
-      fetchData()
-      setFormData(initialFormData)
-    }
-  }, [fetchData, initialFormData, openDialog])
+    setFormData(prev => ({
+      ...prev,
+      appointmentTime: spaceTime
+    }))
+  }, [spaceTime])
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
       setLoading(true)
       try {
-        const params = { ...formData }
-        const action = update({ id: dialogValue?.id, ...params })
-        const res = await dispatch(action)
+        const res = await dispatch(create({ spaceId: spaceId, ...formData }))
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-        await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))
+        await dispatch(
+          find({ 'page.num': page.num || '1', 'page.size': page.size, venueId: dialogValue.id })
+        )
         message.success('新建成功')
         setOpenDialog(false)
-        setFormData(initialFormData)
       } catch (err: unknown) {
         setLoading(false)
         if (err instanceof Error) message.error(err.message)
@@ -91,15 +68,15 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
         setLoading(false)
       }
     },
-    [dispatch, dialogValue, formData, page, setOpenDialog, initialFormData]
+    [dispatch, spaceId, formData, page.num, page.size, dialogValue.id, setOpenDialog]
   )
 
   const formFields = [
-    { label: '巡检点名称', type: 'text', id: 'inspectionName', required: true },
-    { label: 'NFC编码', type: 'text', id: 'nfcCode', required: true },
-    { label: '巡检设备', type: 'text', id: 'nfcCode', required: true },
-    { label: '经度', type: 'text', id: 'longitude', required: true, disabled: true },
-    { label: '纬度', type: 'text', id: 'latitude', required: true, disabled: true }
+    { label: '预约人', type: 'text', id: 'personName', required: true },
+    { label: '预约电话', type: 'text', id: 'personTel', required: true },
+    { label: '应收金额', type: 'text', id: 'receivableAmount', required: true },
+    { label: '实收金额', type: 'text', id: 'receivedAmount', required: true },
+    { label: '预约时间', type: 'text', id: 'appointmentTime', required: true, disabled: true }
   ]
 
   return (
@@ -126,44 +103,28 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
                 size="small"
                 required={required}
                 id={id}
-                value={formData[id as keyof SpectionPointParams]}
+                value={formData[id as keyof SpacePersonParams]}
                 onChange={e => setFormData({ ...formData, [id]: e.target.value })}
               />
             </Box>
           ))}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>巡检类型：</FormLabel>
+            <FormLabel>支付方式：</FormLabel>
             <TextField
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.pointObjType}
-              onChange={e => setFormData({ ...formData, pointObjType: Number(e.target.value) })}
+              value={formData.payWay}
+              onChange={e => setFormData({ ...formData, payWay: Number(e.target.value) })}
               variant="outlined"
             >
               {[
-                { value: 2002, label: '环境巡检' },
-                { value: 1001, label: '设备巡检' }
+                { value: 1, label: '现金' },
+                { value: 2, label: '微信' },
+                { value: 3, label: '支付宝' }
               ].map(option => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>巡检项目：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.itemId}
-              onChange={e => setFormData({ ...formData, itemId: e.target.value })}
-              variant="outlined"
-            >
-              {list.map(option => (
-                <MenuItem key={option.id} value={option.id}>
-                  {option.itemName}
                 </MenuItem>
               ))}
             </TextField>
