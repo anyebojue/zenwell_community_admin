@@ -6,6 +6,7 @@ import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/mater
 import { Add, Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
+import ApplyFor from './ApplyFor'
 
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {
@@ -32,6 +33,7 @@ interface FormSearchProps {
 const FormSearch: React.FC<FormSearchProps> = ({ selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.OwnerInvoiceApplySlice)
+  const [openDialog, setOpenDialog] = useState(false)
 
   const [searchParams, setSearchParams] = useState<OwnerInvoiceApplyParams>({
     invoiceCode: '',
@@ -217,6 +219,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedRows, setDelOpen }) => 
           批量删除
         </Button>
       </Stack>
+      <ApplyFor openDialog={openDialog} setOpenDialog={setOpenDialog} />
     </Box>
   )
 }
