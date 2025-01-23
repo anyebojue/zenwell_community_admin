@@ -17,6 +17,7 @@ import SpaceOpenTimeSlice from './property/spaceOpenTime'
 import SpacePersonSlice from './property/spacePerson'
 import SpaceConfirmOrderSlice from './property/spaceConfirmOrder'
 import OwnerInvoiceSlice from './property/ownerInvoice'
+import OwnerInvoiceApplySlice from './property/ownerInvoiceApply'
 import RepairSettingSlice from './property/repairSetting'
 import RepairPoolSlice from './property/repairPool'
 import RepairStaffSlice from './property/repairStaff'
@@ -50,6 +51,7 @@ const store = configureStore({
     SpacePersonSlice,
     SpaceConfirmOrderSlice,
     OwnerInvoiceSlice,
+    OwnerInvoiceApplySlice,
     RepairSettingSlice,
     RepairPoolSlice,
     RepairStaffSlice,

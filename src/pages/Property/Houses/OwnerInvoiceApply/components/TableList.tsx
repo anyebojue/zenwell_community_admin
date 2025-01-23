@@ -16,7 +16,7 @@ import {
   Checkbox,
   Theme
 } from '@mui/material'
-import { CommunityAnnouncementReply } from 'api/model/property/communityAnnouncementModel'
+import { OwnerInvoiceApplyReply } from 'api/model/property/ownerInvoiceApplyModel'
 import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {
@@ -36,9 +36,9 @@ const TableList = ({
   selectedRows,
   setSelectedRows
 }: {
-  rows: CommunityAnnouncementReply[]
-  columns: Column<CommunityAnnouncementReply>[]
-  setDialogValue: Dispatch<SetStateAction<CommunityAnnouncementReply | undefined>>
+  rows: OwnerInvoiceApplyReply[]
+  columns: Column<OwnerInvoiceApplyReply>[]
+  setDialogValue: Dispatch<SetStateAction<OwnerInvoiceApplyReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
 }) => {
@@ -82,6 +82,16 @@ const TableList = ({
 
   const allSelected = selectedRows.size === rows.length && rows.length > 0
   const someSelected = selectedRows.size > 0 && selectedRows.size < rows.length
+
+  const renderValue = (value: OwnerInvoiceApplyReply[keyof OwnerInvoiceApplyReply] | undefined) => {
+    if (Array.isArray(value)) {
+      return JSON.stringify(value)
+    } else if (value && typeof value === 'object') {
+      return JSON.stringify(value)
+    } else {
+      return value || '-'
+    }
+  }
 
   return (
     <Box
@@ -145,7 +155,7 @@ const TableList = ({
                     />
                   </TableCell>
                   {columns.map(column => {
-                    const value = row[column.key as keyof CommunityAnnouncementReply]
+                    const value = row[column.key as keyof OwnerInvoiceApplyReply]
                     return (
                       <TableCell
                         key={column.key}
@@ -154,7 +164,7 @@ const TableList = ({
                           borderBottom: theme => `1px solid ${theme.palette.divider}`
                         }}
                       >
-                        {column.renderCell ? column.renderCell(value) : value}
+                        {column.renderCell ? column.renderCell(row) : renderValue(value)}
                       </TableCell>
                     )
                   })}

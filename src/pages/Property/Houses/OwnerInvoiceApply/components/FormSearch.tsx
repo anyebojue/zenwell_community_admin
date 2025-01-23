@@ -1,12 +1,11 @@
 import { ChangeEvent, memo, useState, useCallback, Dispatch, SetStateAction } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CommunityAnnouncementParams } from 'api/model/property/communityAnnouncementModel'
-import { find } from 'modules/property/communityAnnouncement'
+import { OwnerInvoiceApplyParams } from 'api/model/property/ownerInvoiceApplyModel'
+import { find } from 'modules/property/ownerInvoiceApply'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { Add, Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import FormDialog from './FormDialog'
 
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {
@@ -25,22 +24,25 @@ const textFieldStyles = {
 }
 
 interface FormSearchProps {
-  selectedButton: number
+  selectedButton: string
   selectedRows: Set<string | undefined>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, setDelOpen }) => {
+const FormSearch: React.FC<FormSearchProps> = ({ selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.CommunityAnnouncementSlice)
+  const { page } = useSelector((state: RootState) => state.OwnerInvoiceApplySlice)
 
-  const [openDialog, setOpenDialog] = useState(false)
-  const [searchParams, setSearchParams] = useState<CommunityAnnouncementParams>({
-    title: ''
+  const [searchParams, setSearchParams] = useState<OwnerInvoiceApplyParams>({
+    invoiceCode: '',
+    invoiceType: '',
+    ownerName: '',
+    createUserName: '',
+    applyTel: ''
   })
 
   const handleInputChange =
-    (field: keyof CommunityAnnouncementParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof OwnerInvoiceApplyParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -48,7 +50,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
     }
 
   const fetchData = useCallback(
-    async (params: CommunityAnnouncementParams & PaginationParams) => {
+    async (params: OwnerInvoiceApplyParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
@@ -76,7 +78,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
   }
 
   const handleSelectChange =
-    (field: keyof CommunityAnnouncementParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof OwnerInvoiceApplyParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -93,8 +95,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.title}
-            onChange={handleInputChange('title')}
+            value={searchParams.invoiceCode}
+            onChange={handleInputChange('invoiceCode')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -102,8 +104,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             select
             size="small"
             label="请选择发票类型"
-            value={searchParams.title}
-            onChange={handleSelectChange('title')}
+            value={searchParams.invoiceType}
+            onChange={handleSelectChange('invoiceType')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -124,8 +126,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.title}
-            onChange={handleInputChange('title')}
+            value={searchParams.ownerName}
+            onChange={handleInputChange('ownerName')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -135,8 +137,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.title}
-            onChange={handleInputChange('title')}
+            value={searchParams.createUserName}
+            onChange={handleInputChange('createUserName')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -146,71 +148,75 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.title}
-            onChange={handleInputChange('title')}
+            value={searchParams.applyTel}
+            onChange={handleInputChange('applyTel')}
           />
         </FormControl>
-        <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Search />}
-            sx={buttonStyles('#2660ad', '#1d428a')}
-            onClick={handleSearch}
-          >
-            查询
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<History />}
-            sx={buttonStyles('darkgray', '#696969')}
-            onClick={() => {
-              setSearchParams({ title: '' })
-              fetchData({
-                title: '',
-                'page.num': page.num,
-                'page.size': page.size
-              })
-            }}
-          >
-            重置
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Add />}
-            sx={buttonStyles('#2660ad', '#1d428a')}
-            onClick={() => setOpenDialog(true)}
-          >
-            申请
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Delete />}
-            sx={buttonStyles('#B22222', '#8B0000')}
-            onClick={() => {
-              if (![...selectedRows].length) {
-                return message.warning('请选择至少一项')
-              }
-              setDelOpen(true)
-            }}
-          >
-            批量删除
-          </Button>
-        </Stack>
       </Stack>
-      <FormDialog
-        selectedButton={selectedButton}
-        openDialog={openDialog}
-        dialogType="add"
-        setOpenDialog={setOpenDialog}
-      />
+      <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
+          startIcon={<Search />}
+          sx={buttonStyles('#2660ad', '#1d428a')}
+          onClick={handleSearch}
+        >
+          查询
+        </Button>
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
+          startIcon={<History />}
+          sx={buttonStyles('darkgray', '#696969')}
+          onClick={() => {
+            setSearchParams({
+              invoiceCode: '',
+              invoiceType: '',
+              ownerName: '',
+              createUserName: '',
+              applyTel: ''
+            })
+            fetchData({
+              invoiceCode: '',
+              invoiceType: '',
+              ownerName: '',
+              createUserName: '',
+              applyTel: '',
+              'page.num': page.num,
+              'page.size': page.size
+            })
+          }}
+        >
+          重置
+        </Button>
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
+          startIcon={<Add />}
+          sx={buttonStyles('#2660ad', '#1d428a')}
+          onClick={() => {}}
+        >
+          申请
+        </Button>
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
+          startIcon={<Delete />}
+          sx={buttonStyles('#B22222', '#8B0000')}
+          onClick={() => {
+            if (![...selectedRows].length) {
+              return message.warning('请选择至少一项')
+            }
+            setDelOpen(true)
+          }}
+        >
+          批量删除
+        </Button>
+      </Stack>
     </Box>
   )
 }
