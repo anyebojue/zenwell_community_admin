@@ -25,6 +25,11 @@ export interface OwnerInvoiceApplyReply {
 
 export interface OwnerInvoiceApplyParams {
   id?: string
+  ownerId?: string
+  invoiceName?: string
+  invoiceNum?: string
+  invoiceLink?: string
+  invoiceAddress?: string
   oiId?: string // 业主发票ID
   invoiceType?: string // 发票类型 1001 个人 2002 企业
   ownerName?: string // 业主名称

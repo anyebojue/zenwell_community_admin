@@ -1,6 +1,6 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OwnerInvoiceReply } from 'api/model/property/ownerInvoiceModel'
+import { OwnerInvoiceApplyReply } from 'api/model/property/ownerInvoiceApplyModel'
 import { find } from 'modules/property/ownerInvoice'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
@@ -28,12 +28,12 @@ interface FormSearchProps {}
 const FormSearch: React.FC<FormSearchProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.OwnerInvoiceSlice)
-  const [searchParams, setSearchParams] = useState<OwnerInvoiceReply>({
+  const [searchParams, setSearchParams] = useState<OwnerInvoiceApplyReply>({
     ownerName: ''
   })
 
   const handleInputChange =
-    (field: keyof OwnerInvoiceReply) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof OwnerInvoiceApplyReply) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -41,7 +41,7 @@ const FormSearch: React.FC<FormSearchProps> = () => {
     }
 
   const fetchData = useCallback(
-    async (params: OwnerInvoiceReply & PaginationParams) => {
+    async (params: OwnerInvoiceApplyReply & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(

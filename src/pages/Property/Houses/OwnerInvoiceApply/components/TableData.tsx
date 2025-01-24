@@ -31,12 +31,15 @@ const TableData: React.FC<TableDataProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.OwnerInvoiceApplySlice)
-  const current_community = localStorage.getItem('current_community')
-  const community = JSON.parse(current_community || '')
 
   const columns: Column<OwnerInvoiceApplyReply>[] = [
     { key: 'id', headerName: '编号', align: 'center' },
-    { key: 'invoiceType', headerName: '发票类型', align: 'center' },
+    {
+      key: 'invoiceType',
+      headerName: '发票类型',
+      align: 'center',
+      renderCell: row => (row.invoiceType === '1001' ? '个人' : '企业')
+    },
     { key: 'ownerName', headerName: '业主名称', align: 'center' },
     { key: 'createUserName', headerName: '申请人', align: 'center' },
     { key: 'ownerInvoice.invoiceName', headerName: '发票名头', align: 'center' },
@@ -49,7 +52,18 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'stateCd',
       headerName: '审核状态',
       align: 'center',
-      renderCell: () => community.name
+      renderCell: row =>
+        row.invoiceType === 'W'
+          ? '待审核'
+          : row.invoiceType === 'U'
+            ? '待上传'
+            : row.invoiceType === 'F'
+              ? '审核失败'
+              : row.invoiceType === 'G'
+                ? '带领用'
+                : row.invoiceType === 'C'
+                  ? '已领用'
+                  : ''
     },
     { key: 'createdAt', headerName: '申请时间', align: 'center' },
     {
@@ -99,7 +113,11 @@ const TableData: React.FC<TableDataProps> = ({
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
       const res = await dispatch(
-        find({ 'page.num': page.num, 'page.size': page.size, stateCd: selectedButton })
+        find({
+          'page.num': page.num,
+          'page.size': page.size,
+          ...(selectedButton && { stateCd: selectedButton })
+        })
       )
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)

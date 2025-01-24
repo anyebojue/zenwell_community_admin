@@ -1,13 +1,13 @@
 import { Dispatch, memo, SetStateAction, useState } from 'react'
 import { Dialog, DialogContent, DialogTitle } from '@mui/material'
-import { OwnerInvoiceReply } from 'api/model/property/ownerInvoiceModel'
+import { OwnerInvoiceApplyReply } from 'api/model/property/ownerInvoiceApplyModel'
 import AssociatedFormSearch from './AssociatedFormSearch'
 import AssociatedTableData from './AssociatedTableData'
 
 interface AssociatedProps {
   associatedOpen: boolean
   setAssociatedOpen: Dispatch<SetStateAction<boolean>>
-  setOwnerInvoice: Dispatch<SetStateAction<OwnerInvoiceReply | undefined>>
+  setOwnerInvoice: Dispatch<SetStateAction<OwnerInvoiceApplyReply | undefined>>
 }
 
 const Associated: React.FC<AssociatedProps> = ({

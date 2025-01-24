@@ -1,5 +1,5 @@
 import { memo, useState, useMemo, ChangeEvent, Dispatch, SetStateAction } from 'react'
-import { OwnerInvoiceReply } from 'api/model/property/ownerInvoiceModel'
+import { OwnerInvoiceApplyReply } from 'api/model/property/ownerInvoiceApplyModel'
 import {
   Pagination,
   Table,
@@ -35,8 +35,8 @@ const AssociatedTableList = ({
   selectedRows,
   setSelectedRows
 }: {
-  rows: OwnerInvoiceReply[]
-  columns: Column<OwnerInvoiceReply>[]
+  rows: OwnerInvoiceApplyReply[]
+  columns: Column<OwnerInvoiceApplyReply>[]
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
 }) => {
@@ -78,7 +78,7 @@ const AssociatedTableList = ({
   const allSelected = selectedRows.size === rows.length && rows.length > 0
   const someSelected = selectedRows.size > 0 && selectedRows.size < rows.length
 
-  const renderValue = (value: OwnerInvoiceReply[keyof OwnerInvoiceReply] | undefined) => {
+  const renderValue = (value: OwnerInvoiceApplyReply[keyof OwnerInvoiceApplyReply] | undefined) => {
     if (Array.isArray(value)) {
       return JSON.stringify(value)
     } else if (value && typeof value === 'object') {
@@ -150,7 +150,7 @@ const AssociatedTableList = ({
                     />
                   </TableCell>
                   {columns.map(column => {
-                    const value = row[column.key as keyof OwnerInvoiceReply]
+                    const value = row[column.key as keyof OwnerInvoiceApplyReply]
                     return (
                       <TableCell
                         key={column.key}

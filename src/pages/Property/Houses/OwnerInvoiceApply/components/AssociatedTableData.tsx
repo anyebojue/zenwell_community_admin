@@ -1,6 +1,6 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OwnerInvoiceReply } from 'api/model/property/ownerInvoiceModel'
+import { OwnerInvoiceApplyReply } from 'api/model/property/ownerInvoiceApplyModel'
 import { find } from 'modules/property/ownerInvoice'
 import message from 'components/Message'
 import { Button } from '@mui/material'
@@ -9,7 +9,7 @@ import AssociatedTableList from './AssociatedTableList'
 
 export interface Column<T> {
   headerName: string
-  key: keyof T | 'operate'
+  key: Exclude<keyof T, symbol> | `${Exclude<keyof T, symbol>}.${string}` | 'operate' // 过滤掉 symbol 类型
   align?: 'left' | 'center' | 'right'
   renderCell?: (row: T) => ReactNode
 }
@@ -17,7 +17,7 @@ export interface Column<T> {
 interface AssociatedTableDataProps {
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
-  setOwnerInvoice: Dispatch<SetStateAction<OwnerInvoiceReply | undefined>>
+  setOwnerInvoice: Dispatch<SetStateAction<OwnerInvoiceApplyReply | undefined>>
   setAssociatedOpen: Dispatch<SetStateAction<boolean>>
 }
 
@@ -30,12 +30,12 @@ const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.OwnerInvoiceSlice)
 
-  const columns: Column<OwnerInvoiceReply>[] = [
+  const columns: Column<OwnerInvoiceApplyReply>[] = [
     { key: 'ownerName', headerName: '业主名称', align: 'center' },
     { key: 'invoiceType', headerName: '发票类型', align: 'center' },
-    { key: 'invoiceName', headerName: '发票名头', align: 'center' },
-    { key: 'invoiceNum', headerName: '纳税人识别号', align: 'center' },
-    { key: 'invoiceAddress', headerName: '地址', align: 'center' },
+    { key: 'ownerInvoice.invoiceName', headerName: '发票名头', align: 'center' },
+    { key: 'ownerInvoice.invoiceNum', headerName: '纳税人识别号', align: 'center' },
+    { key: 'ownerInvoice.invoiceAddress', headerName: '地址', align: 'center' },
     { key: 'invoiceLink', headerName: '电话', align: 'center' },
     {
       key: 'operate',

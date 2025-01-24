@@ -1,7 +1,7 @@
 import React, { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OwnerInvoiceParams } from 'api/model/property/ownerInvoiceModel'
-import { create, find } from 'modules/property/ownerInvoice'
+import { OwnerInvoiceApplyParams } from 'api/model/property/ownerInvoiceApplyModel'
+import { create, find } from 'modules/property/ownerInvoiceApply'
 import {
   Box,
   CircularProgress,
@@ -17,38 +17,42 @@ import {
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
-import { OwnerReply } from 'api/model/property/ownerModel'
 import Associated from './Associated'
 
 interface FormDialogProps {
+  selectedButton: string
   openDialog: boolean
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
-const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) => {
+const FormDialog: React.FC<FormDialogProps> = ({ selectedButton, openDialog, setOpenDialog }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.OwnerInvoiceSlice)
   const [loading, setLoading] = useState(false)
   const [associatedOpen, setAssociatedOpen] = useState(false)
-  const [ownerInvoice, setOwnerInvoice] = useState<OwnerReply>()
-  const [formData, setFormData] = useState<OwnerInvoiceParams>({
+  const [ownerInvoice, setOwnerInvoice] = useState<OwnerInvoiceApplyParams>()
+  const [formData, setFormData] = useState<OwnerInvoiceApplyParams>({
     ownerId: '',
     ownerName: '',
     invoiceType: '',
     invoiceName: '',
     invoiceNum: '',
-    invoiceAddress: '',
     invoiceLink: '',
-    invoiceAccount: '',
-    remark: ''
+    invoiceAddress: ''
   })
 
   useEffect(() => {
     if (ownerInvoice?.id) {
+      console.log(ownerInvoice)
       setFormData(prevData => ({
         ...prevData,
-        ownerId: ownerInvoice.id,
-        ownerName: ownerInvoice.name
+        ownerId: ownerInvoice.ownerId,
+        ownerName: ownerInvoice.ownerName,
+        invoiceType: ownerInvoice.invoiceType,
+        invoiceName: ownerInvoice.invoiceName,
+        invoiceNum: ownerInvoice.invoiceNum,
+        invoiceLink: ownerInvoice.invoiceLink,
+        invoiceAddress: ownerInvoice.invoiceAddress
       }))
     }
   }, [ownerInvoice])
@@ -58,13 +62,23 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
       event.preventDefault()
       setLoading(true)
       try {
-        const params = { ...formData, ownerId: ownerInvoice?.id, ownerName: ownerInvoice?.name }
+        const params = {
+          ...formData,
+          ownerId: ownerInvoice?.ownerId,
+          ownerName: ownerInvoice?.ownerName
+        }
         const action = create(params)
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-        await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))
+        await dispatch(
+          find({
+            'page.num': page.num,
+            'page.size': page.size,
+            ...(selectedButton && { stateCd: selectedButton })
+          })
+        )
         message.success('申请成功')
         setOpenDialog(false)
       } catch (err: unknown) {
@@ -74,11 +88,20 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
         setLoading(false)
       }
     },
-    [formData, ownerInvoice?.id, ownerInvoice?.name, dispatch, page.num, page.size, setOpenDialog]
+    [
+      formData,
+      ownerInvoice?.ownerId,
+      ownerInvoice?.ownerName,
+      dispatch,
+      page.num,
+      page.size,
+      selectedButton,
+      setOpenDialog
+    ]
   )
 
   const formFields = [
-    { label: '业主', type: 'text', id: 'invoiceName', required: true },
+    { label: '业主', type: 'text', id: 'ownerName', required: true, disabled: true },
     { label: '纳税人识别号', type: 'text', id: 'invoiceNum', required: true },
     { label: '电话', type: 'text', id: 'invoiceLink', required: true },
     { label: '地址', type: 'text', id: 'invoiceAddress', required: true }
@@ -99,11 +122,12 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <FormLabel>发票抬头：</FormLabel>
               <TextField
+                disabled
                 placeholder="请输入"
-                sx={{ width: '53%' }}
+                sx={{ width: '58.5%' }}
                 size="small"
-                value={formData.ownerName}
-                onChange={e => setFormData({ ...formData, ownerName: e.target.value })}
+                value={formData.invoiceName}
+                onChange={e => setFormData({ ...formData, invoiceName: e.target.value })}
                 variant="outlined"
               />
               <Button
@@ -136,20 +160,21 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
                 ))}
               </TextField>
             </Box>
-            {formFields.map(({ label, type, id, required }) => (
+            {formFields.map(({ label, type, id, required, disabled }) => (
               <Box
                 sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
                 key={id}
               >
                 <FormLabel>{label}：</FormLabel>
                 <TextField
+                  disabled={disabled}
                   placeholder="请输入"
                   type={type}
                   sx={{ width: '80%' }}
                   size="small"
                   required={required}
                   id={id}
-                  value={formData[id as keyof OwnerInvoiceParams]}
+                  value={formData[id as keyof OwnerInvoiceApplyParams]}
                   onChange={e => setFormData({ ...formData, [id]: e.target.value })}
                   autoComplete={type === 'password' ? 'current-password' : ''}
                 />

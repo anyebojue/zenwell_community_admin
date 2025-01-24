@@ -30,7 +30,7 @@ interface FormSearchProps {
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const FormSearch: React.FC<FormSearchProps> = ({ selectedRows, setDelOpen }) => {
+const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.OwnerInvoiceApplySlice)
   const [openDialog, setOpenDialog] = useState(false)
@@ -199,7 +199,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedRows, setDelOpen }) => 
           color="error"
           startIcon={<Add />}
           sx={buttonStyles('#2660ad', '#1d428a')}
-          onClick={() => {}}
+          onClick={() => setOpenDialog(true)}
         >
           申请
         </Button>
@@ -219,7 +219,11 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedRows, setDelOpen }) => 
           批量删除
         </Button>
       </Stack>
-      <ApplyFor openDialog={openDialog} setOpenDialog={setOpenDialog} />
+      <ApplyFor
+        selectedButton={selectedButton}
+        openDialog={openDialog}
+        setOpenDialog={setOpenDialog}
+      />
     </Box>
   )
 }
