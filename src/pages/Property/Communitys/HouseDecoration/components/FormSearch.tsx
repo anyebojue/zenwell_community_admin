@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, memo, SetStateAction, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairSettingParams } from 'api/model/property/repairSettingModel'
-import { find } from 'modules/property/repairSetting'
+import { RoomRenovationParams } from 'api/model/property/roomRenovationModel'
+import { find } from 'modules/property/roomRenovation'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -30,18 +30,21 @@ interface SearchFormProps {
 
 const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.RepairSettingSlice)
+  const { page } = useSelector((state: RootState) => state.RoomRenovationSlice)
 
-  const [searchParams, setSearchParams] = useState<RepairSettingParams>({
-    repairTypeName: '',
-    repairWay: 0,
-    repairType: '',
-    publicArea: 0,
-    returnVisitFlag: 0
+  const [searchParams, setSearchParams] = useState<RoomRenovationParams>({
+    roomName: '',
+    personName: '',
+    personTel: '',
+    status: 0,
+    isPostpone: 0,
+    createdAt: '',
+    startTime: '',
+    endTime: ''
   })
 
   const handleInputChange =
-    (field: keyof RepairSettingParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof RoomRenovationParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -49,7 +52,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
     }
 
   const fetchData = useCallback(
-    async (params: RepairSettingParams & PaginationParams) => {
+    async (params: RoomRenovationParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
@@ -78,28 +81,53 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
-            label="请输入员工姓名"
+            label="请输入房屋编号楼栋-单元-房屋"
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.repairTypeName}
-            onChange={handleInputChange('repairTypeName')}
+            value={searchParams.roomName}
+            onChange={handleInputChange('roomName')}
+          />
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            size="small"
+            label="请输入联系人"
+            type="text"
+            variant="outlined"
+            sx={textFieldStyles}
+            value={searchParams.personName}
+            onChange={handleInputChange('personName')}
+          />
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            size="small"
+            label="请输入联系电话"
+            type="text"
+            variant="outlined"
+            sx={textFieldStyles}
+            value={searchParams.personTel}
+            onChange={handleInputChange('personTel')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             select
             size="small"
-            label="请选择派单方式"
-            value={searchParams.repairWay || ''}
-            onChange={handleInputChange('repairWay')}
+            label="请选择状态"
+            value={searchParams.status || ''}
+            onChange={handleInputChange('status')}
             variant="outlined"
             sx={textFieldStyles}
           >
             {[
-              { value: 100, label: '抢单' },
-              { value: 200, label: '指派' },
-              { value: 300, label: '轮训' }
+              { value: 1000, label: '待审核' },
+              { value: 2000, label: '审核不通过' },
+              { value: 3000, label: '装修中' },
+              { value: 4000, label: '待验收' },
+              { value: 5000, label: '验收成功' },
+              { value: 6000, label: '验收失败' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -111,15 +139,15 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
           <TextField
             select
             size="small"
-            label="请选择报修设置类型"
-            value={searchParams.repairType}
-            onChange={handleInputChange('repairType')}
+            label="请选择是否延期"
+            value={searchParams.isPostpone}
+            onChange={handleInputChange('isPostpone')}
             variant="outlined"
             sx={textFieldStyles}
           >
             {[
-              { value: '100', label: '维修单' },
-              { value: '200', label: '保洁单' }
+              { value: 0, label: '正常' },
+              { value: 1, label: '延期' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -127,46 +155,55 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             ))}
           </TextField>
         </FormControl>
+      </Stack>
+      <Stack direction="row" spacing={3} component="form" sx={{ mb: 1.5 }}>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
-            select
             size="small"
-            label="请选择区域"
-            value={searchParams.publicArea || ''}
-            onChange={handleInputChange('publicArea')}
+            label="请输入装修时间"
+            type="date"
             variant="outlined"
             sx={textFieldStyles}
-          >
-            {[
-              { value: 0, label: '非房屋' },
-              { value: 1, label: '房屋' }
-            ].map(option => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
+            value={searchParams.createdAt}
+            onChange={handleInputChange('createdAt')}
+            slotProps={{
+              inputLabel: {
+                shrink: true
+              }
+            }}
+          />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
-            select
             size="small"
-            label="请选择是否回访"
-            value={searchParams.returnVisitFlag || ''}
-            onChange={handleInputChange('returnVisitFlag')}
+            label="请输入申请开始时间"
+            type="date"
             variant="outlined"
             sx={textFieldStyles}
-          >
-            {[
-              { value: 1, label: '不回访' },
-              { value: 2, label: '已评价不回访' },
-              { value: 3, label: '回访' }
-            ].map(option => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
+            value={searchParams.startTime}
+            onChange={handleInputChange('startTime')}
+            slotProps={{
+              inputLabel: {
+                shrink: true
+              }
+            }}
+          />
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            size="small"
+            label="请输入申请结束时间"
+            type="date"
+            variant="outlined"
+            sx={textFieldStyles}
+            value={searchParams.endTime}
+            onChange={handleInputChange('endTime')}
+            slotProps={{
+              inputLabel: {
+                shrink: true
+              }
+            }}
+          />
         </FormControl>
       </Stack>
       <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
@@ -188,18 +225,24 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
           sx={buttonStyles('darkgray', '#696969')}
           onClick={() => {
             setSearchParams({
-              repairTypeName: '',
-              repairWay: 0,
-              repairType: '',
-              publicArea: 0,
-              returnVisitFlag: 0
+              roomName: '',
+              personName: '',
+              personTel: '',
+              status: 0,
+              isPostpone: 0,
+              createdAt: '',
+              startTime: '',
+              endTime: ''
             })
             fetchData({
-              repairTypeName: '',
-              repairWay: 0,
-              repairType: '',
-              publicArea: 0,
-              returnVisitFlag: 0,
+              roomName: '',
+              personName: '',
+              personTel: '',
+              status: 0,
+              isPostpone: 0,
+              createdAt: '',
+              startTime: '',
+              endTime: '',
               'page.num': page.num,
               'page.size': page.size
             })

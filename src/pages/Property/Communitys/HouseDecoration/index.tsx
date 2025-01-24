@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairSettingReply } from 'api/model/property/repairSettingModel'
-import { deleteByIds, find } from 'modules/property/repairSetting'
+import { RoomRenovationReply } from 'api/model/property/roomRenovationModel'
+import { deleteByIds, find } from 'modules/property/roomRenovation'
 import { Box, Button, Theme, Typography } from '@mui/material'
 import { Add } from '@mui/icons-material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
@@ -19,10 +19,10 @@ const contentBoxStyle = (theme: Theme) => ({
   width: '100%'
 })
 
-const RepairSettingsIndex = () => {
+const RoomRenovationsIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.RepairSettingSlice)
-  const [dialogValue, setDialogValue] = useState<RepairSettingReply>()
+  const { page, list } = useSelector((state: RootState) => state.RoomRenovationSlice)
+  const [dialogValue, setDialogValue] = useState<RoomRenovationReply>()
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [dialogType, setDialogType] = useState('add')
   const [openDialog, setOpenDialog] = useState(false)
@@ -33,12 +33,12 @@ const RepairSettingsIndex = () => {
     if (selectedRows.size > 0) {
       return list
         .filter(item => selectedRows.has(item.id))
-        .map(item => ({ id: item.id!, repairTypeName: item.repairTypeName! }))
-        .filter(item => item.id && item.repairTypeName)
+        .map(item => ({ id: item.id!, roomName: item.roomName! }))
+        .filter(item => item.id && item.roomName)
     }
     if (dialogValue) {
-      return dialogValue.id && dialogValue.repairTypeName
-        ? [{ id: dialogValue.id, repairTypeName: dialogValue.repairTypeName }]
+      return dialogValue.id && dialogValue.roomName
+        ? [{ id: dialogValue.id, roomName: dialogValue.roomName }]
         : []
     }
     return []
@@ -46,7 +46,7 @@ const RepairSettingsIndex = () => {
 
   const deleteData = useMemo(() => getDeleteData(), [getDeleteData])
   const deleteIds = deleteData.map(item => item.id)
-  const deleteNames = deleteData.map(item => item.repairTypeName)
+  const deleteNames = deleteData.map(item => item.roomName)
 
   const handleDelete = useCallback(
     async (ids: string[]) => {
@@ -77,7 +77,7 @@ const RepairSettingsIndex = () => {
         <FormSearch setDelOpen={setDelOpen} selectedRows={selectedRows} />
         <Box sx={contentBoxStyle}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h6">员工管理</Typography>
+            <Typography variant="h6">装修信息</Typography>
             <Button
               size="small"
               variant="contained"
@@ -121,4 +121,4 @@ const RepairSettingsIndex = () => {
   )
 }
 
-export default memo(RepairSettingsIndex)
+export default memo(RoomRenovationsIndex)

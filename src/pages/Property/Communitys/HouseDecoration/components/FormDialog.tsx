@@ -8,13 +8,12 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairSettingParams, RepairSettingReply } from 'api/model/property/repairSettingModel'
-import { create, find, update } from 'modules/property/repairSetting'
+import { RoomRenovationParams, RoomRenovationReply } from 'api/model/property/roomRenovationModel'
+import { create, find, update } from 'modules/property/roomRenovation'
 import {
   Box,
   CircularProgress,
   FormLabel,
-  MenuItem,
   Stack,
   Button,
   TextField,
@@ -26,8 +25,19 @@ import {
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
+const formatDateTime = (date: Date | string | undefined): string => {
+  const validDate = date ? new Date(date) : new Date()
+  const year = validDate.getFullYear()
+  const month = String(validDate.getMonth() + 1).padStart(2, '0')
+  const day = String(validDate.getDate()).padStart(2, '0')
+  const hours = String(validDate.getHours()).padStart(2, '0')
+  const minutes = String(validDate.getMinutes()).padStart(2, '0')
+  const seconds = String(validDate.getSeconds()).padStart(2, '0')
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
+
 interface FormDialogProps {
-  dialogValue?: RepairSettingReply
+  dialogValue?: RoomRenovationReply
   openDialog: boolean
   dialogType: string
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -40,23 +50,30 @@ const FormDialog: React.FC<FormDialogProps> = ({
   setOpenDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.RepairSettingSlice)
+  const { page } = useSelector((state: RootState) => state.RoomRenovationSlice)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(
     () => ({
-      repairTypeName: dialogType === 'edit' ? dialogValue?.repairTypeName || '' : '',
-      repairType: dialogType === 'edit' ? dialogValue?.repairType || '1' : '1',
-      repairWay: dialogType === 'edit' ? dialogValue?.repairWay || 100 : 100,
-      publicArea: dialogType === 'edit' ? dialogValue?.publicArea || 0 : 0,
-      isShow: dialogType === 'edit' ? dialogValue?.isShow || 0 : 0,
-      repairSettingType: dialogType === 'edit' ? dialogValue?.repairSettingType || '1' : '1',
-      returnVisitFlag: dialogType === 'edit' ? dialogValue?.returnVisitFlag || 1 : 1,
+      roomName: dialogType === 'edit' ? dialogValue?.roomName || '' : '',
+      personName: dialogType === 'edit' ? dialogValue?.personName || '' : '',
+      personTel: dialogType === 'edit' ? dialogValue?.personTel || '' : '',
+      startTime:
+        dialogType === 'edit'
+          ? dialogValue?.startTime || formatDateTime(new Date())
+          : formatDateTime(new Date()),
+      endTime:
+        dialogType === 'edit'
+          ? dialogValue?.endTime || formatDateTime(new Date())
+          : formatDateTime(new Date()),
+      renovationCompany: dialogType === 'edit' ? dialogValue?.renovationCompany || '' : '',
+      personMain: dialogType === 'edit' ? dialogValue?.personMain || '' : '',
+      personMainTel: dialogType === 'edit' ? dialogValue?.personMainTel || '' : '',
       remark: dialogType === 'edit' ? dialogValue?.remark || '' : ''
     }),
     [dialogType, dialogValue]
   )
-  const [formData, setFormData] = useState<RepairSettingParams>(initialFormData)
+  const [formData, setFormData] = useState<RoomRenovationParams>(initialFormData)
 
   useEffect(() => {
     setFormData(initialFormData)
@@ -88,7 +105,15 @@ const FormDialog: React.FC<FormDialogProps> = ({
     [dispatch, dialogType, dialogValue, formData, page, setOpenDialog, initialFormData]
   )
 
-  const formFields = [{ label: '类型名称', type: 'text', id: 'repairTypeName', required: true }]
+  const formFields = [
+    { label: '房屋', type: 'text', id: 'roomName', required: true },
+    { label: '联系人', type: 'text', id: 'personName', required: true },
+    { label: '联系电话', type: 'text', id: 'personTel', required: true },
+    { label: '装修单位', type: 'text', id: 'renovationCompany', required: true },
+    { label: '装修负责人', type: 'text', id: 'personMain', required: true },
+    { label: '装修负责人电话', type: 'text', id: 'personMainTel', required: true },
+    { label: '备注', type: 'text', id: 'remark', required: true }
+  ]
 
   return (
     <Dialog
@@ -114,146 +139,34 @@ const FormDialog: React.FC<FormDialogProps> = ({
                 size="small"
                 required={required}
                 id={id}
-                value={formData[id as keyof RepairSettingParams]}
+                value={formData[id as keyof RoomRenovationParams]}
                 onChange={e => setFormData({ ...formData, [id]: e.target.value })}
                 autoComplete={type === 'password' ? 'current-password' : ''}
               />
             </Box>
           ))}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>设置类型：</FormLabel>
+            <FormLabel>装修开始时间：</FormLabel>
             <TextField
               sx={{ width: '80%' }}
-              select
               size="small"
-              value={formData.repairType}
-              onChange={e => setFormData({ ...formData, repairType: e.target.value })}
+              type="datetime-local"
+              value={formatDateTime(formData.startTime)}
+              onChange={e =>
+                setFormData({ ...formData, startTime: formatDateTime(e.target.value) })
+              }
               variant="outlined"
-            >
-              {[
-                { value: '1', label: '维修单' },
-                { value: '2', label: '保洁单' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
+            />
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>派单方式：</FormLabel>
+            <FormLabel>装修结束时间：</FormLabel>
             <TextField
               sx={{ width: '80%' }}
-              select
               size="small"
-              value={formData.repairWay}
-              onChange={e => setFormData({ ...formData, repairWay: Number(e.target.value) })}
+              type="datetime-local"
+              value={formatDateTime(formData.startTime)}
+              onChange={e => setFormData({ ...formData, endTime: formatDateTime(e.target.value) })}
               variant="outlined"
-            >
-              {[
-                { value: 100, label: '抢单' },
-                { value: 200, label: '指派' },
-                { value: 300, label: '轮训' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>公共区域：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.publicArea}
-              onChange={e => setFormData({ ...formData, publicArea: Number(e.target.value) })}
-              variant="outlined"
-            >
-              {[
-                { value: 0, label: '非房屋' },
-                { value: 1, label: '房屋' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>业主端展示：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.isShow}
-              onChange={e => setFormData({ ...formData, isShow: Number(e.target.value) })}
-              variant="outlined"
-            >
-              {[
-                { value: '0', label: '否' },
-                { value: '1', label: '是' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>通知方式：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.repairSettingType}
-              onChange={e => setFormData({ ...formData, repairSettingType: e.target.value })}
-              variant="outlined"
-            >
-              {[
-                { value: '1', label: '微信' },
-                { value: '2', label: '短信' },
-                { value: '3', label: '微信+员工工牌' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>回访设置：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.returnVisitFlag}
-              onChange={e => setFormData({ ...formData, returnVisitFlag: Number(e.target.value) })}
-              variant="outlined"
-            >
-              {[
-                { value: 1, label: '不回访' },
-                { value: 2, label: '已评价不回访' },
-                { value: 3, label: '回访' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>{' '}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>说明：</FormLabel>
-            <TextField
-              placeholder="请输入"
-              sx={{ width: '80%' }}
-              size="small"
-              value={formData.remark}
-              onChange={e => setFormData({ ...formData, remark: e.target.value })}
-              variant="outlined"
-              multiline
-              rows={2}
             />
           </Box>
         </Stack>

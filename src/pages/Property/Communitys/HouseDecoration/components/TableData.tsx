@@ -1,9 +1,9 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairSettingReply } from 'api/model/property/repairSettingModel'
-import { find } from 'modules/property/repairSetting'
+import { RoomRenovationReply } from 'api/model/property/roomRenovationModel'
+import { find } from 'modules/property/roomRenovation'
 import { Box, Tooltip, IconButton } from '@mui/material'
-import { Delete, Build, Edit } from '@mui/icons-material'
+import { Delete, Edit } from '@mui/icons-material'
 import message from 'components/Message'
 import TableList from './TableList'
 
@@ -14,12 +14,6 @@ const renderActionButtons = (
 ) => (
   <Box>
     {[
-      {
-        title: '绑定维修师傅',
-        color: 'primary' as const,
-        icon: <Build fontSize="small" />,
-        onClick: () => message.info('未实现')
-      },
       {
         title: '修改',
         color: 'secondary' as const,
@@ -54,7 +48,7 @@ export interface Column<T> {
 
 interface TableDataProps {
   setDialogType: Dispatch<SetStateAction<string>>
-  setDialogValue: Dispatch<SetStateAction<RepairSettingReply | undefined>>
+  setDialogValue: Dispatch<SetStateAction<RoomRenovationReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -70,68 +64,56 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.RepairSettingSlice)
+  const { page, list } = useSelector((state: RootState) => state.RoomRenovationSlice)
 
-  const columns: Column<RepairSettingReply>[] = [
-    { key: 'repairTypeName', headerName: '类型名称', align: 'center' },
+  const columns: Column<RoomRenovationReply>[] = [
+    { key: 'roomName', headerName: '房屋', align: 'center' },
+    { key: 'personName', headerName: '联系人', align: 'center' },
+    { key: 'personTel', headerName: '联系电话', align: 'center' },
     {
-      key: 'repairType',
-      headerName: '报修设置类型',
+      key: 'startTime',
+      headerName: '装修时间',
       align: 'center',
-      renderCell: row => (row.repairType === '200' ? '维修单' : '保洁单')
+      renderCell: row => `${row.startTime}-${row.endTime}`
     },
+    { key: 'createdAt', headerName: '申请时间', align: 'center' },
+    { key: 'renovationCompany', headerName: '装修单位', align: 'center' },
+    { key: 'personMain', headerName: '装修负责人', align: 'center' },
+    { key: 'personMainTel', headerName: '负责人电话', align: 'center' },
     {
-      key: 'repairWay',
-      headerName: '派单方式',
-      align: 'center',
-      renderCell: row =>
-        row.repairWay === 100
-          ? '抢单'
-          : row.repairWay === 200
-            ? '指派'
-            : row.repairWay === 300
-              ? '轮训'
-              : ''
-    },
-    {
-      key: 'publicArea',
-      headerName: '区域',
-      align: 'center',
-      renderCell: row => (row.repairWay === 0 ? '非房屋' : '房屋')
-    },
-    {
-      key: 'isShow',
-      headerName: '业主端展示',
-      align: 'center',
-      renderCell: row => (row.isShow === 0 ? '否' : '是')
-    },
-    {
-      key: 'repairSettingType',
-      headerName: '通知方式',
+      key: 'status',
+      headerName: '状态',
       align: 'center',
       renderCell: row =>
-        row.repairSettingType === '0'
-          ? '微信'
-          : row.repairSettingType === '1'
-            ? '短信'
-            : row.repairSettingType === '2'
-              ? '微信+员工工牌'
-              : ''
+        row.status === 1000
+          ? '待审核'
+          : row.status === 2000
+            ? '审核不通过'
+            : row.status === 3000
+              ? '装修中'
+              : row.status === 4000
+                ? '待验收'
+                : row.status === 5000
+                  ? '验收成功'
+                  : row.status === 6000
+                    ? '验收失败'
+                    : ''
     },
     {
-      key: 'returnVisitFlag',
-      headerName: '是否回访',
+      key: 'isPostpone',
+      headerName: '是否延期',
       align: 'center',
-      renderCell: row =>
-        row.returnVisitFlag === 1
-          ? '不回访'
-          : row.returnVisitFlag === 2
-            ? '已评价不回访'
-            : row.returnVisitFlag === 3
-              ? '回访'
-              : ''
+      renderCell: row => (row.isPostpone === 0 ? '正常' : '延期')
     },
-    { key: 'createdAt', headerName: '创建时间', align: 'center' },
+    { key: 'postponeTime', headerName: '延期时间', align: 'center' },
+    {
+      key: 'isViolation',
+      headerName: '是否违规',
+      align: 'center',
+      renderCell: row => (row.isViolation === 0 ? '正常' : '违规')
+    },
+    { key: 'violationDesc', headerName: '违规说明', align: 'center' },
+    { key: 'remark', headerName: '备注', align: 'center' },
     {
       key: 'operate',
       headerName: '操作',
