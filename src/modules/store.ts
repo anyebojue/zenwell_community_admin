@@ -8,6 +8,7 @@ import EmployeesSlice from './platform/employees'
 import RolesSlice from './platform/roles'
 import CommunityAnnouncementSlice from './property/communityAnnouncement'
 import RoomRenovationSlice from './property/roomRenovation'
+import RoomRenovationRecordSlice from './property/roomRenovationRecord'
 import HousingManagementSlice from './property/housingManagement'
 import UnitSlice from './property/unit'
 import RoomSlice from './property/room'
@@ -45,6 +46,7 @@ const store = configureStore({
     RolesSlice,
     CommunityAnnouncementSlice,
     RoomRenovationSlice,
+    RoomRenovationRecordSlice,
     HousingManagementSlice,
     UnitSlice,
     RoomSlice,

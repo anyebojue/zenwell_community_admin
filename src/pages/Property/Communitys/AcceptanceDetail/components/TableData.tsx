@@ -5,7 +5,6 @@ import { find } from 'modules/property/roomRenovation'
 import { Box, Tooltip, IconButton } from '@mui/material'
 import { Assignment, Delete, Edit, History } from '@mui/icons-material'
 import message from 'components/Message'
-import { useNavigate } from 'react-router-dom'
 import TableList from './TableList'
 
 export interface Column<T> {
@@ -33,7 +32,6 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.RoomRenovationSlice)
 
   const columns: Column<RoomRenovationReply>[] = [
@@ -96,17 +94,14 @@ const TableData: React.FC<TableDataProps> = ({
                   {
                     title: '验收明细',
                     color: 'secondary' as const,
-                    icon: <Assignment fontSize="small" />,
-                    onClick: () =>
-                      navigate('/communitys/AcceptanceDetail', { state: { value: row } })
+                    icon: <Assignment fontSize="small" />
                   }
                 ]
               : []),
             {
               title: '跟踪记录',
               color: 'secondary' as const,
-              icon: <History fontSize="small" />,
-              onClick: () => navigate('/communitys/TraceRecord', { state: { value: row } })
+              icon: <History fontSize="small" />
             },
             {
               title: '修改',

@@ -27,6 +27,22 @@ const communitys: IRouter[] = [
         }
       },
       {
+        path: 'TraceRecord',
+        element: load('Property/Communitys/TraceRecord'),
+        meta: {
+          title: '跟踪记录',
+          hidden: true
+        }
+      },
+      {
+        path: 'AcceptanceDetail',
+        element: load('Property/Communitys/AcceptanceDetail'),
+        meta: {
+          title: '验收明细',
+          hidden: true
+        }
+      },
+      {
         path: 'community-announcement',
         element: load('Property/Communitys/CommunityAnnouncement'),
         meta: {
