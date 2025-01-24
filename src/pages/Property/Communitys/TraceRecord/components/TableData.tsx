@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RoomRenovationRecordReply } from 'api/model/property/roomRenovationRecordModel'
 import { find } from 'modules/property/roomRenovationRecord'
 import { Box, Tooltip, IconButton } from '@mui/material'
-import { Delete, FileCopy } from '@mui/icons-material'
+import { Delete } from '@mui/icons-material'
 import message from 'components/Message'
 import { RoomRenovationReply } from 'api/model/property/roomRenovationModel'
 import TableList from './TableList'
@@ -52,17 +52,18 @@ const TableData: React.FC<TableDataProps> = ({
     },
     { key: 'remark', headerName: '备注', align: 'center' },
     {
+      key: 'img',
+      headerName: '图片',
+      align: 'center',
+      renderCell: row => <img style={{ height: '100px' }} src={row.img} alt={row.img} />
+    },
+    {
       key: 'operate',
       headerName: '操作',
       align: 'center',
       renderCell: () => (
         <Box>
           {[
-            {
-              title: '查看详情',
-              color: 'secondary' as const,
-              icon: <FileCopy fontSize="small" />
-            },
             {
               title: '删除',
               color: 'error' as const,
