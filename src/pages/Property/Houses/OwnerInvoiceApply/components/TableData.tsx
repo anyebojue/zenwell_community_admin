@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { OwnerInvoiceApplyReply } from 'api/model/property/ownerInvoiceApplyModel'
 import { find } from 'modules/property/ownerInvoiceApply'
 import { Box, Tooltip, IconButton } from '@mui/material'
-import { Delete, Edit, FileCopy } from '@mui/icons-material'
+import { CheckCircle, Delete, Edit, FileCopy, Upload } from '@mui/icons-material'
 import message from 'components/Message'
 import TableList from './TableList'
 
@@ -53,15 +53,15 @@ const TableData: React.FC<TableDataProps> = ({
       headerName: '审核状态',
       align: 'center',
       renderCell: row =>
-        row.invoiceType === 'W'
+        row.stateCd === 'W'
           ? '待审核'
-          : row.invoiceType === 'U'
+          : row.stateCd === 'U'
             ? '待上传'
-            : row.invoiceType === 'F'
+            : row.stateCd === 'F'
               ? '审核失败'
-              : row.invoiceType === 'G'
+              : row.stateCd === 'G'
                 ? '带领用'
-                : row.invoiceType === 'C'
+                : row.stateCd === 'C'
                   ? '已领用'
                   : ''
     },
@@ -70,9 +70,96 @@ const TableData: React.FC<TableDataProps> = ({
       key: 'operate',
       headerName: '操作',
       align: 'center',
-      renderCell: () => (
-        <Box>
-          {[
+      renderCell: row => {
+        const stateCd = row.stateCd as 'W' | 'U' | 'F' | 'G' | 'C'
+        const actions = {
+          W: [
+            {
+              title: '审核',
+              color: 'primary' as const,
+              icon: <CheckCircle fontSize="small" />,
+              onClick: () => message.info('审核未实现')
+            },
+            {
+              title: '删除',
+              color: 'error' as const,
+              icon: <Delete fontSize="small" />,
+              onClick: () => setDelOpen(true)
+            },
+            {
+              title: '详情',
+              color: 'primary' as const,
+              icon: <FileCopy fontSize="small" />,
+              onClick: () => message.info('未实现')
+            }
+          ],
+          U: [
+            {
+              title: '上传发票',
+              color: 'secondary' as const,
+              icon: <Upload fontSize="small" />,
+              onClick: () => message.info('未实现')
+            },
+            {
+              title: '登记',
+              color: 'secondary' as const,
+              icon: <Edit fontSize="small" />,
+              onClick: () => message.info('未实现')
+            },
+            {
+              title: '删除',
+              color: 'error' as const,
+              icon: <Delete fontSize="small" />,
+              onClick: () => setDelOpen(true)
+            },
+            {
+              title: '详情',
+              color: 'primary' as const,
+              icon: <FileCopy fontSize="small" />,
+              onClick: () => message.info('未实现')
+            }
+          ],
+          F: [
+            {
+              title: '删除',
+              color: 'error' as const,
+              icon: <Delete fontSize="small" />,
+              onClick: () => setDelOpen(true)
+            },
+            {
+              title: '详情',
+              color: 'primary' as const,
+              icon: <FileCopy fontSize="small" />,
+              onClick: () => message.info('未实现')
+            }
+          ],
+          G: [
+            {
+              title: '重新上传',
+              color: 'secondary' as const,
+              icon: <Edit fontSize="small" />,
+              onClick: () => message.info('未实现')
+            },
+            {
+              title: '核销',
+              color: 'primary' as const,
+              icon: <CheckCircle fontSize="small" />,
+              onClick: () => message.info('未实现')
+            },
+            {
+              title: '删除',
+              color: 'error' as const,
+              icon: <Delete fontSize="small" />,
+              onClick: () => setDelOpen(true)
+            },
+            {
+              title: '详情',
+              color: 'primary' as const,
+              icon: <FileCopy fontSize="small" />,
+              onClick: () => message.info('未实现')
+            }
+          ],
+          C: [
             {
               title: '重新上传',
               color: 'secondary' as const,
@@ -97,15 +184,21 @@ const TableData: React.FC<TableDataProps> = ({
               icon: <FileCopy fontSize="small" />,
               onClick: () => message.info('未实现')
             }
-          ].map((action, index) => (
-            <Tooltip title={action.title} key={index}>
-              <IconButton size="small" color={action.color} onClick={action.onClick}>
-                {action.icon}
-              </IconButton>
-            </Tooltip>
-          ))}
-        </Box>
-      )
+          ]
+        }
+        const relevantActions = actions[stateCd] || []
+        return (
+          <Box>
+            {relevantActions.map((action, index) => (
+              <Tooltip title={action.title} key={index}>
+                <IconButton size="small" color={action.color} onClick={action.onClick}>
+                  {action.icon}
+                </IconButton>
+              </Tooltip>
+            ))}
+          </Box>
+        )
+      }
     }
   ]
 
