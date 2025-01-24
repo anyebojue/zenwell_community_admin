@@ -1,12 +1,14 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RoomRenovationReply } from 'api/model/property/roomRenovationModel'
 import { find } from 'modules/property/roomRenovation'
 import { Box, Tooltip, IconButton } from '@mui/material'
-import { Assignment, Delete, Edit, History } from '@mui/icons-material'
+import { Assignment, Build, CheckCircle, Delete, Edit, History } from '@mui/icons-material'
 import message from 'components/Message'
 import { useNavigate } from 'react-router-dom'
 import TableList from './TableList'
+import Examine from './Examine'
+import AcceptanceCheck from './AcceptanceCheck'
 
 export interface Column<T> {
   headerName: string
@@ -16,6 +18,7 @@ export interface Column<T> {
 }
 
 interface TableDataProps {
+  dialogValue: RoomRenovationReply | undefined
   setDialogType: Dispatch<SetStateAction<string>>
   setDialogValue: Dispatch<SetStateAction<RoomRenovationReply | undefined>>
   selectedRows: Set<string | undefined>
@@ -25,6 +28,7 @@ interface TableDataProps {
 }
 
 const TableData: React.FC<TableDataProps> = ({
+  dialogValue,
   setDialogType,
   setDialogValue,
   selectedRows,
@@ -35,6 +39,8 @@ const TableData: React.FC<TableDataProps> = ({
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.RoomRenovationSlice)
+  const [examineOpen, setExamineOpen] = useState(false)
+  const [acceptanceCheckOpen, setAcceptanceCheckOpen] = useState(false)
 
   const columns: Column<RoomRenovationReply>[] = [
     { key: 'roomName', headerName: '房屋', align: 'center' },
@@ -91,6 +97,26 @@ const TableData: React.FC<TableDataProps> = ({
       renderCell: row => (
         <Box>
           {[
+            ...(row.status === 1000
+              ? [
+                  {
+                    title: '审核',
+                    color: 'secondary' as const,
+                    icon: <CheckCircle fontSize="small" />,
+                    onClick: () => setExamineOpen(true)
+                  }
+                ]
+              : []),
+            ...(row.status === 4000
+              ? [
+                  {
+                    title: '装修验收',
+                    color: 'secondary' as const,
+                    icon: <Build fontSize="small" />,
+                    onClick: () => setAcceptanceCheckOpen(true)
+                  }
+                ]
+              : []),
             ...(row.status === 5000
               ? [
                   {
@@ -155,13 +181,21 @@ const TableData: React.FC<TableDataProps> = ({
   }, [fetchData])
 
   return (
-    <TableList
-      rows={list}
-      columns={columns}
-      setDialogValue={setDialogValue}
-      selectedRows={selectedRows}
-      setSelectedRows={setSelectedRows}
-    />
+    <>
+      <TableList
+        rows={list}
+        columns={columns}
+        setDialogValue={setDialogValue}
+        selectedRows={selectedRows}
+        setSelectedRows={setSelectedRows}
+      />
+      <Examine dialogValue={dialogValue} openDialog={examineOpen} setOpenDialog={setExamineOpen} />
+      <AcceptanceCheck
+        dialogValue={dialogValue}
+        openDialog={acceptanceCheckOpen}
+        setOpenDialog={setAcceptanceCheckOpen}
+      />
+    </>
   )
 }
 
