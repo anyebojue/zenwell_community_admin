@@ -101,6 +101,7 @@ const RoomRenovationRecordsIndex = () => {
             </Stack>
           </Box>
           <TableData
+            value={row}
             setDialogValue={setDialogValue}
             selectedRows={selectedRows}
             setSelectedRows={setSelectedRows}
@@ -110,7 +111,7 @@ const RoomRenovationRecordsIndex = () => {
       </Box>
       <Copyright />
 
-      <FormDialog openDialog={openDialog} setOpenDialog={setOpenDialog} />
+      <FormDialog value={row} openDialog={openDialog} setOpenDialog={setOpenDialog} />
       <DeleteModal
         loading={loading}
         delOpen={delOpen}

@@ -13,37 +13,55 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  MenuItem
+  MenuItem,
+  IconButton,
+  Typography
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
+import { RoomRenovationReply } from 'api/model/property/roomRenovationModel'
+import { uploadImage } from 'api/info'
+import { AddCircle } from '@mui/icons-material'
 
 interface FormDialogProps {
+  value: RoomRenovationReply
   openDialog: boolean
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
-const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) => {
+const FormDialog: React.FC<FormDialogProps> = ({ value, openDialog, setOpenDialog }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.RoomRenovationRecordSlice)
   const [loading, setLoading] = useState(false)
 
   const [formData, setFormData] = useState<RoomRenovationRecordParams>({
-    roomName: '',
-    status: '',
+    roomName: value.roomName,
+    status: '待审核',
     isViolation: 0,
     remark: '',
     img: '',
     video: ''
   })
 
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      uploadImage(file)
+        .then(imageUrl => {
+          setFormData({ ...formData, img: imageUrl })
+        })
+        .catch(() => {
+          message.error('图片上传失败')
+        })
+    }
+  }
+
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
       setLoading(true)
       try {
-        const params = { ...formData }
-        const action = create(params)
+        const action = create({ ...formData, status: String(value.status) })
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
@@ -58,12 +76,12 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
         setLoading(false)
       }
     },
-    [dispatch, formData, page, setOpenDialog]
+    [dispatch, formData, page.num, page.size, setOpenDialog, value.status]
   )
 
   const formFields = [
     { label: '房屋', type: 'text', id: 'roomName', required: true },
-    { label: '状态', type: 'text', id: 'personName', required: true }
+    { label: '状态', type: 'text', id: 'status', required: true }
   ]
 
   return (
@@ -103,7 +121,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.isViolation || ''}
+              value={formData.isViolation}
               onChange={e => setFormData({ ...formData, isViolation: Number(e.target.value) })}
               variant="outlined"
             >
@@ -129,6 +147,46 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
               multiline
               rows={2}
             />
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>发票：</FormLabel>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '2px dashed #2660ad',
+                borderRadius: '8px',
+                width: '80%',
+                padding: '10px',
+                cursor: 'pointer',
+                position: 'relative'
+              }}
+            >
+              <input
+                type="file"
+                style={{ display: 'none' }}
+                id="before-image-upload"
+                onChange={handleImageChange}
+              />
+              {formData.img ? (
+                <img src={formData.img} alt="发票" style={{ width: '200px' }} />
+              ) : (
+                <>
+                  <label
+                    htmlFor="before-image-upload"
+                    onClick={() => document.getElementById('before-image-upload')?.click()}
+                  >
+                    <IconButton sx={{ color: '#2660ad' }}>
+                      <AddCircle />
+                    </IconButton>
+                  </label>
+                  <Typography variant="body2" color="textSecondary">
+                    点击上传发票图片
+                  </Typography>
+                </>
+              )}
+            </Box>
           </Box>
         </Stack>
       </DialogContent>

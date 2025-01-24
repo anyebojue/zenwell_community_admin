@@ -5,6 +5,7 @@ import { find } from 'modules/property/roomRenovationRecord'
 import { Box, Tooltip, IconButton } from '@mui/material'
 import { Delete, FileCopy } from '@mui/icons-material'
 import message from 'components/Message'
+import { RoomRenovationReply } from 'api/model/property/roomRenovationModel'
 import TableList from './TableList'
 
 export interface Column<T> {
@@ -15,6 +16,7 @@ export interface Column<T> {
 }
 
 interface TableDataProps {
+  value: RoomRenovationReply
   setDialogValue: Dispatch<SetStateAction<RoomRenovationRecordReply | undefined>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
@@ -22,6 +24,7 @@ interface TableDataProps {
 }
 
 const TableData: React.FC<TableDataProps> = ({
+  value,
   setDialogValue,
   selectedRows,
   setSelectedRows,
@@ -32,7 +35,7 @@ const TableData: React.FC<TableDataProps> = ({
 
   const columns: Column<RoomRenovationRecordReply>[] = [
     { key: 'rId', headerName: '装修跟踪记录ID', align: 'center' },
-    { key: 'id', headerName: '房屋', align: 'center' },
+    { key: 'id', headerName: '房屋', align: 'center', renderCell: () => value.roomName },
     { key: 'staffName', headerName: '操作人员', align: 'center' },
     { key: 'createdAt', headerName: '创建时间', align: 'center' },
     {
