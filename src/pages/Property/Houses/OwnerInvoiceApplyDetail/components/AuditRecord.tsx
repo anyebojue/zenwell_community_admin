@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { find } from 'modules/property/ownerInvoiceApplyItem'
 import message from 'components/Message'
 import { DataGrid } from '@mui/x-data-grid'
-import { SpectionTaskReply } from 'api/model/property/spectionTaskModel'
+import { OwnerInvoiceApplyReply } from 'api/model/property/ownerInvoiceApplyModel'
 
 interface PlanIndexProps {
-  dialogValue: SpectionTaskReply
+  dialogValue: OwnerInvoiceApplyReply
 }
 
 const PlanIndex: React.FC<PlanIndexProps> = ({ dialogValue }) => {

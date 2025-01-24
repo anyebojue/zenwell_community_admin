@@ -1,17 +1,17 @@
 import { memo, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { find } from 'modules/property/spectionPlan'
+import { find } from 'modules/property/ownerInvoiceApplyEvent'
 import message from 'components/Message'
 import { DataGrid } from '@mui/x-data-grid'
-import { SpectionTaskReply } from 'api/model/property/spectionTaskModel'
+import { OwnerInvoiceApplyReply } from 'api/model/property/ownerInvoiceApplyModel'
 
 interface PlanIndexProps {
-  dialogValue: SpectionTaskReply
+  dialogValue: OwnerInvoiceApplyReply
 }
 
 const PlanIndex: React.FC<PlanIndexProps> = ({ dialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.SpectionPlanSlice)
+  const { page, list } = useSelector((state: RootState) => state.OwnerInvoiceApplyEventSlice)
 
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
@@ -20,7 +20,7 @@ const PlanIndex: React.FC<PlanIndexProps> = ({ dialogValue }) => {
         find({
           'page.num': page.num,
           'page.size': page.size,
-          inspectionTaskId: dialogValue.id
+          applyId: dialogValue.id
         })
       )
       if ('error' in res && res.error?.message) {
@@ -46,89 +46,44 @@ const PlanIndex: React.FC<PlanIndexProps> = ({ dialogValue }) => {
       rows={list}
       columns={[
         {
-          field: 'inspectionPlanName',
-          headerName: '计划名称',
+          field: 'eventType',
+          headerName: '类型',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) =>
+            row.eventType === '1001'
+              ? '审核成功'
+              : row.eventType === '2002'
+                ? '上传'
+                : row.eventType === '3003'
+                  ? '审核失败'
+                  : row.eventType === '4004'
+                    ? '领用'
+                    : row.eventType === '5005'
+                      ? '登记'
+                      : ''
+        },
+        {
+          field: 'createUserName',
+          headerName: '操作人',
           flex: 1,
           headerAlign: 'center',
           align: 'center'
         },
         {
-          field: 'spectionRoute',
-          headerName: '计划路线',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => row.spectionRoute?.name
-        },
-        {
-          field: 'inspectionPlanPeriod',
-          headerName: '计划周期',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) =>
-            row.inspectionPlanPeriod === 1 ? '月/日' : row.inspectionPlanPeriod === 2 ? '按周' : ''
-        },
-        {
-          field: 'signType',
-          headerName: '签到方式',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) =>
-            row.status === 0 ? '现场定位' : row.status === 1 ? '现场拍照(默认定位)' : ''
-        },
-        {
-          field: 'startDate',
-          headerName: '日期范围',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => `${row.startDate} - ${row.endDate}`
-        },
-        {
-          field: 'startTime',
-          headerName: '时间范围',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => `${row.startTime} - ${row.endTime}`
-        },
-        {
-          field: 'beforeTime',
-          headerName: '任务提前(分钟)',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center'
-        },
-        {
-          field: 'communityId',
-          headerName: '制定人',
+          field: 'remark',
+          headerName: '说明',
           flex: 1,
           headerAlign: 'center',
           align: 'center'
         },
         {
           field: 'createdAt',
-          headerName: '制定时间',
+          headerName: '时间',
           flex: 1,
           headerAlign: 'center',
           align: 'center'
-        },
-        {
-          field: 'createUserName',
-          headerName: '巡检人',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center'
-        },
-        {
-          field: 'status',
-          headerName: '状态',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => (row.status === 0 ? '禁用' : row.status === 1 ? '启用' : '')
         }
       ]}
       pageSizeOptions={[20]}
