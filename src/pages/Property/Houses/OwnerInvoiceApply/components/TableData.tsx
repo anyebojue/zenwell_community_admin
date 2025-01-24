@@ -5,6 +5,7 @@ import { find } from 'modules/property/ownerInvoiceApply'
 import { Box, Tooltip, IconButton } from '@mui/material'
 import { CheckCircle, Delete, Edit, FileCopy, Upload } from '@mui/icons-material'
 import message from 'components/Message'
+import { useNavigate } from 'react-router-dom'
 import TableList from './TableList'
 import Audit from './Audit'
 import UploadInvoice from './UploadInvoice'
@@ -35,6 +36,7 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.OwnerInvoiceApplySlice)
   const [openAudit, setOpenAudit] = useState(false)
   const [openUploadInvoice, setOpenUploadInvoice] = useState(false)
@@ -98,7 +100,7 @@ const TableData: React.FC<TableDataProps> = ({
               title: '详情',
               color: 'primary' as const,
               icon: <FileCopy fontSize="small" />,
-              onClick: () => message.info('未实现')
+              onClick: () => navigate('/houses/OwnerInvoiceApplyDetail', { state: { value: row } })
             }
           ],
           U: [
@@ -118,7 +120,7 @@ const TableData: React.FC<TableDataProps> = ({
               title: '详情',
               color: 'primary' as const,
               icon: <FileCopy fontSize="small" />,
-              onClick: () => message.info('未实现')
+              onClick: () => navigate('/houses/OwnerInvoiceApplyDetail', { state: { value: row } })
             }
           ],
           F: [
@@ -132,7 +134,7 @@ const TableData: React.FC<TableDataProps> = ({
               title: '详情',
               color: 'primary' as const,
               icon: <FileCopy fontSize="small" />,
-              onClick: () => message.info('未实现')
+              onClick: () => navigate('/houses/OwnerInvoiceApplyDetail', { state: { value: row } })
             }
           ],
           G: [
@@ -158,7 +160,7 @@ const TableData: React.FC<TableDataProps> = ({
               title: '详情',
               color: 'primary' as const,
               icon: <FileCopy fontSize="small" />,
-              onClick: () => message.info('未实现')
+              onClick: () => navigate('/houses/OwnerInvoiceApplyDetail', { state: { value: row } })
             }
           ],
           C: [
@@ -178,7 +180,7 @@ const TableData: React.FC<TableDataProps> = ({
               title: '详情',
               color: 'primary' as const,
               icon: <FileCopy fontSize="small" />,
-              onClick: () => message.info('未实现')
+              onClick: () => navigate('/houses/OwnerInvoiceApplyDetail', { state: { value: row } })
             }
           ]
         }

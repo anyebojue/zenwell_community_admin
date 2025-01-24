@@ -98,6 +98,14 @@ const houses: IRouter[] = [
         meta: {
           title: '发票'
         }
+      },
+      {
+        path: 'OwnerInvoiceApplyDetail',
+        element: load('Property/Houses/OwnerInvoiceApplyDetail'),
+        meta: {
+          title: '发票详情',
+          hidden: true
+        }
       }
     ]
   }
