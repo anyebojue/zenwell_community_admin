@@ -60,7 +60,7 @@ const TableData: React.FC<TableDataProps> = ({
             : row.stateCd === 'F'
               ? '审核失败'
               : row.stateCd === 'G'
-                ? '带领用'
+                ? '待领用'
                 : row.stateCd === 'C'
                   ? '已领用'
                   : ''
@@ -98,12 +98,6 @@ const TableData: React.FC<TableDataProps> = ({
               title: '上传发票',
               color: 'secondary' as const,
               icon: <Upload fontSize="small" />,
-              onClick: () => message.info('未实现')
-            },
-            {
-              title: '登记',
-              color: 'secondary' as const,
-              icon: <Edit fontSize="small" />,
               onClick: () => message.info('未实现')
             },
             {
@@ -162,12 +156,6 @@ const TableData: React.FC<TableDataProps> = ({
           C: [
             {
               title: '重新上传',
-              color: 'secondary' as const,
-              icon: <Edit fontSize="small" />,
-              onClick: () => message.info('未实现')
-            },
-            {
-              title: '登记',
               color: 'secondary' as const,
               icon: <Edit fontSize="small" />,
               onClick: () => message.info('未实现')
