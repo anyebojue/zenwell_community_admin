@@ -1,4 +1,4 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { OwnerInvoiceApplyReply } from 'api/model/property/ownerInvoiceApplyModel'
 import { find } from 'modules/property/ownerInvoiceApply'
@@ -6,6 +6,9 @@ import { Box, Tooltip, IconButton } from '@mui/material'
 import { CheckCircle, Delete, Edit, FileCopy, Upload } from '@mui/icons-material'
 import message from 'components/Message'
 import TableList from './TableList'
+import Audit from './Audit'
+import UploadInvoice from './UploadInvoice'
+import Verify from './Verify'
 
 export interface Column<T> {
   headerName: string
@@ -15,6 +18,7 @@ export interface Column<T> {
 }
 
 interface TableDataProps {
+  dialogValue: OwnerInvoiceApplyReply | undefined
   selectedButton: string
   setDialogValue: Dispatch<SetStateAction<OwnerInvoiceApplyReply | undefined>>
   selectedRows: Set<string | undefined>
@@ -23,6 +27,7 @@ interface TableDataProps {
 }
 
 const TableData: React.FC<TableDataProps> = ({
+  dialogValue,
   selectedButton,
   setDialogValue,
   selectedRows,
@@ -31,6 +36,9 @@ const TableData: React.FC<TableDataProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.OwnerInvoiceApplySlice)
+  const [openAudit, setOpenAudit] = useState(false)
+  const [openUploadInvoice, setOpenUploadInvoice] = useState(false)
+  const [openVerify, setOpenVerify] = useState(false)
 
   const columns: Column<OwnerInvoiceApplyReply>[] = [
     { key: 'id', headerName: '编号', align: 'center' },
@@ -78,7 +86,7 @@ const TableData: React.FC<TableDataProps> = ({
               title: '审核',
               color: 'primary' as const,
               icon: <CheckCircle fontSize="small" />,
-              onClick: () => message.info('审核未实现')
+              onClick: () => setOpenAudit(true)
             },
             {
               title: '删除',
@@ -98,7 +106,7 @@ const TableData: React.FC<TableDataProps> = ({
               title: '上传发票',
               color: 'secondary' as const,
               icon: <Upload fontSize="small" />,
-              onClick: () => message.info('未实现')
+              onClick: () => setOpenUploadInvoice(true)
             },
             {
               title: '删除',
@@ -132,13 +140,13 @@ const TableData: React.FC<TableDataProps> = ({
               title: '重新上传',
               color: 'secondary' as const,
               icon: <Edit fontSize="small" />,
-              onClick: () => message.info('未实现')
+              onClick: () => setOpenUploadInvoice(true)
             },
             {
               title: '核销',
               color: 'primary' as const,
               icon: <CheckCircle fontSize="small" />,
-              onClick: () => message.info('未实现')
+              onClick: () => setOpenVerify(true)
             },
             {
               title: '删除',
@@ -158,7 +166,7 @@ const TableData: React.FC<TableDataProps> = ({
               title: '重新上传',
               color: 'secondary' as const,
               icon: <Edit fontSize="small" />,
-              onClick: () => message.info('未实现')
+              onClick: () => setOpenUploadInvoice(true)
             },
             {
               title: '删除',
@@ -216,13 +224,33 @@ const TableData: React.FC<TableDataProps> = ({
   }, [fetchData])
 
   return (
-    <TableList
-      rows={list}
-      columns={columns}
-      setDialogValue={setDialogValue}
-      selectedRows={selectedRows}
-      setSelectedRows={setSelectedRows}
-    />
+    <>
+      <TableList
+        rows={list}
+        columns={columns}
+        setDialogValue={setDialogValue}
+        selectedRows={selectedRows}
+        setSelectedRows={setSelectedRows}
+      />
+      <Audit
+        dialogValue={dialogValue}
+        selectedButton={selectedButton}
+        openDialog={openAudit}
+        setOpenDialog={setOpenAudit}
+      />
+      <UploadInvoice
+        dialogValue={dialogValue}
+        selectedButton={selectedButton}
+        openDialog={openUploadInvoice}
+        setOpenDialog={setOpenUploadInvoice}
+      />
+      <Verify
+        dialogValue={dialogValue}
+        selectedButton={selectedButton}
+        openDialog={openVerify}
+        setOpenDialog={setOpenVerify}
+      />
+    </>
   )
 }
 

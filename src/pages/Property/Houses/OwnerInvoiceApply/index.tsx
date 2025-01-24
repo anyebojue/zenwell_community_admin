@@ -75,7 +75,7 @@ const OwnerInvoiceApplyIndex = () => {
             { value: 'W', label: '待审核' },
             { value: 'U', label: '待上传' },
             { value: 'F', label: '审核失败' },
-            { value: 'G', label: '带领用' },
+            { value: 'G', label: '待领用' },
             { value: 'C', label: '已领用' }
           ].map(item => (
             <Button
@@ -102,6 +102,7 @@ const OwnerInvoiceApplyIndex = () => {
             setDelOpen={setDelOpen}
           />
           <TableData
+            dialogValue={dialogValue}
             selectedButton={selectedButton}
             setDialogValue={setDialogValue}
             selectedRows={selectedRows}
