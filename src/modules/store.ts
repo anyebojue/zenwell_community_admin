@@ -10,6 +10,8 @@ import CommunityAnnouncementSlice from './property/communityAnnouncement'
 import RoomRenovationSlice from './property/roomRenovation'
 import RoomRenovationRecordSlice from './property/roomRenovationRecord'
 import HousingManagementSlice from './property/housingManagement'
+import ReleaseSlice from './property/release'
+import ReleaseTypeSlice from './property/releaseType'
 import UnitSlice from './property/unit'
 import RoomSlice from './property/room'
 import OwnerSlice from './property/owner'
@@ -48,6 +50,8 @@ const store = configureStore({
     RoomRenovationSlice,
     RoomRenovationRecordSlice,
     HousingManagementSlice,
+    ReleaseSlice,
+    ReleaseTypeSlice,
     UnitSlice,
     RoomSlice,
     OwnerSlice,

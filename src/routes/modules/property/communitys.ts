@@ -48,6 +48,20 @@ const communitys: IRouter[] = [
         meta: {
           title: '小区公示'
         }
+      },
+      {
+        path: 'GoodsRelease',
+        element: load('Property/Communitys/GoodsRelease'),
+        meta: {
+          title: '物品放行'
+        }
+      },
+      {
+        path: 'ReleaseType',
+        element: load('Property/Communitys/ReleaseType'),
+        meta: {
+          title: '放行类型'
+        }
       }
     ]
   }
