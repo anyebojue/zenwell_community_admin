@@ -1,7 +1,8 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, Fragment, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ReleaseReply } from 'api/model/property/releaseModel'
 import { find } from 'modules/property/release'
+import { find as findReleaseType } from 'modules/property/releaseType'
 import { Box, Tooltip, IconButton } from '@mui/material'
 import { Delete, Edit } from '@mui/icons-material'
 import message from 'components/Message'
@@ -37,13 +38,32 @@ const TableData: React.FC<TableDataProps> = ({
 
   const columns: Column<ReleaseReply>[] = [
     { key: 'id', headerName: '单号', align: 'center' },
-    { key: 'typeId', headerName: '放行类型', align: 'center' },
+    {
+      key: 'typeId',
+      headerName: '放行类型',
+      align: 'center',
+      renderCell: row => (row.releaseType ? row.releaseType[0].typeName : '')
+    },
     { key: 'applyCompany', headerName: '申请单位', align: 'center' },
     { key: 'applyPerson', headerName: '申请人', align: 'center' },
     { key: 'idCard', headerName: '身份证', align: 'center' },
     { key: 'applyTel', headerName: '手机号', align: 'center' },
     { key: 'passTime', headerName: '通行时间', align: 'center' },
-    { key: 'releaseRes', headerName: '物品', align: 'center' },
+    {
+      key: 'releaseRes',
+      headerName: '物品',
+      align: 'center',
+      renderCell: row => (
+        <Box>
+          {row.releaseRes?.map((item, index) => (
+            <Fragment key={index}>
+              名称：{item.resName}；数量：{item.amount}
+              <br />
+            </Fragment>
+          ))}
+        </Box>
+      )
+    },
     {
       key: 'statusCd',
       headerName: '状态',
@@ -109,9 +129,25 @@ const TableData: React.FC<TableDataProps> = ({
     }
   }, [dispatch, page.num, page.size])
 
+  const fetchReleaseTypeData = useCallback(async () => {
+    const closeLoading = message.loading('正在加载列表中，请稍后...')
+    try {
+      const res = await dispatch(findReleaseType({ 'page.num': page.num, 'page.size': page.size }))
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      closeLoading()
+    }
+  }, [dispatch, page.num, page.size])
+
   useEffect(() => {
     fetchData()
-  }, [fetchData])
+    fetchReleaseTypeData()
+  }, [fetchData, fetchReleaseTypeData])
 
   return (
     <TableList

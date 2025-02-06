@@ -1,4 +1,17 @@
 import { Page } from '../pageModel'
+import { ReleaseTypeReply } from './releaseTypeModel'
+
+export interface ReleaseRes {
+  amount?: string
+  communityId?: string
+  createdAt?: string
+  id?: string
+  irId?: string
+  remark?: string
+  resName?: string
+  status?: number
+  updatedAt?: string
+}
 
 export interface ReleaseReply {
   id?: string
@@ -14,7 +27,8 @@ export interface ReleaseReply {
   communityId?: string // 小区ID
   createUserId?: string // 创建用户ID
   status?: number // 数据状态，0 在用 1 失效
-  releaseRes?: string
+  releaseRes?: ReleaseRes[]
+  releaseType?: ReleaseTypeReply[]
 }
 
 export interface ReleaseParams {
@@ -31,6 +45,7 @@ export interface ReleaseParams {
   communityId?: string // 小区ID
   createUserId?: string // 创建用户ID
   status?: number // 数据状态，0 在用 1 失效
+  releaseRes?: ReleaseRes[]
 }
 
 export interface FindReleaseReply {

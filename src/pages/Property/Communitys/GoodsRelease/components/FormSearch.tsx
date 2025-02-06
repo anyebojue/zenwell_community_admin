@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, memo, SetStateAction, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ReleaseParams } from 'api/model/property/releaseModel'
-import { find } from 'modules/property/release'
+import { find } from 'modules/property/releaseType'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -30,7 +30,7 @@ interface SearchFormProps {
 
 const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.ReleaseSlice)
+  const { page, list } = useSelector((state: RootState) => state.ReleaseTypeSlice)
 
   const [searchParams, setSearchParams] = useState<ReleaseParams>({
     typeId: '',
@@ -78,14 +78,20 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
       <Stack direction="row" spacing={3} component="form" sx={{ mb: 1.5 }}>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
+            select
             size="small"
-            label="请输入类型名称"
-            type="text"
+            label="请选择放行类型"
+            value={searchParams.typeId || ''}
+            onChange={handleInputChange('typeId')}
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.typeId}
-            onChange={handleInputChange('typeId')}
-          />
+          >
+            {list.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.typeName}
+              </MenuItem>
+            ))}
+          </TextField>
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
@@ -137,7 +143,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
           <TextField
             select
             size="small"
-            label="请选择报修状态"
+            label="请选择状态"
             value={searchParams.statusCd || ''}
             onChange={handleInputChange('statusCd')}
             variant="outlined"
