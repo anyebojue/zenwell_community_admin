@@ -178,10 +178,12 @@ const TableData: React.FC<TableDataProps> = ({
         ]}
         onRowSelectionModelChange={handleRowSelection}
         pageSizeOptions={[10, 20, 50, 100]}
+        paginationMode="server"
+        rowCount={Number(page.total)}
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 20
+              pageSize: Number(page.size)
             }
           }
         }}
