@@ -20,7 +20,7 @@ export const dataGridCustomizations: DataGridProComponents<Theme> & DataGridComp
         borderColor: theme.palette.divider,
         backgroundColor: theme.palette.background.default,
         [`& .${gridClasses.columnHeader}`]: {
-          backgroundColor: theme.palette.background.default
+          backgroundColor: theme.palette.background.paper
         },
         [`& .${gridClasses.footerContainer}`]: {
           backgroundColor: theme.palette.background.default

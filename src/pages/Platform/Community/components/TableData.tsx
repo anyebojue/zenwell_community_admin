@@ -1,75 +1,22 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CommunityReply } from 'api/model/platform/communityModel'
 import { getCityArea } from 'modules/global'
 import { find } from 'modules/platform/community'
-import { Box, Chip, Tooltip, IconButton } from '@mui/material'
-import { Delete, Edit, Sync } from '@mui/icons-material'
+import { Chip } from '@mui/material'
+import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
+import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
-import TableList from './TableList'
-
-const renderStatusChip = (value: string | number | undefined) => {
-  const statusMap: Record<string, { label: string; color: 'success' | 'default' }> = {
-    '': { label: '审核成功', color: 'success' },
-    '0': { label: '未审核', color: 'default' }
-  }
-
-  const status = statusMap[String(value) || ''] || { label: '未知状态', color: 'default' }
-  return <Chip label={status.label} color={status.color} size="small" />
-}
-
-const renderActionButtons = (
-  setOpenDialog: Dispatch<SetStateAction<boolean>>,
-  setDelOpen: Dispatch<SetStateAction<boolean>>
-) => (
-  <Box>
-    {[
-      {
-        title: '同步 IOT',
-        color: 'primary' as const,
-        icon: <Sync fontSize="small" />,
-        onClick: () => message.info('同步操作未实现')
-      },
-      {
-        title: '修改',
-        color: 'secondary' as const,
-        icon: <Edit fontSize="small" />,
-        onClick: () => setOpenDialog(true)
-      },
-      {
-        title: '删除',
-        color: 'error' as const,
-        icon: <Delete fontSize="small" />,
-        onClick: () => setDelOpen(true)
-      }
-    ].map((action, index) => (
-      <Tooltip title={action.title} key={index}>
-        <IconButton size="small" color={action.color} onClick={action.onClick}>
-          {action.icon}
-        </IconButton>
-      </Tooltip>
-    ))}
-  </Box>
-)
-
-export interface Column<T> {
-  headerName: string
-  key: string
-  align?: 'left' | 'right' | 'center'
-  renderCell?: (_value: T[keyof T]) => ReactNode
-}
 
 interface TableDataProps {
   setDialogValue: Dispatch<SetStateAction<CommunityReply | undefined>>
-  selectedRows: Set<string | undefined>
-  setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
+  setSelectedRows: Dispatch<SetStateAction<Set<string>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const TableData: React.FC<TableDataProps> = ({
   setDialogValue,
-  selectedRows,
   setSelectedRows,
   setOpenDialog,
   setDelOpen
@@ -77,67 +24,122 @@ const TableData: React.FC<TableDataProps> = ({
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.CommunitySlice)
 
-  const columns: Column<CommunityReply>[] = [
-    { key: 'name', headerName: '小区名称', align: 'center' },
-    { key: 'nearbyLandmarks', headerName: '附近地标', align: 'center' },
-    { key: 'cityCode', headerName: '城市编码', align: 'center' },
-    { key: 'bId', headerName: '社区编码', align: 'center' },
-    {
-      key: 'state',
-      headerName: '状态',
-      align: 'center',
-      renderCell: (value: string | number | undefined) => renderStatusChip(value)
+  const fetchData = useCallback(
+    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
+      const closeLoading = message.loading(loadingMessage)
+      try {
+        const res = await dispatch(action(params))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
+      }
     },
-    {
-      key: 'operate',
-      headerName: '操作',
-      align: 'center',
-      renderCell: () => renderActionButtons(setOpenDialog, setDelOpen)
-    }
-  ]
-
-  const fetchCityData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(getCityArea({ 'page.disable': true }))
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
-      }
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch])
-
-  const fetchData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
-      }
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch, page.num, page.size])
+    [dispatch]
+  )
 
   useEffect(() => {
-    fetchCityData()
-    fetchData()
-  }, [fetchCityData, fetchData])
+    fetchData(getCityArea, { 'page.disable': true }, '正在加载城市数据...')
+    fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+  }, [fetchData, page.num, page.size])
+
+  const statusValue: Record<string, string> = {
+    '1000': '审核完成'
+  }
+
+  const handleRowSelection = useCallback(
+    (rowSelectionModel: GridRowSelectionModel) => {
+      setSelectedRows(new Set(rowSelectionModel.map(id => String(id))))
+    },
+    [setSelectedRows]
+  )
+
+  const handleActionClick = useCallback(
+    (actionType: string, row: CommunityReply) => {
+      switch (actionType) {
+        case 'sync':
+          message.info('同步操作未实现')
+          break
+        case 'edit':
+          setDialogValue(row)
+          setOpenDialog(true)
+          break
+        case 'delete':
+          setDelOpen(true)
+          setSelectedRows(new Set([row.id || '']))
+          break
+      }
+    },
+    [setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
+  )
+
+  const actionButtons = [
+    { title: '同步 IOT', action: 'sync' },
+    { title: '修改', action: 'edit' },
+    { title: '删除', action: 'delete' }
+  ]
 
   return (
-    <TableList
+    <DataGrid
+      sx={{
+        width: '100%',
+        '& .MuiDataGrid-columnSeparator': {
+          display: 'none'
+        }
+      }}
+      localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
+      disableColumnResize
+      disableVirtualization={false}
+      checkboxSelection
       rows={list}
-      columns={columns}
-      setDialogValue={setDialogValue}
-      selectedRows={selectedRows}
-      setSelectedRows={setSelectedRows}
+      columns={[
+        { field: 'name', headerName: '小区名称', flex: 1 },
+        { field: 'nearbyLandmarks', headerName: '附近地标', flex: 1 },
+        { field: 'cityCode', headerName: '城市编码', flex: 1 },
+        { field: 'bId', headerName: '社区编码', flex: 1 },
+        {
+          field: 'state',
+          headerName: '状态',
+          headerAlign: 'center',
+          align: 'center',
+          flex: 1,
+          renderCell: ({ row }: { row: CommunityReply }) => (
+            <Chip label={statusValue[row.state!] || '未知状态'} />
+          )
+        },
+        {
+          field: 'actions',
+          headerName: '操作',
+          type: 'actions',
+          width: 200,
+          getActions: ({ row }) =>
+            actionButtons.map(({ title, action }) => (
+              <Chip
+                key={title}
+                sx={{
+                  cursor: 'pointer',
+                  marginLeft: 0,
+                  marginRight: 0
+                }}
+                label={title}
+                color="primary"
+                onClick={() => handleActionClick(action, row)}
+              />
+            ))
+        }
+      ]}
+      onRowSelectionModelChange={handleRowSelection}
+      pageSizeOptions={[10, 20, 50, 100]}
+      initialState={{
+        pagination: {
+          paginationModel: {
+            pageSize: 20
+          }
+        }
+      }}
     />
   )
 }

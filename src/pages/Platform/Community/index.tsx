@@ -1,4 +1,4 @@
-import { memo, useCallback, useState, useMemo } from 'react'
+import { memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CommunityReply } from 'api/model/platform/communityModel'
 import { deleteByIds, find } from 'modules/platform/community'
@@ -14,28 +14,21 @@ import FormDialog from './components/FormDialog'
 const CommunityIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.CommunitySlice)
-  const [dialogValue, setDialogValue] = useState<CommunityReply>()
-  const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
+
+  const [dialogValue, setDialogValue] = useState<CommunityReply | undefined>()
+  const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
   const [openDialog, setOpenDialog] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const getDeleteData = useCallback(() => {
-    if (selectedRows.size > 0) {
-      return list
-        .filter(item => selectedRows.has(item.id))
-        .map(item => ({ id: item.id!, name: item.name! }))
-        .filter(item => item.id && item.name)
-    }
-    if (dialogValue) {
-      return dialogValue.id && dialogValue.name
-        ? [{ id: dialogValue.id, name: dialogValue.name }]
-        : []
-    }
-    return []
-  }, [selectedRows, list, dialogValue])
+    return Array.from(selectedRows)
+      .map(id => list.find(item => item.id === id))
+      .filter(item => item)
+      .map(item => ({ id: item!.id!, name: item!.name! }))
+  }, [selectedRows, list])
 
-  const deleteData = useMemo(() => getDeleteData(), [getDeleteData])
+  const deleteData = getDeleteData()
   const deleteIds = deleteData.map(item => item.id)
   const deleteNames = deleteData.map(item => item.name)
 
@@ -50,9 +43,7 @@ const CommunityIndex = () => {
         setDelOpen(false)
         message.success('删除成功')
         await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
-        setLoading(false)
       } catch (err: unknown) {
-        setLoading(false)
         if (err instanceof Error) message.error(err.message)
       } finally {
         setLoading(false)
@@ -62,18 +53,16 @@ const CommunityIndex = () => {
   )
 
   return (
-    <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
+    <Box sx={{ mt: 3.5, width: '100%' }}>
       <NavbarBreadcrumbs />
       <FormSearch setDelOpen={setDelOpen} selectedRows={selectedRows} />
       <TableData
         setDialogValue={setDialogValue}
-        selectedRows={selectedRows}
         setSelectedRows={setSelectedRows}
         setOpenDialog={setOpenDialog}
         setDelOpen={setDelOpen}
       />
       <Copyright />
-
       <FormDialog
         dialogValue={dialogValue}
         openDialog={openDialog}
