@@ -100,12 +100,6 @@ const TableData: React.FC<TableDataProps> = ({
 
   return (
     <DataGrid
-      sx={{
-        width: '100%',
-        '& .MuiDataGrid-columnSeparator': {
-          display: 'none'
-        }
-      }}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}

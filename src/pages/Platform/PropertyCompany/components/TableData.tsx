@@ -146,12 +146,6 @@ const TableData: React.FC<TableDataProps> = ({
   return (
     <>
       <DataGrid
-        sx={{
-          width: '100%',
-          '& .MuiDataGrid-columnSeparator': {
-            display: 'none'
-          }
-        }}
         localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
         disableColumnResize
         disableVirtualization={false}
@@ -160,12 +154,11 @@ const TableData: React.FC<TableDataProps> = ({
         columns={[
           { field: 'name', headerName: '物业名称', flex: 1 },
           { field: 'address', headerName: '地址', flex: 1 },
-          { field: 'tel', headerName: '管理员', flex: 1 },
           { field: 'tel', headerName: '电话', flex: 1 },
-          { field: 'storeTypeCd', headerName: '公司法人', flex: 1 },
+          { field: 'storeTypeCd', headerName: '公司法人(管理员)', flex: 1 },
           { field: 'nearbyLandmarks', headerName: '成立日期', flex: 1 },
           { field: 'mapX', headerName: '地标', flex: 1 },
-          { field: 'createdAt', headerName: '创建时间', width: 200 },
+          { field: 'createdAt', headerName: '创建时间', width: 160 },
           {
             field: 'actions',
             headerName: '操作',
