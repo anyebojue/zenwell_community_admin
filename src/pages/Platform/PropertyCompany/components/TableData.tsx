@@ -1,40 +1,30 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useState } from 'react'
+import { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { getUserInfo } from 'modules/global'
-import { find } from 'modules/platform/propertyCompany'
 import { LoginTo } from 'api/login'
 import { PropertyCompanyReply } from 'api/model/platform/propertyCompanyModel'
+import { getUserInfo } from 'modules/global'
+import { find } from 'modules/platform/propertyCompany'
 import {
-  Tooltip,
-  IconButton,
-  Stack,
   Dialog,
   DialogTitle,
   DialogContent,
   TextField,
   DialogActions,
-  Button
+  Button,
+  Chip
 } from '@mui/material'
-import { Block, Delete, Edit, ManageAccounts, RestartAlt, Login } from '@mui/icons-material'
+import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
+import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
-import TableList from './TableList'
 import RestrictedEntry from './RestrictedEntry'
 import ResetPassword from './ResetPassword'
 
-export interface Column<T> {
-  headerName: string
-  key: Exclude<keyof T, symbol> | `${Exclude<keyof T, symbol>}.${string}` | 'operate' // 过滤掉 symbol 类型
-  align?: 'left' | 'center' | 'right'
-  renderCell?: (row: T) => ReactNode
-}
-
 interface TableDataProps {
-  dialogValue?: PropertyCompanyReply
+  dialogValue: PropertyCompanyReply | undefined
   setDialogValue: Dispatch<SetStateAction<PropertyCompanyReply | undefined>>
-  selectedRows: Set<string | undefined>
-  setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
+  setSelectedRows: Dispatch<SetStateAction<Set<string>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
@@ -42,7 +32,6 @@ interface TableDataProps {
 const TableData: React.FC<TableDataProps> = ({
   dialogValue,
   setDialogValue,
-  selectedRows,
   setSelectedRows,
   setOpenDialog,
   setDelOpen
@@ -55,97 +44,123 @@ const TableData: React.FC<TableDataProps> = ({
   const [passwordOpen, setPasswordOpen] = useState(false)
   const [open, setOpen] = useState(false)
 
-  const columns: Column<PropertyCompanyReply>[] = [
-    { key: 'name', headerName: '名称', align: 'center' },
-    { key: 'address', headerName: '地址', align: 'center' },
-    { key: 'tel', headerName: '管理员', align: 'center' },
-    { key: 'tel', headerName: '电话', align: 'center' },
-    { key: 'storeTypeCd', headerName: '公司法人', align: 'center' },
-    { key: 'nearbyLandmarks', headerName: '成立日期', align: 'center' },
-    { key: 'mapX', headerName: '地标', align: 'center' },
-    { key: 'createdAt', headerName: '创建时间', align: 'center' },
-    {
-      key: 'operate',
-      headerName: '操作',
-      align: 'center',
-      renderCell: row => (
-        <Stack width={110} direction="row" flexWrap="wrap">
-          {[
-            {
-              title: '管理小区',
-              color: 'primary' as const,
-              icon: <ManageAccounts fontSize="small" />,
-              onClick: () => navigate('/property-company/company', { state: { id: row?.id } })
-            },
-            {
-              title: '修改',
-              color: 'secondary' as const,
-              icon: <Edit fontSize="small" />,
-              onClick: () => setOpenDialog(true)
-            },
-            {
-              title: '删除',
-              color: 'error' as const,
-              icon: <Delete fontSize="small" />,
-              onClick: () => setDelOpen(true)
-            },
-            {
-              title: '登录',
-              color: 'success' as const,
-              icon: <Login fontSize="small" />,
-              onClick: () => setOpen(true)
-            },
-            {
-              title: '限制登录',
-              color: 'warning' as const,
-              icon: <Block fontSize="small" />,
-              onClick: () => setRestrictOpen(true)
-            },
-            {
-              title: '重置密码',
-              color: 'info' as const,
-              icon: <RestartAlt fontSize="small" />,
-              onClick: () => setPasswordOpen(true)
-            }
-          ].map((action, index) => (
-            <Tooltip title={action.title} key={index}>
-              <IconButton size="small" color={action.color} onClick={action.onClick}>
-                {action.icon}
-              </IconButton>
-            </Tooltip>
-          ))}
-        </Stack>
-      )
-    }
-  ]
-
-  const fetchData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
+  const fetchData = useCallback(
+    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
+      const closeLoading = message.loading(loadingMessage)
+      try {
+        const res = await dispatch(action(params))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
       }
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch, page.num, page.size])
+    },
+    [dispatch]
+  )
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+  }, [fetchData, page.num, page.size])
+
+  const handleRowSelection = useCallback(
+    (rowSelectionModel: GridRowSelectionModel) => {
+      setSelectedRows(new Set(rowSelectionModel.map(id => String(id))))
+    },
+    [setSelectedRows]
+  )
+
+  const handleActionClick = useCallback(
+    (actionType: string, row: PropertyCompanyReply) => {
+      switch (actionType) {
+        case 'manageAccounts':
+          navigate('/property-company/company', { state: { id: row?.id } })
+          break
+        case 'edit':
+          setDialogValue(row)
+          setOpenDialog(true)
+          break
+        case 'delete':
+          setDelOpen(true)
+          setSelectedRows(new Set([row.id || '']))
+          break
+        case 'login':
+          setDialogValue(row)
+          setOpen(true)
+          break
+        case 'block':
+          setDialogValue(row)
+          setRestrictOpen(true)
+          break
+        case 'restartAlt':
+          setDialogValue(row)
+          setPasswordOpen(true)
+          break
+      }
+    },
+    [navigate, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
+  )
+
+  const renderActionButtons = (row: PropertyCompanyReply) =>
+    [
+      { title: '管理小区', action: 'manageAccounts' },
+      { title: '修改', action: 'edit' },
+      { title: '删除', action: 'delete' },
+      { title: '登录', action: 'login' },
+      { title: '限制登录', action: 'block' },
+      { title: '删除', action: 'restartAlt' }
+    ].map(({ title, action }) => (
+      <Chip
+        key={title}
+        sx={{ cursor: 'pointer', marginLeft: 0, marginRight: 0 }}
+        label={title}
+        color="primary"
+        onClick={() => handleActionClick(action, row)}
+      />
+    ))
 
   return (
     <>
-      <TableList
+      <DataGrid
+        sx={{
+          width: '100%',
+          '& .MuiDataGrid-columnSeparator': {
+            display: 'none'
+          }
+        }}
+        localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
+        disableColumnResize
+        disableVirtualization={false}
+        checkboxSelection
         rows={list}
-        columns={columns}
-        setDialogValue={setDialogValue}
-        selectedRows={selectedRows}
-        setSelectedRows={setSelectedRows}
+        columns={[
+          { field: 'name', headerName: '物业名称', flex: 1 },
+          { field: 'address', headerName: '地址', flex: 1 },
+          { field: 'tel', headerName: '管理员', flex: 1 },
+          { field: 'tel', headerName: '电话', flex: 1 },
+          { field: 'storeTypeCd', headerName: '公司法人', flex: 1 },
+          { field: 'nearbyLandmarks', headerName: '成立日期', flex: 1 },
+          { field: 'mapX', headerName: '地标', flex: 1 },
+          { field: 'createdAt', headerName: '创建时间', flex: 1 },
+          {
+            field: 'actions',
+            headerName: '操作',
+            type: 'actions',
+            width: 200,
+            getActions: ({ row }) => renderActionButtons(row)
+          }
+        ]}
+        onRowSelectionModelChange={handleRowSelection}
+        pageSizeOptions={[10, 20, 50, 100]}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 20
+            }
+          }
+        }}
       />
       <RestrictedEntry
         dialogValue={dialogValue}
@@ -161,33 +176,35 @@ const TableData: React.FC<TableDataProps> = ({
         fullWidth
         open={open}
         onClose={() => setOpen(false)}
-        PaperProps={{
-          component: 'form',
-          onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
-            event.preventDefault()
-            const form = event.target as HTMLFormElement
-            const formData = new FormData(form)
-            const formJson: Record<string, string> = {}
-            formData.forEach((value, key) => {
-              formJson[key] = value as string
-            })
-            const closeLoading = message.loading('正在登录中...')
-            try {
-              const res = await LoginTo({
-                username: info.username,
-                password: formJson.password,
-                to: dialogValue?.tel || ''
+        slotProps={{
+          paper: {
+            component: 'form',
+            onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
+              event.preventDefault()
+              const form = event.target as HTMLFormElement
+              const formData = new FormData(form)
+              const formJson: Record<string, string> = {}
+              formData.forEach((value, key) => {
+                formJson[key] = value as string
               })
-              localStorage.setItem('zenwell_token', res.token)
-              closeLoading()
-              message.success('登录成功')
-              navigate('/')
-              dispatch(getUserInfo())
-            } catch (err: unknown) {
-              closeLoading()
-              if (err instanceof Error) message.error(err.message)
-            } finally {
-              closeLoading()
+              const closeLoading = message.loading('正在登录中...')
+              try {
+                const res = await LoginTo({
+                  username: info.username,
+                  password: formJson.password,
+                  to: dialogValue?.tel || ''
+                })
+                localStorage.setItem('zenwell_token', res.token)
+                closeLoading()
+                message.success('登录成功')
+                navigate('/')
+                dispatch(getUserInfo())
+              } catch (err: unknown) {
+                closeLoading()
+                if (err instanceof Error) message.error(err.message)
+              } finally {
+                closeLoading()
+              }
             }
           }
         }}

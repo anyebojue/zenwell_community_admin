@@ -39,13 +39,12 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
     tel: ''
   })
 
-  const handleInputChange =
+  const handleInputChange = useCallback(
     (field: keyof PropertyCompanyParams) => (event: ChangeEvent<HTMLInputElement>) => {
-      setSearchParams(prevData => ({
-        ...prevData,
-        [field]: event.target.value
-      }))
-    }
+      setSearchParams(prev => ({ ...prev, [field]: event.target.value }))
+    },
+    []
+  )
 
   const fetchData = useCallback(
     async (params: PropertyCompanyParams & PaginationParams) => {
@@ -57,8 +56,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-      } catch (err: unknown) {
-        closeLoading()
+      } catch (err) {
         if (err instanceof Error) message.error(err.message)
       } finally {
         closeLoading()
@@ -67,9 +65,23 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
     [dispatch, page.num, page.size]
   )
 
-  const handleSearch = () => {
-    fetchData(searchParams)
-  }
+  const handleSearch = useCallback(() => {
+    fetchData({ ...searchParams })
+  }, [fetchData, searchParams])
+
+  const handleReset = useCallback(() => {
+    const initialParams = { name: '', tel: '' }
+    setSearchParams(initialParams)
+    fetchData({ ...initialParams, 'page.num': page.num, 'page.size': page.size })
+  }, [fetchData, page.num, page.size])
+
+  const handleBatchDelete = useCallback(() => {
+    if (selectedRows.size === 0) {
+      message.warning('请选择至少一项')
+      return
+    }
+    setDelOpen(true)
+  }, [selectedRows.size, setDelOpen])
 
   return (
     <Box>
@@ -114,16 +126,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
           color="error"
           startIcon={<History />}
           sx={buttonStyles('darkgray', '#696969')}
-          onClick={() => {
-            setSearchParams({ id: '', name: '', tel: '' })
-            fetchData({
-              id: '',
-              name: '',
-              tel: '',
-              'page.num': page.num,
-              'page.size': page.size
-            })
-          }}
+          onClick={handleReset}
         >
           重置
         </Button>
@@ -143,12 +146,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
           color="error"
           startIcon={<Delete />}
           sx={buttonStyles('#B22222', '#8B0000')}
-          onClick={() => {
-            if (![...selectedRows].length) {
-              return message.warning('请选择至少一项')
-            }
-            setDelOpen(true)
-          }}
+          onClick={handleBatchDelete}
         >
           批量删除
         </Button>

@@ -62,6 +62,10 @@ const FormDialog: React.FC<FormDialogProps> = ({
     setFormData(initialFormData)
   }, [initialFormData])
 
+  const handleFormChange = (id: string, value: string | number) => {
+    setFormData(prev => ({ ...prev, [id]: value }))
+  }
+
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
@@ -103,7 +107,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
       maxWidth="sm"
       open={openDialog}
       onClose={() => setOpenDialog(false)}
-      PaperProps={{ component: 'form', onSubmit: handleSubmit }}
+      slotProps={{ paper: { component: 'form', onSubmit: handleSubmit } }}
     >
       <DialogTitle>{dialogType === 'add' ? '新增' : '编辑'}</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
@@ -121,7 +125,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
                 required={required}
                 id={id}
                 value={formData[id as keyof PropertyCompanyParams]}
-                onChange={e => setFormData({ ...formData, [id]: e.target.value })}
+                onChange={e => handleFormChange(id, e.target.value)}
               />
             </Box>
           ))}

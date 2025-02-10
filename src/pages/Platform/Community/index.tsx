@@ -15,7 +15,7 @@ const CommunityIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.CommunitySlice)
 
-  const [dialogValue, setDialogValue] = useState<CommunityReply | undefined>()
+  const [dialogValue, setDialogValue] = useState<CommunityReply>()
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
   const [openDialog, setOpenDialog] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
