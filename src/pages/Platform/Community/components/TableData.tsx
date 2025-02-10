@@ -84,7 +84,13 @@ const TableData: React.FC<TableDataProps> = ({
     ].map(({ title, action }) => (
       <Chip
         key={title}
-        sx={{ cursor: 'pointer', marginLeft: 0, marginRight: 0 }}
+        sx={{
+          cursor: 'pointer',
+          marginRight: '-5px',
+          '& .MuiChip-label': {
+            fontSize: '13px'
+          }
+        }}
         label={title}
         color="primary"
         onClick={() => handleActionClick(action, row)}

@@ -12,7 +12,8 @@ import {
   TextField,
   DialogActions,
   Button,
-  Chip
+  Chip,
+  Box
 } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
@@ -103,23 +104,43 @@ const TableData: React.FC<TableDataProps> = ({
     [navigate, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
   )
 
-  const renderActionButtons = (row: PropertyCompanyReply) =>
-    [
+  const renderActionButtons = (row: PropertyCompanyReply) => {
+    const actions = [
       { title: '管理小区', action: 'manageAccounts' },
       { title: '修改', action: 'edit' },
       { title: '删除', action: 'delete' },
       { title: '登录', action: 'login' },
       { title: '限制登录', action: 'block' },
-      { title: '删除', action: 'restartAlt' }
-    ].map(({ title, action }) => (
-      <Chip
-        key={title}
-        sx={{ cursor: 'pointer', marginLeft: 0, marginRight: 0 }}
-        label={title}
-        color="primary"
-        onClick={() => handleActionClick(action, row)}
-      />
-    ))
+      { title: '重置密码', action: 'restartAlt' }
+    ]
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 0.5,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        {actions.map(({ title, action }) => (
+          <Chip
+            key={title}
+            sx={{
+              cursor: 'pointer',
+              width: 'calc(33.33% - 8px)',
+              '& .MuiChip-label': {
+                fontSize: '13px'
+              }
+            }}
+            label={title}
+            color="primary"
+            onClick={() => handleActionClick(action, row)}
+          />
+        ))}
+      </Box>
+    )
+  }
 
   return (
     <>
@@ -143,13 +164,15 @@ const TableData: React.FC<TableDataProps> = ({
           { field: 'storeTypeCd', headerName: '公司法人', flex: 1 },
           { field: 'nearbyLandmarks', headerName: '成立日期', flex: 1 },
           { field: 'mapX', headerName: '地标', flex: 1 },
-          { field: 'createdAt', headerName: '创建时间', flex: 1 },
+          { field: 'createdAt', headerName: '创建时间', width: 200 },
           {
             field: 'actions',
             headerName: '操作',
             type: 'actions',
-            width: 200,
-            getActions: ({ row }) => renderActionButtons(row)
+            width: 300,
+            getActions: ({ row }) => {
+              return [renderActionButtons(row)]
+            }
           }
         ]}
         onRowSelectionModelChange={handleRowSelection}
