@@ -4,7 +4,7 @@ import {
   FindOrganizationInfoReply,
   OrganizationInfoParams,
   OrgUserReply
-} from '../model/platform/organizationInfoModel'
+} from '../../model/platform/organization/organizationInfoModel'
 
 const ApiPrefix = {
   RelevanceOrgUser: '/auth/org_user',

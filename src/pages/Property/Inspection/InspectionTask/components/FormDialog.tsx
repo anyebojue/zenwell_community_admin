@@ -33,8 +33,8 @@ import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 import { RichTreeView, TreeViewBaseItem } from '@mui/x-tree-view'
 import { Work } from '@mui/icons-material'
-import { find as treeFind, findOrgUser } from 'modules/platform/organizationInfo'
-import { OrganizationInfoReply } from 'api/model/platform/organizationInfoModel'
+import { find as treeFind, findOrgUser } from 'modules/platform/organization/organizationInfo'
+import { OrganizationInfoReply } from 'api/model/platform/organization/organizationInfoModel'
 
 interface FormDialogProps {
   selectedButton: string

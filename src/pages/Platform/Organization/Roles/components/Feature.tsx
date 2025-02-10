@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { MenuReply } from 'api/model/develop/menuModel'
-import { RolesReply } from 'api/model/platform/rolesModel'
+import { RolesReply } from 'api/model/platform/organization/rolesModel'
 import { findMenus } from 'modules/develop/menu'
 import { Box } from '@mui/material'
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView'

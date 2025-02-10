@@ -37,8 +37,11 @@ import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 import { RichTreeView, TreeViewBaseItem } from '@mui/x-tree-view'
 import { Work } from '@mui/icons-material'
-import { OrganizationInfoReply, OrgUserReply } from 'api/model/platform/organizationInfoModel'
-import { find as treeFind, findOrgUser } from 'modules/platform/organizationInfo'
+import {
+  OrganizationInfoReply,
+  OrgUserReply
+} from 'api/model/platform/organization/organizationInfoModel'
+import { find as treeFind, findOrgUser } from 'modules/platform/organization/organizationInfo'
 import { find as routeFind } from 'modules/property/spectionRoute'
 
 interface FormDialogProps {

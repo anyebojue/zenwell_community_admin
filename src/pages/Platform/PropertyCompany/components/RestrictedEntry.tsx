@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import message from 'components/Message'
 import { find } from 'modules/platform/propertyCompany'
 import dayjs from 'dayjs'
-import { update } from 'modules/platform/employees'
+import { update } from 'modules/platform/organization/employees'
 
 interface DeleteModalProps {
   dialogValue: PropertyCompanyReply | undefined

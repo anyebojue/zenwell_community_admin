@@ -1,5 +1,5 @@
 import { memo, useState, useMemo, ChangeEvent, Dispatch, SetStateAction } from 'react'
-import { RolesReply } from 'api/model/platform/rolesModel'
+import { RolesReply } from 'api/model/platform/organization/rolesModel'
 import {
   Pagination,
   Table,

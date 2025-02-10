@@ -1,8 +1,8 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OrganizationInfoReply } from 'api/model/platform/organizationInfoModel'
-import { EmployeesReply } from 'api/model/platform/employeesModel'
-import { find } from 'modules/platform/employees'
+import { OrganizationInfoReply } from 'api/model/platform/organization/organizationInfoModel'
+import { EmployeesReply } from 'api/model/platform/organization/employeesModel'
+import { find } from 'modules/platform/organization/employees'
 import message from 'components/Message'
 import AssociatedTableList from './AssociatedTableList'
 

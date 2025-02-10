@@ -1,7 +1,7 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { SpaceConfirmOrderParams } from 'api/model/property/spaceConfirmOrderModel'
-import { findOrgUser } from 'modules/platform/organizationInfo'
+import { findOrgUser } from 'modules/platform/organization/organizationInfo'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'

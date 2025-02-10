@@ -1,5 +1,8 @@
 import { request } from 'utils/request/axios'
-import { FindEmployeesReply, EmployeesParams } from '../model/platform/employeesModel'
+import {
+  FindEmployeesReply,
+  EmployeesParams
+} from '../../model/platform/organization/employeesModel'
 
 const ApiPrefix = {
   FindEmployees: '/auth/user',

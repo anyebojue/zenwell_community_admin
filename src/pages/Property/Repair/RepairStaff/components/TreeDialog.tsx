@@ -1,8 +1,11 @@
 import { memo, useCallback, useEffect, useState, useMemo, Dispatch, SetStateAction } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { find as treeFind, findOrgUser } from 'modules/platform/organizationInfo'
+import { find as treeFind, findOrgUser } from 'modules/platform/organization/organizationInfo'
 import { find, create } from 'modules/property/repairStaff'
-import { OrganizationInfoReply, OrgUserReply } from 'api/model/platform/organizationInfoModel'
+import {
+  OrganizationInfoReply,
+  OrgUserReply
+} from 'api/model/platform/organization/organizationInfoModel'
 import {
   Avatar,
   Box,

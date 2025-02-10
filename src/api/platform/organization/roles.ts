@@ -4,7 +4,7 @@ import {
   FindRolesGroupReply,
   RolesParams,
   RolesGroupReply
-} from '../model/platform/rolesModel'
+} from '../../model/platform/organization/rolesModel'
 
 const ApiPrefix = {
   RelevanceCommunity: '/auth/user_group_community_relation',

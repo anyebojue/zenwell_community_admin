@@ -1,7 +1,10 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OrganizationInfoReply, OrgUserReply } from 'api/model/platform/organizationInfoModel'
-import { findOrgUser } from 'modules/platform/organizationInfo'
+import {
+  OrganizationInfoReply,
+  OrgUserReply
+} from 'api/model/platform/organization/organizationInfoModel'
+import { findOrgUser } from 'modules/platform/organization/organizationInfo'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'

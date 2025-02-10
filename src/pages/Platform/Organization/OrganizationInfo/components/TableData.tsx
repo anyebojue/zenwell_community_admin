@@ -9,8 +9,11 @@ import {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OrganizationInfoReply, OrgUserReply } from 'api/model/platform/organizationInfoModel'
-import { deleteOrgUserByIds, findOrgUser } from 'modules/platform/organizationInfo'
+import {
+  OrganizationInfoReply,
+  OrgUserReply
+} from 'api/model/platform/organization/organizationInfoModel'
+import { deleteOrgUserByIds, findOrgUser } from 'modules/platform/organization/organizationInfo'
 import { Box, Tooltip, IconButton, Theme, Typography, Stack, Button } from '@mui/material'
 import { Add, Delete, FileCopy } from '@mui/icons-material'
 import message from 'components/Message'

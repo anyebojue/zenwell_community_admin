@@ -1,6 +1,6 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RolesReply } from 'api/model/platform/rolesModel'
+import { RolesReply } from 'api/model/platform/organization/rolesModel'
 import { find } from 'modules/platform/community'
 import message from 'components/Message'
 import { CommunityReply } from 'api/model/platform/communityModel'

@@ -1,6 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
-import { RolesParams, RolesReply, RolesGroupReply } from 'api/model/platform/rolesModel'
+import {
+  RolesParams,
+  RolesReply,
+  RolesGroupReply
+} from 'api/model/platform/organization/rolesModel'
 import {
   FindRoles,
   CreateRoles,
@@ -9,7 +13,7 @@ import {
   FindRolesGroup,
   RelevanceCommunity,
   DeleteRolesGroup
-} from 'api/platform/roles'
+} from 'api/platform/organization/roles'
 
 const namespace = 'Roles'
 

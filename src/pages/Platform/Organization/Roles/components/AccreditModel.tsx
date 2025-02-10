@@ -1,6 +1,6 @@
 import { Dispatch, memo, SetStateAction, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { findRolesGroup, relevanceCommunity } from 'modules/platform/roles'
+import { findRolesGroup, relevanceCommunity } from 'modules/platform/organization/roles'
 import {
   Button,
   CircularProgress,
@@ -12,7 +12,7 @@ import {
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 import { CommunityReply } from 'api/model/platform/communityModel'
-import { RolesReply } from 'api/model/platform/rolesModel'
+import { RolesReply } from 'api/model/platform/organization/rolesModel'
 import FormSearch from './AccreditModelFormSearch'
 import AccreditModelTableData from './AccreditModelTableData'
 

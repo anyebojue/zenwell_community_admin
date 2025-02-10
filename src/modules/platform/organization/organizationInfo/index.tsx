@@ -4,7 +4,7 @@ import {
   OrganizationInfoParams,
   OrganizationInfoReply,
   OrgUserReply
-} from 'api/model/platform/organizationInfoModel'
+} from 'api/model/platform/organization/organizationInfoModel'
 import {
   FindOrganizationInfo,
   CreateOrganizationInfo,
@@ -13,7 +13,7 @@ import {
   FindOrgUser,
   RelevanceOrgUser,
   DeleteOrgUser
-} from 'api/platform/organizationInfo'
+} from 'api/platform/organization/organizationInfo'
 
 const namespace = 'OrganizationInfo'
 

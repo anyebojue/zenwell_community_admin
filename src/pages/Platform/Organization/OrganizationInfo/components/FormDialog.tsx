@@ -11,8 +11,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   OrganizationInfoParams,
   OrganizationInfoReply
-} from 'api/model/platform/organizationInfoModel'
-import { create, find, update } from 'modules/platform/organizationInfo'
+} from 'api/model/platform/organization/organizationInfoModel'
+import { create, find, update } from 'modules/platform/organization/organizationInfo'
 import {
   Box,
   CircularProgress,

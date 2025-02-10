@@ -1,5 +1,5 @@
-import { Page } from '../pageModel'
-import { CommunityReply } from './communityModel'
+import { Page } from '../../pageModel'
+import { CommunityReply } from '../communityModel'
 import { EmployeesReply } from './employeesModel'
 
 export interface RolesGroupReply {

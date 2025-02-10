@@ -1,11 +1,11 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { EmployeesReply } from 'api/model/platform/employeesModel'
-import { find } from 'modules/platform/roles'
+import { EmployeesReply } from 'api/model/platform/organization/employeesModel'
+import { find } from 'modules/platform/organization/roles'
 import { Box, Tooltip, IconButton } from '@mui/material'
 import { FileCopy, Delete } from '@mui/icons-material'
 import message from 'components/Message'
-import { RolesReply } from 'api/model/platform/rolesModel'
+import { RolesReply } from 'api/model/platform/organization/rolesModel'
 import RelevanceTableList from './RelevanceTableList'
 
 const renderActionButtons = () => (

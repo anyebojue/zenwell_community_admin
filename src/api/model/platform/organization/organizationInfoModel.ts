@@ -1,4 +1,4 @@
-import { Page } from '../pageModel'
+import { Page } from '../../pageModel'
 import { EmployeesReply } from './employeesModel'
 
 export interface OrgUserReply {

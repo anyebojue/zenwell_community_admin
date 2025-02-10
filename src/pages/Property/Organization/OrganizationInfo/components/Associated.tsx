@@ -1,8 +1,8 @@
 import { Dispatch, memo, SetStateAction, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OrganizationInfoReply } from 'api/model/platform/organizationInfoModel'
-import { EmployeesReply } from 'api/model/platform/employeesModel'
-import { findOrgUser, relevanceOrgUser } from 'modules/platform/organizationInfo'
+import { OrganizationInfoReply } from 'api/model/platform/organization/organizationInfoModel'
+import { EmployeesReply } from 'api/model/platform/organization/employeesModel'
+import { findOrgUser, relevanceOrgUser } from 'modules/platform/organization/organizationInfo'
 import {
   Button,
   CircularProgress,

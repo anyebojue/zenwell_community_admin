@@ -6,8 +6,8 @@ import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
 import { Add, Delete, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import { EmployeesReply } from 'api/model/platform/employeesModel'
-import { RolesReply } from 'api/model/platform/rolesModel'
+import { EmployeesReply } from 'api/model/platform/organization/employeesModel'
+import { RolesReply } from 'api/model/platform/organization/rolesModel'
 import RelevanceModel from './RelevanceModel'
 
 const textFieldStyles = {

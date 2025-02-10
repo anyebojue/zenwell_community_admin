@@ -8,9 +8,12 @@ import Copyright from 'layouts/components/Copyright'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import { useDispatch, useSelector } from 'react-redux'
 import message from 'components/Message'
-import { deleteByIds, find } from 'modules/platform/organizationInfo'
-import { OrganizationInfoReply, OrgUserReply } from 'api/model/platform/organizationInfoModel'
-import { EmployeesReply } from 'api/model/platform/employeesModel'
+import { deleteByIds, find } from 'modules/platform/organization/organizationInfo'
+import {
+  OrganizationInfoReply,
+  OrgUserReply
+} from 'api/model/platform/organization/organizationInfoModel'
+import { EmployeesReply } from 'api/model/platform/organization/employeesModel'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
 import FormDialog from './components/FormDialog'

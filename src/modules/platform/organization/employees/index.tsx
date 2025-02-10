@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
-import { EmployeesParams, EmployeesReply } from 'api/model/platform/employeesModel'
+import { EmployeesParams, EmployeesReply } from 'api/model/platform/organization/employeesModel'
 import {
   FindEmployees,
   CreateEmployees,
   UpdateEmployees,
   DeleteEmployees
-} from 'api/platform/employees'
+} from 'api/platform/organization/employees'
 
 const namespace = 'Employees'
 

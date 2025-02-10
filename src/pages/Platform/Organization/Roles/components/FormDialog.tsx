@@ -8,8 +8,8 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RolesParams, RolesReply } from 'api/model/platform/rolesModel'
-import { create, find, update } from 'modules/platform/roles'
+import { RolesParams, RolesReply } from 'api/model/platform/organization/rolesModel'
+import { create, find, update } from 'modules/platform/organization/roles'
 import {
   Box,
   CircularProgress,

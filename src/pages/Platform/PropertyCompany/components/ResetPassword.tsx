@@ -1,7 +1,7 @@
 import { Dispatch, memo, SetStateAction, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { PropertyCompanyReply } from 'api/model/platform/propertyCompanyModel'
-import { find, update } from 'modules/platform/employees'
+import { find, update } from 'modules/platform/organization/employees'
 import {
   Button,
   Dialog,

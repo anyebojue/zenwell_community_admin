@@ -8,8 +8,8 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { EmployeesParams, EmployeesReply } from 'api/model/platform/employeesModel'
-import { create, find, update } from 'modules/platform/employees'
+import { EmployeesParams, EmployeesReply } from 'api/model/platform/organization/employeesModel'
+import { create, find, update } from 'modules/platform/organization/employees'
 import {
   Box,
   CircularProgress,

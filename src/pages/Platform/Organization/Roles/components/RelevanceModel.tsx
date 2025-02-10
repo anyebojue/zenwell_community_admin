@@ -1,9 +1,9 @@
 import { Dispatch, memo, SetStateAction, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RolesReply } from 'api/model/platform/rolesModel'
-import { EmployeesReply } from 'api/model/platform/employeesModel'
-import { update } from 'modules/platform/roles'
-import { find } from 'modules/platform/roles'
+import { RolesReply } from 'api/model/platform/organization/rolesModel'
+import { EmployeesReply } from 'api/model/platform/organization/employeesModel'
+import { update } from 'modules/platform/organization/roles'
+import { find } from 'modules/platform/organization/roles'
 import {
   Button,
   CircularProgress,
