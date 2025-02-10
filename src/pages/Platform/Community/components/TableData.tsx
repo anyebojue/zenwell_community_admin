@@ -15,6 +15,10 @@ interface TableDataProps {
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
+const statusValue: Record<string, string> = {
+  '1000': '审核完成'
+}
+
 const TableData: React.FC<TableDataProps> = ({
   setDialogValue,
   setSelectedRows,
@@ -46,10 +50,6 @@ const TableData: React.FC<TableDataProps> = ({
     fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
   }, [fetchData, page.num, page.size])
 
-  const statusValue: Record<string, string> = {
-    '1000': '审核完成'
-  }
-
   const handleRowSelection = useCallback(
     (rowSelectionModel: GridRowSelectionModel) => {
       setSelectedRows(new Set(rowSelectionModel.map(id => String(id))))
@@ -76,11 +76,20 @@ const TableData: React.FC<TableDataProps> = ({
     [setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
   )
 
-  const actionButtons = [
-    { title: '同步 IOT', action: 'sync' },
-    { title: '修改', action: 'edit' },
-    { title: '删除', action: 'delete' }
-  ]
+  const renderActionButtons = (row: CommunityReply) =>
+    [
+      { title: '同步 IOT', action: 'sync' },
+      { title: '修改', action: 'edit' },
+      { title: '删除', action: 'delete' }
+    ].map(({ title, action }) => (
+      <Chip
+        key={title}
+        sx={{ cursor: 'pointer', marginLeft: 0, marginRight: 0 }}
+        label={title}
+        color="primary"
+        onClick={() => handleActionClick(action, row)}
+      />
+    ))
 
   return (
     <DataGrid
@@ -115,20 +124,7 @@ const TableData: React.FC<TableDataProps> = ({
           headerName: '操作',
           type: 'actions',
           width: 200,
-          getActions: ({ row }) =>
-            actionButtons.map(({ title, action }) => (
-              <Chip
-                key={title}
-                sx={{
-                  cursor: 'pointer',
-                  marginLeft: 0,
-                  marginRight: 0
-                }}
-                label={title}
-                color="primary"
-                onClick={() => handleActionClick(action, row)}
-              />
-            ))
+          getActions: ({ row }) => renderActionButtons(row)
         }
       ]}
       onRowSelectionModelChange={handleRowSelection}

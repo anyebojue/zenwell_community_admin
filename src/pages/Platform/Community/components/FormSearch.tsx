@@ -2,7 +2,7 @@ import { ChangeEvent, Dispatch, memo, SetStateAction, useState, useCallback, use
 import { useDispatch, useSelector } from 'react-redux'
 import { CommunityParams } from 'api/model/platform/communityModel'
 import { find } from 'modules/platform/community'
-import { Box, FormControl, Button, MenuItem, Stack, TextField, FormLabel } from '@mui/material'
+import { Box, FormControl, Button, MenuItem, Stack, TextField } from '@mui/material'
 import { Add, Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
@@ -102,6 +102,14 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
     fetchData({ ...initialParams, 'page.num': page.num, 'page.size': page.size })
   }, [fetchData, page.num, page.size])
 
+  const handleBatchDelete = useCallback(() => {
+    if (selectedRows.size === 0) {
+      message.warning('请选择至少一项')
+      return
+    }
+    setDelOpen(true)
+  }, [selectedRows.size, setDelOpen])
+
   return (
     <Box>
       <Stack direction="row" spacing={3} sx={{ mt: 2, mb: 1.5 }}>
@@ -117,7 +125,6 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
           />
         </FormControl>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <FormLabel>小区地区：</FormLabel>
           <Stack direction="row" spacing={1}>
             <FormControl sx={{ width: { xs: '100%', md: '25ch' } }}>
               <TextField
@@ -213,13 +220,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
           color="error"
           startIcon={<Delete />}
           sx={buttonStyles('#B22222', '#8B0000')}
-          onClick={() => {
-            if (selectedRows.size === 0) {
-              message.warning('请选择至少一项')
-              return
-            }
-            setDelOpen(true)
-          }}
+          onClick={handleBatchDelete}
         >
           批量删除
         </Button>
