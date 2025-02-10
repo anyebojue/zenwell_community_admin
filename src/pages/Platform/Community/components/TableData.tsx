@@ -78,7 +78,6 @@ const TableData: React.FC<TableDataProps> = ({
   const { page, list } = useSelector((state: RootState) => state.CommunitySlice)
 
   const columns: Column<CommunityReply>[] = [
-    { key: 'id', headerName: '小区ID', align: 'center' },
     { key: 'name', headerName: '小区名称', align: 'center' },
     { key: 'nearbyLandmarks', headerName: '附近地标', align: 'center' },
     { key: 'cityCode', headerName: '城市编码', align: 'center' },

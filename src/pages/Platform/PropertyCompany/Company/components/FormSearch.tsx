@@ -29,10 +29,7 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.CommunitySlice)
 
-  const [searchParams, setSearchParams] = useState<CommunityParams>({
-    id: '',
-    name: ''
-  })
+  const [searchParams, setSearchParams] = useState<CommunityParams>({ name: '' })
 
   const handleInputChange =
     (field: keyof CommunityParams) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -69,17 +66,6 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   return (
     <Box>
       <Stack direction="row" spacing={3} component="form" sx={{ mb: 1.5 }}>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            size="small"
-            label="请输入小区编号"
-            type="text"
-            variant="outlined"
-            sx={textFieldStyles}
-            value={searchParams.id}
-            onChange={handleInputChange('id')}
-          />
-        </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"

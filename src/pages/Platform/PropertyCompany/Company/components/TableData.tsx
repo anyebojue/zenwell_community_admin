@@ -70,12 +70,6 @@ const TableData: React.FC<TableDataProps> = () => {
 
   const columns: Column<CompanyReply>[] = [
     {
-      key: 'community.id',
-      headerName: '小区ID',
-      align: 'center',
-      renderCell: row => row.community?.id || '-'
-    },
-    {
       key: 'community.name',
       headerName: '小区名称',
       align: 'center',

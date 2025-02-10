@@ -56,7 +56,6 @@ const TableData: React.FC<TableDataProps> = ({
   const [open, setOpen] = useState(false)
 
   const columns: Column<PropertyCompanyReply>[] = [
-    { key: 'id', headerName: '编号', align: 'center' },
     { key: 'name', headerName: '名称', align: 'center' },
     { key: 'address', headerName: '地址', align: 'center' },
     { key: 'tel', headerName: '管理员', align: 'center' },

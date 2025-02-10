@@ -38,7 +38,6 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
 
   const [openDialog, setOpenDialog] = useState(false)
   const [searchParams, setSearchParams] = useState<CommunityParams>({
-    id: '',
     name: '',
     city_code: '',
     province_code: '',
@@ -94,7 +93,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
   )
 
   const handleSearch = useCallback(() => {
-    fetchData({ ...searchParams, city_code: searchParams.county_code })
+    fetchData({ ...searchParams, city_code: searchParams.county_code || '' })
   }, [fetchData, searchParams])
 
   const handleReset = useCallback(() => {
@@ -106,17 +105,6 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
   return (
     <Box>
       <Stack direction="row" spacing={3} sx={{ mt: 2, mb: 1.5 }}>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            size="small"
-            label="请输入小区ID"
-            type="text"
-            variant="outlined"
-            sx={textFieldStyles}
-            value={searchParams.id}
-            onChange={handleInputChange('id')}
-          />
-        </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
