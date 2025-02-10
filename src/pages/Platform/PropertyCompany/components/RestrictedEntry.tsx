@@ -1,5 +1,8 @@
 import { Dispatch, memo, SetStateAction, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { PropertyCompanyReply } from 'api/model/platform/propertyCompanyModel'
+import { find } from 'modules/platform/propertyCompany'
+import { update } from 'modules/platform/organization/employees'
 import {
   Button,
   Dialog,
@@ -14,11 +17,8 @@ import {
   Box
 } from '@mui/material'
 import { Lock } from '@mui/icons-material'
-import { useDispatch, useSelector } from 'react-redux'
-import message from 'components/Message'
-import { find } from 'modules/platform/propertyCompany'
 import dayjs from 'dayjs'
-import { update } from 'modules/platform/organization/employees'
+import message from 'components/Message'
 
 interface DeleteModalProps {
   dialogValue: PropertyCompanyReply | undefined
