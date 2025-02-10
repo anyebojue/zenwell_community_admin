@@ -1,6 +1,6 @@
 import { Page } from '../pageModel'
 import { CommunityReply } from './communityModel'
-import { EmployeesReply } from './employeesModel'
+import { EmployeesReply } from './organization/employeesModel'
 
 export interface CompanyReply {
   id?: string

@@ -135,6 +135,7 @@ const TableData: React.FC<TableDataProps> = ({
             }}
             label={title}
             color="primary"
+            variant="outlined"
             onClick={() => handleActionClick(action, row)}
           />
         ))}
