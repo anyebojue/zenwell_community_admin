@@ -1,8 +1,8 @@
 import { memo, ReactNode, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairPoolReply } from 'api/model/property/repairPoolModel'
-import { find } from 'modules/property/repairPool'
-import { find as findRepairSetting } from 'modules/property/repairSetting'
+import { RepairPoolReply } from 'api/model/property/repair/repairPoolModel'
+import { find } from 'modules/property/repair/repairPool'
+import { find as findRepairSetting } from 'modules/property/repair/repairSetting'
 import message from 'components/Message'
 import TableList from './TableList'
 

@@ -1,6 +1,6 @@
 import React, { Dispatch, memo, SetStateAction, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairPoolReply } from 'api/model/property/repairPoolModel'
+import { RepairPoolReply } from 'api/model/property/repair/repairPoolModel'
 import {
   Box,
   CircularProgress,
@@ -16,8 +16,8 @@ import {
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
-import { find as findPool } from 'modules/property/repairPool'
-import { update } from 'modules/property/repairPool'
+import { find as findPool } from 'modules/property/repair/repairPool'
+import { update } from 'modules/property/repair/repairPool'
 
 const MAINTENANCE_OPTIONS = [
   { label: '需要用料', value: '1003' },

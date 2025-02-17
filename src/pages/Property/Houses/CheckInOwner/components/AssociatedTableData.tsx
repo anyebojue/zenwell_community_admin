@@ -1,12 +1,12 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { HousingManagementReply } from 'api/model/property/housingManagementModel'
-import { find as floorFind } from 'modules/property/housingManagement'
-import { find as roomFind } from 'modules/property/room'
+import { HousingManagementReply } from 'api/model/property/houses/housingManagementModel'
+import { find as floorFind } from 'modules/property/houses/housingManagement'
+import { find as roomFind } from 'modules/property/houses/room'
 import message from 'components/Message'
 import { Button } from '@mui/material'
 import { buttonStyles } from 'components/DeleteModal'
-import { RoomReply } from 'api/model/property/roomModel'
+import { RoomReply } from 'api/model/property/houses/roomModel'
 import AssociatedTableList from './AssociatedTableList'
 
 export interface Column<T> {

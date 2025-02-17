@@ -1,7 +1,7 @@
 import React, { Dispatch, memo, SetStateAction, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairStaffParams, RepairStaffReply } from 'api/model/property/repairStaffModel'
-import { find, update } from 'modules/property/repairStaff'
+import { RepairStaffParams, RepairStaffReply } from 'api/model/property/repair/repairStaffModel'
+import { find, update } from 'modules/property/repair/repairStaff'
 import {
   Box,
   CircularProgress,

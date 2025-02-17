@@ -8,9 +8,9 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RoomReply, RoomParams } from 'api/model/property/roomModel'
-import { HousingManagementReply } from 'api/model/property/housingManagementModel'
-import { create, find, update } from 'modules/property/room'
+import { RoomReply, RoomParams } from 'api/model/property/houses/roomModel'
+import { HousingManagementReply } from 'api/model/property/houses/housingManagementModel'
+import { create, find, update } from 'modules/property/houses/room'
 import {
   Box,
   CircularProgress,

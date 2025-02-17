@@ -2,10 +2,10 @@ import React, { Dispatch, memo, SetStateAction, useCallback, useEffect, useState
 import { Close } from '@mui/icons-material'
 import { Button, Dialog, DialogContent, DialogTitle, IconButton, TextField } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
-import { SpectionPointReply } from 'api/model/property/spectionPointModel'
-import { SpectionRouteReply } from 'api/model/property/spectionRouteModel'
+import { SpectionPointReply } from 'api/model/property/inspection/spectionPointModel'
+import { SpectionRouteReply } from 'api/model/property/inspection/spectionRouteModel'
 import message from 'components/Message'
-import { createPoint, find, findPoint } from 'modules/property/spectionPoint'
+import { createPoint, find, findPoint } from 'modules/property/inspection/spectionPoint'
 import { useDispatch, useSelector } from 'react-redux'
 
 const textFieldStyles = {

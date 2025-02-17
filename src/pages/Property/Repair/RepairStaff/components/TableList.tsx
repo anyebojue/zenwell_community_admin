@@ -15,7 +15,7 @@ import {
   SelectChangeEvent,
   Theme
 } from '@mui/material'
-import { RepairStaffReply } from 'api/model/property/repairStaffModel'
+import { RepairStaffReply } from 'api/model/property/repair/repairStaffModel'
 import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {

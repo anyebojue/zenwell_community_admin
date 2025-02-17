@@ -4,8 +4,8 @@ import { RichTreeView } from '@mui/x-tree-view'
 import { Box } from '@mui/material'
 import message from 'components/Message'
 import AMapExample from 'components/AMapExample'
-import { findPoint } from 'modules/property/spectionPoint'
-import { SpectionPointReply } from 'api/model/property/spectionPointModel'
+import { findPoint } from 'modules/property/inspection/spectionPoint'
+import { SpectionPointReply } from 'api/model/property/inspection/spectionPointModel'
 
 interface RouteIndexProps {
   dialogValue: SpectionPointReply

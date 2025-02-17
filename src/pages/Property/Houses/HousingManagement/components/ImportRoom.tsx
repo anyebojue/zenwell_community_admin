@@ -14,7 +14,7 @@ import {
   Link
 } from '@mui/material'
 import message from 'components/Message'
-import { ImportRoom } from 'api/property/room'
+import { ImportRoom } from 'api/property/houses/room'
 
 interface ImportRoomsProps {
   openImportRoom: boolean

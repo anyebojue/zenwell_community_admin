@@ -9,13 +9,13 @@ import {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RoomReply } from 'api/model/property/roomModel'
-import { deleteByIds, find } from 'modules/property/room'
+import { RoomReply } from 'api/model/property/houses/roomModel'
+import { deleteByIds, find } from 'modules/property/houses/room'
 import { Box, Tooltip, IconButton, Chip } from '@mui/material'
 import { Delete, Edit, ExitToApp, House, Key } from '@mui/icons-material'
 import message from 'components/Message'
 import DeleteModal from 'components/DeleteModal'
-import { HousingManagementReply } from 'api/model/property/housingManagementModel'
+import { HousingManagementReply } from 'api/model/property/houses/housingManagementModel'
 import { useNavigate } from 'react-router-dom'
 import TableList from './TableList'
 

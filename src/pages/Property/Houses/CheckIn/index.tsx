@@ -1,11 +1,11 @@
 import React, { memo, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { OwnerReply } from 'api/model/property/ownerModel'
+import { OwnerReply } from 'api/model/property/houses/ownerModel'
 import { Box, FormLabel, Stack, TextField, Button, Typography } from '@mui/material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 import { useDispatch } from 'react-redux'
-import { update } from 'modules/property/room'
+import { update } from 'modules/property/houses/room'
 import Associated from './components/Associated'
 
 interface FormData {

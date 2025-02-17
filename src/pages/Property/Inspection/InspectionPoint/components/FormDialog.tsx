@@ -8,9 +8,12 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { SpectionPointReply, SpectionPointParams } from 'api/model/property/spectionPointModel'
-import { create, find, update } from 'modules/property/spectionPoint'
-import { find as spectionFind } from 'modules/property/spection'
+import {
+  SpectionPointReply,
+  SpectionPointParams
+} from 'api/model/property/inspection/spectionPointModel'
+import { create, find, update } from 'modules/property/inspection/spectionPoint'
+import { find as spectionFind } from 'modules/property/inspection/spection'
 import {
   Box,
   CircularProgress,

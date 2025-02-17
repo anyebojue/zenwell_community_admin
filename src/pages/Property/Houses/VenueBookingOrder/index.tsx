@@ -1,5 +1,5 @@
 import { memo, useState } from 'react'
-import { SpacePersonReply } from 'api/model/property/spacePersonModel'
+import { SpacePersonReply } from 'api/model/property/houses/spacePersonModel'
 import { Box, Theme, Typography } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'

@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Box, Tooltip, IconButton } from '@mui/material'
 import { Edit, Delete } from '@mui/icons-material'
 import message from 'components/Message'
-import { find } from 'modules/property/owner'
-import { OwnerReply } from 'api/model/property/ownerModel'
+import { find } from 'modules/property/houses/owner'
+import { OwnerReply } from 'api/model/property/houses/ownerModel'
 import TableList from './TableList'
 
 export interface Column<T> {

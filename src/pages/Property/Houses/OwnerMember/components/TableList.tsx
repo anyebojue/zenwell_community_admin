@@ -1,5 +1,5 @@
 import { memo, useState, useMemo, ChangeEvent, Dispatch, SetStateAction } from 'react'
-import { OrgUserReply } from 'api/model/platform/organizationInfoModel'
+import { OrgUserReply } from 'api/model/platform/organization/organizationInfoModel'
 import {
   Pagination,
   Table,
@@ -17,7 +17,7 @@ import {
   Theme,
   Checkbox
 } from '@mui/material'
-import { OwnerReply } from 'api/model/property/ownerModel'
+import { OwnerReply } from 'api/model/property/houses/ownerModel'
 import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {

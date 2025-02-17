@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, memo, SetStateAction, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { SpectionPlanParams } from 'api/model/property/spectionPlanModel'
-import { find } from 'modules/property/spectionPlan'
+import { SpectionPlanParams } from 'api/model/property/inspection/spectionPlanModel'
+import { find } from 'modules/property/inspection/spectionPlan'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -36,7 +36,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
     id: '',
     inspectionPlanName: '',
     staffName: '',
-    status: ''
+    status: 0
   })
 
   const handleInputChange =
@@ -149,13 +149,13 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
                 id: '',
                 inspectionPlanName: '',
                 createUserName: '',
-                status: ''
+                status: 0
               })
               fetchData({
                 id: '',
                 inspectionPlanName: '',
                 createUserName: '',
-                status: '',
+                status: 0,
                 'page.num': page.num,
                 'page.size': page.size
               })

@@ -8,8 +8,8 @@ import React, {
   useState
 } from 'react'
 import { useDispatch } from 'react-redux'
-import { SpaceReply, SpaceParams } from 'api/model/property/spaceModel'
-import { create, find, update } from 'modules/property/space'
+import { SpaceReply, SpaceParams } from 'api/model/property/houses/spaceModel'
+import { create, find, update } from 'modules/property/houses/space'
 import {
   Box,
   CircularProgress,
@@ -25,7 +25,7 @@ import {
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
-import { VenueReply } from 'api/model/property/venueModel'
+import { VenueReply } from 'api/model/property/houses/venueModel'
 
 interface FormDialogProps {
   dialogValue?: VenueReply

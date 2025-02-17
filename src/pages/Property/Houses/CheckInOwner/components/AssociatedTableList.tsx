@@ -1,6 +1,6 @@
 import { memo, useState, useMemo, ChangeEvent, ReactNode } from 'react'
-import { HousingManagementReply } from 'api/model/property/housingManagementModel'
-import { RoomReply } from 'api/model/property/roomModel'
+import { HousingManagementReply } from 'api/model/property/houses/housingManagementModel'
+import { RoomReply } from 'api/model/property/houses/roomModel'
 import {
   Pagination,
   Table,
@@ -17,7 +17,7 @@ import {
   SelectChangeEvent,
   Theme
 } from '@mui/material'
-import { UnitReply } from 'api/model/property/unitModel'
+import { UnitReply } from 'api/model/property/houses/unitModel'
 import { Column } from './AssociatedTableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {

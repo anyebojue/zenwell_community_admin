@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { SpectionPointReply } from 'api/model/property/spectionPointModel'
-import { deletePoint, findPoint } from 'modules/property/spectionPoint'
+import { SpectionPointReply } from 'api/model/property/inspection/spectionPointModel'
+import { deletePoint, findPoint } from 'modules/property/inspection/spectionPoint'
 import message from 'components/Message'
 import { DataGrid } from '@mui/x-data-grid'
 import { Box, Button, IconButton, Tooltip } from '@mui/material'
@@ -9,7 +9,7 @@ import { Add, Delete, Edit } from '@mui/icons-material'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import AddPoint from 'pages/Property/Inspection/InspectionRoute/components/AddPoint'
 import EditPoint from 'pages/Property/Inspection/InspectionRoute/components/EditPoint'
-import { SpectionPlanReply } from 'api/model/property/spectionPlanModel'
+import { SpectionPlanReply } from 'api/model/property/inspection/spectionPlanModel'
 
 interface PointIndexProps {
   dialogValue: SpectionPlanReply

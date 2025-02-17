@@ -16,7 +16,7 @@ import {
   Checkbox,
   Theme
 } from '@mui/material'
-import { RoomRenovationRecordReply } from 'api/model/property/roomRenovationRecordModel'
+import { RoomRenovationRecordReply } from 'api/model/property/communitys/roomRenovationRecordModel'
 import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {

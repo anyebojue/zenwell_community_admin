@@ -1,6 +1,6 @@
 import { Dispatch, memo, SetStateAction, useState } from 'react'
 import { Dialog, DialogContent, DialogTitle } from '@mui/material'
-import { OwnerReply } from 'api/model/property/ownerModel'
+import { OwnerReply } from 'api/model/property/houses/ownerModel'
 import AssociatedFormSearch from './AssociatedFormSearch'
 import AssociatedTableData from './AssociatedTableData'
 

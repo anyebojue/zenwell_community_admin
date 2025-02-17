@@ -1,7 +1,7 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { SpacePersonReply } from 'api/model/property/spacePersonModel'
-import { find, update } from 'modules/property/spacePerson'
+import { SpacePersonReply } from 'api/model/property/houses/spacePersonModel'
+import { find, update } from 'modules/property/houses/spacePerson'
 import {
   Box,
   Tooltip,

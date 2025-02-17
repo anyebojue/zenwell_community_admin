@@ -16,7 +16,7 @@ import {
   Checkbox,
   Theme
 } from '@mui/material'
-import { OwnerReply } from 'api/model/property/ownerModel'
+import { OwnerReply } from 'api/model/property/houses/ownerModel'
 import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {

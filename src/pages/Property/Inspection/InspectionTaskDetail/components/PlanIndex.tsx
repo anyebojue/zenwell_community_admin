@@ -1,9 +1,9 @@
 import { memo, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { find } from 'modules/property/spectionPlan'
+import { find } from 'modules/property/inspection/spectionPlan'
 import message from 'components/Message'
 import { DataGrid } from '@mui/x-data-grid'
-import { SpectionTaskReply } from 'api/model/property/spectionTaskModel'
+import { SpectionTaskReply } from 'api/model/property/inspection/spectionTaskModel'
 
 interface PlanIndexProps {
   dialogValue: SpectionTaskReply

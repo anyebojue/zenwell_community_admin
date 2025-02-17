@@ -15,7 +15,7 @@ import {
   SelectChangeEvent,
   Theme
 } from '@mui/material'
-import { SpectionTaskDetailReply } from 'api/model/property/spectionTaskDetailModel'
+import { SpectionTaskDetailReply } from 'api/model/property/inspection/spectionTaskDetailModel'
 import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {

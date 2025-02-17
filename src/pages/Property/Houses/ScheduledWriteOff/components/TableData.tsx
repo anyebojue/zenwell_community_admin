@@ -1,8 +1,8 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import message from 'components/Message'
-import { find } from 'modules/property/spaceConfirmOrder'
-import { SpaceConfirmOrderReply } from 'api/model/property/spaceConfirmOrderModel'
+import { find } from 'modules/property/houses/spaceConfirmOrder'
+import { SpaceConfirmOrderReply } from 'api/model/property/houses/spaceConfirmOrderModel'
 import TableList from './TableList'
 
 export interface Column<T> {

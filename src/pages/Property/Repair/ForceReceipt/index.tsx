@@ -2,7 +2,7 @@ import { memo, useState } from 'react'
 import { Box, Theme, Typography } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
-import { RepairPoolReply } from 'api/model/property/repairPoolModel'
+import { RepairPoolReply } from 'api/model/property/repair/repairPoolModel'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
 

@@ -1,5 +1,5 @@
 import { memo, useState, useMemo, ChangeEvent, Dispatch, SetStateAction } from 'react'
-import { OrgUserReply } from 'api/model/platform/organizationInfoModel'
+import { OrgUserReply } from 'api/model/platform/organization/organizationInfoModel'
 import {
   Pagination,
   Table,
@@ -16,7 +16,7 @@ import {
   SelectChangeEvent,
   Theme
 } from '@mui/material'
-import { SpaceConfirmOrderReply } from 'api/model/property/spaceConfirmOrderModel'
+import { SpaceConfirmOrderReply } from 'api/model/property/houses/spaceConfirmOrderModel'
 import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {

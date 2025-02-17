@@ -1,5 +1,5 @@
 import { memo, useState } from 'react'
-import { SpaceConfirmOrderReply } from 'api/model/property/spaceConfirmOrderModel'
+import { SpaceConfirmOrderReply } from 'api/model/property/houses/spaceConfirmOrderModel'
 import { Box, Button, FormControl, Stack, TextField, Theme } from '@mui/material'
 import { CheckCircle } from '@mui/icons-material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'

@@ -11,8 +11,8 @@ import { useDispatch } from 'react-redux'
 import {
   HousingManagementReply,
   HousingManagementParams
-} from 'api/model/property/housingManagementModel'
-import { create, find, update } from 'modules/property/housingManagement'
+} from 'api/model/property/houses/housingManagementModel'
+import { create, find, update } from 'modules/property/houses/housingManagement'
 import {
   Box,
   CircularProgress,

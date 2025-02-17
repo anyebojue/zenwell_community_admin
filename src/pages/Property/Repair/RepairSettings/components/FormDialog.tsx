@@ -8,8 +8,11 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairSettingParams, RepairSettingReply } from 'api/model/property/repairSettingModel'
-import { create, find, update } from 'modules/property/repairSetting'
+import {
+  RepairSettingParams,
+  RepairSettingReply
+} from 'api/model/property/repair/repairSettingModel'
+import { create, find, update } from 'modules/property/repair/repairSetting'
 import {
   Box,
   CircularProgress,

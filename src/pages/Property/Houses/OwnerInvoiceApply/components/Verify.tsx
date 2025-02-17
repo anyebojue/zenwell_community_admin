@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   OwnerInvoiceApplyParams,
   OwnerInvoiceApplyReply
-} from 'api/model/property/ownerInvoiceApplyModel'
-import { find, update } from 'modules/property/ownerInvoiceApply'
+} from 'api/model/property/houses/ownerInvoiceApplyModel'
+import { find, update } from 'modules/property/houses/ownerInvoiceApply'
 import {
   Box,
   CircularProgress,

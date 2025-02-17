@@ -1,7 +1,7 @@
 import React, { Dispatch, memo, SetStateAction, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairPoolParams } from 'api/model/property/repairPoolModel'
-import { create, find } from 'modules/property/repairPool'
+import { RepairPoolParams } from 'api/model/property/repair/repairPoolModel'
+import { create, find } from 'modules/property/repair/repairPool'
 import {
   Box,
   CircularProgress,

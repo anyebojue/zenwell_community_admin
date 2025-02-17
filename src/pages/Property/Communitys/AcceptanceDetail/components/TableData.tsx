@@ -1,9 +1,9 @@
 import { memo, ReactNode, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RoomRenovationRecordReply } from 'api/model/property/roomRenovationRecordModel'
-import { find } from 'modules/property/roomRenovationRecord'
+import { RoomRenovationRecordReply } from 'api/model/property/communitys/roomRenovationRecordModel'
+import { find } from 'modules/property/communitys/roomRenovationRecord'
 import message from 'components/Message'
-import { RoomRenovationReply } from 'api/model/property/roomRenovationModel'
+import { RoomRenovationReply } from 'api/model/property/communitys/roomRenovationModel'
 import TableList from './TableList'
 
 export interface Column<T> {

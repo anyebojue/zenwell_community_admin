@@ -1,12 +1,12 @@
 import { memo, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { find } from 'modules/property/spectionTask'
+import { find } from 'modules/property/inspection/spectionTask'
 import { RichTreeView } from '@mui/x-tree-view'
 import { Box } from '@mui/material'
 import message from 'components/Message'
-import { SpectionTaskReply } from 'api/model/property/spectionTaskModel'
+import { SpectionTaskReply } from 'api/model/property/inspection/spectionTaskModel'
 import AMapExample from 'components/AMapExample'
-import { SpectionPlanReply } from 'api/model/property/spectionPlanModel'
+import { SpectionPlanReply } from 'api/model/property/inspection/spectionPlanModel'
 
 interface TaskIndexProps {
   dialogValue: SpectionPlanReply

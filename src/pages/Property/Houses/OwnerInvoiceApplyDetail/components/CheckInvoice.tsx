@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { Box } from '@mui/material'
-import { OwnerInvoiceApplyReply } from 'api/model/property/ownerInvoiceApplyModel'
+import { OwnerInvoiceApplyReply } from 'api/model/property/houses/ownerInvoiceApplyModel'
 
 interface PlanIndexProps {
   dialogValue: OwnerInvoiceApplyReply

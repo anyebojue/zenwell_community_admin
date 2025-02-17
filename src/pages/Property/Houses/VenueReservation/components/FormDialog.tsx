@@ -1,8 +1,8 @@
 import React, { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { SpacePersonParams } from 'api/model/property/spacePersonModel'
-import { create } from 'modules/property/spacePerson'
-import { find } from 'modules/property/space'
+import { SpacePersonParams } from 'api/model/property/houses/spacePersonModel'
+import { create } from 'modules/property/houses/spacePerson'
+import { find } from 'modules/property/houses/space'
 import {
   Box,
   CircularProgress,
@@ -18,7 +18,7 @@ import {
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
-import { SpaceReply } from 'api/model/property/spaceModel'
+import { SpaceReply } from 'api/model/property/houses/spaceModel'
 
 interface FormDialogProps {
   dialogValue: SpaceReply

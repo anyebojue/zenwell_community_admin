@@ -1,6 +1,6 @@
 import React, { memo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { RepairLogReply, RepairPoolReply } from 'api/model/property/repairPoolModel'
+import { RepairLogReply, RepairPoolReply } from 'api/model/property/repair/repairPoolModel'
 import { Box, Button, Chip, Theme, Typography } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import Grid from '@mui/material/Grid2'

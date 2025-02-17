@@ -1,7 +1,7 @@
 import React, { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OwnerInvoiceApplyParams } from 'api/model/property/ownerInvoiceApplyModel'
-import { create, find } from 'modules/property/ownerInvoiceApply'
+import { OwnerInvoiceApplyParams } from 'api/model/property/houses/ownerInvoiceApplyModel'
+import { create, find } from 'modules/property/houses/ownerInvoiceApply'
 import {
   Box,
   CircularProgress,

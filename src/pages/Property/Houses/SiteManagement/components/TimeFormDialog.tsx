@@ -1,6 +1,6 @@
 import React, { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { create, find as timeFind } from 'modules/property/spaceOpenTime'
+import { create, find as timeFind } from 'modules/property/houses/spaceOpenTime'
 import Grid from '@mui/material/Grid2'
 import {
   Box,
@@ -14,7 +14,7 @@ import {
   TextField
 } from '@mui/material'
 import message from 'components/Message'
-import { SpaceReply } from 'api/model/property/spaceModel'
+import { SpaceReply } from 'api/model/property/houses/spaceModel'
 
 interface FormDialogProps {
   dialogSpaceValue?: SpaceReply

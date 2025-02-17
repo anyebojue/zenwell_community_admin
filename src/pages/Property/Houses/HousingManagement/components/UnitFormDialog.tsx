@@ -8,9 +8,9 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { UnitParams, UnitReply } from 'api/model/property/unitModel'
-import { create, update } from 'modules/property/unit'
-import { find } from 'modules/property/housingManagement'
+import { UnitParams, UnitReply } from 'api/model/property/houses/unitModel'
+import { create, update } from 'modules/property/houses/unit'
+import { find } from 'modules/property/houses/housingManagement'
 import {
   Box,
   CircularProgress,

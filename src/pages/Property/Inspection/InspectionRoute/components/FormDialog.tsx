@@ -8,8 +8,11 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { SpectionRouteParams, SpectionRouteReply } from 'api/model/property/spectionRouteModel'
-import { create, find, update } from 'modules/property/spectionRoute'
+import {
+  SpectionRouteParams,
+  SpectionRouteReply
+} from 'api/model/property/inspection/spectionRouteModel'
+import { create, find, update } from 'modules/property/inspection/spectionRoute'
 import {
   Box,
   CircularProgress,

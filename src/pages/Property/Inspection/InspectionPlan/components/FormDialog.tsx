@@ -8,8 +8,11 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { SpectionPlanParams, SpectionPlanReply } from 'api/model/property/spectionPlanModel'
-import { create, find, update } from 'modules/property/spectionPlan'
+import {
+  SpectionPlanParams,
+  SpectionPlanReply
+} from 'api/model/property/inspection/spectionPlanModel'
+import { create, find, update } from 'modules/property/inspection/spectionPlan'
 import {
   Box,
   CircularProgress,
@@ -42,7 +45,7 @@ import {
   OrgUserReply
 } from 'api/model/platform/organization/organizationInfoModel'
 import { find as treeFind, findOrgUser } from 'modules/platform/organization/organizationInfo'
-import { find as routeFind } from 'modules/property/spectionRoute'
+import { find as routeFind } from 'modules/property/inspection/spectionRoute'
 
 interface FormDialogProps {
   dialogValue?: SpectionPlanReply

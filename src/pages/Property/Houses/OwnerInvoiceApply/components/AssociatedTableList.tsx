@@ -1,5 +1,5 @@
 import { memo, useState, useMemo, ChangeEvent, Dispatch, SetStateAction } from 'react'
-import { OwnerInvoiceApplyReply } from 'api/model/property/ownerInvoiceApplyModel'
+import { OwnerInvoiceApplyReply } from 'api/model/property/houses/ownerInvoiceApplyModel'
 import {
   Pagination,
   Table,

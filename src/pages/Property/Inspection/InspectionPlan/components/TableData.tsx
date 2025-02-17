@@ -1,7 +1,7 @@
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { SpectionPlanReply } from 'api/model/property/spectionPlanModel'
-import { find, update } from 'modules/property/spectionPlan'
+import { SpectionPlanReply } from 'api/model/property/inspection/spectionPlanModel'
+import { find, update } from 'modules/property/inspection/spectionPlan'
 import {
   Box,
   Tooltip,

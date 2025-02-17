@@ -15,7 +15,7 @@ import {
   SelectChangeEvent,
   Theme
 } from '@mui/material'
-import { SpacePersonReply } from 'api/model/property/spacePersonModel'
+import { SpacePersonReply } from 'api/model/property/houses/spacePersonModel'
 import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {

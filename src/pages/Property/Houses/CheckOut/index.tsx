@@ -15,10 +15,10 @@ import Grid from '@mui/material/Grid2'
 import { buttonStyles } from 'components/DeleteModal'
 import { Close, WarningRounded } from '@mui/icons-material'
 import message from 'components/Message'
-import { get } from 'modules/property/owner'
+import { get } from 'modules/property/houses/owner'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { update } from 'modules/property/room'
+import { update } from 'modules/property/houses/room'
 
 const contentBoxStyle = (theme: Theme) => ({
   mt: 2.5,

@@ -1,7 +1,10 @@
 import React, { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RoomRenovationParams, RoomRenovationReply } from 'api/model/property/roomRenovationModel'
-import { find, update } from 'modules/property/roomRenovation'
+import {
+  RoomRenovationParams,
+  RoomRenovationReply
+} from 'api/model/property/communitys/roomRenovationModel'
+import { find, update } from 'modules/property/communitys/roomRenovation'
 import {
   Box,
   CircularProgress,

@@ -8,8 +8,8 @@ import React, {
   useState
 } from 'react'
 import { useDispatch } from 'react-redux'
-import { VenueReply, VenueParams } from 'api/model/property/venueModel'
-import { create, find, update } from 'modules/property/venue'
+import { VenueReply, VenueParams } from 'api/model/property/houses/venueModel'
+import { create, find, update } from 'modules/property/houses/venue'
 import {
   Box,
   CircularProgress,

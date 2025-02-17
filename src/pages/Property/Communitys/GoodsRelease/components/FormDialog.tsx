@@ -8,8 +8,8 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ReleaseParams, ReleaseReply } from 'api/model/property/releaseModel'
-import { create, find, update } from 'modules/property/release'
+import { ReleaseParams, ReleaseReply } from 'api/model/property/communitys/releaseModel'
+import { create, find, update } from 'modules/property/communitys/release'
 import {
   Box,
   CircularProgress,

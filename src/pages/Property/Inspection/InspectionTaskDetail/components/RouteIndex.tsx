@@ -3,7 +3,7 @@ import { RichTreeView } from '@mui/x-tree-view'
 import { Box } from '@mui/material'
 import AMapExample from 'components/AMapExample'
 import { SpectionRouteReply } from 'api/model/property/spectionRouteModel'
-import { SpectionTaskReply } from 'api/model/property/spectionTaskModel'
+import { SpectionTaskReply } from 'api/model/property/inspection/spectionTaskModel'
 
 interface RouteIndexProps {
   dialogValue: SpectionTaskReply

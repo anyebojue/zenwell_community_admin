@@ -1,7 +1,7 @@
 import React, { Dispatch, memo, SetStateAction, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RoomRenovationRecordParams } from 'api/model/property/roomRenovationRecordModel'
-import { create, find } from 'modules/property/roomRenovationRecord'
+import { RoomRenovationRecordParams } from 'api/model/property/communitys/roomRenovationRecordModel'
+import { create, find } from 'modules/property/communitys/roomRenovationRecord'
 import {
   Box,
   CircularProgress,
@@ -19,7 +19,7 @@ import {
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
-import { RoomRenovationReply } from 'api/model/property/roomRenovationModel'
+import { RoomRenovationReply } from 'api/model/property/communitys/roomRenovationModel'
 import { uploadImage } from 'api/info'
 import { AddCircle } from '@mui/icons-material'
 

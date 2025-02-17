@@ -16,7 +16,7 @@ import {
   Checkbox,
   Theme
 } from '@mui/material'
-import { ReleaseReply } from 'api/model/property/releaseModel'
+import { ReleaseReply } from 'api/model/property/communitys/releaseModel'
 import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {

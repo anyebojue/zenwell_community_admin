@@ -16,7 +16,7 @@ import {
   Checkbox,
   Theme
 } from '@mui/material'
-import { RepairSettingReply } from 'api/model/property/repairSettingModel'
+import { RepairSettingReply } from 'api/model/property/repair/repairSettingModel'
 import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {

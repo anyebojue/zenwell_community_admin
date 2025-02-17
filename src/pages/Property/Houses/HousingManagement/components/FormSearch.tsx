@@ -1,12 +1,12 @@
 import { ChangeEvent, memo, useState, useCallback, Dispatch, SetStateAction } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { HousingManagementReply } from 'api/model/property/housingManagementModel'
-import { find } from 'modules/property/room'
+import { HousingManagementReply } from 'api/model/property/houses/housingManagementModel'
+import { find } from 'modules/property/houses/room'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import { RoomParams } from 'api/model/property/roomModel'
+import { RoomParams } from 'api/model/property/houses/roomModel'
 
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {

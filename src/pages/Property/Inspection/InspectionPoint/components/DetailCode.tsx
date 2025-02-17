@@ -7,7 +7,7 @@ import {
   DialogTitle,
   Typography
 } from '@mui/material'
-import { SpectionPointReply } from 'api/model/property/spectionPointModel'
+import { SpectionPointReply } from 'api/model/property/inspection/spectionPointModel'
 
 interface AddPointProps {
   dialogValue: SpectionPointReply

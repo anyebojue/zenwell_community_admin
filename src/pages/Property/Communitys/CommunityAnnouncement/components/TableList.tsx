@@ -16,7 +16,7 @@ import {
   Checkbox,
   Theme
 } from '@mui/material'
-import { CommunityAnnouncementReply } from 'api/model/property/communityAnnouncementModel'
+import { CommunityAnnouncementReply } from 'api/model/property/communitys/communityAnnouncementModel'
 import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {

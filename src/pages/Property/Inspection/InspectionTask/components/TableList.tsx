@@ -16,7 +16,7 @@ import {
   Checkbox,
   Theme
 } from '@mui/material'
-import { SpectionTaskReply } from 'api/model/property/spectionTaskModel'
+import { SpectionTaskReply } from 'api/model/property/inspection/spectionTaskModel'
 import { Column } from './TableData'
 
 const usePagination = <T,>(data: T[], rowsPerPage: number) => {

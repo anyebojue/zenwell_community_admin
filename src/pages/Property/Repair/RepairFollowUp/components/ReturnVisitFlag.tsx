@@ -1,6 +1,6 @@
 import React, { Dispatch, memo, SetStateAction, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairPoolReply } from 'api/model/property/repairPoolModel'
+import { RepairPoolReply } from 'api/model/property/repair/repairPoolModel'
 import {
   Box,
   CircularProgress,
@@ -16,7 +16,7 @@ import {
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
-import { createRepairReturnVisit, find as findPool } from 'modules/property/repairPool'
+import { createRepairReturnVisit, find as findPool } from 'modules/property/repair/repairPool'
 
 interface ReturnVisitFlagProps {
   dialogValue: RepairPoolReply | undefined

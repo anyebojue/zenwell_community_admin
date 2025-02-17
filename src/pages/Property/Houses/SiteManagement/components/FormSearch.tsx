@@ -1,11 +1,11 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { SpaceReply, SpaceParams } from 'api/model/property/spaceModel'
+import { SpaceReply, SpaceParams } from 'api/model/property/houses/spaceModel'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import { find } from 'modules/property/space'
+import { find } from 'modules/property/houses/space'
 
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {

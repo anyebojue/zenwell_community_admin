@@ -8,8 +8,8 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OwnerInvoiceParams, OwnerInvoiceReply } from 'api/model/property/ownerInvoiceModel'
-import { create, find, update } from 'modules/property/ownerInvoice'
+import { OwnerInvoiceParams, OwnerInvoiceReply } from 'api/model/property/houses/ownerInvoiceModel'
+import { create, find, update } from 'modules/property/houses/ownerInvoice'
 import {
   Box,
   CircularProgress,
@@ -25,7 +25,7 @@ import {
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
-import { OwnerReply } from 'api/model/property/ownerModel'
+import { OwnerReply } from 'api/model/property/houses/ownerModel'
 import Associated from './Associated'
 
 interface FormDialogProps {

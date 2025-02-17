@@ -1,9 +1,9 @@
 import { memo, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { find } from 'modules/property/ownerInvoiceApplyEvent'
+import { find } from 'modules/property/houses/ownerInvoiceApplyEvent'
 import message from 'components/Message'
 import { DataGrid } from '@mui/x-data-grid'
-import { OwnerInvoiceApplyReply } from 'api/model/property/ownerInvoiceApplyModel'
+import { OwnerInvoiceApplyReply } from 'api/model/property/houses/ownerInvoiceApplyModel'
 
 interface PlanIndexProps {
   dialogValue: OwnerInvoiceApplyReply

@@ -8,7 +8,7 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { createPoint, findPoint } from 'modules/property/spectionPoint'
+import { createPoint, findPoint } from 'modules/property/inspection/spectionPoint'
 import {
   Box,
   CircularProgress,
@@ -23,8 +23,11 @@ import {
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
-import { SpectionPointParams, SpectionPointReply } from 'api/model/property/spectionPointModel'
-import { SpectionRouteReply } from 'api/model/property/spectionRouteModel'
+import {
+  SpectionPointParams,
+  SpectionPointReply
+} from 'api/model/property/inspection/spectionPointModel'
+import { SpectionRouteReply } from 'api/model/property/inspection/spectionRouteModel'
 
 const formatDateTime = (date: Date | string | undefined): string => {
   const validDate = date ? new Date(date) : new Date()

@@ -8,8 +8,8 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RepairPoolParams, RepairPoolReply } from 'api/model/property/repairPoolModel'
-import { create, find, update } from 'modules/property/repairPool'
+import { RepairPoolParams, RepairPoolReply } from 'api/model/property/repair/repairPoolModel'
+import { create, find, update } from 'modules/property/repair/repairPool'
 import {
   Box,
   CircularProgress,

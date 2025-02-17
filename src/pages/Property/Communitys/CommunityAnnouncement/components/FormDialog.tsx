@@ -11,8 +11,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   CommunityAnnouncementParams,
   CommunityAnnouncementReply
-} from 'api/model/property/communityAnnouncementModel'
-import { create, find, update } from 'modules/property/communityAnnouncement'
+} from 'api/model/property/communitys/communityAnnouncementModel'
+import { create, find, update } from 'modules/property/communitys/communityAnnouncement'
 import {
   Box,
   CircularProgress,

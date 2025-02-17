@@ -2,8 +2,8 @@ import { memo, useEffect, useMemo, useState } from 'react'
 import { RichTreeView } from '@mui/x-tree-view'
 import { Box } from '@mui/material'
 import AMapExample from 'components/AMapExample'
-import { SpectionRouteReply } from 'api/model/property/spectionRouteModel'
-import { SpectionPlanReply } from 'api/model/property/spectionPlanModel'
+import { SpectionRouteReply } from 'api/model/property/inspection/spectionRouteModel'
+import { SpectionPlanReply } from 'api/model/property/inspection/spectionPlanModel'
 
 interface RouteIndexProps {
   dialogValue: SpectionPlanReply

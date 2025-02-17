@@ -1,5 +1,5 @@
 import { memo, useState, useMemo, ChangeEvent, Dispatch, SetStateAction } from 'react'
-import { OrgUserReply } from 'api/model/platform/organizationInfoModel'
+import { OrgUserReply } from 'api/model/platform/organization/organizationInfoModel'
 import {
   Pagination,
   Table,

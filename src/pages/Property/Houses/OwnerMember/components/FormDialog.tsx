@@ -8,8 +8,8 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OwnerParams, OwnerReply } from 'api/model/property/ownerModel'
-import { create, find, update } from 'modules/property/owner'
+import { OwnerParams, OwnerReply } from 'api/model/property/houses/ownerModel'
+import { create, find, update } from 'modules/property/houses/owner'
 import {
   Box,
   CircularProgress,
