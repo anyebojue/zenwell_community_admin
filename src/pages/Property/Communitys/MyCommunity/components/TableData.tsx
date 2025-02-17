@@ -1,59 +1,51 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CommunityReply } from 'api/model/platform/communityModel'
-import { Box, Tooltip, IconButton } from '@mui/material'
-import { Edit } from '@mui/icons-material'
-import TableList from './TableList'
-
-const renderActionButtons = (setOpenDialog: Dispatch<SetStateAction<boolean>>) => (
-  <Box>
-    {[
-      {
-        title: '修改',
-        color: 'secondary' as const,
-        icon: <Edit fontSize="small" />,
-        onClick: () => setOpenDialog(true)
-      }
-    ].map((action, index) => (
-      <Tooltip title={action.title} key={index}>
-        <IconButton size="small" color={action.color} onClick={action.onClick}>
-          {action.icon}
-        </IconButton>
-      </Tooltip>
-    ))}
-  </Box>
-)
-
-export interface Column<T> {
-  headerName: string
-  key: string
-  align?: 'left' | 'right' | 'center'
-  renderCell?: (_value: T[keyof T]) => ReactNode
-}
+import { Chip } from '@mui/material'
+import { DataGrid } from '@mui/x-data-grid'
+import { zhCN } from '@mui/x-data-grid/locales'
 
 interface TableDataProps {
   setDialogValue: Dispatch<SetStateAction<CommunityReply | undefined>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
+const statusValue: Record<string, string> = {
+  '1000': '审核完成'
+}
+
 const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) => {
   const info = useSelector((state: RootState) => state.info.userInfo)
   const [list, setList] = useState(info.community)
 
-  const columns: Column<CommunityReply>[] = [
-    { key: 'id', headerName: '小区ID', align: 'center' },
-    { key: 'name', headerName: '小区名称', align: 'center' },
-    { key: 'nearbyLandmarks', headerName: '附近地标', align: 'center' },
-    { key: 'cityCode', headerName: '城市编码', align: 'center' },
-    { key: 'bId', headerName: '社区编码', align: 'center' },
+  const handleActionClick = useCallback(
+    (actionType: string, row: CommunityReply) => {
+      switch (actionType) {
+        case 'edit':
+          setDialogValue(row)
+          setOpenDialog(true)
+          break
+      }
+    },
+    [setDialogValue, setOpenDialog]
+  )
 
-    {
-      key: 'operate',
-      headerName: '操作',
-      align: 'center',
-      renderCell: () => renderActionButtons(setOpenDialog)
-    }
-  ]
+  const renderActionButtons = (row: CommunityReply) =>
+    [{ title: '修改', action: 'edit' }].map(({ title, action }) => (
+      <Chip
+        key={title}
+        sx={{
+          cursor: 'pointer',
+          '& .MuiChip-label': {
+            fontSize: '13px'
+          }
+        }}
+        label={title}
+        color="primary"
+        variant="outlined"
+        onClick={() => handleActionClick(action, row)}
+      />
+    ))
 
   useEffect(() => {
     const current_community = localStorage.getItem('current_community')
@@ -66,7 +58,49 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
     }
   }, [info.community])
 
-  return <TableList rows={list} columns={columns} setDialogValue={setDialogValue} />
+  return (
+    <DataGrid
+      sx={{ mt: 1 }}
+      localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
+      disableColumnResize
+      disableVirtualization={false}
+      checkboxSelection
+      rows={list}
+      columns={[
+        { field: 'name', headerName: '小区名称', flex: 1 },
+        { field: 'nearbyLandmarks', headerName: '附近地标', flex: 1 },
+        { field: 'cityCode', headerName: '城市编码', flex: 1 },
+        { field: 'bId', headerName: '社区编码', flex: 1 },
+        {
+          field: 'state',
+          headerName: '状态',
+          headerAlign: 'center',
+          align: 'center',
+          flex: 1,
+          renderCell: ({ row }: { row: CommunityReply }) => (
+            <Chip label={statusValue[row.state!] || '未知状态'} />
+          )
+        },
+        {
+          field: 'actions',
+          headerName: '操作',
+          type: 'actions',
+          width: 200,
+          getActions: ({ row }) => renderActionButtons(row)
+        }
+      ]}
+      pageSizeOptions={[10, 20, 50, 100]}
+      paginationMode="server"
+      rowCount={Number(list.length)}
+      initialState={{
+        pagination: {
+          paginationModel: {
+            pageSize: 20
+          }
+        }
+      }}
+    />
+  )
 }
 
 export default memo(TableData)
