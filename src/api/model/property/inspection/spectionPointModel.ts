@@ -1,4 +1,4 @@
-import { Page } from '../pageModel'
+import { Page } from '../../pageModel'
 import { SpectionRouteReply } from './spectionRouteModel'
 
 export interface SpectionRoutePointReply {

@@ -3,7 +3,7 @@ import { Page } from 'api/model/pageModel'
 import {
   SpaceConfirmOrderParams,
   SpaceConfirmOrderReply
-} from 'api/model/property/spaceConfirmOrderModel'
+} from 'api/model/property/houses/spaceConfirmOrderModel'
 import {
   FindSpaceConfirmOrder,
   CreateSpaceConfirmOrder,

@@ -1,5 +1,5 @@
 import { request } from 'utils/request/axios'
-import { FindStaffReply, StaffParams } from '../model/property/staffModel'
+import { FindStaffReply, StaffParams } from '../../model/property/repair/staffModel'
 
 const ApiPrefix = {
   FindStaff: '/auth/spection_plan_staff',

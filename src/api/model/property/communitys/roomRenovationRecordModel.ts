@@ -1,4 +1,4 @@
-import { Page } from '../pageModel'
+import { Page } from '../../pageModel'
 
 export interface RoomRenovationRecordReply {
   id?: string
@@ -12,7 +12,9 @@ export interface RoomRenovationRecordReply {
   statusCd?: number // 数据状态 0 在用 1 失效
   img?: string // 图片
   video?: string // 视频
+  isViolation?: number // 是否违规
   createdAt?: string
+  updatedAt?: string
 }
 
 export interface RoomRenovationRecordParams {

@@ -2,7 +2,7 @@ import { request } from 'utils/request/axios'
 import {
   FindCommunityAnnouncementReply,
   CommunityAnnouncementParams
-} from '../model/property/communityAnnouncementModel'
+} from '../../model/property/communitys/communityAnnouncementModel'
 
 const ApiPrefix = {
   FindCommunityAnnouncement: '/announcement',

@@ -2,7 +2,7 @@ import { request } from 'utils/request/axios'
 import {
   FindHousingManagementReply,
   HousingManagementParams
-} from '../model/property/housingManagementModel'
+} from '../../model/property/houses/housingManagementModel'
 
 const ApiPrefix = {
   FindHousingManagement: '/auth/floor',

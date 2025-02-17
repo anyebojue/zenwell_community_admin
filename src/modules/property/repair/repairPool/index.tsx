@@ -4,7 +4,7 @@ import {
   RepairPoolParams,
   RepairPoolReply,
   RepairReturnVisitParams
-} from 'api/model/property/repairPoolModel'
+} from 'api/model/property/repair/repairPoolModel'
 import {
   FindRepairPool,
   CreateRepairPool,

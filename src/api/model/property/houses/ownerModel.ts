@@ -1,4 +1,4 @@
-import { Page } from '../pageModel'
+import { Page } from '../../pageModel'
 import { RoomReply } from './roomModel'
 
 export interface OwnerReply {

@@ -2,7 +2,7 @@ import { request } from 'utils/request/axios'
 import {
   FindSpectionTaskDetailReply,
   SpectionTaskDetailParams
-} from '../model/property/spectionTaskDetailModel'
+} from '../../model/property/inspection/spectionTaskDetailModel'
 
 const ApiPrefix = {
   FindSpectionTaskDetail: '/auth/spection_task_detail',

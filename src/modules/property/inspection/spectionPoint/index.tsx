@@ -5,7 +5,7 @@ import {
   SpectionPointReply,
   SpectionRoutePointParams,
   SpectionRoutePointReply
-} from 'api/model/property/spectionPointModel'
+} from 'api/model/property/inspection/spectionPointModel'
 import {
   FindSpectionPoint,
   CreateSpectionPoint,

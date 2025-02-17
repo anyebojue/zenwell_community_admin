@@ -1,4 +1,4 @@
-import { Page } from '../pageModel'
+import { Page } from '../../pageModel'
 import { SpacePersonReply } from './spacePersonModel'
 
 export interface SpaceConfirmOrderReply {

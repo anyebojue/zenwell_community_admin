@@ -1,5 +1,5 @@
 import { Page } from '../../pageModel'
-import { EmployeesReply } from '../platform/employeesModel'
+import { EmployeesReply } from '../../platform/organization/employeesModel'
 import { RepairSettingReply } from './repairSettingModel'
 
 export interface RepairStaffReply {

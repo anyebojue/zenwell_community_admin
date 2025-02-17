@@ -1,5 +1,5 @@
 import { Page } from '../../pageModel'
-import { SpaceOpenTimeReply } from '../spaceOpenTimeModel'
+import { SpaceOpenTimeReply } from './spaceOpenTimeModel'
 import { VenueReply } from './venueModel'
 
 export interface SpaceReply {

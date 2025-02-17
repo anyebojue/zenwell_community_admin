@@ -4,7 +4,7 @@ import {
   FindSpectionRoutePointReply,
   SpectionPointParams,
   SpectionRoutePointParams
-} from '../model/property/spectionPointModel'
+} from '../../model/property/inspection/spectionPointModel'
 
 const ApiPrefix = {
   CreatePoint: '/auth/spection_route_point',

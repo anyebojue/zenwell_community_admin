@@ -1,4 +1,4 @@
-import { Page } from '../pageModel'
+import { Page } from '../../pageModel'
 
 interface SpectionItemVal {
   itemId?: string // 题目ID

@@ -1,4 +1,4 @@
-import { Page } from '../pageModel'
+import { Page } from '../../pageModel'
 import { SpectionTaskReply } from './spectionTaskModel'
 
 export interface SpectionTaskDetailReply {

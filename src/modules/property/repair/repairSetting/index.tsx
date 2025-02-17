@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
-import { RepairSettingParams, RepairSettingReply } from 'api/model/property/repairSettingModel'
+import {
+  RepairSettingParams,
+  RepairSettingReply
+} from 'api/model/property/repair/repairSettingModel'
 import {
   FindRepairSetting,
   CreateRepairSetting,

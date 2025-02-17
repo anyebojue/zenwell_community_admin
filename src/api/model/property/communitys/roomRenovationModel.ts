@@ -1,7 +1,9 @@
-import { Page } from '../pageModel'
+import { Page } from '../../pageModel'
+import { RoomReply } from '../houses/roomModel'
 
 export interface RoomRenovationReply {
   id?: string
+  room: RoomReply
   roomId?: string // 房屋ID
   roomName?: string // 房屋名称
   communityId?: string // 小区ID
@@ -21,6 +23,7 @@ export interface RoomRenovationReply {
   personMain?: string // 装修主要负责人
   personMainTel?: string // 负责人联系方式
   createdAt?: string
+  updatedAt?: string
 }
 
 export interface RoomRenovationParams {

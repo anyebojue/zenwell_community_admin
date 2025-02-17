@@ -4,7 +4,7 @@ import {
   RepairPoolParams,
   RepairPoolReply,
   RepairReturnVisitParams
-} from '../model/property/repairPoolModel'
+} from '../../model/property/repair/repairPoolModel'
 
 const ApiPrefix = {
   CreateRepairReturnVisit: '/auth/repair_return_visit',

@@ -2,7 +2,7 @@ import { request } from 'utils/request/axios'
 import {
   FindOwnerInvoiceApplyItemReply,
   OwnerInvoiceApplyItemParams
-} from '../model/property/ownerInvoiceApplyItemModel'
+} from '../../model/property/houses/ownerInvoiceApplyItemModel'
 
 const ApiPrefix = {
   FindOwnerInvoiceApplyItem: '/auth/owner_invoice_apply_item',

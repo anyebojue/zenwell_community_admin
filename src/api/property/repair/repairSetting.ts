@@ -1,5 +1,8 @@
 import { request } from 'utils/request/axios'
-import { FindRepairSettingReply, RepairSettingParams } from '../model/property/repairSettingModel'
+import {
+  FindRepairSettingReply,
+  RepairSettingParams
+} from '../../model/property/repair/repairSettingModel'
 
 const ApiPrefix = {
   FindRepairSetting: '/auth/repair_setting',

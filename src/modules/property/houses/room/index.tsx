@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
-import { RoomParams, RoomReply } from 'api/model/property/roomModel'
+import { RoomParams, RoomReply } from 'api/model/property/houses/roomModel'
 import { FindRoom, CreateRoom, UpdateRoom, DeleteRoom } from 'api/property/houses/room'
 
 const namespace = 'Room'

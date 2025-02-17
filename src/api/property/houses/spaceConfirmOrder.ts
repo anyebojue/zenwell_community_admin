@@ -2,7 +2,7 @@ import { request } from 'utils/request/axios'
 import {
   FindSpaceConfirmOrderReply,
   SpaceConfirmOrderParams
-} from '../model/property/spaceConfirmOrderModel'
+} from '../../model/property/houses/spaceConfirmOrderModel'
 
 const ApiPrefix = {
   FindSpaceConfirmOrder: '/auth/space_confirm_order',

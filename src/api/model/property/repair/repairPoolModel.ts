@@ -1,4 +1,4 @@
-import { Page } from '../pageModel'
+import { Page } from '../../pageModel'
 import { RepairSettingReply } from './repairSettingModel'
 
 export interface RepairReturnVisitParams {

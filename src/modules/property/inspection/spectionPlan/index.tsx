@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
-import { SpectionPlanParams, SpectionPlanReply } from 'api/model/property/spectionPlanModel'
+import {
+  SpectionPlanParams,
+  SpectionPlanReply
+} from 'api/model/property/inspection/spectionPlanModel'
 import {
   FindSpectionPlan,
   CreateSpectionPlan,

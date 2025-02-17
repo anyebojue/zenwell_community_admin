@@ -1,5 +1,5 @@
 import { request } from 'utils/request/axios'
-import { FindOwnerReply, OwnerParams, OwnerReply } from '../model/property/ownerModel'
+import { FindOwnerReply, OwnerParams, OwnerReply } from '../../model/property/houses/ownerModel'
 
 const ApiPrefix = {
   GetOwner: '/auth/owner',

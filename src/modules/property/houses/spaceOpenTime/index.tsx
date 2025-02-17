@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
-import { SpaceOpenTimeParams, SpaceOpenTimeReply } from 'api/model/property/spaceOpenTimeModel'
+import {
+  SpaceOpenTimeParams,
+  SpaceOpenTimeReply
+} from 'api/model/property/houses/spaceOpenTimeModel'
 import {
   FindSpaceOpenTime,
   CreateSpaceOpenTime,

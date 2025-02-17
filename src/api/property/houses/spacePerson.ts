@@ -1,5 +1,8 @@
 import { request } from 'utils/request/axios'
-import { FindSpacePersonReply, SpacePersonParams } from '../model/property/spacePersonModel'
+import {
+  FindSpacePersonReply,
+  SpacePersonParams
+} from '../../model/property/houses/spacePersonModel'
 
 const ApiPrefix = {
   FindSpacePerson: '/auth/space_person',

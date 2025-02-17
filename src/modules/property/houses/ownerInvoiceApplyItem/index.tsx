@@ -3,7 +3,7 @@ import { Page } from 'api/model/pageModel'
 import {
   OwnerInvoiceApplyItemParams,
   OwnerInvoiceApplyItemReply
-} from 'api/model/property/ownerInvoiceApplyItemModel'
+} from 'api/model/property/houses/ownerInvoiceApplyItemModel'
 import {
   FindOwnerInvoiceApplyItem,
   CreateOwnerInvoiceApplyItem,

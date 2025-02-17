@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
-import { SpectionRouteParams, SpectionRouteReply } from 'api/model/property/spectionRouteModel'
+import {
+  SpectionRouteParams,
+  SpectionRouteReply
+} from 'api/model/property/inspection/spectionRouteModel'
 import {
   FindSpectionRoute,
   CreateSpectionRoute,

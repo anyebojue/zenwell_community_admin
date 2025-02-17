@@ -1,4 +1,4 @@
-import { Page } from '../pageModel'
+import { Page } from '../../pageModel'
 import { ReleaseTypeReply } from './releaseTypeModel'
 
 export interface ReleaseRes {

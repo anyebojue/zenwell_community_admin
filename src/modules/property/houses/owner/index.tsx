@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
-import { OwnerParams, OwnerReply } from 'api/model/property/ownerModel'
+import { OwnerParams, OwnerReply } from 'api/model/property/houses/ownerModel'
 import {
   FindOwner,
   CreateOwner,

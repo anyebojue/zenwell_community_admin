@@ -94,7 +94,6 @@ const RoomRenovationsIndex = () => {
           </Box>
           <TableData
             dialogValue={dialogValue}
-            setDialogType={setDialogType}
             setDialogValue={setDialogValue}
             selectedRows={selectedRows}
             setSelectedRows={setSelectedRows}

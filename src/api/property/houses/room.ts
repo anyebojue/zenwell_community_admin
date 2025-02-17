@@ -1,5 +1,5 @@
 import { request } from 'utils/request/axios'
-import { FindRoomReply, RoomParams } from '../model/property/roomModel'
+import { FindRoomReply, RoomParams } from '../../model/property/houses/roomModel'
 
 const ApiPrefix = {
   ImportRoom: '/auth/file/uploads_room',

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
-import { StaffParams, StaffReply } from 'api/model/property/staffModel'
+import { StaffParams, StaffReply } from 'api/model/property/repair/staffModel'
 import { FindStaff, CreateStaff, UpdateStaff, DeleteStaff } from 'api/property/repair/staff'
 
 const namespace = 'Staff'

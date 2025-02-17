@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
-import { SpacePersonParams, SpacePersonReply } from 'api/model/property/spacePersonModel'
+import { SpacePersonParams, SpacePersonReply } from 'api/model/property/houses/spacePersonModel'
 import {
   FindSpacePerson,
   CreateSpacePerson,

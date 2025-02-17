@@ -1,17 +1,17 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
 import {
-  SpectionTaskDetailParams,
-  SpectionTaskDetailReply
-} from 'api/model/property/inspection/spectionTaskDetailModel'
+  RoomRenovationDetailParams,
+  RoomRenovationDetailReply
+} from 'api/model/property/communitys/roomRenovationDetailModel'
 import {
-  FindSpectionTaskDetail,
-  CreateSpectionTaskDetail,
-  UpdateSpectionTaskDetail,
-  DeleteSpectionTaskDetail
-} from 'api/property/inspection/spectionTaskDetail'
+  FindRoomRenovationDetail,
+  CreateRoomRenovationDetail,
+  UpdateRoomRenovationDetail,
+  DeleteRoomRenovationDetail
+} from 'api/property/communitys/roomRenovationDetail'
 
-const namespace = 'SpectionTaskDetail'
+const namespace = 'RoomRenovationDetail'
 
 const PAGE = {
   NUM: '1',
@@ -20,7 +20,7 @@ const PAGE = {
 
 interface IInitialState {
   page: Page
-  list: SpectionTaskDetailReply[]
+  list: RoomRenovationDetailReply[]
 }
 
 const initialState: IInitialState = {
@@ -35,34 +35,34 @@ const initialState: IInitialState = {
 
 export const find = createAsyncThunk(
   `${namespace}/find`,
-  async (params: SpectionTaskDetailParams & PaginationParams) => {
-    const res = await FindSpectionTaskDetail(params)
+  async (params: RoomRenovationDetailParams & PaginationParams) => {
+    const res = await FindRoomRenovationDetail(params)
     return res
   }
 )
 
 export const create = createAsyncThunk(
   `${namespace}/create`,
-  async (data: SpectionTaskDetailParams) => {
-    const res = await CreateSpectionTaskDetail(data)
+  async (data: RoomRenovationDetailParams) => {
+    const res = await CreateRoomRenovationDetail(data)
     return res
   }
 )
 
 export const update = createAsyncThunk(
   `${namespace}/update`,
-  async (data: SpectionTaskDetailParams) => {
-    const res = await UpdateSpectionTaskDetail(data)
+  async (data: RoomRenovationDetailParams) => {
+    const res = await UpdateRoomRenovationDetail(data)
     return res
   }
 )
 
 export const deleteByIds = createAsyncThunk(`${namespace}/deleteByIds`, async (ids: string[]) => {
-  const res = await DeleteSpectionTaskDetail(ids)
+  const res = await DeleteRoomRenovationDetail(ids)
   return res
 })
 
-export const SpectionTaskDetailSlice = createSlice({
+export const RoomRenovationDetailSlice = createSlice({
   name: namespace,
   initialState,
   reducers: {
@@ -86,8 +86,8 @@ export const SpectionTaskDetailSlice = createSlice({
   }
 })
 
-export const { reset } = SpectionTaskDetailSlice.actions
+export const { reset } = RoomRenovationDetailSlice.actions
 
-export const selectSpectionTaskDetail = (state: RootState) => state.SpectionTaskDetailSlice
+export const selectRoomRenovationDetail = (state: RootState) => state.RoomRenovationDetailSlice
 
-export default SpectionTaskDetailSlice.reducer
+export default RoomRenovationDetailSlice.reducer

@@ -98,7 +98,7 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
       {!isFullPage ? (
         <Box sx={{ display: 'flex', height: '100%' }}>
           <SideMenu isMenuOpen={isMenuOpen} />
-          <Stack sx={{ width: '100%', height: '100%' }}>
+          <Stack sx={{ width: 'calc(100% - 260px)', height: '100%' }}>
             <Header isMenuOpen={isMenuOpen} onToggleMenu={() => setIsMenuOpen(prev => !prev)} />
             <Tabs
               sx={{ mt: '70px' }}

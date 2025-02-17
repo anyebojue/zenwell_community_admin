@@ -1,5 +1,5 @@
-import { Page } from '../pageModel'
-import { SpaceReply } from './houses/spaceModel'
+import { Page } from '../../pageModel'
+import { SpaceReply } from './spaceModel.tsx'
 
 export interface SpacePersonReply {
   id?: string

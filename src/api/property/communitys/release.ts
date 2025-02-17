@@ -1,5 +1,5 @@
 import { request } from 'utils/request/axios'
-import { FindReleaseReply, ReleaseParams } from '../model/property/releaseModel'
+import { FindReleaseReply, ReleaseParams } from '../../model/property/communitys/releaseModel'
 
 const ApiPrefix = {
   FindRelease: '/auth/release',

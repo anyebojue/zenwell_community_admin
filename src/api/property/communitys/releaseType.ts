@@ -1,5 +1,8 @@
 import { request } from 'utils/request/axios'
-import { FindReleaseTypeReply, ReleaseTypeParams } from '../model/property/releaseTypeModel'
+import {
+  FindReleaseTypeReply,
+  ReleaseTypeParams
+} from '../../model/property/communitys/releaseTypeModel'
 
 const ApiPrefix = {
   FindReleaseType: '/auth/release_type',

@@ -1,5 +1,8 @@
 import { request } from 'utils/request/axios'
-import { FindSpectionItemReply, SpectionItemParams } from '../model/property/spectionItemModel'
+import {
+  FindSpectionItemReply,
+  SpectionItemParams
+} from '../../model/property/inspection/spectionItemModel'
 
 const ApiPrefix = {
   FindSpectionItem: '/auth/spection_item',

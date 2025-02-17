@@ -1,5 +1,5 @@
 import { request } from 'utils/request/axios'
-import { FindVenueReply, VenueParams } from '../model/property/venueModel'
+import { FindVenueReply, VenueParams } from '../../model/property/houses/venueModel'
 
 const ApiPrefix = {
   FindVenue: '/auth/venue',

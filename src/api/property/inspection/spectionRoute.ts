@@ -1,5 +1,8 @@
 import { request } from 'utils/request/axios'
-import { FindSpectionRouteReply, SpectionRouteParams } from '../model/property/spectionRouteModel'
+import {
+  FindSpectionRouteReply,
+  SpectionRouteParams
+} from '../../model/property/inspection/spectionRouteModel'
 
 const ApiPrefix = {
   FindSpectionRoute: '/auth/spection_route',

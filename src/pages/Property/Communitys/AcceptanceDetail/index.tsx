@@ -26,7 +26,9 @@ const RoomRenovationRecordsIndex = () => {
       <Box sx={{ width: '100%' }}>
         <Box sx={contentBoxStyle}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h6">{row.roomName} 装修跟踪记录</Typography>
+            <Typography variant="h6">
+              {row.room.unit.floor.name}-{row.room.unit.unitNum}-{row.room.roomNum} 验收明细
+            </Typography>
             <Stack spacing={1} direction="row">
               <Button
                 size="small"
@@ -40,7 +42,7 @@ const RoomRenovationRecordsIndex = () => {
               </Button>
             </Stack>
           </Box>
-          <TableData value={row} />
+          <TableData />
         </Box>
       </Box>
       <Copyright />

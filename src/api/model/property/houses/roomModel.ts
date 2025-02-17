@@ -1,4 +1,4 @@
-import { Page } from '../pageModel'
+import { Page } from '../../pageModel'
 import { UnitReply } from './unitModel'
 
 export interface RoomReply {

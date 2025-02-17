@@ -1,5 +1,8 @@
 import { request } from 'utils/request/axios'
-import { FindSpaceOpenTimeReply, SpaceOpenTimeParams } from '../model/property/spaceOpenTimeModel'
+import {
+  FindSpaceOpenTimeReply,
+  SpaceOpenTimeParams
+} from '../../model/property/houses/spaceOpenTimeModel'
 
 const ApiPrefix = {
   FindSpaceOpenTime: '/auth/space_open_time',

@@ -2,7 +2,7 @@ import { request } from 'utils/request/axios'
 import {
   FindRoomRenovationReply,
   RoomRenovationParams
-} from '../model/property/roomRenovationModel'
+} from '../../model/property/communitys/roomRenovationModel'
 
 const ApiPrefix = {
   FindRoomRenovation: '/auth/room_renovation',
