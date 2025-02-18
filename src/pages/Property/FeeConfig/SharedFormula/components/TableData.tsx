@@ -1,30 +1,30 @@
 import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { FeeConfigReply } from 'api/model/property/feeConfig/feeConfigModel'
-import { find } from 'modules/property/feeConfig/feeConfig'
-import { find as finFeeConfigType } from 'modules/property/feeConfig/feeConfigType'
+import { FeeFormulaReply } from 'api/model/property/feeConfig/feeFormulaModel'
+import { getCityArea } from 'modules/global'
+import { find } from 'modules/property/feeConfig/feeFormula'
 import { Chip } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
 
 interface TableDataProps {
-  selectedButton: string
-  setDialogValue: Dispatch<SetStateAction<FeeConfigReply | undefined>>
-  setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
+  setDialogType: Dispatch<SetStateAction<string>>
+  setDialogValue: Dispatch<SetStateAction<FeeFormulaReply | undefined>>
+  setSelectedRows: Dispatch<SetStateAction<Set<string>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const TableData: React.FC<TableDataProps> = ({
-  selectedButton,
+  setDialogType,
   setDialogValue,
   setSelectedRows,
   setOpenDialog,
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.FeeConfigSlice)
+  const { page, list } = useSelector((state: RootState) => state.FeeFormulaSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -44,23 +44,9 @@ const TableData: React.FC<TableDataProps> = ({
   )
 
   useEffect(() => {
-    fetchData(
-      find,
-      {
-        'page.num': page.num,
-        'page.size': page.size,
-        ...(selectedButton && { feeTypeCd: selectedButton })
-      },
-      '正在加载列表中，请稍后...'
-    )
-    if (selectedButton === '') {
-      fetchData(
-        finFeeConfigType,
-        { 'page.num': page.num, 'page.size': page.size },
-        '正在加载列表中，请稍后...'
-      )
-    }
-  }, [fetchData, page.num, page.size, selectedButton])
+    fetchData(getCityArea, { 'page.disable': true }, '正在加载城市数据...')
+    fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+  }, [fetchData, page.num, page.size])
 
   const handleRowSelection = useCallback(
     (rowSelectionModel: GridRowSelectionModel) => {
@@ -70,9 +56,10 @@ const TableData: React.FC<TableDataProps> = ({
   )
 
   const handleActionClick = useCallback(
-    (actionType: string, row: FeeConfigReply) => {
+    (actionType: string, row: FeeFormulaReply) => {
       switch (actionType) {
         case 'edit':
+          setDialogType('edit')
           setDialogValue(row)
           setOpenDialog(true)
           break
@@ -82,10 +69,10 @@ const TableData: React.FC<TableDataProps> = ({
           break
       }
     },
-    [setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
+    [setDialogType, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
   )
 
-  const renderActionButtons = (row: FeeConfigReply) =>
+  const renderActionButtons = (row: FeeFormulaReply) =>
     [
       { title: '修改', action: 'edit' },
       { title: '删除', action: 'delete' }
@@ -108,22 +95,16 @@ const TableData: React.FC<TableDataProps> = ({
 
   return (
     <DataGrid
+      sx={{ mt: 1 }}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'feeTypeCd', headerName: '费用类型', flex: 1 },
-        { field: 'name', headerName: '收费项目', flex: 1 },
-        { field: 'feeFlag', headerName: '费用标识', flex: 1 },
-        { field: 'paymentCd', headerName: '	付费类型', flex: 1 },
-        { field: 'paymentCycle', headerName: '缴费周期(单位:月)	', flex: 1 },
-        { field: 'computingFormula', headerName: '公式', flex: 1 },
-        { field: 'squarePrice', headerName: '计费单价(单位:元)', flex: 1 },
-        { field: 'additionalAmount', headerName: '附加/固定费用(单位:元)', flex: 1 },
-        { field: 'deductFrom', headerName: '账户抵扣', flex: 1 },
-        { field: 'status', headerName: '状态', flex: 1 },
+        { field: 'formulaValue', headerName: '公式', flex: 1 },
+        { field: 'price', headerName: '单价(单位:元)', flex: 1 },
+        { field: 'formulaDesc', headerName: '描述', flex: 1 },
         {
           field: 'actions',
           headerName: '操作',

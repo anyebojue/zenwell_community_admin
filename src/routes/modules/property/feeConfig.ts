@@ -18,6 +18,13 @@ const feeConfig: IRouter[] = [
         meta: {
           title: '费用项设置'
         }
+      },
+      {
+        path: 'SharedFormula',
+        element: load('Property/FeeConfig/SharedFormula'),
+        meta: {
+          title: '公摊公式'
+        }
       }
     ]
   }
