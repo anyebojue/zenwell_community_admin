@@ -42,7 +42,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
   setOpenDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.FeeConfigSlice)
+  const { page, list } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(
@@ -142,13 +142,9 @@ const FormDialog: React.FC<FormDialogProps> = ({
               onChange={e => setFormData({ ...formData, feeTypeCd: e.target.value })}
               variant="outlined"
             >
-              {[
-                { value: 0, label: '公共收益' },
-                { value: 1, label: '规章制度' },
-                { value: 2, label: '政策相关' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
+              {list.map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
                 </MenuItem>
               ))}
             </TextField>
@@ -173,17 +169,19 @@ const FormDialog: React.FC<FormDialogProps> = ({
               ))}
             </TextField>
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>缴费周期(单位:月)：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              type="text"
-              size="small"
-              value={formData.paymentCycle}
-              onChange={e => setFormData({ ...formData, paymentCycle: e.target.value })}
-              variant="outlined"
-            />
-          </Box>
+          {formData.feeFlag === '1003006' && (
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <FormLabel>缴费周期(单位:月)：</FormLabel>
+              <TextField
+                sx={{ width: '80%' }}
+                type="text"
+                size="small"
+                value={formData.paymentCycle}
+                onChange={e => setFormData({ ...formData, paymentCycle: e.target.value })}
+                variant="outlined"
+              />
+            </Box>
+          )}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>付费类型：</FormLabel>
             <TextField
@@ -204,17 +202,19 @@ const FormDialog: React.FC<FormDialogProps> = ({
               ))}
             </TextField>
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>预付期(单位:天)：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              type="text"
-              size="small"
-              value={formData.prepaymentPeriod}
-              onChange={e => setFormData({ ...formData, prepaymentPeriod: e.target.value })}
-              variant="outlined"
-            />
-          </Box>
+          {formData.paymentCd === '1200' && (
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <FormLabel>预付期(单位:天)：</FormLabel>
+              <TextField
+                sx={{ width: '80%' }}
+                type="text"
+                size="small"
+                value={formData.prepaymentPeriod}
+                onChange={e => setFormData({ ...formData, prepaymentPeriod: e.target.value })}
+                variant="outlined"
+              />
+            </Box>
+          )}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>单位：</FormLabel>
             <TextField
@@ -358,28 +358,72 @@ const FormDialog: React.FC<FormDialogProps> = ({
               ))}
             </TextField>
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>计费单价：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              type="text"
-              size="small"
-              value={formData.squarePrice}
-              onChange={e => setFormData({ ...formData, squarePrice: Number(e.target.value) })}
-              variant="outlined"
-            />
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>固定费用：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              type="text"
-              size="small"
-              value={formData.additionalAmount}
-              onChange={e => setFormData({ ...formData, additionalAmount: Number(e.target.value) })}
-              variant="outlined"
-            />
-          </Box>
+          {(formData.computingFormula === '1001' ||
+            formData.computingFormula === '5005' ||
+            formData.computingFormula === '6006' ||
+            formData.computingFormula === '3003') && (
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <FormLabel>计费单价：</FormLabel>
+              <TextField
+                sx={{ width: '80%' }}
+                type="text"
+                size="small"
+                value={formData.squarePrice}
+                onChange={e => setFormData({ ...formData, squarePrice: Number(e.target.value) })}
+                variant="outlined"
+              />
+            </Box>
+          )}
+          {formData.computingFormula === '1001' && (
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <FormLabel>附加费用：</FormLabel>
+              <TextField
+                sx={{ width: '80%' }}
+                type="text"
+                size="small"
+                value={formData.additionalAmount}
+                onChange={e =>
+                  setFormData({ ...formData, additionalAmount: Number(e.target.value) })
+                }
+                variant="outlined"
+              />
+            </Box>
+          )}
+          {(formData.computingFormula === '2002' ||
+            formData.computingFormula === '5005' ||
+            formData.computingFormula === '6006' ||
+            formData.computingFormula === '3003') && (
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <FormLabel>固定费用：</FormLabel>
+              <TextField
+                sx={{ width: '80%' }}
+                type="text"
+                size="small"
+                value={formData.additionalAmount}
+                onChange={e =>
+                  setFormData({ ...formData, additionalAmount: Number(e.target.value) })
+                }
+                variant="outlined"
+              />
+            </Box>
+          )}
+          {formData.computingFormula === '7007' && (
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <FormLabel>自定义公式：</FormLabel>
+              <TextField
+                placeholder="请输入自定义公式"
+                sx={{ width: '80%' }}
+                type="text"
+                multiline
+                rows={4}
+                size="small"
+                value={formData.computingFormulaText}
+                onChange={e => setFormData({ ...formData, computingFormulaText: e.target.value })}
+                variant="outlined"
+                helperText="说明：C 代表房屋对应小区面积；F 代表房屋对应楼栋面积；U 代表房屋对应单元面积；R 代表房屋面积；X 代表房屋收费系数（房屋管理中配置）；L 代表房屋层数；举例：电梯使用费 (层数-5)*每层单价+基础费用；公式：(L-5)*5 + 10；"
+              />
+            </Box>
+          )}
         </Stack>
       </DialogContent>
       <DialogActions>
