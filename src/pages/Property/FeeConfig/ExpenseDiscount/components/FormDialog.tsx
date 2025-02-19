@@ -18,22 +18,35 @@ import {
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
+import { FeeConfigReply } from 'api/model/property/feeConfig/feeConfigModel'
+
+const formatDateTime = (date: Date | string | undefined): string => {
+  const validDate = date ? new Date(date) : new Date()
+  const year = validDate.getFullYear()
+  const month = String(validDate.getMonth() + 1).padStart(2, '0')
+  const day = String(validDate.getDate()).padStart(2, '0')
+  const hours = String(validDate.getHours()).padStart(2, '0')
+  const minutes = String(validDate.getMinutes()).padStart(2, '0')
+  const seconds = String(validDate.getSeconds()).padStart(2, '0')
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
 
 interface FormDialogProps {
+  data: FeeConfigReply
   openDialog: boolean
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
-const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) => {
+const FormDialog: React.FC<FormDialogProps> = ({ data, openDialog, setOpenDialog }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.FeeDiscountSlice)
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState<PayFeeConfigDiscountParams>({
     remark: '1001',
     discountId: '',
-    startTime: '',
-    endTime: '',
-    paymaxEndTime: ''
+    startTime: formatDateTime(new Date()),
+    endTime: formatDateTime(new Date()),
+    paymaxEndTime: formatDateTime(new Date())
   })
 
   const fetchData = useCallback(
@@ -74,7 +87,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
       try {
         const current_community = localStorage.getItem('current_community')
         const community = JSON.parse(current_community || '')
-        const params = { ...formData, communityId: community?.id }
+        const params = { ...formData, communityId: community?.id, configId: data.id }
         const action = create(params)
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
@@ -89,7 +102,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
         setLoading(false)
       }
     },
-    [dispatch, formData, page, setOpenDialog]
+    [data.id, dispatch, formData, page.num, page.size, setOpenDialog]
   )
 
   return (
@@ -141,6 +154,46 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
                 </MenuItem>
               ))}
             </TextField>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>缴费开始时间：</FormLabel>
+            <TextField
+              sx={{ width: '80%' }}
+              size="small"
+              type="datetime-local"
+              value={formatDateTime(formData.startTime)}
+              onChange={e =>
+                setFormData({ ...formData, startTime: formatDateTime(e.target.value) })
+              }
+              variant="outlined"
+              helperText="这段时间内缴费才能享受该优惠"
+            />
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>缴费结束时间：</FormLabel>
+            <TextField
+              sx={{ width: '80%' }}
+              size="small"
+              type="datetime-local"
+              value={formatDateTime(formData.endTime)}
+              onChange={e => setFormData({ ...formData, endTime: formatDateTime(e.target.value) })}
+              variant="outlined"
+              helperText="这段时间内缴费才能享受该优惠"
+            />
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>折扣终止时间：</FormLabel>
+            <TextField
+              sx={{ width: '80%' }}
+              size="small"
+              type="datetime-local"
+              value={formatDateTime(formData.paymaxEndTime)}
+              onChange={e =>
+                setFormData({ ...formData, paymaxEndTime: formatDateTime(e.target.value) })
+              }
+              variant="outlined"
+              helperText="这段时间内缴费才能享受该优惠"
+            />
           </Box>
         </Stack>
       </DialogContent>

@@ -23,7 +23,6 @@ const PayFeeConfigDiscountIndex = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const row = location.state.data
-  console.log(row)
   const { page, list } = useSelector((state: RootState) => state.PayFeeConfigDiscountSlice)
 
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
@@ -93,7 +92,7 @@ const PayFeeConfigDiscountIndex = () => {
         <TableData data={row} setSelectedRows={setSelectedRows} setDelOpen={setDelOpen} />
       </Box>
       <Copyright />
-      <FormDialog openDialog={openDialog} setOpenDialog={setOpenDialog} />
+      <FormDialog data={row} openDialog={openDialog} setOpenDialog={setOpenDialog} />
       <DeleteModal
         loading={loading}
         delOpen={delOpen}
