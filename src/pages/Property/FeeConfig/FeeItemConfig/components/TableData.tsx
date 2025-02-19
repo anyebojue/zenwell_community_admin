@@ -17,6 +17,29 @@ interface TableDataProps {
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
+const statusValue: Record<string, string> = {
+  '1003006': '周期性费用',
+  '2006012': '一次性费用'
+}
+
+const statusPaymentValue: Record<string, string> = {
+  '1200': '预付费',
+  '2100': '后付费'
+}
+
+const statusFormulaValue: Record<string, string> = {
+  '1001': '建筑面积*单价+附加费',
+  '2002': '固定费用',
+  '4004': '动态费用',
+  '5005': '(本期度数-上期度数)*单价+附加费',
+  '6006': '用量*单价+附加费',
+  '7007': '自定义公式',
+  '9009': '(本期度数-上期度数)*动态单价+附加费',
+  '1101': '租金',
+  '3003': '室内面积*单价+附加费',
+  '1102': '租金(递增)'
+}
+
 const TableData: React.FC<TableDataProps> = ({
   selectedButton,
   setDialogValue,
@@ -117,21 +140,55 @@ const TableData: React.FC<TableDataProps> = ({
 
   return (
     <DataGrid
+      sx={{
+        '& .MuiDataGrid-columnHeaderTitle': {
+          whiteSpace: 'normal',
+          wordWrap: 'break-word',
+          lineHeight: '1.2'
+        }
+      }}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'feeTypeCd', headerName: '费用类型', flex: 1 },
+        {
+          field: 'feeTypeCd',
+          headerName: '费用类型',
+          flex: 1,
+          renderCell: ({ row }) => row.feeConfigType?.name
+        },
         { field: 'name', headerName: '收费项目', flex: 1 },
-        { field: 'feeFlag', headerName: '费用标识', flex: 1 },
-        { field: 'paymentCd', headerName: '	付费类型', flex: 1 },
+        {
+          field: 'feeFlag',
+          headerName: '费用标识',
+          flex: 1,
+          renderCell: ({ row }) => <Chip label={statusValue[row.feeFlag!] || '未知类型'} />
+        },
+        {
+          field: 'paymentCd',
+          headerName: '	付费类型',
+          flex: 1,
+          renderCell: ({ row }) => <Chip label={statusPaymentValue[row.paymentCd!] || '未知类型'} />
+        },
         { field: 'paymentCycle', headerName: '缴费周期(单位:月)	', flex: 1 },
-        { field: 'computingFormula', headerName: '公式', flex: 1 },
+        {
+          field: 'computingFormula',
+          headerName: '公式',
+          width: 180,
+          renderCell: ({ row }) => (
+            <Chip label={statusFormulaValue[row.computingFormula!] || '未知类型'} />
+          )
+        },
         { field: 'squarePrice', headerName: '计费单价(单位:元)', flex: 1 },
         { field: 'additionalAmount', headerName: '附加/固定费用(单位:元)', flex: 1 },
-        { field: 'deductFrom', headerName: '账户抵扣', flex: 1 },
+        {
+          field: 'deductFrom',
+          headerName: '账户抵扣',
+          flex: 1,
+          renderCell: ({ row }) => (row.deductFrom === 'Y' ? '是' : '否')
+        },
         { field: 'status', headerName: '状态', flex: 1 },
         {
           field: 'actions',
