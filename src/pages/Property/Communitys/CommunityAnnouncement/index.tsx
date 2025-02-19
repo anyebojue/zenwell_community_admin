@@ -68,7 +68,7 @@ const CommunityAnnouncementIndex = () => {
       <Stack sx={{ mt: 2, mb: 1.5, width: '100%' }} direction="row" spacing={3}>
         <ButtonGroup
           sx={{
-            width: '350px'
+            width: '150px'
           }}
           orientation="vertical"
           aria-label="Vertical button group"
@@ -89,7 +89,7 @@ const CommunityAnnouncementIndex = () => {
                   backgroundColor: selectedButton === item.value ? '#1565c0' : '#f0f0f0'
                 }
               }}
-              onClick={() => setSelectedButton(item.value)}
+              onClick={() => setSelectedButton(item.value || 0)}
             >
               {item.label}
             </Button>

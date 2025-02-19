@@ -20,6 +20,14 @@ const feeConfig: IRouter[] = [
         }
       },
       {
+        path: 'ExpenseDiscount',
+        element: load('Property/FeeConfig/ExpenseDiscount'),
+        meta: {
+          hidden: true,
+          title: '费用折扣'
+        }
+      },
+      {
         path: 'DiscountSetting',
         element: load('Property/FeeConfig/DiscountSetting'),
         meta: {
