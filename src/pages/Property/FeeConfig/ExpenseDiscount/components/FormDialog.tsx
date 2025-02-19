@@ -1,15 +1,8 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  memo
-} from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useState, memo, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { FeeFormulaParams, FeeFormulaReply } from 'api/model/property/feeConfig/feeFormulaModel'
-import { create, find, update } from 'modules/property/feeConfig/feeFormula'
+import { PayFeeConfigDiscountParams } from 'api/model/property/feeConfig/payFeeConfigDiscountModel'
+import { create, find } from 'modules/property/feeConfig/payFeeConfigDiscount'
+import { find as findDiscount } from 'modules/property/feeConfig/feeDiscount'
 import {
   Box,
   CircularProgress,
@@ -21,41 +14,58 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Typography
+  MenuItem
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
-  dialogValue?: FeeFormulaReply
   openDialog: boolean
-  dialogType: string
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
-const FormDialog: React.FC<FormDialogProps> = ({
-  dialogValue,
-  openDialog,
-  dialogType,
-  setOpenDialog
-}) => {
+const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.FeeFormulaSlice)
+  const { page, list } = useSelector((state: RootState) => state.FeeDiscountSlice)
   const [loading, setLoading] = useState(false)
+  const [formData, setFormData] = useState<PayFeeConfigDiscountParams>({
+    remark: '1001',
+    discountId: '',
+    startTime: '',
+    endTime: '',
+    paymaxEndTime: ''
+  })
 
-  const initialFormData = useMemo(
-    () => ({
-      formulaValue: dialogType === 'edit' ? dialogValue?.formulaValue || '' : '',
-      price: dialogType === 'edit' ? dialogValue?.price || 0 : 0,
-      formulaDesc: dialogType === 'edit' ? dialogValue?.formulaDesc || '' : ''
-    }),
-    [dialogType, dialogValue]
+  const fetchData = useCallback(
+    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
+      const closeLoading = message.loading(loadingMessage)
+      try {
+        const res = await dispatch(action(params))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
+      }
+    },
+    [dispatch]
   )
-  const [formData, setFormData] = useState<FeeFormulaParams>(initialFormData)
 
   useEffect(() => {
-    setFormData(initialFormData)
-  }, [initialFormData])
+    if (openDialog) {
+      fetchData(
+        findDiscount,
+        {
+          'page.num': page.num,
+          'page.size': page.size,
+          ...(formData.remark && { discountType: formData.remark })
+        },
+        '正在加载列表中，请稍后...'
+      )
+    }
+  }, [fetchData, formData.remark, openDialog, page.num, page.size])
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
@@ -65,23 +75,21 @@ const FormDialog: React.FC<FormDialogProps> = ({
         const current_community = localStorage.getItem('current_community')
         const community = JSON.parse(current_community || '')
         const params = { ...formData, communityId: community?.id }
-        const action =
-          dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
+        const action = create(params)
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
         await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))
-        message.success(dialogType === 'add' ? '新建成功' : '编辑成功')
+        message.success('新建成功')
         setOpenDialog(false)
-        setFormData(initialFormData)
       } catch (err: unknown) {
         if (err instanceof Error) message.error(err.message)
       } finally {
         setLoading(false)
       }
     },
-    [dispatch, dialogType, dialogValue, formData, page, setOpenDialog, initialFormData]
+    [dispatch, formData, page, setOpenDialog]
   )
 
   return (
@@ -92,66 +100,47 @@ const FormDialog: React.FC<FormDialogProps> = ({
       onClose={() => setOpenDialog(false)}
       slotProps={{ paper: { component: 'form', onSubmit: handleSubmit } }}
     >
-      <DialogTitle>{dialogType === 'add' ? '新增' : '编辑'}</DialogTitle>
+      <DialogTitle>新增</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>公式：</FormLabel>
+            <FormLabel>折扣类型：</FormLabel>
             <TextField
-              required
-              placeholder="请输入公式"
+              placeholder="请选择折扣类型"
               sx={{ width: '80%' }}
-              type="text"
-              multiline
-              rows={4}
+              select
               size="small"
-              value={formData.formulaValue}
-              onChange={e => setFormData({ ...formData, formulaValue: e.target.value })}
+              value={formData.remark || ''}
+              onChange={e => setFormData({ ...formData, remark: e.target.value })}
               variant="outlined"
-            />
+            >
+              {[
+                { value: '1001', label: '优惠' },
+                { value: '2002', label: '违约' }
+              ].map(option => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>单价：</FormLabel>
+            <FormLabel>折扣名称：</FormLabel>
             <TextField
-              required
-              placeholder="请输入单价"
+              placeholder="请选择折扣名称"
               sx={{ width: '80%' }}
-              type="text"
+              select
               size="small"
-              value={formData.price}
-              onChange={e => setFormData({ ...formData, price: Number(e.target.value) })}
+              value={formData.discountId || ''}
+              onChange={e => setFormData({ ...formData, discountId: e.target.value })}
               variant="outlined"
-            />
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>描述：</FormLabel>
-            <TextField
-              required
-              placeholder="请输入描述"
-              sx={{ width: '80%' }}
-              type="text"
-              multiline
-              rows={4}
-              size="small"
-              value={formData.formulaDesc}
-              onChange={e => setFormData({ ...formData, formulaDesc: e.target.value })}
-              variant="outlined"
-            />
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
-            <FormLabel>说明：</FormLabel>
-            <Typography sx={{ ml: 10, textAlign: 'left' }} variant="body1">
-              T 代表总量，如电费总使用量 <br />
-              C 代表房屋对应小区面积 <br />
-              F 代表房屋对应楼栋面积 <br />
-              U 代表房屋对应单元面积 <br />
-              R 代表房屋面积 <br />
-              X 代表房屋收费系数（房屋管理中配置） <br />
-              L 代表房屋对应楼栋房屋数 <br />
-              D 代表房屋对应单元房屋数 <br />
-              举例：公共区域公摊电费 电量/楼栋面积*房屋面积 <br />
-              公式：T/F * R
-            </Typography>
+            >
+              {list.map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
+                </MenuItem>
+              ))}
+            </TextField>
           </Box>
         </Stack>
       </DialogContent>

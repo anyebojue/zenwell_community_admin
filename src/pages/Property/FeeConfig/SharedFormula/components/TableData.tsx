@@ -1,7 +1,6 @@
 import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FeeFormulaReply } from 'api/model/property/feeConfig/feeFormulaModel'
-import { getCityArea } from 'modules/global'
 import { find } from 'modules/property/feeConfig/feeFormula'
 import { Chip } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
@@ -44,7 +43,6 @@ const TableData: React.FC<TableDataProps> = ({
   )
 
   useEffect(() => {
-    fetchData(getCityArea, { 'page.disable': true }, '正在加载城市数据...')
     fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
   }, [fetchData, page.num, page.size])
 

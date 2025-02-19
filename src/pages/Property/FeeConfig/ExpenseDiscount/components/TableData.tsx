@@ -1,30 +1,23 @@
 import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { FeeFormulaReply } from 'api/model/property/feeConfig/feeFormulaModel'
-import { getCityArea } from 'modules/global'
-import { find } from 'modules/property/feeConfig/feeFormula'
+import { PayFeeConfigDiscountReply } from 'api/model/property/feeConfig/payFeeConfigDiscountModel'
+import { find } from 'modules/property/feeConfig/payFeeConfigDiscount'
 import { Chip } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
+import { FeeConfigReply } from 'api/model/property/feeConfig/feeConfigModel'
 
 interface TableDataProps {
-  setDialogType: Dispatch<SetStateAction<string>>
-  setDialogValue: Dispatch<SetStateAction<FeeFormulaReply | undefined>>
+  data: FeeConfigReply
   setSelectedRows: Dispatch<SetStateAction<Set<string>>>
-  setOpenDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const TableData: React.FC<TableDataProps> = ({
-  setDialogType,
-  setDialogValue,
-  setSelectedRows,
-  setOpenDialog,
-  setDelOpen
-}) => {
+const TableData: React.FC<TableDataProps> = ({ data, setSelectedRows, setDelOpen }) => {
+  console.log(data)
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.FeeFormulaSlice)
+  const { page, list } = useSelector((state: RootState) => state.PayFeeConfigDiscountSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -44,9 +37,12 @@ const TableData: React.FC<TableDataProps> = ({
   )
 
   useEffect(() => {
-    fetchData(getCityArea, { 'page.disable': true }, '正在加载城市数据...')
-    fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
-  }, [fetchData, page.num, page.size])
+    fetchData(
+      find,
+      { 'page.num': page.num, 'page.size': page.size, configId: data.id || '' },
+      '正在加载列表中，请稍后...'
+    )
+  }, [data.id, fetchData, page.num, page.size])
 
   const handleRowSelection = useCallback(
     (rowSelectionModel: GridRowSelectionModel) => {
@@ -56,27 +52,19 @@ const TableData: React.FC<TableDataProps> = ({
   )
 
   const handleActionClick = useCallback(
-    (actionType: string, row: FeeFormulaReply) => {
+    (actionType: string, row: PayFeeConfigDiscountReply) => {
       switch (actionType) {
-        case 'edit':
-          setDialogType('edit')
-          setDialogValue(row)
-          setOpenDialog(true)
-          break
         case 'delete':
           setDelOpen(true)
           setSelectedRows(new Set([row.id || '']))
           break
       }
     },
-    [setDialogType, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
+    [setDelOpen, setSelectedRows]
   )
 
-  const renderActionButtons = (row: FeeFormulaReply) =>
-    [
-      { title: '修改', action: 'edit' },
-      { title: '删除', action: 'delete' }
-    ].map(({ title, action }) => (
+  const renderActionButtons = (row: PayFeeConfigDiscountReply) =>
+    [{ title: '删除', action: 'delete' }].map(({ title, action }) => (
       <Chip
         key={title}
         sx={{
@@ -102,9 +90,12 @@ const TableData: React.FC<TableDataProps> = ({
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'formulaValue', headerName: '公式', flex: 1 },
-        { field: 'price', headerName: '单价(单位:元)', flex: 1 },
-        { field: 'formulaDesc', headerName: '描述', flex: 1 },
+        { field: 'configId', headerName: '费用项名称', flex: 1 },
+        { field: 'discountId', headerName: '折扣名称', flex: 1 },
+        { field: 'remark', headerName: '规则', flex: 1 },
+        { field: 'feeConfig', headerName: '折扣类型', flex: 1 },
+        { field: 'startTime', headerName: '缴费时间段', flex: 1 },
+        { field: 'endTime', headerName: '折扣终止时间', flex: 1 },
         {
           field: 'actions',
           headerName: '操作',

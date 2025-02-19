@@ -1,14 +1,13 @@
 import { memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { FeeFormulaReply } from 'api/model/property/feeConfig/feeFormulaModel'
-import { deleteByIds, find } from 'modules/property/feeConfig/feeFormula'
+import { deleteByIds, find } from 'modules/property/feeConfig/payFeeConfigDiscount'
 import { Box, Button, Stack, Theme, Typography } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import message from 'components/Message'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import { Add, Close } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import TableData from './components/TableData'
 import FormDialog from './components/FormDialog'
 
@@ -19,15 +18,16 @@ const contentBoxStyle = (theme: Theme) => ({
   width: '100%'
 })
 
-const FeeFormulaIndex = () => {
+const PayFeeConfigDiscountIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
-  const { page, list } = useSelector((state: RootState) => state.FeeFormulaSlice)
+  const location = useLocation()
+  const row = location.state.data
+  console.log(row)
+  const { page, list } = useSelector((state: RootState) => state.PayFeeConfigDiscountSlice)
 
-  const [dialogValue, setDialogValue] = useState<FeeFormulaReply>()
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
   const [openDialog, setOpenDialog] = useState(false)
-  const [dialogType, setDialogType] = useState('add')
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -84,30 +84,16 @@ const FeeFormulaIndex = () => {
               color="error"
               startIcon={<Add />}
               sx={buttonStyles('#2660ad', '#1d428a')}
-              onClick={() => {
-                setOpenDialog(true)
-                setDialogType('add')
-              }}
+              onClick={() => setOpenDialog(true)}
             >
               添加
             </Button>
           </Stack>
         </Box>
-        <TableData
-          setDialogType={setDialogType}
-          setDialogValue={setDialogValue}
-          setSelectedRows={setSelectedRows}
-          setOpenDialog={setOpenDialog}
-          setDelOpen={setDelOpen}
-        />
+        <TableData data={row} setSelectedRows={setSelectedRows} setDelOpen={setDelOpen} />
       </Box>
       <Copyright />
-      <FormDialog
-        dialogValue={dialogValue}
-        openDialog={openDialog}
-        dialogType={dialogType}
-        setOpenDialog={setOpenDialog}
-      />
+      <FormDialog openDialog={openDialog} setOpenDialog={setOpenDialog} />
       <DeleteModal
         loading={loading}
         delOpen={delOpen}
@@ -119,4 +105,4 @@ const FeeFormulaIndex = () => {
   )
 }
 
-export default memo(FeeFormulaIndex)
+export default memo(PayFeeConfigDiscountIndex)
