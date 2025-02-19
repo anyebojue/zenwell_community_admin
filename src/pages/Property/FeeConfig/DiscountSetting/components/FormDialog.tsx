@@ -91,10 +91,12 @@ const FormDialog: React.FC<FormDialogProps> = ({
     if (formData.ruleId) {
       const current_community = localStorage.getItem('current_community')
       const community = JSON.parse(current_community || '')
+      console.log(111, formData.feeDiscountSpec)
       const updatedSpec = ruleSpecList
         .filter(item => item.ruleId === formData.ruleId)
         .map(({ id, name, remark }) => {
           const existingSpec = formData.feeDiscountSpec?.find(spec => spec.specId === id)
+          console.log(222, formData.feeDiscountSpec)
           return {
             communityId: community?.id,
             specId: id,
@@ -104,14 +106,14 @@ const FormDialog: React.FC<FormDialogProps> = ({
             remark
           }
         })
-      if (JSON.stringify(updatedSpec) !== JSON.stringify(formData.feeDiscountSpec)) {
+      if (dialogType !== 'edit') {
         setFormData(prev => ({
           ...prev,
           feeDiscountSpec: updatedSpec
         }))
       }
     }
-  }, [formData.ruleId, formData.feeDiscountSpec, ruleSpecList])
+  }, [formData.ruleId, formData.feeDiscountSpec, ruleSpecList, dialogType])
 
   return (
     <Dialog
