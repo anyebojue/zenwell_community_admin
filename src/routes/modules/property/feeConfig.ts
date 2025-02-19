@@ -20,6 +20,13 @@ const feeConfig: IRouter[] = [
         }
       },
       {
+        path: 'DiscountSetting',
+        element: load('Property/FeeConfig/DiscountSetting'),
+        meta: {
+          title: '折扣设置'
+        }
+      },
+      {
         path: 'SharedFormula',
         element: load('Property/FeeConfig/SharedFormula'),
         meta: {

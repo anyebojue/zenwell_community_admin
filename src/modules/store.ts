@@ -22,6 +22,9 @@ import SpaceOpenTimeSlice from './property/houses/spaceOpenTime'
 import SpacePersonSlice from './property/houses/spacePerson'
 import FeeConfigTypeSlice from './property/feeConfig/feeConfigType'
 import FeeConfigSlice from './property/feeConfig/feeConfig'
+import FeeDiscountSlice from './property/feeConfig/feeDiscount'
+import FeeDiscountRuleSpecSlice from './property/feeConfig/feeDiscountRuleSpec'
+import FeeDiscountRuleSlice from './property/feeConfig/feeDiscountRule'
 import FeeFormulaSlice from './property/feeConfig/feeFormula'
 import SpaceConfirmOrderSlice from './property/houses/spaceConfirmOrder'
 import OwnerInvoiceSlice from './property/houses/ownerInvoice'
@@ -67,6 +70,9 @@ const store = configureStore({
     SpaceConfirmOrderSlice,
     FeeConfigTypeSlice,
     FeeConfigSlice,
+    FeeDiscountSlice,
+    FeeDiscountRuleSlice,
+    FeeDiscountRuleSpecSlice,
     FeeFormulaSlice,
     OwnerInvoiceSlice,
     OwnerInvoiceApplySlice,
