@@ -1,13 +1,13 @@
 import { memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { FeeFormulaReply } from 'api/model/property/feeConfig/feeFormulaModel'
-import { deleteByIds, find } from 'modules/property/feeConfig/feeFormula'
-import { Box, Button, Theme, Typography } from '@mui/material'
+import { deleteByIds, find } from 'modules/property/feeConfig/feeComboMember'
+import { Box, Button, Stack, Theme, Typography } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import message from 'components/Message'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
-import { Add } from '@mui/icons-material'
+import { Add, Close } from '@mui/icons-material'
+import { useLocation, useNavigate } from 'react-router-dom'
 import TableData from './components/TableData'
 import FormDialog from './components/FormDialog'
 
@@ -18,14 +18,15 @@ const contentBoxStyle = (theme: Theme) => ({
   width: '100%'
 })
 
-const FeeFormulaIndex = () => {
+const FeeComboMemberIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.FeeFormulaSlice)
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { page, list } = useSelector((state: RootState) => state.FeeComboMemberSlice)
+  const rowId = location.state?.id
 
-  const [dialogValue, setDialogValue] = useState<FeeFormulaReply>()
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
   const [openDialog, setOpenDialog] = useState(false)
-  const [dialogType, setDialogType] = useState('add')
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -33,7 +34,7 @@ const FeeFormulaIndex = () => {
     return Array.from(selectedRows)
       .map(id => list.find(item => item.id === id))
       .filter(item => item)
-      .map(item => ({ id: item!.id!, name: item!.name! }))
+      .map(item => ({ id: item!.id!, name: item!.id! }))
   }, [selectedRows, list])
 
   const deleteData = getDeleteData()
@@ -65,36 +66,33 @@ const FeeFormulaIndex = () => {
       <NavbarBreadcrumbs />
       <Box sx={contentBoxStyle}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h6">公式信息</Typography>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Add />}
-            sx={buttonStyles('#2660ad', '#1d428a')}
-            onClick={() => {
-              setOpenDialog(true)
-              setDialogType('add')
-            }}
-          >
-            添加公式
-          </Button>
+          <Typography variant="h6">费用项</Typography>
+          <Stack direction="row" spacing={1}>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              startIcon={<Add />}
+              sx={buttonStyles('#2660ad', '#1d428a')}
+              onClick={() => setOpenDialog(true)}
+            >
+              添加
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              startIcon={<Close />}
+              onClick={() => navigate(-1)}
+            >
+              返回
+            </Button>
+          </Stack>
         </Box>
-        <TableData
-          setDialogType={setDialogType}
-          setDialogValue={setDialogValue}
-          setSelectedRows={setSelectedRows}
-          setOpenDialog={setOpenDialog}
-          setDelOpen={setDelOpen}
-        />
+        <TableData rowId={rowId} setSelectedRows={setSelectedRows} setDelOpen={setDelOpen} />
       </Box>
       <Copyright />
-      <FormDialog
-        dialogValue={dialogValue}
-        openDialog={openDialog}
-        dialogType={dialogType}
-        setOpenDialog={setOpenDialog}
-      />
+      <FormDialog rowId={rowId} openDialog={openDialog} setOpenDialog={setOpenDialog} />
       <DeleteModal
         loading={loading}
         delOpen={delOpen}
@@ -106,4 +104,4 @@ const FeeFormulaIndex = () => {
   )
 }
 
-export default memo(FeeFormulaIndex)
+export default memo(FeeComboMemberIndex)

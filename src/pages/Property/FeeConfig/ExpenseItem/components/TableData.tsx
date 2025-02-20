@@ -1,29 +1,21 @@
 import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { FeeFormulaReply } from 'api/model/property/feeConfig/feeFormulaModel'
-import { find } from 'modules/property/feeConfig/feeFormula'
+import { FeeComboMemberReply } from 'api/model/property/feeConfig/feeComboMemberModel'
+import { find } from 'modules/property/feeConfig/feeComboMember'
 import { Chip } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
 
 interface TableDataProps {
-  setDialogType: Dispatch<SetStateAction<string>>
-  setDialogValue: Dispatch<SetStateAction<FeeFormulaReply | undefined>>
+  rowId: string
   setSelectedRows: Dispatch<SetStateAction<Set<string>>>
-  setOpenDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const TableData: React.FC<TableDataProps> = ({
-  setDialogType,
-  setDialogValue,
-  setSelectedRows,
-  setOpenDialog,
-  setDelOpen
-}) => {
+const TableData: React.FC<TableDataProps> = ({ rowId, setSelectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.FeeFormulaSlice)
+  const { page, list } = useSelector((state: RootState) => state.FeeComboMemberSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -43,8 +35,12 @@ const TableData: React.FC<TableDataProps> = ({
   )
 
   useEffect(() => {
-    fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
-  }, [fetchData, page.num, page.size])
+    fetchData(
+      find,
+      { 'page.num': page.num, 'page.size': page.size, comboId: rowId },
+      '正在加载列表中，请稍后...'
+    )
+  }, [fetchData, page.num, page.size, rowId])
 
   const handleRowSelection = useCallback(
     (rowSelectionModel: GridRowSelectionModel) => {
@@ -54,27 +50,19 @@ const TableData: React.FC<TableDataProps> = ({
   )
 
   const handleActionClick = useCallback(
-    (actionType: string, row: FeeFormulaReply) => {
+    (actionType: string, row: FeeComboMemberReply) => {
       switch (actionType) {
-        case 'edit':
-          setDialogType('edit')
-          setDialogValue(row)
-          setOpenDialog(true)
-          break
         case 'delete':
           setDelOpen(true)
           setSelectedRows(new Set([row.id || '']))
           break
       }
     },
-    [setDialogType, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
+    [setDelOpen, setSelectedRows]
   )
 
-  const renderActionButtons = (row: FeeFormulaReply) =>
-    [
-      { title: '修改', action: 'edit' },
-      { title: '删除', action: 'delete' }
-    ].map(({ title, action }) => (
+  const renderActionButtons = (row: FeeComboMemberReply) =>
+    [{ title: '删除', action: 'delete' }].map(({ title, action }) => (
       <Chip
         key={title}
         sx={{
@@ -100,9 +88,13 @@ const TableData: React.FC<TableDataProps> = ({
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'formulaValue', headerName: '公式', flex: 1 },
-        { field: 'price', headerName: '单价(单位:元)', flex: 1 },
-        { field: 'formulaDesc', headerName: '描述', flex: 1 },
+        { field: 'id', headerName: '费用类型', flex: 1 },
+        { field: 'comboId', headerName: '收费项目', flex: 1 },
+        { field: 'configId', headerName: '费用标识', flex: 1 },
+        { field: 'communityId', headerName: '付费类型', flex: 1 },
+        { field: 'status', headerName: '缴费周期', flex: 1 },
+        { field: 'remark', headerName: '计费单价', flex: 1 },
+        { field: 'id', headerName: '附加/固定费', flex: 1 },
         {
           field: 'actions',
           headerName: '操作',

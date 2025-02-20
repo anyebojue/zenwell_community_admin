@@ -1,15 +1,9 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  memo
-} from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useState, memo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { FeeFormulaParams, FeeFormulaReply } from 'api/model/property/feeConfig/feeFormulaModel'
-import { create, find, update } from 'modules/property/feeConfig/feeFormula'
+import { FeeComboMemberParams } from 'api/model/property/feeConfig/feeComboMemberModel'
+import { create, find } from 'modules/property/feeConfig/feeComboMember'
+import { find as findFeeConfig } from 'modules/property/feeConfig/feeConfig'
+import { find as findFeeConfigType } from 'modules/property/feeConfig/feeConfigType'
 import {
   Box,
   CircularProgress,
@@ -21,41 +15,53 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Typography
+  MenuItem
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
-  dialogValue?: FeeFormulaReply
+  rowId: string
   openDialog: boolean
-  dialogType: string
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
-const FormDialog: React.FC<FormDialogProps> = ({
-  dialogValue,
-  openDialog,
-  dialogType,
-  setOpenDialog
-}) => {
+const FormDialog: React.FC<FormDialogProps> = ({ rowId, openDialog, setOpenDialog }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.FeeFormulaSlice)
+  const { page } = useSelector((state: RootState) => state.FeeComboMemberSlice)
+  const { list: feeConfigList } = useSelector((state: RootState) => state.FeeConfigSlice)
+  const { list: feeConfigTypeList } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
   const [loading, setLoading] = useState(false)
 
-  const initialFormData = useMemo(
-    () => ({
-      formulaValue: dialogType === 'edit' ? dialogValue?.formulaValue || '' : '',
-      price: dialogType === 'edit' ? dialogValue?.price || 0 : 0,
-      formulaDesc: dialogType === 'edit' ? dialogValue?.formulaDesc || '' : ''
-    }),
-    [dialogType, dialogValue]
+  const [formData, setFormData] = useState<FeeComboMemberParams>({ remark: '', configId: '' })
+
+  const fetchData = useCallback(
+    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
+      const closeLoading = message.loading(loadingMessage)
+      try {
+        const res = await dispatch(action(params))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
+      }
+    },
+    [dispatch]
   )
-  const [formData, setFormData] = useState<FeeFormulaParams>(initialFormData)
 
   useEffect(() => {
-    setFormData(initialFormData)
-  }, [initialFormData])
+    if (openDialog) {
+      fetchData(
+        findFeeConfig,
+        { 'page.disable': true, feeTypeCd: formData.remark || '' },
+        '正在加载列表中，请稍后...'
+      )
+      fetchData(findFeeConfigType, { 'page.disable': true }, '正在加载列表中，请稍后...')
+    }
+  }, [fetchData, formData.remark, openDialog])
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
@@ -64,24 +70,24 @@ const FormDialog: React.FC<FormDialogProps> = ({
       try {
         const current_community = localStorage.getItem('current_community')
         const community = JSON.parse(current_community || '')
-        const params = { ...formData, communityId: community?.id }
-        const action =
-          dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
+        const params = { ...formData, communityId: community?.id, comboId: rowId }
+        const action = create(params)
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-        await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))
-        message.success(dialogType === 'add' ? '新建成功' : '编辑成功')
+        await dispatch(
+          find({ 'page.num': page.num || '1', 'page.size': page.size, comboId: rowId })
+        )
+        message.success('新建成功')
         setOpenDialog(false)
-        setFormData(initialFormData)
       } catch (err: unknown) {
         if (err instanceof Error) message.error(err.message)
       } finally {
         setLoading(false)
       }
     },
-    [dispatch, dialogType, dialogValue, formData, page, setOpenDialog, initialFormData]
+    [formData, dispatch, page.num, page.size, rowId, setOpenDialog]
   )
 
   return (
@@ -92,66 +98,42 @@ const FormDialog: React.FC<FormDialogProps> = ({
       onClose={() => setOpenDialog(false)}
       slotProps={{ paper: { component: 'form', onSubmit: handleSubmit } }}
     >
-      <DialogTitle>{dialogType === 'add' ? '新增' : '编辑'}</DialogTitle>
+      <DialogTitle>新增</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>公式：</FormLabel>
+            <FormLabel>费用类型：</FormLabel>
             <TextField
-              required
-              placeholder="请输入公式"
               sx={{ width: '80%' }}
-              type="text"
-              multiline
-              rows={4}
+              select
               size="small"
-              value={formData.formulaValue}
-              onChange={e => setFormData({ ...formData, formulaValue: e.target.value })}
+              value={formData.remark}
+              onChange={e => setFormData({ ...formData, remark: e.target.value })}
               variant="outlined"
-            />
+            >
+              {feeConfigTypeList.map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
+                </MenuItem>
+              ))}
+            </TextField>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>单价：</FormLabel>
+            <FormLabel>收费项目：</FormLabel>
             <TextField
-              required
-              placeholder="请输入单价"
               sx={{ width: '80%' }}
-              type="text"
+              select
               size="small"
-              value={formData.price}
-              onChange={e => setFormData({ ...formData, price: Number(e.target.value) })}
+              value={formData.configId}
+              onChange={e => setFormData({ ...formData, configId: e.target.value })}
               variant="outlined"
-            />
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>描述：</FormLabel>
-            <TextField
-              required
-              placeholder="请输入描述"
-              sx={{ width: '80%' }}
-              type="text"
-              multiline
-              rows={4}
-              size="small"
-              value={formData.formulaDesc}
-              onChange={e => setFormData({ ...formData, formulaDesc: e.target.value })}
-              variant="outlined"
-            />
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
-            <FormLabel>说明：</FormLabel>
-            <Typography sx={{ ml: 10, textAlign: 'left' }} variant="body1">
-              T 代表总量，如电费总使用量 <br />
-              C 代表房屋对应小区面积 <br />
-              F 代表房屋对应楼栋面积 <br />
-              U 代表房屋对应单元面积 <br />
-              R 代表房屋面积 <br />
-              X 代表房屋收费系数（房屋管理中配置） <br />
-              L 代表房屋对应楼栋房屋数 <br />
-              D 代表房屋对应单元房屋数 <br />
-              举例：公共区域公摊电费 电量/楼栋面积*房屋面积 <br />
-              公式：T/F * R
-            </Typography>
+            >
+              {feeConfigList.map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
+                </MenuItem>
+              ))}
+            </TextField>
           </Box>
         </Stack>
       </DialogContent>
