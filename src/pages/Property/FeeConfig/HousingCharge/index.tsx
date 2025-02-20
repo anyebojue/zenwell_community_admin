@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { HousingManagementReply } from 'api/model/property/houses/housingManagementModel'
 import { find } from 'modules/property/houses/housingManagement'
+import { find as findRoom } from 'modules/property/houses/room'
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
 import { Box, Button, Stack, Tab, Tabs, Theme, Typography } from '@mui/material'
 import { Add, Download } from '@mui/icons-material'
@@ -9,6 +9,8 @@ import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
+import { RoomReply } from 'api/model/property/houses/roomModel'
+import { TreeViewBaseItem } from '@mui/x-tree-view'
 import FormSearch from './components/FormSearch'
 import HousingExpenses from './components/HousingExpenses'
 import CallForPayment from './components/CallForPayment'
@@ -43,53 +45,78 @@ const buttonCommonStyle = (color: string = '#2660ad', height: string = '32px') =
 const HousingManagementIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const [activeTabIndex, setActiveTabIndex] = useState(0)
-  const { list } = useSelector((state: RootState) => state.HousingManagementSlice)
-  const [dialogValue, setDialogValue] = useState<HousingManagementReply>({})
+  const { page, list } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { list: roomList } = useSelector((state: RootState) => state.RoomSlice)
+  const [dialogValue, setDialogValue] = useState<{
+    id?: string
+    label?: string
+    roomData?: RoomReply
+  }>({})
 
-  const MUI_X_PRODUCTS = useMemo(() => {
+  const MUI_X_PRODUCTS: TreeViewBaseItem[] = useMemo(() => {
     return list.map(item => ({
-      id: item.id,
-      label: item.name,
-      children: item.unit?.map(unit => ({
-        id: unit.id,
-        label: `${unit.unitNum}单元`
-      }))
+      id: item.id || '',
+      label: item.name || '',
+      children: item.unit?.map(unit => {
+        const roomsForUnit = roomList.filter(room => room.unitId === unit.id)
+        const unitWithRooms = {
+          id: unit.id || '',
+          label: `${unit.unitNum}单元`,
+          children: roomsForUnit.map(room => ({
+            id: room.id || '',
+            label: `${room.roomNum}房间`,
+            roomData: room
+          }))
+        }
+        return unitWithRooms
+      })
     }))
-  }, [list])
+  }, [list, roomList])
 
-  const fetchData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(find({ 'page.disable': true }))
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
+  const fetchData = useCallback(
+    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
+      const closeLoading = message.loading(loadingMessage)
+      try {
+        const res = await dispatch(action(params))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
       }
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch])
+    },
+    [dispatch]
+  )
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    fetchData(find, { 'page.disable': true }, '正在加载列表中，请稍后...')
+    fetchData(findRoom, { 'page.disable': true }, '正在加载列表中，请稍后...')
+  }, [fetchData, page.disable, page.num, page.size])
 
   useEffect(() => {
-    if (!list || list.length === 0) {
+    if (!MUI_X_PRODUCTS || MUI_X_PRODUCTS.length === 0) {
       setDialogValue({})
     } else {
-      setDialogValue(list[0])
+      setDialogValue(MUI_X_PRODUCTS[0]?.children?.[0]?.children?.[0] || {})
     }
-  }, [list])
+  }, [MUI_X_PRODUCTS])
 
   const findItemById = useCallback(
-    (items: HousingManagementReply[], targetId: string): HousingManagementReply | null => {
+    (
+      items: TreeViewBaseItem[],
+      targetId: string
+    ): {
+      id: string
+      label: string
+      roomData?: RoomReply
+      children?: TreeViewBaseItem[]
+    } | null => {
       for (const item of items) {
         if (item.id === targetId) return item
-        if (item.unit?.length) {
-          const foundInChildren = findItemById(item.unit, targetId)
+        if (item.children?.length) {
+          const foundInChildren = findItemById(item.children, targetId)
           if (foundInChildren) return foundInChildren
         }
       }
@@ -109,14 +136,19 @@ const HousingManagementIndex = () => {
         <Box sx={treeViewStyle}>
           <RichTreeView
             items={MUI_X_PRODUCTS}
-            defaultExpandedItems={['9030190676301578241']}
-            selectedItems={dialogValue?.id || ''}
+            defaultExpandedItems={[
+              MUI_X_PRODUCTS[0]?.id || '9031315219250413569',
+              MUI_X_PRODUCTS[0]?.children?.[0]?.id || '9031315219267190785'
+            ]}
+            selectedItems={dialogValue?.id || '9031315219283968001'}
             onSelectedItemsChange={(_, selectedItemId) => {
               if (!selectedItemId) return
-              const item = findItemById(list, selectedItemId)
-              if (item) setDialogValue(item)
+              const selectedItem = findItemById(MUI_X_PRODUCTS, selectedItemId)
+              if (selectedItem && selectedItem.roomData) {
+                setDialogValue(selectedItem)
+              }
             }}
-            expansionTrigger="iconContainer" // 只有点击左边的按钮才展开
+            expansionTrigger="iconContainer"
           />
         </Box>
         <Box sx={{ width: '100%' }}>
@@ -134,7 +166,8 @@ const HousingManagementIndex = () => {
             }}
           >
             <Typography component="h6" variant="h6" gutterBottom>
-              {dialogValue.name}
+              {dialogValue?.roomData?.unit?.floor?.floorNum} -{' '}
+              {dialogValue?.roomData?.unit?.unitNum} - {dialogValue?.roomData?.roomNum}
             </Typography>
             <Stack direction="row" spacing={1}>
               <Button
