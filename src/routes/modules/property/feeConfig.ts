@@ -28,6 +28,13 @@ const feeConfig: IRouter[] = [
         }
       },
       {
+        path: 'HousingCharge',
+        element: load('Property/FeeConfig/HousingCharge'),
+        meta: {
+          title: '房屋收费'
+        }
+      },
+      {
         path: 'DiscountSetting',
         element: load('Property/FeeConfig/DiscountSetting'),
         meta: {
