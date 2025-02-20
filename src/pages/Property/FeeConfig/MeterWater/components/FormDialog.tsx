@@ -65,8 +65,14 @@ const FormDialog: React.FC<FormDialogProps> = ({
     () => ({
       preDegrees: dialogType === 'edit' ? dialogMeterWaterValue?.preDegrees || 0 : 0,
       curDegrees: dialogType === 'edit' ? dialogMeterWaterValue?.curDegrees || 0 : 0,
-      preReadingTime: dialogType === 'edit' ? dialogMeterWaterValue?.preReadingTime || '' : '',
-      curReadingTime: dialogType === 'edit' ? dialogMeterWaterValue?.curReadingTime || '' : '',
+      preReadingTime:
+        dialogType === 'edit'
+          ? dialogMeterWaterValue?.preReadingTime || formatDateTime(new Date())
+          : formatDateTime(new Date()),
+      curReadingTime:
+        dialogType === 'edit'
+          ? dialogMeterWaterValue?.curReadingTime || formatDateTime(new Date())
+          : formatDateTime(new Date()),
       remark: dialogType === 'edit' ? dialogMeterWaterValue?.remark || '' : ''
     }),
     [dialogType, dialogMeterWaterValue]
@@ -111,7 +117,9 @@ const FormDialog: React.FC<FormDialogProps> = ({
         const community = JSON.parse(current_community || '')
         const params = { ...formData, communityId: community?.id }
         const action =
-          dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
+          dialogType === 'add'
+            ? create(params)
+            : update({ id: dialogMeterWaterValue?.id, ...params })
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
@@ -126,7 +134,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
         setLoading(false)
       }
     },
-    [dispatch, dialogType, dialogValue, formData, page, setOpenDialog, initialFormData]
+    [dispatch, dialogType, dialogMeterWaterValue, formData, page, setOpenDialog, initialFormData]
   )
 
   return (

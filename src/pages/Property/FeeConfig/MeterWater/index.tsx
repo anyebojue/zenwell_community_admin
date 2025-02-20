@@ -243,6 +243,7 @@ const HousingManagementIndex = () => {
               setDialogMeterWaterValue={setDialogMeterWaterValue}
               setSelectedRows={setSelectedRows}
               setOpenDialog={setOpenDialog}
+              setDialogType={setDialogType}
               setDelOpen={setDelOpen}
             />
           </Box>

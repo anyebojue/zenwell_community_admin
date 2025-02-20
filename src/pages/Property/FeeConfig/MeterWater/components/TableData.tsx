@@ -14,6 +14,7 @@ interface TableDataProps {
   setDialogMeterWaterValue: Dispatch<SetStateAction<MeterWaterReply>>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
+  setDialogType: Dispatch<SetStateAction<string>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
@@ -22,10 +23,12 @@ const TableData: React.FC<TableDataProps> = ({
   setDialogMeterWaterValue,
   setSelectedRows,
   setOpenDialog,
+  setDialogType,
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.MeterWaterSlice)
+  const { list: meterTypeList } = useSelector((state: RootState) => state.MeterTypeSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -60,6 +63,7 @@ const TableData: React.FC<TableDataProps> = ({
     (actionType: string, row: MeterWaterReply) => {
       switch (actionType) {
         case 'edit':
+          setDialogType('edit')
           setDialogMeterWaterValue(row)
           setOpenDialog(true)
           break
@@ -69,7 +73,7 @@ const TableData: React.FC<TableDataProps> = ({
           break
       }
     },
-    [setDelOpen, setDialogMeterWaterValue, setOpenDialog, setSelectedRows]
+    [setDelOpen, setDialogMeterWaterValue, setDialogType, setOpenDialog, setSelectedRows]
   )
 
   const renderActionButtons = (row: MeterWaterReply) =>
@@ -107,7 +111,11 @@ const TableData: React.FC<TableDataProps> = ({
           headerAlign: 'center',
           headerName: '表类型',
           align: 'center',
-          flex: 1
+          flex: 1,
+          renderCell: ({ row }) => {
+            const meter = meterTypeList.find(item => item.id === row.meterType)
+            return <Chip label={meter ? meter.name : '未知状态'} />
+          }
         },
         {
           field: 'discountType',
