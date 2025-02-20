@@ -61,6 +61,21 @@ const feeConfig: IRouter[] = [
         meta: {
           title: '公摊公式'
         }
+      },
+      {
+        path: 'FeePackage',
+        element: load('Property/FeeConfig/FeePackage'),
+        meta: {
+          title: '费用套餐'
+        }
+      },
+      {
+        path: 'ExpenseItem',
+        element: load('Property/FeeConfig/ExpenseItem'),
+        meta: {
+          hidden: true,
+          title: '费用项'
+        }
       }
     ]
   }
