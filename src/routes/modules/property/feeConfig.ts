@@ -35,6 +35,20 @@ const feeConfig: IRouter[] = [
         }
       },
       {
+        path: 'MeterType',
+        element: load('Property/FeeConfig/MeterType'),
+        meta: {
+          title: '抄表类型'
+        }
+      },
+      {
+        path: 'MeterWater',
+        element: load('Property/FeeConfig/MeterWater'),
+        meta: {
+          title: '水电抄表'
+        }
+      },
+      {
         path: 'DiscountSetting',
         element: load('Property/FeeConfig/DiscountSetting'),
         meta: {

@@ -27,6 +27,7 @@ import FeeDiscountSlice from './property/feeConfig/feeDiscount'
 import FeeDiscountRuleSpecSlice from './property/feeConfig/feeDiscountRuleSpec'
 import FeeDiscountRuleSlice from './property/feeConfig/feeDiscountRule'
 import FeeFormulaSlice from './property/feeConfig/feeFormula'
+import MeterTypeSlice from './property/feeConfig/meterType'
 import SpaceConfirmOrderSlice from './property/houses/spaceConfirmOrder'
 import OwnerInvoiceSlice from './property/houses/ownerInvoice'
 import OwnerInvoiceApplySlice from './property/houses/ownerInvoiceApply'
@@ -76,6 +77,7 @@ const store = configureStore({
     FeeDiscountRuleSlice,
     FeeDiscountRuleSpecSlice,
     FeeFormulaSlice,
+    MeterTypeSlice,
     OwnerInvoiceSlice,
     OwnerInvoiceApplySlice,
     OwnerInvoiceApplyItemSlice,
