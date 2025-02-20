@@ -1,15 +1,15 @@
 import { memo, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { RoomReply } from 'api/model/property/houses/roomModel'
 import { FeeDiscountReply } from 'api/model/property/feeConfig/feeDiscountModel'
 import { find } from 'modules/property/feeConfig/feeDiscount'
 import { Chip } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
-import { HousingManagementReply } from 'api/model/property/houses/housingManagementModel'
 
 interface TableDataProps {
-  dialogValue: HousingManagementReply
+  dialogValue: { id: string; label: string; roomData: RoomReply }
 }
 
 const statusValue: Record<string, string> = {

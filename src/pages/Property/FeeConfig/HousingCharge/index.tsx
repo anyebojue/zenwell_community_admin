@@ -55,16 +55,16 @@ const HousingManagementIndex = () => {
 
   const MUI_X_PRODUCTS: TreeViewBaseItem[] = useMemo(() => {
     return list.map(item => ({
-      id: item.id || '',
-      label: item.name || '',
+      id: `${item.id}`,
+      label: `${item.name}`,
       children: item.unit?.map(unit => {
         const roomsForUnit = roomList.filter(room => room.unitId === unit.id)
         const unitWithRooms = {
-          id: unit.id || '',
+          id: `${unit.id}`,
           label: `${unit.unitNum}单元`,
           children: roomsForUnit.map(room => ({
-            id: room.id || '',
-            label: `${room.roomNum}房间`,
+            id: `${room.id}`,
+            label: `${room.roomNum}`,
             roomData: room
           }))
         }
