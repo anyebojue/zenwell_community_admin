@@ -9,7 +9,7 @@ import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
 
 interface TableDataProps {
-  dialogValue: { id: string; label: string; roomData: RoomReply }
+  dialogValue: { id?: string; label?: string; roomData?: RoomReply }
 }
 
 const statusValue: Record<string, string> = {
