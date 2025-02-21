@@ -32,6 +32,16 @@ const statusTypeValue: Record<string, string> = {
   '2009001': '收费结束'
 }
 
+const buttonList = [
+  { label: '批量缴费', onClick: () => {} },
+  { label: '临时收费', onClick: () => {} },
+  { label: '按量缴费', onClick: () => {} },
+  { label: '水电抄表', onClick: () => {} },
+  { label: '费用套餐', onClick: () => {} },
+  { label: '创建费用', onClick: () => {} },
+  { label: '欠费缴费', onClick: () => {} }
+]
+
 const TableData: React.FC<TableDataProps> = ({ dialogValue }) => {
   console.log(dialogValue)
   const dispatch = useDispatch<AppDispatch>()
@@ -130,76 +140,19 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue }) => {
           </TextField>
         </Stack>
         <Stack direction="row" spacing={1}>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Add />}
-            sx={buttonCommonStyle()}
-            onClick={() => {}}
-          >
-            批量缴费
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Add />}
-            sx={buttonCommonStyle()}
-            onClick={() => {}}
-          >
-            临时收费
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Add />}
-            sx={buttonCommonStyle()}
-            onClick={() => {}}
-          >
-            按量缴费
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Add />}
-            sx={buttonCommonStyle()}
-            onClick={() => {}}
-          >
-            水电抄表
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Add />}
-            sx={buttonCommonStyle()}
-            onClick={() => {}}
-          >
-            费用套餐
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Add />}
-            sx={buttonCommonStyle()}
-            onClick={() => {}}
-          >
-            创建费用
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Add />}
-            sx={buttonCommonStyle()}
-            onClick={() => {}}
-          >
-            欠费缴费
-          </Button>
+          {buttonList.map(({ label, onClick }) => (
+            <Button
+              key={label}
+              size="small"
+              variant="contained"
+              color="error"
+              startIcon={<Add />}
+              sx={buttonCommonStyle()}
+              onClick={onClick}
+            >
+              {label}
+            </Button>
+          ))}
         </Stack>
       </Box>
       <DataGrid
