@@ -20,6 +20,8 @@ export interface PayFeeReply {
   batchId?: string
   status?: 1
   remark?: string
+  payerObjName?: string // 付款方
+  incomeObjName?: string // 收款方
   computeAccount?: {
     receivableAmount?: string
     payableAmount?: string

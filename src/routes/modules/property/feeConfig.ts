@@ -49,10 +49,32 @@ const feeConfig: IRouter[] = [
         }
       },
       {
+        path: 'ReturnAudit',
+        element: load('Property/FeeConfig/ReturnAudit'),
+        meta: {
+          title: '退费审核'
+        }
+      },
+      {
         path: 'DiscountSetting',
         element: load('Property/FeeConfig/DiscountSetting'),
         meta: {
           title: '折扣设置'
+        }
+      },
+      {
+        path: 'DiscountApplication',
+        element: load('Property/FeeConfig/DiscountApplication'),
+        meta: {
+          title: '优惠申请'
+        }
+      },
+      {
+        path: 'TraceRecord',
+        element: load('Property/FeeConfig/TraceRecord'),
+        meta: {
+          hidden: true,
+          title: '跟踪记录'
         }
       },
       {

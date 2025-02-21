@@ -32,6 +32,8 @@ import MeterTypeSlice from './property/feeConfig/meterType'
 import MeterWaterSlice from './property/feeConfig/meterWater'
 import FeeComboSlice from './property/feeConfig/feeCombo'
 import FeeComboMemberSlice from './property/feeConfig/feeComboMember'
+import PayFeeDetailSlice from './property/feeConfig/payFeeDetail'
+import ReturnPayFeeSlice from './property/feeConfig/returnPayFee'
 import SpaceConfirmOrderSlice from './property/houses/spaceConfirmOrder'
 import OwnerInvoiceSlice from './property/houses/ownerInvoice'
 import OwnerInvoiceApplySlice from './property/houses/ownerInvoiceApply'
@@ -77,6 +79,8 @@ const store = configureStore({
     PayFeeSlice,
     FeeConfigTypeSlice,
     FeeConfigSlice,
+    PayFeeDetailSlice,
+    ReturnPayFeeSlice,
     PayFeeConfigDiscountSlice,
     FeeDiscountSlice,
     FeeDiscountRuleSlice,
