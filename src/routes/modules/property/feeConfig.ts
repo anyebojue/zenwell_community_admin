@@ -71,6 +71,13 @@ const feeConfig: IRouter[] = [
         }
       },
       {
+        path: 'DiscountType',
+        element: load('Property/FeeConfig/DiscountType'),
+        meta: {
+          title: '优惠类型'
+        }
+      },
+      {
         path: 'DiscountApplication',
         element: load('Property/FeeConfig/DiscountApplication'),
         meta: {
