@@ -45,7 +45,7 @@ const buttonCommonStyle = (color: string = '#2660ad', height: string = '32px') =
 const HousingManagementIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const [activeTabIndex, setActiveTabIndex] = useState(0)
-  const { page, list } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { list } = useSelector((state: RootState) => state.HousingManagementSlice)
   const { list: roomList } = useSelector((state: RootState) => state.RoomSlice)
   const [dialogValue, setDialogValue] = useState<{
     id?: string
@@ -93,7 +93,7 @@ const HousingManagementIndex = () => {
   useEffect(() => {
     fetchData(find, { 'page.disable': true }, '正在加载列表中，请稍后...')
     fetchData(findRoom, { 'page.disable': true }, '正在加载列表中，请稍后...')
-  }, [fetchData, page.disable, page.num, page.size])
+  }, [fetchData])
 
   useEffect(() => {
     if (!MUI_X_PRODUCTS || MUI_X_PRODUCTS.length === 0) {

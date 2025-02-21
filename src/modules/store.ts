@@ -20,6 +20,7 @@ import VenueSlice from './property/houses/venue'
 import SpaceSlice from './property/houses/space'
 import SpaceOpenTimeSlice from './property/houses/spaceOpenTime'
 import SpacePersonSlice from './property/houses/spacePerson'
+import PayFeeSlice from './property/feeConfig/payFee'
 import FeeConfigTypeSlice from './property/feeConfig/feeConfigType'
 import FeeConfigSlice from './property/feeConfig/feeConfig'
 import PayFeeConfigDiscountSlice from './property/feeConfig/payFeeConfigDiscount'
@@ -73,6 +74,7 @@ const store = configureStore({
     SpaceOpenTimeSlice,
     SpacePersonSlice,
     SpaceConfirmOrderSlice,
+    PayFeeSlice,
     FeeConfigTypeSlice,
     FeeConfigSlice,
     PayFeeConfigDiscountSlice,
