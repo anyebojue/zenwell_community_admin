@@ -25,6 +25,11 @@ export interface ReturnPayFeeReply {
   status?: number // Status, 1: Active, 0: Inactive
   remark?: string // 备注
   payFeeDetail?: PayFeeDetailReply
+  createTime?: string
+  startTime?: string
+  endTime?: string
+  payerObjId?: string
+  payerObjName?: string
 }
 
 export interface ReturnPayFeeParams {

@@ -56,6 +56,14 @@ const feeConfig: IRouter[] = [
         }
       },
       {
+        path: 'RefundDetails',
+        element: load('Property/FeeConfig/RefundDetails'),
+        meta: {
+          hidden: true,
+          title: '退费详情'
+        }
+      },
+      {
         path: 'DiscountSetting',
         element: load('Property/FeeConfig/DiscountSetting'),
         meta: {

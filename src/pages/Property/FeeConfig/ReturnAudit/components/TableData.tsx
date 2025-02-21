@@ -6,6 +6,7 @@ import { Chip } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
+import { useNavigate } from 'react-router-dom'
 
 interface TableDataProps {
   setDialogValue: Dispatch<SetStateAction<ReturnPayFeeReply | undefined>>
@@ -20,6 +21,7 @@ const statusValue: Record<string, string> = {
 
 const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.ReturnPayFeeSlice)
 
   const fetchData = useCallback(
@@ -50,11 +52,12 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
           setOpenDialog(true)
           break
         case 'details':
+          navigate('/FeeConfig/RefundDetails', { state: { value: row } })
           setDialogValue(row)
           break
       }
     },
-    [setDialogValue, setOpenDialog]
+    [navigate, setDialogValue, setOpenDialog]
   )
 
   const renderActionButtons = (row: ReturnPayFeeReply) => {
