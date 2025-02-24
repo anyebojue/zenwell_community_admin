@@ -139,7 +139,7 @@ const TableData: React.FC<TableDataProps> = ({
             field: 'roomName',
             headerName: '房屋',
             renderCell: ({ row }) =>
-              `${row.room.unit.floor.name}-${row.room.unit.unitNum}-${row.room.roomNum}`
+              `${row.room?.unit?.floor?.name}-${row.room?.unit?.unitNum}-${row.room.roomNum}`
           },
           { field: 'personName', headerName: '联系人' },
           { field: 'personTel', headerName: '联系电话' },
