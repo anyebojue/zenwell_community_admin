@@ -169,8 +169,8 @@ const FormDialog: React.FC<FormDialogProps> = ({ value, openDialog, setOpenDialo
               variant="outlined"
             >
               {[
-                { value: 1, label: '是' },
-                { value: 0, label: '否' }
+                { value: '1', label: '是' },
+                { value: '0', label: '否' }
               ].map(option => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}

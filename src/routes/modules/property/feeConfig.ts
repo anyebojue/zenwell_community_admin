@@ -93,6 +93,13 @@ const feeConfig: IRouter[] = [
         }
       },
       {
+        path: 'ReprintReceipt',
+        element: load('Property/FeeConfig/ReprintReceipt'),
+        meta: {
+          title: '补打收据'
+        }
+      },
+      {
         path: 'SharedFormula',
         element: load('Property/FeeConfig/SharedFormula'),
         meta: {
