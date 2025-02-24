@@ -36,6 +36,7 @@ import PayFeeDetailSlice from './property/feeConfig/payFeeDetail'
 import ReturnPayFeeSlice from './property/feeConfig/returnPayFee'
 import ApplyRoomDiscountTypeSlice from './property/feeConfig/applyRoomDiscountType'
 import ApplyRoomDiscountSlice from './property/feeConfig/applyRoomDiscount'
+import ApplyRoomDiscountRecordSlice from './property/feeConfig/applyRoomDiscountRecord'
 import SpaceConfirmOrderSlice from './property/houses/spaceConfirmOrder'
 import OwnerInvoiceSlice from './property/houses/ownerInvoice'
 import OwnerInvoiceApplySlice from './property/houses/ownerInvoiceApply'
@@ -85,6 +86,7 @@ const store = configureStore({
     ReturnPayFeeSlice,
     ApplyRoomDiscountTypeSlice,
     ApplyRoomDiscountSlice,
+    ApplyRoomDiscountRecordSlice,
     PayFeeConfigDiscountSlice,
     FeeDiscountSlice,
     FeeDiscountRuleSlice,

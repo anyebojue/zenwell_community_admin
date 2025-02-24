@@ -9,6 +9,7 @@ import { Chip } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
+import { useNavigate } from 'react-router-dom'
 
 interface TableDataProps {
   setDialogType: Dispatch<SetStateAction<string>>
@@ -44,6 +45,7 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.ApplyRoomDiscountSlice)
 
   const fetchData = useCallback(
@@ -86,6 +88,7 @@ const TableData: React.FC<TableDataProps> = ({
           setOpenDialog(true)
           break
         case 'record':
+          navigate('/FeeConfig/TraceRecord', { state: { value: row } })
           break
         case 'examine':
           setDialogType('examine')
@@ -103,7 +106,7 @@ const TableData: React.FC<TableDataProps> = ({
           break
       }
     },
-    [setDialogType, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
+    [setDialogType, setDialogValue, setOpenDialog, navigate, setDelOpen, setSelectedRows]
   )
 
   const renderActionButtons = (row: ApplyRoomDiscountReply) => {

@@ -1,21 +1,30 @@
 import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { FeeComboMemberReply } from 'api/model/property/feeConfig/feeComboMemberModel'
-import { find } from 'modules/property/feeConfig/feeComboMember'
+import { ApplyRoomDiscountRecordReply } from 'api/model/property/feeConfig/applyRoomDiscountRecordModel'
+import { find } from 'modules/property/feeConfig/applyRoomDiscountRecord'
 import { Chip } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
+import { ApplyRoomDiscountReply } from 'api/model/property/feeConfig/applyRoomDiscountModel'
+
+const statusValue: Record<string, string> = {
+  '1': '申请验房',
+  '2': '验房通过',
+  '3': '验房不通过',
+  '4': '审批通过',
+  '5': '审批不通过'
+}
 
 interface TableDataProps {
-  rowId: string
+  value: ApplyRoomDiscountReply
   setSelectedRows: Dispatch<SetStateAction<Set<string>>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const TableData: React.FC<TableDataProps> = ({ rowId, setSelectedRows, setDelOpen }) => {
+const TableData: React.FC<TableDataProps> = ({ value, setSelectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.FeeComboMemberSlice)
+  const { page, list } = useSelector((state: RootState) => state.ApplyRoomDiscountRecordSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -37,10 +46,10 @@ const TableData: React.FC<TableDataProps> = ({ rowId, setSelectedRows, setDelOpe
   useEffect(() => {
     fetchData(
       find,
-      { 'page.num': page.num, 'page.size': page.size, comboId: rowId },
+      { 'page.num': page.num, 'page.size': page.size, ardId: value.id! },
       '正在加载列表中，请稍后...'
     )
-  }, [fetchData, page.num, page.size, rowId])
+  }, [fetchData, page.num, page.size, value])
 
   const handleRowSelection = useCallback(
     (rowSelectionModel: GridRowSelectionModel) => {
@@ -50,7 +59,7 @@ const TableData: React.FC<TableDataProps> = ({ rowId, setSelectedRows, setDelOpe
   )
 
   const handleActionClick = useCallback(
-    (actionType: string, row: FeeComboMemberReply) => {
+    (actionType: string, row: ApplyRoomDiscountRecordReply) => {
       switch (actionType) {
         case 'delete':
           setDelOpen(true)
@@ -61,7 +70,7 @@ const TableData: React.FC<TableDataProps> = ({ rowId, setSelectedRows, setDelOpe
     [setDelOpen, setSelectedRows]
   )
 
-  const renderActionButtons = (row: FeeComboMemberReply) =>
+  const renderActionButtons = (row: ApplyRoomDiscountRecordReply) =>
     [{ title: '删除', action: 'delete' }].map(({ title, action }) => (
       <Chip
         key={title}
@@ -87,13 +96,35 @@ const TableData: React.FC<TableDataProps> = ({ rowId, setSelectedRows, setDelOpe
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'id', headerName: '费用类型', flex: 1 },
-        { field: 'comboId', headerName: '收费项目', flex: 1 },
-        { field: 'configId', headerName: '费用标识', flex: 1 },
-        { field: 'communityId', headerName: '付费类型', flex: 1 },
-        { field: 'status', headerName: '缴费周期', flex: 1 },
-        { field: 'remark', headerName: '计费单价', flex: 1 },
-        { field: 'id', headerName: '附加/固定费', flex: 1 },
+        {
+          field: 'roomId',
+          headerName: '房屋',
+          flex: 1,
+          renderCell: () => `${value.roomId}`
+        },
+        { field: 'createUserName', headerName: '操作人员', flex: 1 },
+        { field: 'createdAt', headerName: '创建时间', flex: 1 },
+        {
+          field: 'stateCd',
+          headerName: '状态',
+          headerAlign: 'center',
+          align: 'center',
+          flex: 1,
+          renderCell: ({ row }) => <Chip label={statusValue[row.stateCd!] || '未知状态'} />
+        },
+        {
+          field: 'isTrue',
+          headerName: '是否违规',
+          flex: 1,
+          renderCell: ({ row }) => (row.isTrue ? '是' : '否')
+        },
+        { field: 'remark', headerName: '备注', flex: 1 },
+        {
+          field: 'img',
+          headerName: '图片',
+          flex: 1,
+          renderCell: ({ row }) => <img style={{ height: '30px' }} src={row.img} alt={row.img} />
+        },
         {
           field: 'actions',
           headerName: '操作',
