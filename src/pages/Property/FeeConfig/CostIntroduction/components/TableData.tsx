@@ -7,11 +7,13 @@ import { Chip } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
+import { useNavigate } from 'react-router-dom'
 
 interface TableDataProps {}
 
 const TableData: React.FC<TableDataProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.FeeDiscountSlice)
 
   const fetchData = useCallback(
@@ -40,15 +42,16 @@ const TableData: React.FC<TableDataProps> = () => {
     )
   }, [fetchData, page.num, page.size])
 
-  const handleActionClick = useCallback((actionType: string, row: FeeDiscountReply) => {
-    switch (actionType) {
-      case 'edit':
-        console.log(row)
-        break
-      case 'delete':
-        break
-    }
-  }, [])
+  const handleActionClick = useCallback(
+    (actionType: string, row: FeeDiscountReply) => {
+      switch (actionType) {
+        case 'details':
+          navigate('/FeeConfig/ImportFeeDetails', { state: { value: row } })
+          break
+      }
+    },
+    [navigate]
+  )
 
   const renderActionButtons = (row: FeeDiscountReply) =>
     [{ title: '详情', action: 'details' }].map(({ title, action }) => (

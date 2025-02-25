@@ -114,6 +114,14 @@ const feeConfig: IRouter[] = [
         }
       },
       {
+        path: 'ImportFeeDetails',
+        element: load('Property/FeeConfig/ImportFeeDetails'),
+        meta: {
+          hidden: true,
+          title: '导入费用详情'
+        }
+      },
+      {
         path: 'FeePackage',
         element: load('Property/FeeConfig/FeePackage'),
         meta: {
