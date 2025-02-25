@@ -26,7 +26,7 @@ const ReturnPayFeeIndex = () => {
       <FormSearch />
       <Box sx={contentBoxStyle}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h6">退费申请单</Typography>
+          <Typography variant="h6">缴费审核</Typography>
           <Button
             size="small"
             variant="contained"
@@ -35,7 +35,7 @@ const ReturnPayFeeIndex = () => {
             sx={buttonStyles('#2660ad', '#1d428a')}
             onClick={() => {}}
           >
-            导出
+            批量审核
           </Button>
         </Box>
         <TableData setDialogValue={setDialogValue} setOpenDialog={setOpenDialog} />

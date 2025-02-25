@@ -25,7 +25,7 @@ const textFieldStyles = {
 
 const FormSearch: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
+  const { page } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
   const [searchParams, setSearchParams] = useState<ReturnPayFeeParams>({
     applyPersonName: '',
     auditPersonName: '',
@@ -94,34 +94,12 @@ const FormSearch: React.FC = () => {
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
-            label="请输入申请人"
+            label="请填写房屋 楼栋-单元-室"
             type="text"
             variant="outlined"
             sx={textFieldStyles}
             value={searchParams.applyPersonName}
             onChange={handleInputChange('applyPersonName')}
-          />
-        </FormControl>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            size="small"
-            label="请输入审核人"
-            type="text"
-            variant="outlined"
-            sx={textFieldStyles}
-            value={searchParams.auditPersonName}
-            onChange={handleInputChange('auditPersonName')}
-          />
-        </FormControl>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            size="small"
-            label="请输入房屋编号 车辆编号等"
-            type="text"
-            variant="outlined"
-            sx={textFieldStyles}
-            value={searchParams.payerObjId}
-            onChange={handleInputChange('payerObjId')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -135,10 +113,9 @@ const FormSearch: React.FC = () => {
             sx={textFieldStyles}
           >
             {[
-              { value: '1000', label: '审核中' },
-              { value: '1100', label: '审核通过' },
-              { value: '1200', label: '审核未通过' },
-              { value: '1300', label: '退款单' }
+              { value: '1010', label: '待审核' },
+              { value: '2020', label: '审核通过' },
+              { value: '3030', label: '审核未通过' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -150,52 +127,22 @@ const FormSearch: React.FC = () => {
           <TextField
             select
             size="small"
-            label="请选择选择费用类型"
+            label="请选择付费对象"
             value={searchParams.feeTypeCd}
             onChange={handleSelectChange('feeTypeCd')}
             variant="outlined"
             sx={textFieldStyles}
           >
-            {list.map(option => (
-              <MenuItem key={option.id} value={option.id}>
-                {option.name}
+            {[
+              { value: '3333', label: '房屋' },
+              { value: '6666', label: '停车位' },
+              { value: '7777', label: '合同' }
+            ].map(option => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
               </MenuItem>
             ))}
           </TextField>
-        </FormControl>
-      </Stack>
-      <Stack direction="row" spacing={3} component="form" sx={{ mt: 2, mb: 1.5 }}>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            size="small"
-            label="请输入申请开始时间"
-            type="datetime-local"
-            variant="outlined"
-            sx={textFieldStyles}
-            value={searchParams.startTime}
-            onChange={handleInputChange('startTime')}
-            slotProps={{
-              inputLabel: {
-                shrink: true
-              }
-            }}
-          />
-        </FormControl>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            size="small"
-            label="请输入申请结束时间"
-            type="datetime-local"
-            variant="outlined"
-            sx={textFieldStyles}
-            value={searchParams.endTime}
-            onChange={handleInputChange('endTime')}
-            slotProps={{
-              inputLabel: {
-                shrink: true
-              }
-            }}
-          />
         </FormControl>
       </Stack>
       <Stack direction="row" spacing={1} component="form" sx={{ mb: 2 }}>

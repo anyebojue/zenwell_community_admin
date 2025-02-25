@@ -13,12 +13,6 @@ interface TableDataProps {
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
-const statusValue: Record<string, string> = {
-  '1001': '待审核',
-  '2002': '审核通过',
-  '3003': '审核不通过'
-}
-
 const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
@@ -48,12 +42,12 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
   const handleActionClick = useCallback(
     (actionType: string, row: ReturnPayFeeReply) => {
       switch (actionType) {
-        case 'audit':
-          setOpenDialog(true)
-          break
         case 'details':
           navigate('/FeeConfig/RefundDetails', { state: { value: row } })
           setDialogValue(row)
+          break
+        case 'fee':
+          setOpenDialog(true)
           break
       }
     },
@@ -62,27 +56,25 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
 
   const renderActionButtons = (row: ReturnPayFeeReply) => {
     const actionButtons = [
-      { title: '审核', action: 'audit', condition: row.stateCd !== '1001' },
-      { title: '详情', action: 'details', condition: true }
+      { title: '详情', action: 'details' },
+      { title: '审核费用', action: 'fee' }
     ]
-    return actionButtons
-      .filter(button => button.condition)
-      .map(({ title, action }) => (
-        <Chip
-          key={title}
-          sx={{
-            cursor: 'pointer',
-            marginRight: '-5px',
-            '& .MuiChip-label': {
-              fontSize: '13px'
-            }
-          }}
-          label={title}
-          color="primary"
-          variant="outlined"
-          onClick={() => handleActionClick(action, row)}
-        />
-      ))
+    return actionButtons.map(({ title, action }) => (
+      <Chip
+        key={title}
+        sx={{
+          cursor: 'pointer',
+          marginRight: '-5px',
+          '& .MuiChip-label': {
+            fontSize: '13px'
+          }
+        }}
+        label={title}
+        color="primary"
+        variant="outlined"
+        onClick={() => handleActionClick(action, row)}
+      />
+    ))
   }
 
   return (
@@ -93,41 +85,23 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
       disableVirtualization={false}
       rows={list}
       columns={[
-        {
-          field: 'payFeeDetail.payFee.feeConfig.feeConfigType.name',
-          headerName: '费用类型',
-          flex: 1,
-          renderCell: ({ row }) => row.payFeeDetail?.payFee?.feeConfig?.feeConfigType?.name
-        },
-        {
-          field: 'payFeeDetail.payFee.payerObjName',
-          headerName: '付费对象',
-          flex: 1,
-          renderCell: ({ row }) => row.payFeeDetail?.payFee?.payerObjName
-        },
-        { field: 'cycles', headerName: '付费周期(单位:月)', flex: 1 },
-        {
-          field: 'receivableAmount',
-          headerName: '应付金额/实付金额',
-          flex: 1,
-          renderCell: ({ row }) => `${row.receivableAmount} - ${row.receivedAmount}`
-        },
-        { field: 'createdAt', headerName: '申请时间', flex: 1 },
-        { field: 'reason', headerName: '退费原因', flex: 1 },
-        { field: 'applyPersonName', headerName: '申请人', flex: 1 },
-        {
-          field: 'stateCd',
-          headerName: '审核状态',
-          flex: 1,
-          renderCell: ({ row }) => <Chip label={statusValue[row.stateCd!] || '未知类型'} />
-        },
-        { field: 'auditPersonName', headerName: '审核人', flex: 1 },
-        { field: 'statusCd', headerName: '	退款情况', flex: 1 },
+        { field: '', headerName: '房屋', flex: 1 },
+        { field: '', headerName: '费用项目', flex: 1 },
+        { field: '', headerName: '付费周期', flex: 1 },
+        { field: '', headerName: '缴费起始时间', flex: 1 },
+        { field: '', headerName: '缴费结束时间', flex: 1 },
+        { field: '', headerName: '应付金额（单位：元）', flex: 1 },
+        { field: '', headerName: '实付金额（单位：元）', flex: 1 },
+        { field: '', headerName: '操作员工', flex: 1 },
+        { field: '', headerName: '缴费时间', flex: 1 },
+        { field: '', headerName: '审核状态', flex: 1 },
+        { field: '', headerName: '审核说明', flex: 1 },
+        { field: '', headerName: '缴费备注', flex: 1 },
         {
           field: 'actions',
-          headerName: '操作',
+          headerName: '详情',
           type: 'actions',
-          width: 200,
+          width: 300,
           getActions: ({ row }) => renderActionButtons(row)
         }
       ]}
