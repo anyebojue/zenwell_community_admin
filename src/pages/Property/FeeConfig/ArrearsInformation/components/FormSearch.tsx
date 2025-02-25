@@ -94,7 +94,7 @@ const FormSearch: React.FC = () => {
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
-            label="请输入申请人"
+            label="请选择楼栋"
             type="text"
             variant="outlined"
             sx={textFieldStyles}
@@ -105,7 +105,7 @@ const FormSearch: React.FC = () => {
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
-            label="请输入审核人"
+            label="请选择单元"
             type="text"
             variant="outlined"
             sx={textFieldStyles}
@@ -116,7 +116,7 @@ const FormSearch: React.FC = () => {
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
-            label="请输入房屋编号 车辆编号等"
+            label="请输入房屋编号"
             type="text"
             variant="outlined"
             sx={textFieldStyles}
@@ -128,17 +128,17 @@ const FormSearch: React.FC = () => {
           <TextField
             select
             size="small"
-            label="请选择审核状态"
+            label="请选择房屋类型"
             value={searchParams.stateCd}
             onChange={handleSelectChange('stateCd')}
             variant="outlined"
             sx={textFieldStyles}
           >
             {[
-              { value: '1000', label: '审核中' },
-              { value: '1100', label: '审核通过' },
-              { value: '1200', label: '审核未通过' },
-              { value: '1300', label: '退款单' }
+              { value: '110', label: '住宅' },
+              { value: '120', label: '办公室' },
+              { value: '119', label: '宿舍' },
+              { value: '128', label: '储物间' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -150,7 +150,7 @@ const FormSearch: React.FC = () => {
           <TextField
             select
             size="small"
-            label="请选择选择费用类型"
+            label="请选择选择费用项"
             value={searchParams.feeTypeCd}
             onChange={handleSelectChange('feeTypeCd')}
             variant="outlined"
@@ -168,34 +168,34 @@ const FormSearch: React.FC = () => {
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
-            label="请输入申请开始时间"
-            type="datetime-local"
+            label="请输入业主名称"
+            type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.startTime}
-            onChange={handleInputChange('startTime')}
-            slotProps={{
-              inputLabel: {
-                shrink: true
-              }
-            }}
+            value={searchParams.payerObjId}
+            onChange={handleInputChange('payerObjId')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
+            select
             size="small"
-            label="请输入申请结束时间"
-            type="datetime-local"
+            label="请选择付费对象类型"
+            value={searchParams.stateCd}
+            onChange={handleSelectChange('stateCd')}
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.endTime}
-            onChange={handleInputChange('endTime')}
-            slotProps={{
-              inputLabel: {
-                shrink: true
-              }
-            }}
-          />
+          >
+            {[
+              { value: '3333', label: '房屋' },
+              { value: '6666', label: '车位' },
+              { value: '9999', label: '合同' }
+            ].map(option => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
         </FormControl>
       </Stack>
       <Stack direction="row" spacing={1} component="form" sx={{ mb: 2 }}>
