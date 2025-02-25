@@ -1,5 +1,6 @@
 import { Page } from '../../pageModel'
 import { FeeConfigReply } from './feeConfigModel'
+import { PayFeeDetailReply } from './payFeeDetailModel'
 
 export interface PayFeeReply {
   id?: string
@@ -27,6 +28,7 @@ export interface PayFeeReply {
     payableAmount?: string
   }
   feeConfig?: FeeConfigReply
+  payFeeDetail?: PayFeeDetailReply
 }
 
 export interface PayFeeParams {

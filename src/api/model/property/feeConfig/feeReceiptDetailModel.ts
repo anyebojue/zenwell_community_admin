@@ -1,4 +1,5 @@
 import { Page } from '../../pageModel'
+import { PayFeeReply } from './payFeeModel'
 
 export interface FeeReceiptDetailReply {
   id?: string
@@ -17,7 +18,7 @@ export interface FeeReceiptDetailReply {
   statusCd?: string
   remark?: string
   squarePrice?: string
-  payFee?: null
+  payFee?: PayFeeReply
 }
 
 export interface FeeReceiptDetailParams {
