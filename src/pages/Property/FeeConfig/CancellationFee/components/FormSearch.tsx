@@ -1,12 +1,11 @@
-import { ChangeEvent, Dispatch, memo, SetStateAction, useState, useCallback } from 'react'
+import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ApplyRoomDiscountTypeParams } from 'api/model/property/feeConfig/applyRoomDiscountTypeModel'
 import { find } from 'modules/property/feeConfig/applyRoomDiscountType'
-import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
-import { Add, Delete, History, Search } from '@mui/icons-material'
+import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
+import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import FormDialog from './FormDialog'
 
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {
@@ -24,16 +23,11 @@ const textFieldStyles = {
   }
 }
 
-interface SearchFormProps {
-  selectedRows: Set<string | undefined>
-  setDelOpen: Dispatch<SetStateAction<boolean>>
-}
+interface SearchFormProps {}
 
-const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => {
+const FormSearch: React.FC<SearchFormProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.ApplyRoomDiscountTypeSlice)
-
-  const [openDialog, setOpenDialog] = useState(false)
   const [searchParams, setSearchParams] = useState<ApplyRoomDiscountTypeParams>({
     name: ''
   })
@@ -74,13 +68,13 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
     fetchData({ ...initialParams, 'page.num': page.num, 'page.size': page.size })
   }, [fetchData, page.num, page.size])
 
-  const handleBatchDelete = useCallback(() => {
-    if (selectedRows.size === 0) {
-      message.warning('请选择至少一项')
-      return
+  const handleSelectChange =
+    (field: keyof ApplyRoomDiscountTypeParams) => (event: ChangeEvent<HTMLInputElement>) => {
+      setSearchParams(prevData => ({
+        ...prevData,
+        [field]: event.target.value
+      }))
     }
-    setDelOpen(true)
-  }, [selectedRows.size, setDelOpen])
 
   return (
     <Box>
@@ -88,7 +82,40 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
-            label="请输入类型名称"
+            label="请输入批次号"
+            type="text"
+            variant="outlined"
+            sx={textFieldStyles}
+            value={searchParams.name}
+            onChange={handleInputChange('name')}
+          />
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            select
+            size="small"
+            label="请选择表类型"
+            value={searchParams.name}
+            onChange={handleSelectChange('name')}
+            variant="outlined"
+            sx={textFieldStyles}
+          >
+            {[
+              { value: '2006001', label: '正常' },
+              { value: '2007001', label: '申请取消' },
+              { value: '2008001', label: '审核通过' },
+              { value: '2009001', label: '审核失败' }
+            ].map(option => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            size="small"
+            label="请填写创建员工"
             type="text"
             variant="outlined"
             sx={textFieldStyles}
@@ -118,28 +145,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
         >
           重置
         </Button>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          startIcon={<Add />}
-          sx={buttonStyles('#2660ad', '#1d428a')}
-          onClick={() => setOpenDialog(true)}
-        >
-          新增
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          startIcon={<Delete />}
-          sx={buttonStyles('#B22222', '#8B0000')}
-          onClick={handleBatchDelete}
-        >
-          批量删除
-        </Button>
       </Stack>
-      <FormDialog openDialog={openDialog} dialogType="add" setOpenDialog={setOpenDialog} />
     </Box>
   )
 }

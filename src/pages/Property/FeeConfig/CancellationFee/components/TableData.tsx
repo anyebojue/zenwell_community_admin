@@ -3,25 +3,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ApplyRoomDiscountTypeReply } from 'api/model/property/feeConfig/applyRoomDiscountTypeModel'
 import { find } from 'modules/property/feeConfig/applyRoomDiscountType'
 import { Chip } from '@mui/material'
-import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
+import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
 
 interface TableDataProps {
-  setDialogType: Dispatch<SetStateAction<string>>
   setDialogValue: Dispatch<SetStateAction<ApplyRoomDiscountTypeReply | undefined>>
-  setSelectedRows: Dispatch<SetStateAction<Set<string>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
-  setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const TableData: React.FC<TableDataProps> = ({
-  setDialogType,
-  setDialogValue,
-  setSelectedRows,
-  setOpenDialog,
-  setDelOpen
-}) => {
+const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.ApplyRoomDiscountTypeSlice)
 
@@ -46,40 +37,24 @@ const TableData: React.FC<TableDataProps> = ({
     fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
   }, [fetchData, page.num, page.size])
 
-  const handleRowSelection = useCallback(
-    (rowSelectionModel: GridRowSelectionModel) => {
-      setSelectedRows(new Set(rowSelectionModel.map(id => String(id))))
-    },
-    [setSelectedRows]
-  )
-
   const handleActionClick = useCallback(
     (actionType: string, row: ApplyRoomDiscountTypeReply) => {
       switch (actionType) {
-        case 'edit':
-          setDialogType('edit')
-          setDialogValue(row)
-          setOpenDialog(true)
-          break
         case 'delete':
-          setDelOpen(true)
-          setSelectedRows(new Set([row.id || '']))
+          setOpenDialog(true)
+          setDialogValue(row)
           break
       }
     },
-    [setDialogType, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
+    [setDialogValue, setOpenDialog]
   )
 
   const renderActionButtons = (row: ApplyRoomDiscountTypeReply) =>
-    [
-      { title: '修改', action: 'edit' },
-      { title: '删除', action: 'delete' }
-    ].map(({ title, action }) => (
+    [{ title: '取消申请', action: 'delete' }].map(({ title, action }) => (
       <Chip
         key={title}
         sx={{
           cursor: 'pointer',
-          marginRight: '-5px',
           '& .MuiChip-label': {
             fontSize: '13px'
           }
@@ -97,11 +72,14 @@ const TableData: React.FC<TableDataProps> = ({
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
-      checkboxSelection
       rows={list}
       columns={[
-        { field: 'name', headerName: '类型名称', flex: 1 },
-        { field: 'typeDesc', headerName: '类型描述', flex: 1 },
+        { field: '', headerName: '批次号', flex: 1 },
+        { field: '', headerName: '员工', flex: 1 },
+        { field: '', headerName: '时间', flex: 1 },
+        { field: '', headerName: '取消原因', flex: 1 },
+        { field: '', headerName: '审核状态', flex: 1 },
+        { field: '', headerName: '审核意见', flex: 1 },
         {
           field: 'actions',
           headerName: '操作',
@@ -110,7 +88,6 @@ const TableData: React.FC<TableDataProps> = ({
           getActions: ({ row }) => renderActionButtons(row)
         }
       ]}
-      onRowSelectionModelChange={handleRowSelection}
       pageSizeOptions={[10, 20, 50, 100]}
       paginationMode="server"
       rowCount={Number(page.total)}

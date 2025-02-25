@@ -12,7 +12,7 @@ import {
   ApplyRoomDiscountTypeParams,
   ApplyRoomDiscountTypeReply
 } from 'api/model/property/feeConfig/applyRoomDiscountTypeModel'
-import { create, find, update } from 'modules/property/feeConfig/applyRoomDiscountType'
+import { find, update } from 'modules/property/feeConfig/applyRoomDiscountType'
 import {
   Box,
   CircularProgress,
@@ -31,16 +31,10 @@ import { buttonStyles } from 'components/DeleteModal'
 interface FormDialogProps {
   dialogValue?: ApplyRoomDiscountTypeReply
   openDialog: boolean
-  dialogType: string
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
-const FormDialog: React.FC<FormDialogProps> = ({
-  dialogValue,
-  openDialog,
-  dialogType,
-  setOpenDialog
-}) => {
+const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpenDialog }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.ApplyRoomDiscountTypeSlice)
 
@@ -48,10 +42,10 @@ const FormDialog: React.FC<FormDialogProps> = ({
 
   const initialFormData = useMemo(
     () => ({
-      name: dialogType === 'edit' ? dialogValue?.name || '' : '',
-      typeDesc: dialogType === 'edit' ? dialogValue?.typeDesc || '' : ''
+      name: dialogValue?.name || '',
+      typeDesc: dialogValue?.typeDesc || ''
     }),
-    [dialogType, dialogValue]
+    [dialogValue]
   )
   const [formData, setFormData] = useState<ApplyRoomDiscountTypeParams>(initialFormData)
 
@@ -67,14 +61,13 @@ const FormDialog: React.FC<FormDialogProps> = ({
         const current_community = localStorage.getItem('current_community')
         const community = JSON.parse(current_community || '')
         const params = { ...formData, communityId: community?.id }
-        const action =
-          dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
+        const action = update({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
         await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))
-        message.success(dialogType === 'add' ? '新建成功' : '编辑成功')
+        message.success('取消成功')
         setOpenDialog(false)
         setFormData(initialFormData)
       } catch (err: unknown) {
@@ -84,8 +77,14 @@ const FormDialog: React.FC<FormDialogProps> = ({
         setLoading(false)
       }
     },
-    [dispatch, dialogType, dialogValue, formData, page, setOpenDialog, initialFormData]
+    [dispatch, dialogValue, formData, page, setOpenDialog, initialFormData]
   )
+
+  const formFields = [
+    { label: '批次号', type: 'text', id: 'title', required: true },
+    { label: '员工', type: 'text', id: 'photo', required: true },
+    { label: '创建时间', type: 'text', id: 'content', required: true }
+  ]
 
   return (
     <Dialog
@@ -95,23 +94,30 @@ const FormDialog: React.FC<FormDialogProps> = ({
       onClose={() => setOpenDialog(false)}
       slotProps={{ paper: { component: 'form', onSubmit: handleSubmit } }}
     >
-      <DialogTitle>{dialogType === 'add' ? '新增' : '编辑'}</DialogTitle>
+      <DialogTitle>费用取消申请</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
+          {formFields.map(({ label, type, id, required }) => (
+            <Box
+              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+              key={id}
+            >
+              <FormLabel>{label}：</FormLabel>
+              <TextField
+                disabled
+                type={type}
+                sx={{ width: '80%' }}
+                size="small"
+                required={required}
+                id={id}
+                value={formData[id as keyof ApplyRoomDiscountTypeParams]}
+                onChange={e => setFormData({ ...formData, [id]: e.target.value })}
+                autoComplete={type === 'password' ? 'current-password' : ''}
+              />
+            </Box>
+          ))}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>类型名称：</FormLabel>
-            <TextField
-              placeholder="必填，请填写折扣名称"
-              sx={{ width: '80%' }}
-              type="text"
-              size="small"
-              value={formData.name}
-              onChange={e => setFormData({ ...formData, name: e.target.value })}
-              variant="outlined"
-            />
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>类型描述：</FormLabel>
+            <FormLabel>取消原因：</FormLabel>
             <TextField
               placeholder="选填，请填写说明"
               sx={{ width: '80%' }}
