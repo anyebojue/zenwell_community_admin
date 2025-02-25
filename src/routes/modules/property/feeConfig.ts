@@ -107,6 +107,13 @@ const feeConfig: IRouter[] = [
         }
       },
       {
+        path: 'CostIntroduction',
+        element: load('Property/FeeConfig/CostIntroduction'),
+        meta: {
+          title: '费用导入'
+        }
+      },
+      {
         path: 'FeePackage',
         element: load('Property/FeeConfig/FeePackage'),
         meta: {
@@ -119,6 +126,34 @@ const feeConfig: IRouter[] = [
         meta: {
           hidden: true,
           title: '费用项'
+        }
+      },
+      {
+        path: 'PaymentAudit',
+        element: load('Property/FeeConfig/PaymentAudit'),
+        meta: {
+          title: '缴费审核'
+        }
+      },
+      {
+        path: 'CancellationFee',
+        element: load('Property/FeeConfig/CancellationFee'),
+        meta: {
+          title: '取消费用'
+        }
+      },
+      {
+        path: 'ArrearsInformation',
+        element: load('Property/FeeConfig/ArrearsInformation'),
+        meta: {
+          title: '欠费信息'
+        }
+      },
+      {
+        path: 'CallForArrears',
+        element: load('Property/FeeConfig/CallForArrears'),
+        meta: {
+          title: '欠费催缴'
         }
       }
     ]
