@@ -13,22 +13,16 @@ interface TableDataProps {
   dialogValue: { id?: string; label?: string; roomData?: RoomReply }
   setDialogMeterWaterValue: Dispatch<SetStateAction<MeterWaterReply>>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
-  setOpenDialog: Dispatch<SetStateAction<boolean>>
-  setDialogType: Dispatch<SetStateAction<string>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const TableData: React.FC<TableDataProps> = ({
-  dialogValue,
   setDialogMeterWaterValue,
   setSelectedRows,
-  setOpenDialog,
-  setDialogType,
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.MeterWaterSlice)
-  const { list: meterTypeList } = useSelector((state: RootState) => state.MeterTypeSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -62,25 +56,18 @@ const TableData: React.FC<TableDataProps> = ({
   const handleActionClick = useCallback(
     (actionType: string, row: MeterWaterReply) => {
       switch (actionType) {
-        case 'edit':
-          setDialogType('edit')
-          setDialogMeterWaterValue(row)
-          setOpenDialog(true)
-          break
         case 'delete':
+          setDialogMeterWaterValue(row)
           setDelOpen(true)
           setSelectedRows(new Set([row.id || '']))
           break
       }
     },
-    [setDelOpen, setDialogMeterWaterValue, setDialogType, setOpenDialog, setSelectedRows]
+    [setDelOpen, setDialogMeterWaterValue, setSelectedRows]
   )
 
   const renderActionButtons = (row: MeterWaterReply) =>
-    [
-      { title: '修改', action: 'edit' },
-      { title: '删除', action: 'delete' }
-    ].map(({ title, action }) => (
+    [{ title: '删除', action: 'delete' }].map(({ title, action }) => (
       <Chip
         key={title}
         sx={{
@@ -106,61 +93,16 @@ const TableData: React.FC<TableDataProps> = ({
       checkboxSelection
       rows={list}
       columns={[
-        {
-          field: 'meterType',
-          headerAlign: 'center',
-          headerName: '表类型',
-          align: 'center',
-          flex: 1,
-          renderCell: ({ row }) => {
-            const meter = meterTypeList.find(item => item.id === row.meterType)
-            return <Chip label={meter ? meter.name : '未知状态'} />
-          }
-        },
-        {
-          field: 'discountType',
-          headerAlign: 'center',
-          headerName: '对象名称',
-          align: 'center',
-          flex: 1,
-          renderCell: () =>
-            `${dialogValue.roomData?.roomNum} - ${dialogValue.roomData?.unit?.unitNum} - ${dialogValue.roomData?.unit?.floor?.floorNum}`
-        },
-        {
-          field: 'preDegrees',
-          headerAlign: 'center',
-          headerName: '上期度数',
-          align: 'center',
-          flex: 1
-        },
-        {
-          field: 'curDegrees',
-          headerAlign: 'center',
-          headerName: '本期度数',
-          align: 'center',
-          flex: 1
-        },
-        {
-          field: 'preReadingTime',
-          headerAlign: 'center',
-          headerName: '上期读表时间',
-          align: 'center',
-          flex: 1
-        },
-        {
-          field: 'curReadingTime',
-          headerAlign: 'center',
-          headerName: '本期读表时间',
-          align: 'center',
-          flex: 1
-        },
-        {
-          field: 'createdAt',
-          headerAlign: 'center',
-          headerName: '创建时间',
-          align: 'center',
-          flex: 1
-        },
+        { field: '', headerName: '业主名称', flex: 1 },
+        { field: '', headerName: '付费对象', flex: 1 },
+        { field: '', headerName: '费用名称', flex: 1 },
+        { field: '', headerName: '催缴金额', flex: 1 },
+        { field: '', headerName: '欠费时间段', flex: 1 },
+        { field: '', headerName: '催缴方式', flex: 1 },
+        { field: '', headerName: '催缴人', flex: 1 },
+        { field: '', headerName: '状态', flex: 1 },
+        { field: '', headerName: '说明', flex: 1 },
+        { field: '', headerName: '创建时间', flex: 1 },
         {
           field: 'actions',
           headerName: '操作',

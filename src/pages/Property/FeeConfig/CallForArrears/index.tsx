@@ -10,7 +10,6 @@ import message from 'components/Message'
 import { RoomReply } from 'api/model/property/houses/roomModel'
 import { TreeViewBaseItem } from '@mui/x-tree-view'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
-import { Add } from '@mui/icons-material'
 import { deleteByIds } from 'modules/property/feeConfig/meterWater'
 import { MeterWaterReply } from 'api/model/property/feeConfig/meterWaterModel'
 import FormSearch from './components/FormSearch'
@@ -43,7 +42,7 @@ const HousingManagementIndex = () => {
     roomData?: RoomReply
   }>({})
   const [dialogMeterWaterValue, setDialogMeterWaterValue] = useState<MeterWaterReply>({})
-  const [dialogType, setDialogType] = useState('add')
+  const [dialogType, setDialogType] = useState('sign')
   const [openDialog, setOpenDialog] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -187,7 +186,7 @@ const HousingManagementIndex = () => {
           <FormSearch />
           <Box sx={contentBoxStyle}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography variant="h6">抄表信息</Typography>
+              <Typography variant="h6">催缴记录</Typography>
               <Stack direction="row" spacing={1}>
                 <Button
                   size="small"
@@ -196,10 +195,10 @@ const HousingManagementIndex = () => {
                   sx={buttonStyles('#2660ad', '#1d428a')}
                   onClick={() => {
                     setOpenDialog(true)
-                    setDialogType('add')
+                    setDialogType('sign')
                   }}
                 >
-                  抄表
+                  登记
                 </Button>
                 <Button
                   size="small"
@@ -207,34 +206,10 @@ const HousingManagementIndex = () => {
                   color="error"
                   onClick={() => {
                     setOpenDialog(true)
-                    setDialogType('code')
+                    setDialogType('payment')
                   }}
                 >
-                  二维码抄表
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  color="error"
-                  startIcon={<Add />}
-                  onClick={() => {
-                    setOpenDialog(true)
-                    setDialogType('add')
-                  }}
-                >
-                  抄表导入1
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  color="error"
-                  startIcon={<Add />}
-                  onClick={() => {
-                    setOpenDialog(true)
-                    setDialogType('add')
-                  }}
-                >
-                  抄表导入2
+                  催缴
                 </Button>
               </Stack>
             </Box>
@@ -242,15 +217,12 @@ const HousingManagementIndex = () => {
               dialogValue={dialogValue}
               setDialogMeterWaterValue={setDialogMeterWaterValue}
               setSelectedRows={setSelectedRows}
-              setOpenDialog={setOpenDialog}
-              setDialogType={setDialogType}
               setDelOpen={setDelOpen}
             />
           </Box>
         </Box>
       </Stack>
       <Copyright />
-
       <FormDialog
         dialogValue={dialogValue}
         dialogMeterWaterValue={dialogMeterWaterValue}
