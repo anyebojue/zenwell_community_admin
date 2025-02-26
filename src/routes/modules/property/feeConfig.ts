@@ -35,6 +35,14 @@ const feeConfig: IRouter[] = [
         }
       },
       {
+        path: 'HousingFeePackage',
+        element: load('Property/FeeConfig/HousingFeePackage'),
+        meta: {
+          hidden: true,
+          title: '根据费用套餐创建'
+        }
+      },
+      {
         path: 'MeterType',
         element: load('Property/FeeConfig/MeterType'),
         meta: {

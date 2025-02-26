@@ -10,6 +10,7 @@ import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
 import { Add } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
+import { useNavigate } from 'react-router-dom'
 import FormMeterReading from './FormMeterReading'
 import FormProvisionalCharge from './FormProvisionalCharge'
 import FormPaymentByVolume from './FormPaymentByVolume'
@@ -38,6 +39,7 @@ const statusTypeValue: Record<string, string> = {
 
 const TableData: React.FC<TableDataProps> = ({ dialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.PayFeeSlice)
   const { list: feeConfigTypeList } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
   const [openDialog, setOpenDialog] = useState(false)
@@ -50,7 +52,10 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue }) => {
     { label: '临时收费', onClick: () => setOpenTemporarily(true) },
     { label: '按量缴费', onClick: () => setOpenVolume(true) },
     { label: '水电抄表', onClick: () => setOpenDialog(true) },
-    { label: '费用套餐', onClick: () => {} },
+    {
+      label: '费用套餐',
+      onClick: () => navigate('/FeeConfig/HousingFeePackage', { state: dialogValue })
+    },
     { label: '创建费用', onClick: () => setOpenExpense(true) },
     { label: '欠费缴费', onClick: () => {} }
   ]
