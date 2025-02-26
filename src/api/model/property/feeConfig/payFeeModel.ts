@@ -1,11 +1,13 @@
 import { Page } from '../../pageModel'
 import { FeeConfigReply } from './feeConfigModel'
+import { MeterWaterReply } from './meterWaterModel'
 import { PayFeeDetailReply } from './payFeeDetailModel'
 
 export interface PayFeeReply {
   id?: string
   createdAt?: string
   updatedAt?: string
+  consumption?: string
   feeTypeCd?: string
   communityId?: string
   payerObjId?: string
@@ -29,6 +31,7 @@ export interface PayFeeReply {
   }
   feeConfig?: FeeConfigReply
   payFeeDetail?: PayFeeDetailReply
+  meterWater?: MeterWaterReply
 }
 
 export interface PayFeeParams {
@@ -39,7 +42,7 @@ export interface PayFeeParams {
   incomeObjId?: string
   startTime?: string
   endTime?: string
-  amount?: 0
+  amount?: number
   userId?: string
   statusCd?: string
   feeFlag?: string
@@ -48,6 +51,13 @@ export interface PayFeeParams {
   batchId?: string
   status?: 1
   remark?: string
+  meterWater?: {
+    meterType?: string
+    preDegrees?: string
+    curDegrees?: string
+    preReadingTime?: string
+    curReadingTime?: string
+  }
 }
 
 export interface FindPayFeeReply {
