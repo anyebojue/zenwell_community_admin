@@ -1,5 +1,6 @@
 import { Page } from '../../pageModel'
 import { ApplyRoomDiscountTypeReply } from './applyRoomDiscountTypeModel'
+import { FeeDiscountReply } from './feeDiscountModel'
 
 export interface ApplyRoomDiscountReply {
   id?: string
@@ -28,6 +29,7 @@ export interface ApplyRoomDiscountReply {
   returnAmount?: string // 返还金额
   img?: string // 图片
   applyRoomDiscountType?: ApplyRoomDiscountTypeReply
+  feeDiscount?: FeeDiscountReply
 }
 
 export interface ApplyRoomDiscountParams {

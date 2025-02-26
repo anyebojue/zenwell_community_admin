@@ -5,7 +5,7 @@ import { find } from 'modules/property/feeConfig/applyRoomDiscount'
 import { find as findFeeConfig } from 'modules/property/feeConfig/feeConfig'
 import { find as findApplyRoomDiscountType } from 'modules/property/feeConfig/applyRoomDiscountType'
 import { find as findFeeDiscount } from 'modules/property/feeConfig/feeDiscount'
-import { Chip } from '@mui/material'
+import { Box, Chip, Typography } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
@@ -139,50 +139,143 @@ const TableData: React.FC<TableDataProps> = ({
 
   return (
     <DataGrid
-      sx={{ mt: 2 }}
+      sx={{
+        '& .MuiDataGrid-columnHeaderTitle': {
+          whiteSpace: 'normal',
+          wordWrap: 'break-word',
+          lineHeight: '1.2'
+        },
+        mt: 1
+      }}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'roomId', headerName: '房屋(楼栋-单元-房屋)', flex: 1 },
-        { field: 'discountId', headerName: '折扣名称', flex: 1 },
+        {
+          field: 'roomId',
+          headerName: '房屋(楼栋-单元-房屋)',
+          headerAlign: 'center',
+          align: 'center',
+          flex: 1
+        },
+        {
+          field: 'discountId',
+          headerName: '折扣名称',
+          headerAlign: 'center',
+          align: 'center',
+          flex: 1,
+          renderCell: ({ row }) => row.feeDiscount?.name
+        },
         {
           field: 'applyType',
           headerName: '申请类型',
-          flex: 1,
+          width: 100,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => <Chip label={statusValue[row.applyType!] || '未知类型'} />
         },
-        { field: 'createUserName', headerName: '申请人', flex: 1 },
-        { field: 'createUserTel', headerName: '申请电话', flex: 1 },
-        { field: 'startTime', headerName: '开始时间', flex: 1 },
-        { field: 'endTime', headerName: '结束时间', flex: 1 },
+        {
+          field: 'createUserName',
+          headerName: '申请人',
+          headerAlign: 'center',
+          align: 'center',
+          flex: 1
+        },
+        {
+          field: 'createUserTel',
+          headerName: '申请电话',
+          headerAlign: 'center',
+          align: 'center',
+          width: 50
+        },
+        {
+          field: 'startTime',
+          headerName: '时间',
+          width: 180,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => (
+            <Box
+              sx={{
+                whiteSpace: 'normal',
+                wordWrap: 'break-word',
+                lineHeight: '1.2',
+                width: '100%',
+                height: '100%',
+                textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <Typography variant="body1">{row.startTime}～</Typography>
+              <Typography variant="body1">{row.endTime}</Typography>
+            </Box>
+          )
+        },
         {
           field: 'stateCd',
           headerName: '状态',
-          width: 180,
+          width: 100,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => <Chip label={statusValue[row.applyType!] || '未知类型'} />
         },
-        { field: 'createdAt', headerName: '创建时间', flex: 1 },
+        {
+          field: 'createdAt',
+          headerName: '创建时间',
+          width: 120,
+          renderCell: ({ value }) => (
+            <Box
+              sx={{
+                whiteSpace: 'normal',
+                wordWrap: 'break-word',
+                lineHeight: '1.2',
+                width: '100%',
+                height: '100%',
+                textAlign: 'center',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              {value}
+            </Box>
+          )
+        },
         {
           field: 'inUse',
           headerName: '使用状态',
-          flex: 1,
+          width: 100,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => <Chip label={statusInUse[row.returnWay!] || '未知类型'} />
         },
         {
           field: 'returnWay',
           headerName: '返还类型',
-          flex: 1,
+          width: 100,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => <Chip label={statusReturnWay[row.returnWay!] || '未知类型'} />
         },
-        { field: 'returnAmount', headerName: '返还金额', flex: 1 },
+        {
+          field: 'returnAmount',
+          headerName: '返还金额',
+          headerAlign: 'center',
+          align: 'center',
+          width: 50
+        },
         {
           field: 'actions',
           headerName: '操作',
           type: 'actions',
           width: 250,
+          headerAlign: 'center',
+          align: 'center',
           getActions: ({ row }) => renderActionButtons(row)
         }
       ]}

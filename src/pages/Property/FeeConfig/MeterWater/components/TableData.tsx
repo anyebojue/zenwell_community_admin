@@ -122,7 +122,7 @@ const TableData: React.FC<TableDataProps> = ({
           headerAlign: 'center',
           headerName: '对象名称',
           align: 'center',
-          flex: 1,
+          width: 100,
           renderCell: () =>
             `${dialogValue.roomData?.roomNum} - ${dialogValue.roomData?.unit?.unitNum} - ${dialogValue.roomData?.unit?.floor?.floorNum}`
         },
@@ -144,28 +144,28 @@ const TableData: React.FC<TableDataProps> = ({
           field: 'preReadingTime',
           headerAlign: 'center',
           headerName: '上期读表时间',
-          align: 'center',
-          flex: 1
+          width: 180,
+          align: 'center'
         },
         {
           field: 'curReadingTime',
           headerAlign: 'center',
           headerName: '本期读表时间',
-          align: 'center',
-          flex: 1
+          width: 180,
+          align: 'center'
         },
         {
           field: 'createdAt',
           headerAlign: 'center',
           headerName: '创建时间',
-          align: 'center',
-          flex: 1
+          width: 180,
+          align: 'center'
         },
         {
           field: 'actions',
           headerName: '操作',
           type: 'actions',
-          width: 200,
+          width: 150,
           getActions: ({ row }) => renderActionButtons(row)
         }
       ]}
