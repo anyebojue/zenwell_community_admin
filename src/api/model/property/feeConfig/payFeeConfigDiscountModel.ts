@@ -1,5 +1,6 @@
 import { Page } from '../../pageModel'
 import { FeeConfigReply } from './feeConfigModel'
+import { FeeDiscountReply } from './feeDiscountModel'
 
 export interface PayFeeConfigDiscountReply {
   id?: string
@@ -16,6 +17,7 @@ export interface PayFeeConfigDiscountReply {
   status?: number // Status, 1: Active, 0: Inactive
   remark?: string // 备注
   feeConfig?: FeeConfigReply
+  feeDiscount?: FeeDiscountReply
 }
 
 export interface PayFeeConfigDiscountParams {

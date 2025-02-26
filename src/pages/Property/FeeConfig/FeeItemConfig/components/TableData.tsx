@@ -163,7 +163,7 @@ const TableData: React.FC<TableDataProps> = ({
         {
           field: 'feeFlag',
           headerName: '费用标识',
-          flex: 1,
+          width: 100,
           renderCell: ({ row }) => <Chip label={statusValue[row.feeFlag!] || '未知类型'} />
         },
         {

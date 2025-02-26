@@ -2,7 +2,7 @@ import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { PayFeeConfigDiscountReply } from 'api/model/property/feeConfig/payFeeConfigDiscountModel'
 import { find } from 'modules/property/feeConfig/payFeeConfigDiscount'
-import { Chip } from '@mui/material'
+import { Box, Chip, Typography } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
@@ -15,7 +15,6 @@ interface TableDataProps {
 }
 
 const TableData: React.FC<TableDataProps> = ({ data, setSelectedRows, setDelOpen }) => {
-  console.log(data)
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.PayFeeConfigDiscountSlice)
 
@@ -69,7 +68,6 @@ const TableData: React.FC<TableDataProps> = ({ data, setSelectedRows, setDelOpen
         key={title}
         sx={{
           cursor: 'pointer',
-          marginRight: '-5px',
           '& .MuiChip-label': {
             fontSize: '13px'
           }
@@ -84,16 +82,76 @@ const TableData: React.FC<TableDataProps> = ({ data, setSelectedRows, setDelOpen
   return (
     <DataGrid
       sx={{ mt: 1 }}
+      getRowHeight={() => 100}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'configId', headerName: '费用项名称', flex: 1 },
-        { field: 'discountId', headerName: '折扣名称', flex: 1 },
-        { field: 'remark', headerName: '规则', flex: 1 },
-        { field: 'feeConfig', headerName: '折扣类型', flex: 1 },
+        {
+          field: 'configId',
+          headerName: '费用项名称',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.feeConfig?.feeConfigType?.name
+        },
+        {
+          field: 'discountId',
+          headerName: '折扣名称',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.feeConfig?.name
+        },
+        {
+          field: 'remark',
+          headerName: '规则',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => (
+            <Box
+              sx={{
+                whiteSpace: 'normal',
+                wordWrap: 'break-word',
+                lineHeight: '1.2',
+                width: '100%',
+                height: '100%',
+                textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              {row.feeConfig?.feeConfigType?.status !== 0 && (
+                <Typography variant="body1">
+                  欠费时长：{row.feeConfig?.feeConfigType?.status}
+                </Typography>
+              )}
+              {row.feeConfig?.feeConfigType?.status !== 0 && (
+                <Typography variant="body1">
+                  打折率：{row.feeConfig?.feeConfigType?.status}
+                </Typography>
+              )}
+              {row.feeConfig?.feeConfigType?.status !== 0 && (
+                <Typography variant="body1">
+                  月份：{row.feeConfig?.feeConfigType?.status}
+                </Typography>
+              )}
+            </Box>
+          )
+        },
+        {
+          field: 'discountType',
+          headerName: '折扣类型',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => (row.feeDiscount?.discountType === '1001' ? '优惠' : '违约')
+        },
         { field: 'startTime', headerName: '缴费时间段', flex: 1 },
         { field: 'endTime', headerName: '折扣终止时间', flex: 1 },
         {

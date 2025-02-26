@@ -1,4 +1,5 @@
 import { Page } from '../../pageModel'
+import { FeeConfigReply } from './feeConfigModel'
 
 export interface FeeComboMemberReply {
   id?: string
@@ -9,6 +10,7 @@ export interface FeeComboMemberReply {
   communityId?: string
   status?: number
   remark?: string
+  feeConfig?: FeeConfigReply
 }
 
 export interface FeeComboMemberParams {

@@ -1,4 +1,10 @@
-import { memo, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { RoomReply } from 'api/model/property/houses/roomModel'
+import { FeeComboReply } from 'api/model/property/feeConfig/feeComboModel'
+import { find } from 'modules/property/feeConfig/feeCombo'
+import { find as findMember } from 'modules/property/feeConfig/feeComboMember'
 import {
   Box,
   Button,
@@ -11,15 +17,12 @@ import {
   Theme,
   Typography
 } from '@mui/material'
+import { Add, Close, Search } from '@mui/icons-material'
+import { DataGrid } from '@mui/x-data-grid'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import { buttonStyles } from 'components/DeleteModal'
-import { Add, Close, Search } from '@mui/icons-material'
-import { RoomReply } from 'api/model/property/houses/roomModel'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { DataGrid } from '@mui/x-data-grid'
-import { useSelector } from 'react-redux'
-import { FeeComboReply } from 'api/model/property/feeConfig/feeComboModel'
+import message from 'components/Message'
 import TableData from './components/TableData'
 
 const textFieldStyles = {
@@ -47,17 +50,51 @@ const contentBoxStyle = (theme: Theme) => ({
 })
 
 const MeterTypeIndex = () => {
+  const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const location = useLocation()
+  const { page, list } = useSelector((state: RootState) => state.FeeComboMemberSlice)
   const { list: feeComboList } = useSelector((state: RootState) => state.FeeComboSlice)
   const { roomData } = location.state as { roomData: RoomReply }
   const [openDialog, setOpenDialog] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [filteredCommunities, setFilteredCommunities] = useState(feeComboList)
+  const [formData, setFormData] = useState<
+    {
+      id: string
+      communityId: string
+      feeTypeCdName: string
+      feeName: string
+      feeFlagName: string
+      startTime: string
+      endTime: string
+    }[]
+  >([])
+
+  const fetchData = useCallback(
+    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
+      const closeLoading = message.loading(loadingMessage)
+      try {
+        const res = await dispatch(action(params))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
+      }
+    },
+    [dispatch]
+  )
 
   useEffect(() => {
     setFilteredCommunities(feeComboList)
   }, [feeComboList])
+
+  useEffect(() => {
+    fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+  }, [fetchData, page.num, page.size])
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value)
@@ -67,10 +104,13 @@ const MeterTypeIndex = () => {
     setFilteredCommunities(filtered)
   }
 
-  const handleSelect = (row: FeeComboReply) => {
-    localStorage.setItem('current_community', JSON.stringify(row))
-    window.location.reload()
-    navigate('/communitys/my-communitys')
+  const handleSelect = async (row: FeeComboReply) => {
+    fetchData(
+      findMember,
+      { 'page.num': page.num, 'page.size': page.size, comboId: row.id! },
+      '正在加载列表中，请稍后...'
+    )
+    setOpenDialog(false)
   }
 
   return (
@@ -114,7 +154,7 @@ const MeterTypeIndex = () => {
             </Button>
           </Stack>
         </Box>
-        <TableData />
+        <TableData list={list} formData={formData} setFormData={setFormData} />
       </Box>
       <Copyright />
       <Dialog maxWidth="lg" open={openDialog} onClose={() => setOpenDialog(false)}>
