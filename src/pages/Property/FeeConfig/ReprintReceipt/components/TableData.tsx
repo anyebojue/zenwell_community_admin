@@ -71,23 +71,29 @@ const TableData: React.FC<TableDataProps> = () => {
       disableVirtualization={false}
       rows={list}
       columns={[
-        { field: 'id', headerName: '收据编号', flex: 1 },
+        { field: 'id', headerName: '收据编号', width: 200, headerAlign: 'center', align: 'center' },
         {
           field: 'feeReceiptDetail.payFee.feeConfig.feeConfigType.name',
           headerName: '费用类型',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => row.feeReceiptDetail?.payFee?.feeConfig?.feeConfigType?.name
         },
         {
           field: 'feeReceiptDetail.payFee.feeConfig.feeName',
           headerName: '费用项',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => row.feeReceiptDetail?.payFee?.feeConfig?.feeName
         },
         {
           field: 'feeReceiptDetail.payFee.payerObjName',
           headerName: '房屋',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => row.feeReceiptDetail?.payFee?.payerObjName
         },
         {
@@ -100,18 +106,24 @@ const TableData: React.FC<TableDataProps> = () => {
           field: 'feeReceiptDetail.payFee.incomeObjName',
           headerName: '车位',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => row.feeReceiptDetail?.payFee?.incomeObjName
         },
         {
           field: 'feeReceiptDetail.payFee.payFeeDetail.receivedAmount',
           headerName: '总金额(单位:元)',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => row.feeReceiptDetail?.payFee?.payFeeDetail?.receivedAmount
         },
         {
           field: 'feeReceiptDetail.payFee.payFeeDetail.createdAt',
           headerName: '缴费时间',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => row.feeReceiptDetail?.payFee?.payFeeDetail?.createdAt
         },
         {

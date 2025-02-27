@@ -14,7 +14,7 @@ const contentBoxStyle = (theme: Theme) => ({
   width: '100%'
 })
 
-const FeeDiscountIndex = () => {
+const ImportFeeIndex = () => {
   return (
     <Box sx={{ mt: 3.5, width: '100%' }}>
       <NavbarBreadcrumbs />
@@ -52,4 +52,4 @@ const FeeDiscountIndex = () => {
   )
 }
 
-export default memo(FeeDiscountIndex)
+export default memo(ImportFeeIndex)

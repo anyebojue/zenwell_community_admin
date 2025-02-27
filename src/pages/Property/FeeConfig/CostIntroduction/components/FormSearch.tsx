@@ -1,7 +1,7 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { FeeDiscountParams } from 'api/model/property/feeConfig/feeDiscountModel'
-import { find } from 'modules/property/feeConfig/feeDiscount'
+import { ImportFeeParams } from 'api/model/property/feeConfig/importFeeModel'
+import { find } from 'modules/property/feeConfig/importFee'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -29,12 +29,12 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
 
-  const [searchParams, setSearchParams] = useState<FeeDiscountParams>({
-    discountType: ''
+  const [searchParams, setSearchParams] = useState<ImportFeeParams>({
+    feeTypeCd: ''
   })
 
   const fetchData = useCallback(
-    async (params: FeeDiscountParams & PaginationParams) => {
+    async (params: ImportFeeParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
@@ -57,13 +57,13 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   }, [fetchData, searchParams])
 
   const handleReset = useCallback(() => {
-    const initialParams = { name: '', tel: '' }
+    const initialParams = { feeTypeCd: '' }
     setSearchParams(initialParams)
     fetchData({ ...initialParams, 'page.num': page.num, 'page.size': page.size })
   }, [fetchData, page.num, page.size])
 
   const handleSelectChange =
-    (field: keyof FeeDiscountParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof ImportFeeParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -77,9 +77,9 @@ const FormSearch: React.FC<SearchFormProps> = () => {
           <TextField
             select
             size="small"
-            label="请选择折扣类型"
-            value={searchParams.discountType}
-            onChange={handleSelectChange('discountType')}
+            label="请选择费用类型"
+            value={searchParams.feeTypeCd}
+            onChange={handleSelectChange('feeTypeCd')}
             variant="outlined"
             sx={textFieldStyles}
           >

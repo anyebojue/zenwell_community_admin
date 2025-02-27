@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { FeeDiscountReply } from 'api/model/property/feeConfig/feeDiscountModel'
-import { find } from 'modules/property/feeConfig/feeDiscount'
+import { ImportFeeReply } from 'api/model/property/feeConfig/importFeeModel'
+import { find } from 'modules/property/feeConfig/importFee'
 import { find as findFeeConfigType } from 'modules/property/feeConfig/feeConfigType'
 import { Chip } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
@@ -14,7 +14,17 @@ interface TableDataProps {}
 const TableData: React.FC<TableDataProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
-  const { page, list } = useSelector((state: RootState) => state.FeeDiscountSlice)
+  const { page, list } = useSelector((state: RootState) => state.ImportFeeSlice)
+  const { list: typeList } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
+  const result = typeList.reduce(
+    (acc: Record<string, string>, item) => {
+      if (item.id) {
+        acc[item.id] = item.name || ''
+      }
+      return acc
+    },
+    {} as Record<string, string>
+  )
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -43,7 +53,7 @@ const TableData: React.FC<TableDataProps> = () => {
   }, [fetchData, page.num, page.size])
 
   const handleActionClick = useCallback(
-    (actionType: string, row: FeeDiscountReply) => {
+    (actionType: string, row: ImportFeeReply) => {
       switch (actionType) {
         case 'details':
           navigate('/FeeConfig/ImportFeeDetails', { state: { value: row } })
@@ -53,7 +63,7 @@ const TableData: React.FC<TableDataProps> = () => {
     [navigate]
   )
 
-  const renderActionButtons = (row: FeeDiscountReply) =>
+  const renderActionButtons = (row: ImportFeeReply) =>
     [{ title: '详情', action: 'details' }].map(({ title, action }) => (
       <Chip
         key={title}
@@ -78,9 +88,22 @@ const TableData: React.FC<TableDataProps> = () => {
       disableVirtualization={false}
       rows={list}
       columns={[
-        { field: 'name', headerName: '费用类型', flex: 1 },
-        { field: 'createdAt', headerName: '创建时间', flex: 1 },
-        { field: 'remark', headerName: '备注', flex: 1 },
+        {
+          field: 'feeTypeCd',
+          headerName: '费用类型',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => <Chip label={result[row.feeTypeCd!] || '未知类型'} />
+        },
+        {
+          field: 'createdAt',
+          headerName: '创建时间',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        { field: 'remark', headerName: '备注', flex: 1, headerAlign: 'center', align: 'center' },
         {
           field: 'actions',
           headerName: '操作',
