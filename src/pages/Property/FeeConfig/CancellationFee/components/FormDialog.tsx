@@ -8,11 +8,8 @@ import React, {
   memo
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  ApplyRoomDiscountTypeParams,
-  ApplyRoomDiscountTypeReply
-} from 'api/model/property/feeConfig/applyRoomDiscountTypeModel'
-import { find, update } from 'modules/property/feeConfig/applyRoomDiscountType'
+import { PayFeeBatchParams, PayFeeBatchReply } from 'api/model/property/feeConfig/payFeeBatchModel'
+import { find, update } from 'modules/property/feeConfig/payFeeBatch'
 import {
   Box,
   CircularProgress,
@@ -29,25 +26,26 @@ import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
-  dialogValue?: ApplyRoomDiscountTypeReply
+  dialogValue?: PayFeeBatchReply
   openDialog: boolean
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
 const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpenDialog }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.ApplyRoomDiscountTypeSlice)
-
+  const { page } = useSelector((state: RootState) => state.PayFeeBatchSlice)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(
     () => ({
-      name: dialogValue?.name || '',
-      typeDesc: dialogValue?.typeDesc || ''
+      id: dialogValue?.id,
+      createUserName: dialogValue?.createUserName || '',
+      createdAt: dialogValue?.createdAt || '',
+      msg: ''
     }),
     [dialogValue]
   )
-  const [formData, setFormData] = useState<ApplyRoomDiscountTypeParams>(initialFormData)
+  const [formData, setFormData] = useState<PayFeeBatchParams>(initialFormData)
 
   useEffect(() => {
     setFormData(initialFormData)
@@ -61,7 +59,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
         const current_community = localStorage.getItem('current_community')
         const community = JSON.parse(current_community || '')
         const params = { ...formData, communityId: community?.id }
-        const action = update({ id: dialogValue?.id, ...params })
+        const action = update({ id: dialogValue?.id, stateCd: '2007001', ...params })
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
@@ -81,9 +79,9 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
   )
 
   const formFields = [
-    { label: '批次号', type: 'text', id: 'title', required: true },
-    { label: '员工', type: 'text', id: 'photo', required: true },
-    { label: '创建时间', type: 'text', id: 'content', required: true }
+    { label: '批次号', type: 'text', id: 'id', required: true },
+    { label: '员工', type: 'text', id: 'createUserName', required: true },
+    { label: '创建时间', type: 'text', id: 'createdAt', required: true }
   ]
 
   return (
@@ -110,7 +108,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
                 size="small"
                 required={required}
                 id={id}
-                value={formData[id as keyof ApplyRoomDiscountTypeParams]}
+                value={formData[id as keyof PayFeeBatchParams]}
                 onChange={e => setFormData({ ...formData, [id]: e.target.value })}
                 autoComplete={type === 'password' ? 'current-password' : ''}
               />
@@ -125,8 +123,8 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
               multiline
               rows={2}
               size="small"
-              value={formData.typeDesc}
-              onChange={e => setFormData({ ...formData, typeDesc: e.target.value })}
+              value={formData.msg}
+              onChange={e => setFormData({ ...formData, msg: e.target.value })}
               variant="outlined"
             />
           </Box>

@@ -1,5 +1,5 @@
 import { memo, useState } from 'react'
-import { ApplyRoomDiscountTypeReply } from 'api/model/property/feeConfig/applyRoomDiscountTypeModel'
+import { PayFeeBatchReply } from 'api/model/property/feeConfig/payFeeBatchModel'
 import { Box, Theme, Typography } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
@@ -14,8 +14,8 @@ const contentBoxStyle = (theme: Theme) => ({
   width: '100%'
 })
 
-const ApplyRoomDiscountTypeIndex = () => {
-  const [dialogValue, setDialogValue] = useState<ApplyRoomDiscountTypeReply | undefined>()
+const PayFeeBatchIndex = () => {
+  const [dialogValue, setDialogValue] = useState<PayFeeBatchReply | undefined>()
   const [openDialog, setOpenDialog] = useState(false)
 
   return (
@@ -34,4 +34,4 @@ const ApplyRoomDiscountTypeIndex = () => {
   )
 }
 
-export default memo(ApplyRoomDiscountTypeIndex)
+export default memo(PayFeeBatchIndex)

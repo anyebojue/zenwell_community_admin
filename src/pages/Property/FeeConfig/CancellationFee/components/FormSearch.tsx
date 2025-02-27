@@ -1,7 +1,7 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ApplyRoomDiscountTypeParams } from 'api/model/property/feeConfig/applyRoomDiscountTypeModel'
-import { find } from 'modules/property/feeConfig/applyRoomDiscountType'
+import { PayFeeBatchParams } from 'api/model/property/feeConfig/payFeeBatchModel'
+import { find } from 'modules/property/feeConfig/payFeeBatch'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -27,20 +27,22 @@ interface SearchFormProps {}
 
 const FormSearch: React.FC<SearchFormProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.ApplyRoomDiscountTypeSlice)
-  const [searchParams, setSearchParams] = useState<ApplyRoomDiscountTypeParams>({
-    name: ''
+  const { page } = useSelector((state: RootState) => state.PayFeeBatchSlice)
+  const [searchParams, setSearchParams] = useState<PayFeeBatchParams>({
+    id: '',
+    stateCd: '',
+    createUserName: ''
   })
 
   const handleInputChange = useCallback(
-    (field: keyof ApplyRoomDiscountTypeParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof PayFeeBatchParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prev => ({ ...prev, [field]: event.target.value }))
     },
     []
   )
 
   const fetchData = useCallback(
-    async (params: ApplyRoomDiscountTypeParams & PaginationParams) => {
+    async (params: PayFeeBatchParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
@@ -63,13 +65,13 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   }, [fetchData, searchParams])
 
   const handleReset = useCallback(() => {
-    const initialParams = { name: '', tel: '' }
+    const initialParams = { id: '', stateCd: '', createUserName: '' }
     setSearchParams(initialParams)
     fetchData({ ...initialParams, 'page.num': page.num, 'page.size': page.size })
   }, [fetchData, page.num, page.size])
 
   const handleSelectChange =
-    (field: keyof ApplyRoomDiscountTypeParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof PayFeeBatchParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -86,17 +88,17 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.name}
-            onChange={handleInputChange('name')}
+            value={searchParams.id}
+            onChange={handleInputChange('id')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             select
             size="small"
-            label="请选择表类型"
-            value={searchParams.name}
-            onChange={handleSelectChange('name')}
+            label="请选择状态"
+            value={searchParams.stateCd}
+            onChange={handleSelectChange('stateCd')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -119,8 +121,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.name}
-            onChange={handleInputChange('name')}
+            value={searchParams.createUserName}
+            onChange={handleInputChange('createUserName')}
           />
         </FormControl>
       </Stack>
