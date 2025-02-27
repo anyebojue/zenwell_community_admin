@@ -4,6 +4,7 @@ import { RoomReply } from 'api/model/property/houses/roomModel'
 import { PayFeeReply } from 'api/model/property/feeConfig/payFeeModel'
 import { find } from 'modules/property/feeConfig/payFee'
 import { find as findFeeConfigType } from 'modules/property/feeConfig/feeConfigType'
+import { find as findFeeConfig } from 'modules/property/feeConfig/feeConfig'
 import { Box, Button, Chip, MenuItem, Stack, TextField, Typography } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
@@ -42,6 +43,7 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue }) => {
   const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.PayFeeSlice)
   const { list: feeConfigTypeList } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
+  const { list: feeConfigList } = useSelector((state: RootState) => state.FeeConfigSlice)
   const [openDialog, setOpenDialog] = useState(false)
   const [openTemporarily, setOpenTemporarily] = useState(false)
   const [openVolume, setOpenVolume] = useState(false)
@@ -79,7 +81,8 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue }) => {
 
   useEffect(() => {
     fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
-    fetchData(findFeeConfigType, {}, '正在加载列表中，请稍后...')
+    fetchData(findFeeConfigType, { 'page.disable': true }, '正在加载列表中，请稍后...')
+    fetchData(findFeeConfig, { 'page.disable': true }, '正在加载列表中，请稍后...')
   }, [fetchData, page.num, page.size])
 
   const handleActionClick = useCallback((actionType: string, row: PayFeeReply) => {
@@ -140,8 +143,13 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue }) => {
 
   return (
     <>
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Stack direction="row" spacing={1}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
+        <Stack sx={{ pb: 2 }} direction="row" spacing={1}>
           <TextField
             sx={{ width: '150px' }}
             label="请选择费用类型"
@@ -157,14 +165,62 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue }) => {
           </TextField>
           <TextField
             sx={{ width: '150px' }}
-            label="请选择状态"
+            label="请选择收费项目"
             select
             size="small"
             variant="outlined"
           >
+            {feeConfigList.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.name}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            sx={{ width: '150px' }}
+            label="请选择状态"
+            select
+            size="small"
+            variant="outlined"
+            defaultValue="2008001"
+          >
             {[
               { value: '2008001', label: '有效' },
               { value: '2009001', label: '收费结束' }
+            ].map(option => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            sx={{ width: '150px' }}
+            label="请选择状态"
+            select
+            size="small"
+            variant="outlined"
+            defaultValue="N"
+          >
+            {[
+              { value: 'N', label: '当前房屋' },
+              { value: 'Y', label: '当前业主' }
+            ].map(option => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            sx={{ width: '150px' }}
+            label="请选择状态"
+            select
+            size="small"
+            variant="outlined"
+            defaultValue="DEFAULT"
+          >
+            {[
+              { value: 'DEFAULT', label: '默认' },
+              { value: 'MONTH', label: '按月' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
