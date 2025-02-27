@@ -126,21 +126,11 @@ const TableData: React.FC<TableDataProps> = ({ data, setSelectedRows, setDelOpen
                 alignItems: 'center'
               }}
             >
-              {row.feeConfig?.feeConfigType?.status !== 0 && (
-                <Typography variant="body1">
-                  欠费时长：{row.feeConfig?.feeConfigType?.status}
+              {row.feeDiscount?.feeDiscountSpec?.map(item => (
+                <Typography variant="body1" key={item.id}>
+                  {item.name}：{item.specValue}
                 </Typography>
-              )}
-              {row.feeConfig?.feeConfigType?.status !== 0 && (
-                <Typography variant="body1">
-                  打折率：{row.feeConfig?.feeConfigType?.status}
-                </Typography>
-              )}
-              {row.feeConfig?.feeConfigType?.status !== 0 && (
-                <Typography variant="body1">
-                  月份：{row.feeConfig?.feeConfigType?.status}
-                </Typography>
-              )}
+              ))}
             </Box>
           )
         },

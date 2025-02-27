@@ -100,10 +100,24 @@ const TableData: React.FC<TableDataProps> = ({ value, setSelectedRows, setDelOpe
           field: 'roomId',
           headerName: '房屋',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: () => `${value.roomId}`
         },
-        { field: 'createUserName', headerName: '操作人员', flex: 1 },
-        { field: 'createdAt', headerName: '创建时间', flex: 1 },
+        {
+          field: 'createUserName',
+          headerName: '操作人员',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'createdAt',
+          headerName: '创建时间',
+          width: 180,
+          headerAlign: 'center',
+          align: 'center'
+        },
         {
           field: 'stateCd',
           headerName: '状态',
@@ -116,13 +130,17 @@ const TableData: React.FC<TableDataProps> = ({ value, setSelectedRows, setDelOpe
           field: 'isTrue',
           headerName: '是否违规',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => (row.isTrue ? '是' : '否')
         },
-        { field: 'remark', headerName: '备注', flex: 1 },
+        { field: 'remark', headerName: '备注', flex: 1, headerAlign: 'center', align: 'center' },
         {
           field: 'img',
           headerName: '图片',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => <img style={{ height: '30px' }} src={row.img} alt={row.img} />
         },
         {

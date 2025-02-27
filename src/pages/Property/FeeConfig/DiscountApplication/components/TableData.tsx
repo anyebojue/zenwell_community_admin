@@ -47,6 +47,16 @@ const TableData: React.FC<TableDataProps> = ({
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.ApplyRoomDiscountSlice)
+  const { list: typeList } = useSelector((state: RootState) => state.ApplyRoomDiscountTypeSlice)
+  const result = typeList.reduce(
+    (acc: Record<string, string>, item) => {
+      if (item.id) {
+        acc[item.id] = item.name || ''
+      }
+      return acc
+    },
+    {} as Record<string, string>
+  )
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -174,7 +184,7 @@ const TableData: React.FC<TableDataProps> = ({
           width: 100,
           headerAlign: 'center',
           align: 'center',
-          renderCell: ({ row }) => <Chip label={statusValue[row.applyType!] || '未知类型'} />
+          renderCell: ({ row }) => <Chip label={result[row.applyType!] || '未知类型'} />
         },
         {
           field: 'createUserName',
@@ -222,7 +232,7 @@ const TableData: React.FC<TableDataProps> = ({
           width: 100,
           headerAlign: 'center',
           align: 'center',
-          renderCell: ({ row }) => <Chip label={statusValue[row.applyType!] || '未知类型'} />
+          renderCell: ({ row }) => <Chip label={statusValue[row.stateCd!] || '未知类型'} />
         },
         {
           field: 'createdAt',
@@ -252,7 +262,7 @@ const TableData: React.FC<TableDataProps> = ({
           width: 100,
           headerAlign: 'center',
           align: 'center',
-          renderCell: ({ row }) => <Chip label={statusInUse[row.returnWay!] || '未知类型'} />
+          renderCell: ({ row }) => <Chip label={statusInUse[row.inUse!] || '未知类型'} />
         },
         {
           field: 'returnWay',

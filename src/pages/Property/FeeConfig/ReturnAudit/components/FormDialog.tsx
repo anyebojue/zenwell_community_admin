@@ -41,6 +41,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
       setLoading(true)
+      console.log(dialogValue)
       try {
         const current_community = localStorage.getItem('current_community')
         const community = JSON.parse(current_community || '')
@@ -86,8 +87,8 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
               variant="outlined"
             >
               {[
-                { value: '1100', label: '同意' },
-                { value: '1200', label: '拒绝' }
+                { value: '2002', label: '同意' },
+                { value: '3003', label: '拒绝' }
               ].map(option => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}

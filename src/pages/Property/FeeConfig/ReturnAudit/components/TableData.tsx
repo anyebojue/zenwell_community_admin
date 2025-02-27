@@ -49,6 +49,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
     (actionType: string, row: ReturnPayFeeReply) => {
       switch (actionType) {
         case 'audit':
+          setDialogValue(row)
           setOpenDialog(true)
           break
         case 'details':
@@ -62,7 +63,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
 
   const renderActionButtons = (row: ReturnPayFeeReply) => {
     const actionButtons = [
-      { title: '审核', action: 'audit', condition: row.stateCd !== '1001' },
+      { title: '审核', action: 'audit', condition: row.stateCd === '1001' },
       { title: '详情', action: 'details', condition: true }
     ]
     return actionButtons
@@ -72,7 +73,6 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
           key={title}
           sx={{
             cursor: 'pointer',
-            marginRight: '-5px',
             '& .MuiChip-label': {
               fontSize: '13px'
             }
@@ -87,7 +87,14 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
 
   return (
     <DataGrid
-      sx={{ mt: 2 }}
+      sx={{
+        '& .MuiDataGrid-columnHeaderTitle': {
+          whiteSpace: 'normal',
+          wordWrap: 'break-word',
+          lineHeight: '1.2'
+        },
+        mt: 1
+      }}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
@@ -97,32 +104,76 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
           field: 'payFeeDetail.payFee.feeConfig.feeConfigType.name',
           headerName: '费用类型',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => row.payFeeDetail?.payFee?.feeConfig?.feeConfigType?.name
         },
         {
           field: 'payFeeDetail.payFee.payerObjName',
           headerName: '付费对象',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => row.payFeeDetail?.payFee?.payerObjName
         },
-        { field: 'cycles', headerName: '付费周期(单位:月)', flex: 1 },
+        {
+          field: 'cycles',
+          headerName: '付费周期(单位:月)',
+          headerAlign: 'center',
+          align: 'center',
+          flex: 1
+        },
         {
           field: 'receivableAmount',
           headerName: '应付金额/实付金额',
           flex: 1,
-          renderCell: ({ row }) => `${row.receivableAmount} - ${row.receivedAmount}`
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => `${row.receivableAmount} / ${row.receivedAmount}`
         },
-        { field: 'createdAt', headerName: '申请时间', flex: 1 },
-        { field: 'reason', headerName: '退费原因', flex: 1 },
-        { field: 'applyPersonName', headerName: '申请人', flex: 1 },
+        {
+          field: 'createdAt',
+          headerName: '申请时间',
+          headerAlign: 'center',
+          align: 'center',
+          width: 180
+        },
+        {
+          field: 'reason',
+          headerName: '退费原因',
+          headerAlign: 'center',
+          align: 'center',
+          flex: 1
+        },
+        {
+          field: 'applyPersonName',
+          headerName: '申请人',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
         {
           field: 'stateCd',
           headerName: '审核状态',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => <Chip label={statusValue[row.stateCd!] || '未知类型'} />
         },
-        { field: 'auditPersonName', headerName: '审核人', flex: 1 },
-        { field: 'statusCd', headerName: '	退款情况', flex: 1 },
+        {
+          field: 'auditPersonName',
+          headerName: '审核人',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'statusCd',
+          headerName: '	退款情况',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
         {
           field: 'actions',
           headerName: '操作',
