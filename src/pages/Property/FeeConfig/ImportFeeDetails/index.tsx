@@ -15,7 +15,7 @@ const contentBoxStyle = (theme: Theme) => ({
   width: '100%'
 })
 
-const ApplyRoomDiscountTypeIndex = () => {
+const FeeImportDetailIndex = () => {
   const navigate = useNavigate()
 
   return (
@@ -43,4 +43,4 @@ const ApplyRoomDiscountTypeIndex = () => {
   )
 }
 
-export default memo(ApplyRoomDiscountTypeIndex)
+export default memo(FeeImportDetailIndex)

@@ -1,7 +1,7 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ApplyRoomDiscountTypeParams } from 'api/model/property/feeConfig/applyRoomDiscountTypeModel'
-import { find } from 'modules/property/feeConfig/applyRoomDiscountType'
+import { FeeImportDetailParams } from 'api/model/property/feeConfig/feeImportDetailModel'
+import { find } from 'modules/property/feeConfig/feeImportDetail'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -27,21 +27,23 @@ interface SearchFormProps {}
 
 const FormSearch: React.FC<SearchFormProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.ApplyRoomDiscountTypeSlice)
+  const { page } = useSelector((state: RootState) => state.FeeImportDetailSlice)
 
-  const [searchParams, setSearchParams] = useState<ApplyRoomDiscountTypeParams>({
-    name: ''
+  const [searchParams, setSearchParams] = useState<FeeImportDetailParams>({
+    floorNum: '',
+    unitNum: '',
+    roomNum: ''
   })
 
   const handleInputChange = useCallback(
-    (field: keyof ApplyRoomDiscountTypeParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof FeeImportDetailParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prev => ({ ...prev, [field]: event.target.value }))
     },
     []
   )
 
   const fetchData = useCallback(
-    async (params: ApplyRoomDiscountTypeParams & PaginationParams) => {
+    async (params: FeeImportDetailParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
@@ -64,7 +66,7 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   }, [fetchData, searchParams])
 
   const handleReset = useCallback(() => {
-    const initialParams = { name: '', tel: '' }
+    const initialParams = { floorNum: '', unitNum: '', roomNum: '' }
     setSearchParams(initialParams)
     fetchData({ ...initialParams, 'page.num': page.num, 'page.size': page.size })
   }, [fetchData, page.num, page.size])
@@ -79,8 +81,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.name}
-            onChange={handleInputChange('name')}
+            value={searchParams.floorNum}
+            onChange={handleInputChange('floorNum')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -90,8 +92,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.name}
-            onChange={handleInputChange('name')}
+            value={searchParams.unitNum}
+            onChange={handleInputChange('unitNum')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -101,8 +103,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.name}
-            onChange={handleInputChange('name')}
+            value={searchParams.roomNum}
+            onChange={handleInputChange('roomNum')}
           />
         </FormControl>
       </Stack>

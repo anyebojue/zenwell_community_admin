@@ -41,6 +41,7 @@ import FeeReceiptSlice from './property/feeConfig/feeReceipt'
 import FeeReceiptDetailSlice from './property/feeConfig/feeReceiptDetail'
 import SpaceConfirmOrderSlice from './property/houses/spaceConfirmOrder'
 import ImportFeeSlice from './property/feeConfig/importFee'
+import FeeImportDetailSlice from './property/feeConfig/feeImportDetail'
 import OwnerInvoiceSlice from './property/houses/ownerInvoice'
 import OwnerInvoiceApplySlice from './property/houses/ownerInvoiceApply'
 import OwnerInvoiceApplyItemSlice from './property/houses/ownerInvoiceApplyItem'
@@ -106,6 +107,7 @@ const store = configureStore({
     OwnerInvoiceApplyItemSlice,
     OwnerInvoiceApplyEventSlice,
     ImportFeeSlice,
+    FeeImportDetailSlice,
     RepairSettingSlice,
     RepairPoolSlice,
     RepairStaffSlice,
