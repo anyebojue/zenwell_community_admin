@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { find } from 'modules/property/feeConfig/returnPayFee'
+import { find } from 'modules/property/feeConfig/reportOweFee'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
@@ -10,7 +10,7 @@ interface TableDataProps {}
 
 const TableData: React.FC<TableDataProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.ReturnPayFeeSlice)
+  const { page, list } = useSelector((state: RootState) => state.ReportOweFeeSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -46,13 +46,55 @@ const TableData: React.FC<TableDataProps> = () => {
         disableVirtualization={false}
         rows={list}
         columns={[
-          { field: '', headerName: '收费对象', flex: 1 },
-          { field: '', headerName: '业主名称', flex: 1 },
-          { field: '', headerName: '手机号', flex: 1 },
-          { field: '', headerName: '开始时间', flex: 1 },
-          { field: '', headerName: '结束时间', flex: 1 },
-          { field: '', headerName: '合计（单位：元）', flex: 1 },
-          { field: '', headerName: '更新时间', flex: 1 }
+          {
+            field: 'payerObjId',
+            headerName: '收费对象',
+            headerAlign: 'center',
+            align: 'center',
+            flex: 1
+          },
+          {
+            field: 'ownerName',
+            headerName: '业主名称',
+            headerAlign: 'center',
+            align: 'center',
+            flex: 1
+          },
+          {
+            field: 'ownerTel',
+            headerName: '手机号',
+            headerAlign: 'center',
+            align: 'center',
+            flex: 1
+          },
+          {
+            field: 'endTime',
+            headerName: '开始时间',
+            headerAlign: 'center',
+            align: 'center',
+            flex: 1
+          },
+          {
+            field: 'deadlineTime',
+            headerName: '结束时间',
+            headerAlign: 'center',
+            align: 'center',
+            flex: 1
+          },
+          {
+            field: 'amountOwed',
+            headerName: '合计（单位：元）',
+            headerAlign: 'center',
+            align: 'center',
+            flex: 1
+          },
+          {
+            field: 'updatedAt',
+            headerName: '更新时间',
+            headerAlign: 'center',
+            align: 'center',
+            flex: 1
+          }
         ]}
         pageSizeOptions={[10, 20, 50, 100]}
         paginationMode="server"

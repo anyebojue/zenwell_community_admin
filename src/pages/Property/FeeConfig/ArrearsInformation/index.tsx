@@ -14,7 +14,7 @@ const contentBoxStyle = (theme: Theme) => ({
   width: '100%'
 })
 
-const ReturnPayFeeIndex = () => {
+const ReportOweFeeIndex = () => {
   return (
     <Box sx={{ mt: 3.5, width: '100%' }}>
       <NavbarBreadcrumbs />
@@ -40,4 +40,4 @@ const ReturnPayFeeIndex = () => {
   )
 }
 
-export default memo(ReturnPayFeeIndex)
+export default memo(ReportOweFeeIndex)

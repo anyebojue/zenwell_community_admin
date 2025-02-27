@@ -1,7 +1,7 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ReturnPayFeeParams } from 'api/model/property/feeConfig/returnPayFeeModel'
-import { find } from 'modules/property/feeConfig/returnPayFee'
+import { ReportOweFeeParams } from 'api/model/property/feeConfig/reportOweFeeModel'
+import { find } from 'modules/property/feeConfig/reportOweFee'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -26,25 +26,21 @@ const textFieldStyles = {
 const FormSearch: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
-  const [searchParams, setSearchParams] = useState<ReturnPayFeeParams>({
-    applyPersonName: '',
-    auditPersonName: '',
+  const [searchParams, setSearchParams] = useState<ReportOweFeeParams>({
+    ownerName: '',
     payerObjId: '',
-    stateCd: '',
-    feeTypeCd: '',
-    startTime: '',
-    endTime: ''
+    payerObjType: ''
   })
 
   const handleInputChange = useCallback(
-    (field: keyof ReturnPayFeeParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof ReportOweFeeParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prev => ({ ...prev, [field]: event.target.value }))
     },
     []
   )
 
   const fetchData = useCallback(
-    async (params: ReturnPayFeeParams & PaginationParams) => {
+    async (params: ReportOweFeeParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
@@ -81,7 +77,7 @@ const FormSearch: React.FC = () => {
   }, [fetchData, page.num, page.size])
 
   const handleSelectChange =
-    (field: keyof ReturnPayFeeParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof ReportOweFeeParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -98,8 +94,8 @@ const FormSearch: React.FC = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.applyPersonName}
-            onChange={handleInputChange('applyPersonName')}
+            value={searchParams.ownerName}
+            onChange={handleInputChange('ownerName')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -109,8 +105,8 @@ const FormSearch: React.FC = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.auditPersonName}
-            onChange={handleInputChange('auditPersonName')}
+            value={searchParams.ownerName}
+            onChange={handleInputChange('ownerName')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -129,8 +125,8 @@ const FormSearch: React.FC = () => {
             select
             size="small"
             label="请选择房屋类型"
-            value={searchParams.stateCd}
-            onChange={handleSelectChange('stateCd')}
+            value={searchParams.ownerName}
+            onChange={handleSelectChange('ownerName')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -151,8 +147,8 @@ const FormSearch: React.FC = () => {
             select
             size="small"
             label="请选择选择费用项"
-            value={searchParams.feeTypeCd}
-            onChange={handleSelectChange('feeTypeCd')}
+            value={searchParams.ownerName}
+            onChange={handleSelectChange('ownerName')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -181,8 +177,8 @@ const FormSearch: React.FC = () => {
             select
             size="small"
             label="请选择付费对象类型"
-            value={searchParams.stateCd}
-            onChange={handleSelectChange('stateCd')}
+            value={searchParams.payerObjType}
+            onChange={handleSelectChange('payerObjType')}
             variant="outlined"
             sx={textFieldStyles}
           >
