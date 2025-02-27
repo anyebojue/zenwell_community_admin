@@ -1,7 +1,7 @@
 import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ReturnPayFeeReply } from 'api/model/property/feeConfig/returnPayFeeModel'
-import { find } from 'modules/property/feeConfig/returnPayFee'
+import { PayFeeAuditReply } from 'api/model/property/feeConfig/payFeeAuditModel'
+import { find } from 'modules/property/feeConfig/payFeeAudit'
 import { Chip } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
@@ -9,14 +9,14 @@ import message from 'components/Message'
 import { useNavigate } from 'react-router-dom'
 
 interface TableDataProps {
-  setDialogValue: Dispatch<SetStateAction<ReturnPayFeeReply | undefined>>
+  setDialogValue: Dispatch<SetStateAction<PayFeeAuditReply | undefined>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
 const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
-  const { page, list } = useSelector((state: RootState) => state.ReturnPayFeeSlice)
+  const { page, list } = useSelector((state: RootState) => state.PayFeeAuditSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -40,7 +40,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
   }, [fetchData, page.num, page.size])
 
   const handleActionClick = useCallback(
-    (actionType: string, row: ReturnPayFeeReply) => {
+    (actionType: string, row: PayFeeAuditReply) => {
       switch (actionType) {
         case 'details':
           navigate('/FeeConfig/RefundDetails', { state: { value: row } })
@@ -54,7 +54,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
     [navigate, setDialogValue, setOpenDialog]
   )
 
-  const renderActionButtons = (row: ReturnPayFeeReply) => {
+  const renderActionButtons = (row: PayFeeAuditReply) => {
     const actionButtons = [
       { title: '详情', action: 'details' },
       { title: '审核费用', action: 'fee' }

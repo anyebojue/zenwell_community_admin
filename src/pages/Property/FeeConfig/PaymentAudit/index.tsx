@@ -1,5 +1,5 @@
 import { memo, useState } from 'react'
-import { ReturnPayFeeReply } from 'api/model/property/feeConfig/returnPayFeeModel'
+import { PayFeeAuditReply } from 'api/model/property/feeConfig/payFeeAuditModel'
 import { Box, Button, Theme, Typography } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
@@ -16,8 +16,8 @@ const contentBoxStyle = (theme: Theme) => ({
   width: '100%'
 })
 
-const ReturnPayFeeIndex = () => {
-  const [dialogValue, setDialogValue] = useState<ReturnPayFeeReply | undefined>()
+const PayFeeAuditIndex = () => {
+  const [dialogValue, setDialogValue] = useState<PayFeeAuditReply | undefined>()
   const [openDialog, setOpenDialog] = useState(false)
 
   return (
@@ -46,4 +46,4 @@ const ReturnPayFeeIndex = () => {
   )
 }
 
-export default memo(ReturnPayFeeIndex)
+export default memo(PayFeeAuditIndex)

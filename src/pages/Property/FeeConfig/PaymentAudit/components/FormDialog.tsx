@@ -1,10 +1,7 @@
 import React, { Dispatch, SetStateAction, useCallback, useState, memo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  ReturnPayFeeParams,
-  ReturnPayFeeReply
-} from 'api/model/property/feeConfig/returnPayFeeModel'
-import { find, update } from 'modules/property/feeConfig/returnPayFee'
+import { PayFeeAuditParams, PayFeeAuditReply } from 'api/model/property/feeConfig/payFeeAuditModel'
+import { find, update } from 'modules/property/feeConfig/payFeeAudit'
 import {
   Box,
   CircularProgress,
@@ -22,19 +19,19 @@ import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
-  dialogValue?: ReturnPayFeeReply
+  dialogValue?: PayFeeAuditReply
   openDialog: boolean
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
 const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpenDialog }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.ReturnPayFeeSlice)
+  const { page } = useSelector((state: RootState) => state.PayFeeAuditSlice)
   const [loading, setLoading] = useState(false)
 
-  const [formData, setFormData] = useState<ReturnPayFeeParams>({
+  const [formData, setFormData] = useState<PayFeeAuditParams>({
     stateCd: '',
-    reason: ''
+    message: ''
   })
 
   const handleSubmit = useCallback(
@@ -86,8 +83,8 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
               variant="outlined"
             >
               {[
-                { value: '1100', label: '同意' },
-                { value: '1200', label: '拒绝' }
+                { value: '2020', label: '同意' },
+                { value: '3030', label: '拒绝' }
               ].map(option => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
@@ -104,8 +101,8 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
               multiline
               rows={2}
               size="small"
-              value={formData.reason}
-              onChange={e => setFormData({ ...formData, reason: e.target.value })}
+              value={formData.message}
+              onChange={e => setFormData({ ...formData, message: e.target.value })}
               variant="outlined"
             />
           </Box>
