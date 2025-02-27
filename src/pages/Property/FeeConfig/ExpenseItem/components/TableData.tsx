@@ -13,6 +13,16 @@ interface TableDataProps {
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
+const statusValue: Record<string, string> = {
+  '1003006': '周期性费用',
+  '2006012': '一次性费用'
+}
+
+const statusPaymentValue: Record<string, string> = {
+  '1200': '预付费',
+  '2100': '后付费'
+}
+
 const TableData: React.FC<TableDataProps> = ({ rowId, setSelectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.FeeComboMemberSlice)
@@ -87,13 +97,66 @@ const TableData: React.FC<TableDataProps> = ({ rowId, setSelectedRows, setDelOpe
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'id', headerName: '费用类型', flex: 1 },
-        { field: 'comboId', headerName: '收费项目', flex: 1 },
-        { field: 'configId', headerName: '费用标识', flex: 1 },
-        { field: 'communityId', headerName: '付费类型', flex: 1 },
-        { field: 'status', headerName: '缴费周期', flex: 1 },
-        { field: 'remark', headerName: '计费单价', flex: 1 },
-        { field: 'id', headerName: '附加/固定费', flex: 1 },
+        {
+          field: 'feeConfig.feeConfigType.name',
+          headerName: '费用类型',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.feeConfig?.feeConfigType?.name
+        },
+        {
+          field: 'feeConfig.name',
+          headerName: '收费项目',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.feeConfig?.name
+        },
+        {
+          field: 'feeConfig.feeFlag',
+          headerName: '费用标识',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => (
+            <Chip label={statusValue[row.feeConfig?.feeFlag!] || '未知类型'} />
+          )
+        },
+        {
+          field: 'feeConfig.paymentCd',
+          headerName: '付费类型',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => (
+            <Chip label={statusPaymentValue[row.feeConfig?.paymentCd!] || '未知类型'} />
+          )
+        },
+        {
+          field: 'feeConfig.paymentCycle',
+          headerName: '缴费周期',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.feeConfig?.paymentCycle
+        },
+        {
+          field: 'feeConfig.squarePrice',
+          headerName: '计费单价',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.feeConfig?.squarePrice
+        },
+        {
+          field: 'feeConfig.additionalAmount',
+          headerName: '附加/固定费',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.feeConfig?.additionalAmount
+        },
         {
           field: 'actions',
           headerName: '操作',
