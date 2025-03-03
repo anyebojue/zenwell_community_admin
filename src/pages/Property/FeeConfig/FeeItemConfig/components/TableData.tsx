@@ -109,6 +109,7 @@ const TableData: React.FC<TableDataProps> = ({
           setSelectedRows(new Set([row.id || '']))
           break
         case 'details':
+          navigate('/FeeConfig/ExpenseItemInformation', { state: { value: row } })
           break
       }
     },

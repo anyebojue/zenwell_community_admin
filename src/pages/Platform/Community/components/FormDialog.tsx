@@ -143,9 +143,9 @@ const FormDialog: React.FC<FormDialogProps> = ({
     { label: '小区地址', type: 'text', id: 'address', required: true },
     { label: '附近地标', type: 'text', id: 'nearby_landmarks', required: true },
     { label: '客服电话', type: 'text', id: 'tel', required: true },
-    { label: '缴费周期', type: 'number', id: 'pay_fee_month', required: true },
-    { label: '每月单价', type: 'number', id: 'fee_price', required: true },
-    { label: '社区编码', type: 'text', id: 'b_id', required: true }
+    { label: '缴费周期', type: 'number', id: 'payFeeMonth', required: true },
+    { label: '每月单价', type: 'number', id: 'feePrice', required: true },
+    { label: '社区编码', type: 'text', id: 'bId', required: true }
   ]
 
   return (

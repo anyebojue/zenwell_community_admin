@@ -2,16 +2,14 @@ import React, {
   Dispatch,
   SetStateAction,
   useCallback,
-  useEffect,
-  useMemo,
   useState,
-  memo
+  memo,
+  useEffect,
+  useMemo
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { MeterWaterParams, MeterWaterReply } from 'api/model/property/feeConfig/meterWaterModel'
-import { create, find, update } from 'modules/property/feeConfig/meterWater'
-import { find as findFeeConfig } from 'modules/property/feeConfig/feeConfig'
-import { find as findFeeConfigType } from 'modules/property/feeConfig/feeConfigType'
+import { PayFeeParams } from 'api/model/property/feeConfig/payFeeModel'
+import { find, create } from 'modules/property/feeConfig/payFee'
 import {
   Box,
   CircularProgress,
@@ -28,14 +26,9 @@ import {
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 import { RoomReply } from 'api/model/property/houses/roomModel'
-
-interface FormDialogProps {
-  dialogValue?: { id?: string; label?: string; roomData?: RoomReply }
-  dialogMeterWaterValue: MeterWaterReply
-  openDialog: boolean
-  dialogType: string
-  setOpenDialog: Dispatch<SetStateAction<boolean>>
-}
+import { find as findFeeConfig } from 'modules/property/feeConfig/feeConfig'
+import { find as findFeeConfigType } from 'modules/property/feeConfig/feeConfigType'
+import { find as findMeterType } from 'modules/property/feeConfig/meterType'
 
 const formatDateTime = (date: Date | string | undefined): string => {
   const validDate = date ? new Date(date) : new Date()
@@ -48,11 +41,15 @@ const formatDateTime = (date: Date | string | undefined): string => {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
 }
 
-const FormDialog: React.FC<FormDialogProps> = ({
+interface FormMeterReadingProps {
+  dialogValue: { id?: string; label?: string; roomData?: RoomReply }
+  openDialog: boolean
+  setOpenDialog: Dispatch<SetStateAction<boolean>>
+}
+
+const FormMeterReading: React.FC<FormMeterReadingProps> = ({
   dialogValue,
-  dialogMeterWaterValue,
   openDialog,
-  dialogType,
   setOpenDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
@@ -60,24 +57,23 @@ const FormDialog: React.FC<FormDialogProps> = ({
   const { list: feeConfigList } = useSelector((state: RootState) => state.FeeConfigSlice)
   const { list: feeConfigTypeList } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
   const [loading, setLoading] = useState(false)
-
   const initialFormData = useMemo(
     () => ({
-      preDegrees: dialogType === 'edit' ? dialogMeterWaterValue?.preDegrees || 0 : 0,
-      curDegrees: dialogType === 'edit' ? dialogMeterWaterValue?.curDegrees || 0 : 0,
-      preReadingTime:
-        dialogType === 'edit'
-          ? dialogMeterWaterValue?.preReadingTime || formatDateTime(new Date())
-          : formatDateTime(new Date()),
-      curReadingTime:
-        dialogType === 'edit'
-          ? dialogMeterWaterValue?.curReadingTime || formatDateTime(new Date())
-          : formatDateTime(new Date()),
-      remark: dialogType === 'edit' ? dialogMeterWaterValue?.remark || '' : ''
+      feeId: '',
+      feeTypeCd: '',
+      configId: '',
+      payerObjId: `${dialogValue?.roomData?.roomNum} - ${dialogValue?.roomData?.unit?.unitNum} - ${dialogValue?.roomData?.unit?.floor?.floorNum}`,
+      meterWater: {
+        meterType: '',
+        preDegrees: '',
+        curDegrees: '',
+        preReadingTime: formatDateTime(new Date()),
+        curReadingTime: formatDateTime(new Date())
+      }
     }),
-    [dialogType, dialogMeterWaterValue]
+    [dialogValue]
   )
-  const [formData, setFormData] = useState<MeterWaterParams>(initialFormData)
+  const [formData, setFormData] = useState<PayFeeParams>(initialFormData)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -98,15 +94,21 @@ const FormDialog: React.FC<FormDialogProps> = ({
 
   useEffect(() => {
     setFormData(initialFormData)
-    if (dialogType === 'code') {
-      fetchData(
-        findFeeConfig,
-        { 'page.disable': true, feeTypeCd: formData.feeId || '' },
-        '正在加载列表中，请稍后...'
-      )
+    if (openDialog) {
+      fetchData(findFeeConfig, { 'page.disable': true }, '正在加载列表中，请稍后...')
+      fetchData(findMeterType, { 'page.disable': true }, '正在加载列表中，请稍后...')
       fetchData(findFeeConfigType, { 'page.disable': true }, '正在加载列表中，请稍后...')
     }
-  }, [dialogType, fetchData, formData.feeId, initialFormData])
+  }, [
+    dialogValue.roomData?.roomNum,
+    dialogValue.roomData?.unit?.floor?.floorNum,
+    dialogValue.roomData?.unit?.unitNum,
+    fetchData,
+    initialFormData,
+    openDialog,
+    page.num,
+    page.size
+  ])
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
@@ -116,26 +118,46 @@ const FormDialog: React.FC<FormDialogProps> = ({
         const current_community = localStorage.getItem('current_community')
         const community = JSON.parse(current_community || '')
         const params = { ...formData, communityId: community?.id }
-        const action =
-          dialogType === 'add'
-            ? create(params)
-            : update({ id: dialogMeterWaterValue?.id, ...params })
+        const action = create({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-        await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))
-        message.success(dialogType === 'add' ? '新建成功' : '编辑成功')
+        await dispatch(find({ 'page.num': page.num || '1', 'page.size': '20' }))
+        message.success('创建成功')
         setOpenDialog(false)
-        setFormData(initialFormData)
       } catch (err: unknown) {
-        if (err instanceof Error) message.error(err.message)
+        message.error(err instanceof Error ? err.message : '未知错误')
       } finally {
         setLoading(false)
       }
     },
-    [dispatch, dialogType, dialogMeterWaterValue, formData, page, setOpenDialog, initialFormData]
+    [dispatch, dialogValue, formData, page, setOpenDialog]
   )
+
+  const formFields = [
+    { label: '收费对象', id: 'payerObjId', disabled: true },
+    { label: '上期度数', id: 'meterWater.preDegrees' },
+    { label: '本期度数', id: 'meterWater.curDegrees' },
+    { label: '备注', id: 'remark' }
+  ]
+
+  const handleFormDataChange = (id: string, value: string) => {
+    setFormData(prev => {
+      const newFormData = { ...prev }
+      if (id.startsWith('meterWater.')) {
+        const meterKey = id.split('.')[1] as keyof typeof prev.meterWater
+        newFormData.meterWater = {
+          ...prev.meterWater,
+          [meterKey]: value
+        }
+      } else {
+        ;(newFormData as unknown as Record<keyof PayFeeParams, string>)[id as keyof PayFeeParams] =
+          value
+      }
+      return newFormData
+    })
+  }
 
   return (
     <Dialog
@@ -145,160 +167,104 @@ const FormDialog: React.FC<FormDialogProps> = ({
       onClose={() => setOpenDialog(false)}
       slotProps={{ paper: { component: 'form', onSubmit: handleSubmit } }}
     >
-      <DialogTitle>
-        {dialogType === 'add'
-          ? '添加抄表'
-          : dialogType === 'edit'
-            ? '修改抄表'
-            : dialogType === 'code'
-              ? '抄表二维码'
-              : '抄表导入'}
-      </DialogTitle>
+      <DialogTitle>费用取消申请</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
-          {dialogType === 'code' && (
-            <>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <FormLabel>费用类型：</FormLabel>
-                <TextField
-                  sx={{ width: '80%' }}
-                  select
-                  size="small"
-                  value={formData.feeId}
-                  onChange={e => setFormData({ ...formData, feeId: e.target.value })}
-                  variant="outlined"
-                >
-                  {feeConfigTypeList.map(option => (
-                    <MenuItem key={option.id} value={option.id}>
-                      {option.name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <FormLabel>收费项目：</FormLabel>
-                <TextField
-                  sx={{ width: '80%' }}
-                  select
-                  size="small"
-                  value={formData.objName}
-                  onChange={e => setFormData({ ...formData, objName: e.target.value })}
-                  variant="outlined"
-                >
-                  {feeConfigList.map(option => (
-                    <MenuItem key={option.id} value={option.id}>
-                      {option.name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Box>
-            </>
-          )}
-          {(dialogType === 'add' || dialogType === 'code') && (
-            <>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <FormLabel>抄表类型：</FormLabel>
-                <TextField
-                  sx={{ width: '80%' }}
-                  select
-                  size="small"
-                  value={formData.meterType}
-                  onChange={e => setFormData({ ...formData, meterType: e.target.value })}
-                  variant="outlined"
-                >
-                  {list.map(option => (
-                    <MenuItem key={option.id} value={option.id}>
-                      {option.name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <FormLabel>收费对象：</FormLabel>
-                <TextField
-                  disabled
-                  required
-                  placeholder="请输入收费对象"
-                  sx={{ width: '80%' }}
-                  type="text"
-                  size="small"
-                  value={`${dialogValue?.roomData?.roomNum} - ${dialogValue?.roomData?.unit?.unitNum} - ${dialogValue?.roomData?.unit?.floor?.floorNum}`}
-                  variant="outlined"
-                />
-              </Box>
-            </>
-          )}
-          {(dialogType === 'add' || dialogType === 'edit') && (
-            <>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <FormLabel>上期度数：</FormLabel>
-                <TextField
-                  required
-                  placeholder="请输入上期度数"
-                  sx={{ width: '80%' }}
-                  type="text"
-                  size="small"
-                  value={formData.preDegrees}
-                  onChange={e => setFormData({ ...formData, preDegrees: Number(e.target.value) })}
-                  variant="outlined"
-                />
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <FormLabel>上期度数：</FormLabel>
-                <TextField
-                  required
-                  placeholder="请输入上期度数"
-                  sx={{ width: '80%' }}
-                  type="text"
-                  size="small"
-                  value={formData.curDegrees}
-                  onChange={e => setFormData({ ...formData, curDegrees: Number(e.target.value) })}
-                  variant="outlined"
-                />
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <FormLabel>上期读表时间：</FormLabel>
-                <TextField
-                  sx={{ width: '80%' }}
-                  size="small"
-                  type="datetime-local"
-                  value={formatDateTime(formData.preReadingTime)}
-                  onChange={e =>
-                    setFormData({ ...formData, preReadingTime: formatDateTime(e.target.value) })
-                  }
-                  variant="outlined"
-                />
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <FormLabel>本期读表时间：</FormLabel>
-                <TextField
-                  sx={{ width: '80%' }}
-                  size="small"
-                  type="datetime-local"
-                  value={formatDateTime(formData.curReadingTime)}
-                  onChange={e =>
-                    setFormData({ ...formData, curReadingTime: formatDateTime(e.target.value) })
-                  }
-                  variant="outlined"
-                />
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <FormLabel>备注：</FormLabel>
-                <TextField
-                  required
-                  placeholder="请输入描述"
-                  sx={{ width: '80%' }}
-                  type="text"
-                  multiline
-                  rows={2}
-                  size="small"
-                  value={formData.remark}
-                  onChange={e => setFormData({ ...formData, remark: e.target.value })}
-                  variant="outlined"
-                />
-              </Box>
-            </>
-          )}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>费用类型：</FormLabel>
+            <TextField
+              sx={{ width: '80%' }}
+              select
+              size="small"
+              value={formData.feeTypeCd}
+              onChange={e => handleFormDataChange('feeTypeCd', e.target.value)}
+              variant="outlined"
+            >
+              {feeConfigTypeList.map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>收费项目：</FormLabel>
+            <TextField
+              sx={{ width: '80%' }}
+              select
+              size="small"
+              value={formData.configId}
+              onChange={e => handleFormDataChange('configId', e.target.value)}
+              variant="outlined"
+            >
+              {feeConfigList.map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>抄表类型：</FormLabel>
+            <TextField
+              sx={{ width: '80%' }}
+              select
+              size="small"
+              value={formData.meterWater?.meterType}
+              onChange={e => handleFormDataChange('meterWater.meterType', e.target.value)}
+              variant="outlined"
+            >
+              {list.map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
+          {formFields.map(({ label, id, disabled }) => (
+            <Box
+              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+              key={id}
+            >
+              <FormLabel>{label}：</FormLabel>
+              <TextField
+                disabled={disabled}
+                type="text"
+                sx={{ width: '80%' }}
+                size="small"
+                id={id}
+                value={formData[id as keyof PayFeeParams]}
+                onChange={e => handleFormDataChange(id, e.target.value)}
+                required
+              />
+            </Box>
+          ))}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>上期读表时间：</FormLabel>
+            <TextField
+              sx={{ width: '80%' }}
+              size="small"
+              type="datetime-local"
+              value={formatDateTime(formData.meterWater?.preReadingTime)}
+              onChange={e =>
+                handleFormDataChange('meterWater.preReadingTime', formatDateTime(e.target.value))
+              }
+              variant="outlined"
+            />
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>本期读表时间：</FormLabel>
+            <TextField
+              sx={{ width: '80%' }}
+              size="small"
+              type="datetime-local"
+              value={formatDateTime(formData.meterWater?.curReadingTime)}
+              onChange={e =>
+                handleFormDataChange('meterWater.curReadingTime', formatDateTime(e.target.value))
+              }
+              variant="outlined"
+            />
+          </Box>
         </Stack>
       </DialogContent>
       <DialogActions>
@@ -320,4 +286,4 @@ const FormDialog: React.FC<FormDialogProps> = ({
   )
 }
 
-export default memo(FormDialog)
+export default memo(FormMeterReading)
