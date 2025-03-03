@@ -21,7 +21,8 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  MenuItem
+  MenuItem,
+  Link
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
@@ -29,6 +30,7 @@ import { RoomReply } from 'api/model/property/houses/roomModel'
 import { find as findFeeConfig } from 'modules/property/feeConfig/feeConfig'
 import { find as findFeeConfigType } from 'modules/property/feeConfig/feeConfigType'
 import { find as findMeterType } from 'modules/property/feeConfig/meterType'
+import { MeterWaterReply } from 'api/model/property/feeConfig/meterWaterModel'
 
 const formatDateTime = (date: Date | string | undefined): string => {
   const validDate = date ? new Date(date) : new Date()
@@ -43,20 +45,25 @@ const formatDateTime = (date: Date | string | undefined): string => {
 
 interface FormMeterReadingProps {
   dialogValue: { id?: string; label?: string; roomData?: RoomReply }
+  dialogMeterWaterValue: MeterWaterReply
   openDialog: boolean
+  dialogType: string
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
 const FormMeterReading: React.FC<FormMeterReadingProps> = ({
   dialogValue,
   openDialog,
+  dialogType,
   setOpenDialog
 }) => {
+  const info = useSelector((state: RootState) => state.info.userInfo)
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.MeterTypeSlice)
   const { list: feeConfigList } = useSelector((state: RootState) => state.FeeConfigSlice)
   const { list: feeConfigTypeList } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
   const [loading, setLoading] = useState(false)
+  const [file, setFile] = useState<File | null>(null)
   const initialFormData = useMemo(
     () => ({
       feeId: '',
@@ -110,6 +117,12 @@ const FormMeterReading: React.FC<FormMeterReadingProps> = ({
     page.size
   ])
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setFile(event.target.files[0])
+    }
+  }
+
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
@@ -136,7 +149,6 @@ const FormMeterReading: React.FC<FormMeterReadingProps> = ({
   )
 
   const formFields = [
-    { label: '收费对象', id: 'payerObjId', disabled: true },
     { label: '上期度数', id: 'meterWater.preDegrees' },
     { label: '本期度数', id: 'meterWater.curDegrees' },
     { label: '备注', id: 'remark' }
@@ -159,15 +171,53 @@ const FormMeterReading: React.FC<FormMeterReadingProps> = ({
     })
   }
 
+  const handleWaterSubmit = async (event: React.FormEvent) => {
+    event.preventDefault()
+    if (!file) {
+      message.warning('请选择文件进行上传')
+      return
+    }
+    const current_community = localStorage.getItem('current_community')
+    const community = JSON.parse(current_community || '')
+    const formValue = new FormData()
+    formValue.append('file', file)
+    formValue.append('communityId', community?.id)
+    formValue.append('userId', info.id)
+    setLoading(true)
+    try {
+      // await ImportRoom(formValue)
+      message.success('文件上传成功')
+      setFile(null)
+    } catch (err: unknown) {
+      setLoading(false)
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <Dialog
       fullWidth
       maxWidth="sm"
       open={openDialog}
       onClose={() => setOpenDialog(false)}
-      slotProps={{ paper: { component: 'form', onSubmit: handleSubmit } }}
+      slotProps={{
+        paper: {
+          component: 'form',
+          onSubmit: dialogType === 'add' ? handleSubmit : handleWaterSubmit
+        }
+      }}
     >
-      <DialogTitle>费用取消申请</DialogTitle>
+      <DialogTitle>
+        {dialogType === 'add'
+          ? '抄表'
+          : dialogType === 'code'
+            ? '二维码抄表'
+            : dialogType === 'one'
+              ? '抄表导入1'
+              : '抄表导入2'}
+      </DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -221,66 +271,136 @@ const FormMeterReading: React.FC<FormMeterReadingProps> = ({
               ))}
             </TextField>
           </Box>
-          {formFields.map(({ label, id, disabled }) => (
-            <Box
-              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
-              key={id}
-            >
-              <FormLabel>{label}：</FormLabel>
+          {(dialogType === 'add' || dialogType === 'code') && (
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <FormLabel>收费对象：</FormLabel>
               <TextField
-                disabled={disabled}
-                type="text"
+                disabled
                 sx={{ width: '80%' }}
+                type="text"
                 size="small"
-                id={id}
-                value={formData[id as keyof PayFeeParams]}
-                onChange={e => handleFormDataChange(id, e.target.value)}
+                value={formData.payerObjId}
+                onChange={e => setFormData({ ...formData, payerObjId: e.target.value })}
                 required
               />
             </Box>
-          ))}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>上期读表时间：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              size="small"
-              type="datetime-local"
-              value={formatDateTime(formData.meterWater?.preReadingTime)}
-              onChange={e =>
-                handleFormDataChange('meterWater.preReadingTime', formatDateTime(e.target.value))
-              }
-              variant="outlined"
-            />
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>本期读表时间：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              size="small"
-              type="datetime-local"
-              value={formatDateTime(formData.meterWater?.curReadingTime)}
-              onChange={e =>
-                handleFormDataChange('meterWater.curReadingTime', formatDateTime(e.target.value))
-              }
-              variant="outlined"
-            />
-          </Box>
+          )}
+          {(dialogType === 'one' || dialogType === 'two') && (
+            <>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <FormLabel>选择文件</FormLabel>
+                <TextField
+                  type="file"
+                  sx={{ width: '80%' }}
+                  size="small"
+                  required
+                  onChange={handleFileChange}
+                  slotProps={{
+                    htmlInput: {
+                      accept: '.xlsx,.xls' // 限制只能选择Excel文件
+                    }
+                  }}
+                />
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box>下载模板</Box>
+                <Box sx={{ ml: 6.5 }}>
+                  请先下载
+                  <Link
+                    href="https://community-admin.zenwell.cn/files/pvdata/2025-01-07/c622b98ccb8fc29a15a91d3177d6c6b3/importRoom.xlsx"
+                    download
+                    sx={{ color: 'blue' }}
+                  >
+                    导入模板
+                  </Link>
+                  准备数据后，上传导入
+                </Box>
+              </Box>
+            </>
+          )}
+          {dialogType === 'add' && (
+            <>
+              {formFields.map(({ label, id }) => (
+                <Box
+                  sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                  key={id}
+                >
+                  <FormLabel>{label}：</FormLabel>
+                  <TextField
+                    type="text"
+                    sx={{ width: '80%' }}
+                    size="small"
+                    id={id}
+                    value={formData[id as keyof PayFeeParams]}
+                    onChange={e => handleFormDataChange(id, e.target.value)}
+                    required
+                  />
+                </Box>
+              ))}
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <FormLabel>上期读表时间：</FormLabel>
+                <TextField
+                  sx={{ width: '80%' }}
+                  size="small"
+                  type="datetime-local"
+                  value={formatDateTime(formData.meterWater?.preReadingTime)}
+                  onChange={e =>
+                    handleFormDataChange(
+                      'meterWater.preReadingTime',
+                      formatDateTime(e.target.value)
+                    )
+                  }
+                  variant="outlined"
+                />
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <FormLabel>本期读表时间：</FormLabel>
+                <TextField
+                  sx={{ width: '80%' }}
+                  size="small"
+                  type="datetime-local"
+                  value={formatDateTime(formData.meterWater?.curReadingTime)}
+                  onChange={e =>
+                    handleFormDataChange(
+                      'meterWater.curReadingTime',
+                      formatDateTime(e.target.value)
+                    )
+                  }
+                  variant="outlined"
+                />
+              </Box>
+            </>
+          )}
         </Stack>
       </DialogContent>
       <DialogActions>
         <Button variant="contained" color="error" onClick={() => setOpenDialog(false)}>
           取消
         </Button>
-        <Button
-          variant="contained"
-          type="submit"
-          color="error"
-          sx={buttonStyles('#2660ad', '#1d428a')}
-          disabled={loading}
-          startIcon={loading && <CircularProgress size={24} color="inherit" />}
-        >
-          {loading ? '保存中...' : '保存'}
-        </Button>
+        {dialogType === 'add' && (
+          <Button
+            variant="contained"
+            type="submit"
+            color="error"
+            sx={buttonStyles('#2660ad', '#1d428a')}
+            disabled={loading}
+            startIcon={loading && <CircularProgress size={24} color="inherit" />}
+          >
+            {loading ? '保存中...' : '保存'}
+          </Button>
+        )}
+        {(dialogType === 'one' || dialogType === 'two') && (
+          <Button
+            variant="contained"
+            type="submit"
+            color="error"
+            sx={buttonStyles('#2660ad', '#1d428a')}
+            disabled={loading}
+            startIcon={loading && <CircularProgress size={24} color="inherit" />}
+          >
+            {loading ? '导入中...' : '导入'}
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   )

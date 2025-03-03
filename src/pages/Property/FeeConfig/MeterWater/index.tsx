@@ -219,7 +219,7 @@ const HousingManagementIndex = () => {
                   startIcon={<Add />}
                   onClick={() => {
                     setOpenDialog(true)
-                    setDialogType('add')
+                    setDialogType('one')
                   }}
                 >
                   抄表导入1
@@ -231,7 +231,7 @@ const HousingManagementIndex = () => {
                   startIcon={<Add />}
                   onClick={() => {
                     setOpenDialog(true)
-                    setDialogType('add')
+                    setDialogType('two')
                   }}
                 >
                   抄表导入2
