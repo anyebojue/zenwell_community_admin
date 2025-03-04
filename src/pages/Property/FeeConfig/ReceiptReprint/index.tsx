@@ -83,7 +83,17 @@ const PropertyFeeReceipt = () => {
               `${value?.feeReceiptDetail?.startTime} - ${value?.feeReceiptDetail?.endTime}`,
               value?.feeReceiptDetail?.payFee?.amount,
               value?.feeReceiptDetail?.payFee?.consumption,
-              value?.feeReceiptDetail?.payFee?.payFeeDetail?.primeRate,
+              value?.feeReceiptDetail?.payFee?.payFeeDetail?.primeRate === 1
+                ? '现金'
+                : value?.feeReceiptDetail?.payFee?.payFeeDetail?.primeRate === 2
+                  ? 'POS刷卡'
+                  : value?.feeReceiptDetail?.payFee?.payFeeDetail?.primeRate === 3
+                    ? '微信二维码'
+                    : value?.feeReceiptDetail?.payFee?.payFeeDetail?.primeRate === 4
+                      ? '支付宝二维码'
+                      : value?.feeReceiptDetail?.payFee?.payFeeDetail?.primeRate === 7
+                        ? '转账'
+                        : '其他',
               value?.feeReceiptDetail?.payFee?.payFeeDetail?.receivedAmount,
               value?.feeReceiptDetail?.payFee?.payFeeDetail?.discountAmount,
               value?.feeReceiptDetail?.payFee?.payFeeDetail?.remark

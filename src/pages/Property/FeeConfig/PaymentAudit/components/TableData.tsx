@@ -87,16 +87,75 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
       columns={[
         { field: '', headerName: '房屋', flex: 1 },
         { field: '', headerName: '费用项目', flex: 1 },
-        { field: '', headerName: '付费周期', flex: 1 },
-        { field: '', headerName: '缴费起始时间', flex: 1 },
-        { field: '', headerName: '缴费结束时间', flex: 1 },
-        { field: '', headerName: '应付金额（单位：元）', flex: 1 },
-        { field: '', headerName: '实付金额（单位：元）', flex: 1 },
-        { field: '', headerName: '操作员工', flex: 1 },
-        { field: '', headerName: '缴费时间', flex: 1 },
-        { field: '', headerName: '审核状态', flex: 1 },
-        { field: '', headerName: '审核说明', flex: 1 },
-        { field: '', headerName: '缴费备注', flex: 1 },
+        {
+          field: 'payFeeDetail.cycles',
+          headerName: '付费周期',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.payFeeDetail?.cycles
+        },
+        {
+          field: 'payFeeDetail.startTime',
+          headerName: '缴费起始时间',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.payFeeDetail?.startTime
+        },
+        {
+          field: 'payFeeDetail.endTime',
+          headerName: '缴费结束时间',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.payFeeDetail?.endTime
+        },
+        {
+          field: 'payFeeDetail.payableAmount',
+          headerName: '应付金额（单位：元）',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.payFeeDetail?.payableAmount
+        },
+        {
+          field: 'payFeeDetail.receivedAmount',
+          headerName: '实付金额（单位：元）',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.payFeeDetail?.receivedAmount
+        },
+        {
+          field: 'auditUserName',
+          headerName: '操作员工',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'createdAt',
+          headerName: '缴费时间',
+          width: 180,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'message',
+          headerName: '审核说明',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'payFeeDetail.remark',
+          headerName: '缴费备注',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.payFeeDetail?.remark
+        },
         {
           field: 'actions',
           headerName: '详情',

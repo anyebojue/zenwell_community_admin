@@ -40,16 +40,76 @@ const TableData: React.FC<TableDataProps> = () => {
       disableVirtualization={false}
       rows={list}
       columns={[
-        { field: 'cycles', headerName: '周期(单位:月)', flex: 1 },
-        { field: 'primeRate', headerName: '缴费方式', flex: 1 },
-        { field: 'payableAmount', headerName: '应收金额(单位:元)', flex: 1 },
-        { field: 'receivedAmount', headerName: '实收金额(单位:元)', flex: 1 },
-        { field: 'createdAt', headerName: '缴费时间', flex: 1 },
-        { field: 'startTime', headerName: '缴费起始时间', flex: 1 },
-        { field: 'endTime', headerName: '缴费结束时间', flex: 1 },
-        { field: 'cashierName', headerName: '收银员', flex: 1 },
-        { field: 'statusCd', headerName: '状态', flex: 1 },
-        { field: 'remark', headerName: '备注', flex: 1 }
+        {
+          field: 'cycles',
+          headerName: '周期(单位:月)',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'primeRate',
+          headerName: '缴费方式',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) =>
+            row.primeRate === 1
+              ? '现金'
+              : row.primeRate === 2
+                ? 'POS刷卡'
+                : row.primeRate === 3
+                  ? '微信二维码'
+                  : row.primeRate === 4
+                    ? '支付宝二维码'
+                    : row.primeRate === 7
+                      ? '转账'
+                      : '其他'
+        },
+        {
+          field: 'payableAmount',
+          headerName: '应收金额(单位:元)',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'receivedAmount',
+          headerName: '实收金额(单位:元)',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'createdAt',
+          headerName: '缴费时间',
+          width: 180,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'startTime',
+          headerName: '缴费起始时间',
+          width: 180,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'endTime',
+          headerName: '缴费结束时间',
+          width: 180,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'cashierName',
+          headerName: '收银员',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        { field: 'statusCd', headerName: '状态', flex: 1, headerAlign: 'center', align: 'center' },
+        { field: 'remark', headerName: '备注', flex: 1, headerAlign: 'center', align: 'center' }
       ]}
       pageSizeOptions={[10, 20, 50, 100]}
       paginationMode="server"
