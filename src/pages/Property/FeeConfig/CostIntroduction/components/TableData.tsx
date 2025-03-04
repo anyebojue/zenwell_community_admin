@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ImportFeeReply } from 'api/model/property/feeConfig/importFeeModel'
 import { find } from 'modules/property/feeConfig/importFee'
 import { find as findFeeConfigType } from 'modules/property/feeConfig/feeConfigType'
+import { find as findHousingManagement } from 'modules/property/houses/housingManagement'
+import { find as findUnit } from 'modules/property/houses/unit'
+import { find as findFeeFormula } from 'modules/property/feeConfig/feeFormula'
 import { Chip } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
@@ -45,6 +48,21 @@ const TableData: React.FC<TableDataProps> = () => {
 
   useEffect(() => {
     fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+    fetchData(
+      findFeeFormula,
+      { 'page.num': page.num, 'page.size': page.size },
+      '正在加载列表中，请稍后...'
+    )
+    fetchData(
+      findHousingManagement,
+      { 'page.num': page.num, 'page.size': page.size },
+      '正在加载列表中，请稍后...'
+    )
+    fetchData(
+      findUnit,
+      { 'page.num': page.num, 'page.size': page.size },
+      '正在加载列表中，请稍后...'
+    )
     fetchData(
       findFeeConfigType,
       { 'page.num': page.num, 'page.size': page.size },

@@ -5,7 +5,25 @@ const ApiPrefix = {
   FindImportFee: '/fee/import_fee',
   CreateImportFee: '/fee/import_fee',
   UpdateImportFee: '/fee/import_fee',
-  DeleteImportFee: '/fee/import_fee'
+  DeleteImportFee: '/fee/import_fee',
+  ImportFee: '/import/import_fee'
+}
+
+/**
+ * 费用导入
+ * @param data
+ * @returns
+ */
+export const ImportFee = (data: FormData) => {
+  return request
+    .post({
+      url: ApiPrefix.ImportFee,
+      data,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    .then(res => res.data)
 }
 
 /**

@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useState } from 'react'
 import { Box, Button, Stack, Theme, Typography } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
@@ -6,6 +6,8 @@ import { buttonStyles } from 'components/DeleteModal'
 import { Add } from '@mui/icons-material'
 import TableData from './components/TableData'
 import FormSearch from './components/FormSearch'
+import ExpenseSharing from './components/ExpenseSharing'
+import ImportCharge from './components/ImportCharge'
 
 const contentBoxStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -15,6 +17,8 @@ const contentBoxStyle = (theme: Theme) => ({
 })
 
 const ImportFeeIndex = () => {
+  const [expense, setExpense] = useState(false)
+  const [importFee, setImportFee] = useState(false)
   return (
     <Box sx={{ mt: 3.5, width: '100%' }}>
       <NavbarBreadcrumbs />
@@ -29,7 +33,7 @@ const ImportFeeIndex = () => {
               color="error"
               startIcon={<Add />}
               sx={buttonStyles('#2660ad', '#1d428a')}
-              onClick={() => {}}
+              onClick={() => setExpense(true)}
             >
               费用公摊
             </Button>
@@ -39,7 +43,7 @@ const ImportFeeIndex = () => {
               color="error"
               startIcon={<Add />}
               sx={buttonStyles('#2660ad', '#1d428a')}
-              onClick={() => {}}
+              onClick={() => setImportFee(true)}
             >
               费用导入
             </Button>
@@ -48,6 +52,8 @@ const ImportFeeIndex = () => {
         <TableData />
       </Box>
       <Copyright />
+      <ExpenseSharing openDialog={expense} setOpenDialog={setExpense} />
+      <ImportCharge openDialog={importFee} setOpenDialog={setImportFee} />
     </Box>
   )
 }
