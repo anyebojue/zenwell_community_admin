@@ -2,7 +2,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
 import {
   ReturnPayFeeParams,
-  ReturnPayFeeReply
+  ReturnPayFeeReply,
+  FindReturnPayFeeReply
 } from 'api/model/property/feeConfig/returnPayFeeModel'
 import {
   FindReturnPayFee,
@@ -10,6 +11,7 @@ import {
   UpdateReturnPayFee,
   DeleteReturnPayFee
 } from 'api/property/feeConfig/returnPayFee'
+import { PayloadAction } from '@reduxjs/toolkit'
 
 const namespace = 'ReturnPayFee'
 
@@ -21,6 +23,7 @@ const PAGE = {
 interface IInitialState {
   page: Page
   list: ReturnPayFeeReply[]
+  exportUrl: string
 }
 
 const initialState: IInitialState = {
@@ -30,12 +33,13 @@ const initialState: IInitialState = {
     total: '0',
     disable: false
   },
-  list: []
+  list: [],
+  exportUrl: ''
 }
 
 export const find = createAsyncThunk(
   `${namespace}/find`,
-  async (params: ReturnPayFeeParams & PaginationParams) => {
+  async (params: ReturnPayFeeParams & PaginationParams & { is_export?: boolean }) => {
     const res = await FindReturnPayFee(params)
     return res
   }
@@ -69,9 +73,10 @@ export const ReturnPayFeeSlice = createSlice({
       state.list = []
     })
     // 请求成功的数据
-    builder.addCase(find.fulfilled, (state, action) => {
+    builder.addCase(find.fulfilled, (state, action: PayloadAction<FindReturnPayFeeReply>) => {
       state.page = action.payload.page
       state.list = action.payload.list
+      state.exportUrl = action.payload.exportUrl
     })
     // 请求失败后的数据
     builder.addCase(find.rejected, state => {

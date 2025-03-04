@@ -42,7 +42,11 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
   )
 
   useEffect(() => {
-    fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+    fetchData(
+      find,
+      { 'page.num': page.num, 'page.size': page.size, is_export: true },
+      '正在加载列表中，请稍后...'
+    )
   }, [fetchData, page.num, page.size])
 
   const handleActionClick = useCallback(

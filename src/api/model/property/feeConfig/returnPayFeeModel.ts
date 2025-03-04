@@ -59,6 +59,7 @@ export interface ReturnPayFeeParams {
 }
 
 export interface FindReturnPayFeeReply {
+  list: ReturnPayFeeReply[]
   page: Page
-  list: Array<ReturnPayFeeReply>
+  exportUrl: string
 }

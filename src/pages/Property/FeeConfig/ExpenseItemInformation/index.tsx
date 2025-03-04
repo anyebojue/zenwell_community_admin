@@ -1,9 +1,10 @@
 import { memo, useState } from 'react'
 import Grid from '@mui/material/Grid2'
-import { Box, Divider, Tab, Tabs, Theme, Typography, useTheme } from '@mui/material'
+import { Box, Button, Divider, Stack, Tab, Tabs, Theme, Typography, useTheme } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { Close } from '@mui/icons-material'
 import ModificationRecord from './components/ModificationRecord'
 
 const contentBoxStyle = (theme: Theme) => ({
@@ -15,6 +16,7 @@ const contentBoxStyle = (theme: Theme) => ({
 
 const RolesIndex = () => {
   const location = useLocation()
+  const navigate = useNavigate()
   const row = location.state.value
   const theme = useTheme()
   const [activeTabIndex, setActiveTabIndex] = useState(0)
@@ -29,7 +31,18 @@ const RolesIndex = () => {
       <NavbarBreadcrumbs />
       <Box sx={{ width: '100%' }}>
         <Box sx={contentBoxStyle}>
-          <Typography variant="h6">费用项信息</Typography>
+          <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Typography variant="h6">费用项信息</Typography>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              startIcon={<Close />}
+              onClick={() => navigate(-1)}
+            >
+              返回
+            </Button>
+          </Stack>
           <Divider sx={{ p: 0.5, mb: 2 }} />
           <Box sx={{ pb: 0.2 }}>
             <Grid container spacing={2}>

@@ -5,6 +5,7 @@ import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import { buttonStyles } from 'components/DeleteModal'
 import { Add } from '@mui/icons-material'
+import { useSelector } from 'react-redux'
 import TableData from './components/TableData'
 import FormSearch from './components/FormSearch'
 import FormDialog from './components/FormDialog'
@@ -17,8 +18,10 @@ const contentBoxStyle = (theme: Theme) => ({
 })
 
 const ReturnPayFeeIndex = () => {
+  const { exportUrl } = useSelector((state: RootState) => state.ReturnPayFeeSlice)
   const [dialogValue, setDialogValue] = useState<ReturnPayFeeReply | undefined>()
   const [openDialog, setOpenDialog] = useState(false)
+  console.log(exportUrl)
 
   return (
     <Box sx={{ mt: 3.5, width: '100%' }}>
@@ -33,7 +36,13 @@ const ReturnPayFeeIndex = () => {
             color="error"
             startIcon={<Add />}
             sx={buttonStyles('#2660ad', '#1d428a')}
-            onClick={() => {}}
+            onClick={() => {
+              if (exportUrl) {
+                window.open(exportUrl, '_blank')
+              } else {
+                alert('暂无导出链接')
+              }
+            }}
           >
             导出
           </Button>

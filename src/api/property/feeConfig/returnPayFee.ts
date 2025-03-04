@@ -16,7 +16,9 @@ const ApiPrefix = {
  * @param params
  * @returns
  */
-export const FindReturnPayFee = (params: ReturnPayFeeParams & PaginationParams) => {
+export const FindReturnPayFee = (
+  params: ReturnPayFeeParams & PaginationParams & { is_export?: boolean }
+) => {
   return request
     .get<FindReturnPayFeeReply>({
       url: ApiPrefix.FindReturnPayFee,
