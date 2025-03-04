@@ -6,7 +6,7 @@ const ApiPrefix = {
   CreateImportFee: '/fee/import_fee',
   UpdateImportFee: '/fee/import_fee',
   DeleteImportFee: '/fee/import_fee',
-  ImportFee: '/import/import_fee'
+  ImportFee: '/fee/import/import_fee'
 }
 
 /**
