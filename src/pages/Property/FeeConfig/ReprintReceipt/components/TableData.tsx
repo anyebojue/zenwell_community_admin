@@ -43,7 +43,7 @@ const TableData: React.FC<TableDataProps> = () => {
           navigate('/FeeConfig/ReceiptReprint', { state: { value: row } })
           break
         case 'ticket':
-          console.log(row)
+          navigate('/FeeConfig/MakeUpTheReceipt', { state: { value: row } })
           break
       }
     },

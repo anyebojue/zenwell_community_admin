@@ -2,10 +2,12 @@ import { Print } from '@mui/icons-material'
 import { Button } from '@mui/material'
 import { FeeReceiptReply } from 'api/model/property/feeConfig/feeReceiptModel'
 import { buttonStyles } from 'components/DeleteModal'
+import { useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import convertToChineseCurrency from 'utils/convertToChineseCurrency'
 
 const PropertyFeeReceipt = () => {
+  const info = useSelector((state: RootState) => state.info.userInfo)
   const navigate = useNavigate()
   const location = useLocation()
   const { value } = location.state as { value: FeeReceiptReply }
@@ -125,11 +127,13 @@ const PropertyFeeReceipt = () => {
           margin: '16px 0'
         }}
       >
-        {['部门负责人：', '经办人：wuxw', '财务收款：', '客户确认：'].map((label, index) => (
-          <span key={index} style={{ width: '25%', fontSize: '14px' }}>
-            {label}
-          </span>
-        ))}
+        {['部门负责人：', `经办人：${info.username}`, '财务收款：', '客户确认：'].map(
+          (label, index) => (
+            <span key={index} style={{ width: '25%', fontSize: '14px' }}>
+              {label}
+            </span>
+          )
+        )}
       </div>
       <div
         className="print-buttons"
