@@ -5,6 +5,7 @@ import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import { buttonStyles } from 'components/DeleteModal'
 import { Add } from '@mui/icons-material'
+import message from 'components/Message'
 import TableData from './components/TableData'
 import FormSearch from './components/FormSearch'
 import FormDialog from './components/FormDialog'
@@ -19,6 +20,7 @@ const contentBoxStyle = (theme: Theme) => ({
 const PayFeeAuditIndex = () => {
   const [dialogValue, setDialogValue] = useState<PayFeeAuditReply | undefined>()
   const [openDialog, setOpenDialog] = useState(false)
+  const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
 
   return (
     <Box sx={{ mt: 3.5, width: '100%' }}>
@@ -33,15 +35,30 @@ const PayFeeAuditIndex = () => {
             color="error"
             startIcon={<Add />}
             sx={buttonStyles('#2660ad', '#1d428a')}
-            onClick={() => {}}
+            onClick={() => {
+              if (!selectedRows) {
+                message.error('请选择要审核的记录')
+                return
+              }
+              setOpenDialog(true)
+            }}
           >
             批量审核
           </Button>
         </Box>
-        <TableData setDialogValue={setDialogValue} setOpenDialog={setOpenDialog} />
+        <TableData
+          setSelectedRows={setSelectedRows}
+          setDialogValue={setDialogValue}
+          setOpenDialog={setOpenDialog}
+        />
       </Box>
       <Copyright />
-      <FormDialog dialogValue={dialogValue} openDialog={openDialog} setOpenDialog={setOpenDialog} />
+      <FormDialog
+        dialogValue={dialogValue}
+        openDialog={openDialog}
+        setOpenDialog={setOpenDialog}
+        selectedRows={selectedRows}
+      />
     </Box>
   )
 }

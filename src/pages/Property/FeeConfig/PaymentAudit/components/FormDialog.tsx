@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useCallback, useState, memo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { PayFeeAuditParams, PayFeeAuditReply } from 'api/model/property/feeConfig/payFeeAuditModel'
-import { find, update } from 'modules/property/feeConfig/payFeeAudit'
+import { find, update, updateBatch } from 'modules/property/feeConfig/payFeeAudit'
 import {
   Box,
   CircularProgress,
@@ -19,12 +19,18 @@ import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
+  selectedRows: Set<string>
   dialogValue?: PayFeeAuditReply
   openDialog: boolean
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
-const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpenDialog }) => {
+const FormDialog: React.FC<FormDialogProps> = ({
+  selectedRows,
+  dialogValue,
+  openDialog,
+  setOpenDialog
+}) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.PayFeeAuditSlice)
   const [loading, setLoading] = useState(false)
@@ -39,11 +45,20 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
       event.preventDefault()
       setLoading(true)
       try {
+        const ids = Array.from(selectedRows).join(',')
         const current_community = localStorage.getItem('current_community')
         const community = JSON.parse(current_community || '')
         const params = { ...formData, communityId: community?.id }
-        const action = update({ id: dialogValue?.id, ...params })
-        const res = await dispatch(action)
+        const action = update({
+          id: dialogValue?.id,
+          ...params
+        })
+        const actionBatch = updateBatch({
+          ids,
+          statusCd: formData.stateCd || '',
+          message: formData.message || ''
+        })
+        const res = await dispatch(selectedRows.size ? actionBatch : action)
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
@@ -57,7 +72,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
         setLoading(false)
       }
     },
-    [dispatch, dialogValue, formData, page, setOpenDialog]
+    [formData, dialogValue?.id, selectedRows, dispatch, page.num, page.size, setOpenDialog]
   )
 
   return (

@@ -8,7 +8,30 @@ const ApiPrefix = {
   FindPayFeeAudit: '/fee/pay_fee_audit',
   CreatePayFeeAudit: '/fee/pay_fee_audit',
   UpdatePayFeeAudit: '/fee/pay_fee_audit',
-  DeletePayFeeAudit: '/fee/pay_fee_audit'
+  DeletePayFeeAudit: '/fee/pay_fee_audit',
+  UpdatePayFeeAuditBatch: '/fee/pay_fee_audit_batch'
+}
+
+/**
+ * 修改接口
+ * @param data
+ * @returns
+ */
+export const UpdatePayFeeAuditBatch = (data: {
+  ids: string
+  statusCd: string
+  message: string
+}) => {
+  return request
+    .patch({
+      url: `${ApiPrefix.UpdatePayFeeAuditBatch}`,
+      data: {
+        ids: data.ids,
+        statusCd: data.statusCd,
+        message: data.message
+      }
+    })
+    .then(res => res.data)
 }
 
 /**

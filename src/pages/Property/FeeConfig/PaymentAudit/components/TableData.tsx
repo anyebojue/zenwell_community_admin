@@ -3,17 +3,22 @@ import { useDispatch, useSelector } from 'react-redux'
 import { PayFeeAuditReply } from 'api/model/property/feeConfig/payFeeAuditModel'
 import { find } from 'modules/property/feeConfig/payFeeAudit'
 import { Chip } from '@mui/material'
-import { DataGrid } from '@mui/x-data-grid'
+import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
 import { useNavigate } from 'react-router-dom'
 
 interface TableDataProps {
+  setSelectedRows: Dispatch<SetStateAction<Set<string>>>
   setDialogValue: Dispatch<SetStateAction<PayFeeAuditReply | undefined>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
-const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) => {
+const TableData: React.FC<TableDataProps> = ({
+  setSelectedRows,
+  setDialogValue,
+  setOpenDialog
+}) => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.PayFeeAuditSlice)
@@ -39,14 +44,22 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
     fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
   }, [fetchData, page.num, page.size])
 
+  const handleRowSelection = useCallback(
+    (rowSelectionModel: GridRowSelectionModel) => {
+      setSelectedRows(new Set(rowSelectionModel.map(id => String(id))))
+    },
+    [setSelectedRows]
+  )
+
   const handleActionClick = useCallback(
     (actionType: string, row: PayFeeAuditReply) => {
       switch (actionType) {
         case 'details':
-          navigate('/FeeConfig/RefundDetails', { state: { value: row } })
           setDialogValue(row)
+          navigate('/FeeConfig/RefundDetails', { state: { value: row } })
           break
         case 'fee':
+          setDialogValue(row)
           setOpenDialog(true)
           break
       }
@@ -55,26 +68,27 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
   )
 
   const renderActionButtons = (row: PayFeeAuditReply) => {
-    const actionButtons = [
+    const actions = [
       { title: '详情', action: 'details' },
-      { title: '审核费用', action: 'fee' }
+      { title: '审核费用', action: 'fee', stateCd: '2020' }
     ]
-    return actionButtons.map(({ title, action }) => (
-      <Chip
-        key={title}
-        sx={{
-          cursor: 'pointer',
-          marginRight: '-5px',
-          '& .MuiChip-label': {
-            fontSize: '13px'
-          }
-        }}
-        label={title}
-        color="primary"
-        variant="outlined"
-        onClick={() => handleActionClick(action, row)}
-      />
-    ))
+    return actions
+      .filter(({ stateCd }) => stateCd === undefined || row.stateCd !== stateCd)
+      .map(({ title, action }) => (
+        <Chip
+          key={title}
+          sx={{
+            cursor: 'pointer',
+            '& .MuiChip-label': {
+              fontSize: '13px'
+            }
+          }}
+          label={title}
+          color="primary"
+          variant="outlined"
+          onClick={() => handleActionClick(action, row)}
+        />
+      ))
   }
 
   return (
@@ -83,10 +97,11 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
+      checkboxSelection
       rows={list}
       columns={[
-        { field: '', headerName: '房屋', flex: 1 },
-        { field: '', headerName: '费用项目', flex: 1 },
+        { field: 'id', headerName: '房屋', flex: 1 },
+        { field: 'feeName', headerName: '费用项目', flex: 1 },
         {
           field: 'payFeeDetail.cycles',
           headerName: '付费周期',
@@ -164,6 +179,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
           getActions: ({ row }) => renderActionButtons(row)
         }
       ]}
+      onRowSelectionModelChange={handleRowSelection}
       pageSizeOptions={[10, 20, 50, 100]}
       paginationMode="server"
       rowCount={Number(page.total)}

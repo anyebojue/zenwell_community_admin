@@ -5,7 +5,8 @@ import {
   FindPayFeeAudit,
   CreatePayFeeAudit,
   UpdatePayFeeAudit,
-  DeletePayFeeAudit
+  DeletePayFeeAudit,
+  UpdatePayFeeAuditBatch
 } from 'api/property/feeConfig/payFeeAudit'
 
 const namespace = 'PayFeeAudit'
@@ -47,6 +48,14 @@ export const update = createAsyncThunk(`${namespace}/update`, async (data: PayFe
   const res = await UpdatePayFeeAudit(data)
   return res
 })
+
+export const updateBatch = createAsyncThunk(
+  `${namespace}/updateBatch`,
+  async (data: { ids: string; statusCd: string; message: string }) => {
+    const res = await UpdatePayFeeAuditBatch(data)
+    return res
+  }
+)
 
 export const deleteByIds = createAsyncThunk(`${namespace}/deleteByIds`, async (ids: string[]) => {
   const res = await DeletePayFeeAudit(ids)
