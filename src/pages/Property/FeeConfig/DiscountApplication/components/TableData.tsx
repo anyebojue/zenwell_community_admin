@@ -76,7 +76,11 @@ const TableData: React.FC<TableDataProps> = ({
   )
 
   useEffect(() => {
-    fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+    fetchData(
+      find,
+      { 'page.num': page.num, 'page.size': page.size, is_export: true },
+      '正在加载列表中，请稍后...'
+    )
     fetchData(findFeeConfig, { 'page.disable': true }, '正在加载列表中，请稍后...')
     fetchData(findApplyRoomDiscountType, { 'page.disable': true }, '正在加载列表中，请稍后...')
     fetchData(findFeeDiscount, { 'page.disable': true }, '正在加载列表中，请稍后...')

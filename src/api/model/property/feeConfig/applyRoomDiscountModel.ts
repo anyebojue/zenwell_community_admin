@@ -61,4 +61,5 @@ export interface ApplyRoomDiscountParams {
 export interface FindApplyRoomDiscountReply {
   page: Page
   list: Array<ApplyRoomDiscountReply>
+  exportUrl: string
 }

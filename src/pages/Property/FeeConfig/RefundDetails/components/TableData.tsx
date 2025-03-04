@@ -1,8 +1,6 @@
 import { memo, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { PayFeeDetailReply } from 'api/model/property/feeConfig/payFeeDetailModel'
 import { find } from 'modules/property/feeConfig/payFeeDetail'
-import { Chip } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
@@ -34,31 +32,6 @@ const TableData: React.FC<TableDataProps> = () => {
     fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
   }, [fetchData, page.num, page.size])
 
-  const handleActionClick = useCallback((actionType: string, row: PayFeeDetailReply) => {
-    switch (actionType) {
-      case 'discount':
-        console.log(row)
-        break
-    }
-  }, [])
-
-  const renderActionButtons = (row: PayFeeDetailReply) =>
-    [{ title: '折扣', action: 'discount' }].map(({ title, action }) => (
-      <Chip
-        key={title}
-        sx={{
-          cursor: 'pointer',
-          '& .MuiChip-label': {
-            fontSize: '13px'
-          }
-        }}
-        label={title}
-        color="primary"
-        variant="outlined"
-        onClick={() => handleActionClick(action, row)}
-      />
-    ))
-
   return (
     <DataGrid
       sx={{ mt: 1 }}
@@ -76,14 +49,7 @@ const TableData: React.FC<TableDataProps> = () => {
         { field: 'endTime', headerName: '缴费结束时间', flex: 1 },
         { field: 'cashierName', headerName: '收银员', flex: 1 },
         { field: 'statusCd', headerName: '状态', flex: 1 },
-        { field: 'remark', headerName: '备注', flex: 1 },
-        {
-          field: 'actions',
-          headerName: '操作',
-          type: 'actions',
-          width: 200,
-          getActions: ({ row }) => renderActionButtons(row)
-        }
+        { field: 'remark', headerName: '备注', flex: 1 }
       ]}
       pageSizeOptions={[10, 20, 50, 100]}
       paginationMode="server"

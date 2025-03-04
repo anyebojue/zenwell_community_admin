@@ -21,7 +21,7 @@ const contentBoxStyle = (theme: Theme) => ({
 
 const ApplyRoomDiscountIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.ApplyRoomDiscountSlice)
+  const { page, list, exportUrl } = useSelector((state: RootState) => state.ApplyRoomDiscountSlice)
 
   const [dialogValue, setDialogValue] = useState<ApplyRoomDiscountReply | undefined>()
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
@@ -88,8 +88,11 @@ const ApplyRoomDiscountIndex = () => {
               startIcon={<Download />}
               sx={buttonStyles('#2660ad', '#1d428a')}
               onClick={() => {
-                setOpenDialog(true)
-                setDialogType('add')
+                if (exportUrl) {
+                  window.open(exportUrl, '_blank')
+                } else {
+                  alert('暂无导出链接')
+                }
               }}
             >
               导出

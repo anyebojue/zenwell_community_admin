@@ -21,7 +21,6 @@ const ReturnPayFeeIndex = () => {
   const { exportUrl } = useSelector((state: RootState) => state.ReturnPayFeeSlice)
   const [dialogValue, setDialogValue] = useState<ReturnPayFeeReply | undefined>()
   const [openDialog, setOpenDialog] = useState(false)
-  console.log(exportUrl)
 
   return (
     <Box sx={{ mt: 3.5, width: '100%' }}>

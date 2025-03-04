@@ -21,6 +21,7 @@ const PAGE = {
 interface IInitialState {
   page: Page
   list: ApplyRoomDiscountReply[]
+  exportUrl: string
 }
 
 const initialState: IInitialState = {
@@ -30,12 +31,13 @@ const initialState: IInitialState = {
     total: '0',
     disable: false
   },
-  list: []
+  list: [],
+  exportUrl: ''
 }
 
 export const find = createAsyncThunk(
   `${namespace}/find`,
-  async (params: ApplyRoomDiscountParams & PaginationParams) => {
+  async (params: ApplyRoomDiscountParams & PaginationParams & { is_export?: boolean }) => {
     const res = await FindApplyRoomDiscount(params)
     return res
   }
@@ -78,6 +80,7 @@ export const ApplyRoomDiscountSlice = createSlice({
     builder.addCase(find.fulfilled, (state, action) => {
       state.page = action.payload.page
       state.list = action.payload.list
+      state.exportUrl = action.payload.exportUrl
     })
     // 请求失败后的数据
     builder.addCase(find.rejected, state => {

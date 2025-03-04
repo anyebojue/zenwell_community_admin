@@ -16,7 +16,9 @@ const ApiPrefix = {
  * @param params
  * @returns
  */
-export const FindApplyRoomDiscount = (params: ApplyRoomDiscountParams & PaginationParams) => {
+export const FindApplyRoomDiscount = (
+  params: ApplyRoomDiscountParams & PaginationParams & { is_export?: boolean }
+) => {
   return request
     .get<FindApplyRoomDiscountReply>({
       url: ApiPrefix.FindApplyRoomDiscount,
