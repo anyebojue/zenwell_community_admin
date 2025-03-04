@@ -6,11 +6,13 @@ import { Chip } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
+import { useNavigate } from 'react-router-dom'
 
 interface TableDataProps {}
 
 const TableData: React.FC<TableDataProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.FeeReceiptSlice)
 
   const fetchData = useCallback(
@@ -34,18 +36,24 @@ const TableData: React.FC<TableDataProps> = () => {
     fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
   }, [fetchData, page.num, page.size])
 
-  const handleActionClick = useCallback((actionType: string, row: FeeReceiptReply) => {
-    switch (actionType) {
-      case 'delete':
-        console.log(row)
-        break
-    }
-  }, [])
+  const handleActionClick = useCallback(
+    (actionType: string, row: FeeReceiptReply) => {
+      switch (actionType) {
+        case 'receipt':
+          navigate('/FeeConfig/ReceiptReprint', { state: { value: row } })
+          break
+        case 'ticket':
+          console.log(row)
+          break
+      }
+    },
+    [navigate]
+  )
 
   const renderActionButtons = (row: FeeReceiptReply) =>
     [
-      { title: '补打收据', action: 'edit' },
-      { title: '补打小票', action: 'delete' }
+      { title: '补打收据', action: 'receipt' },
+      { title: '补打小票', action: 'ticket' }
     ].map(({ title, action }) => (
       <Chip
         key={title}
@@ -94,21 +102,29 @@ const TableData: React.FC<TableDataProps> = () => {
           flex: 1,
           headerAlign: 'center',
           align: 'center',
-          renderCell: ({ row }) => row.feeReceiptDetail?.payFee?.payerObjName
+          renderCell: ({ row }) =>
+            row.feeReceiptDetail?.payFee?.payerObjType === '3333'
+              ? row.feeReceiptDetail?.payFee?.payerObjName
+              : '-'
         },
         {
           field: 'feeReceiptDetail.payFee.incomeObjName',
           headerName: '业主',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => row.feeReceiptDetail?.payFee?.incomeObjName
         },
         {
-          field: 'feeReceiptDetail.payFee.incomeObjName',
+          field: 'feeReceiptDetail.payFee.payerObjType',
           headerName: '车位',
           flex: 1,
           headerAlign: 'center',
           align: 'center',
-          renderCell: ({ row }) => row.feeReceiptDetail?.payFee?.incomeObjName
+          renderCell: ({ row }) =>
+            row.feeReceiptDetail?.payFee?.payerObjType === '6666'
+              ? row.feeReceiptDetail?.payFee?.incomeObjName
+              : '-'
         },
         {
           field: 'feeReceiptDetail.payFee.payFeeDetail.receivedAmount',
