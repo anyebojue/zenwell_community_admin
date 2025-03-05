@@ -31,7 +31,7 @@ const TableData: React.FC<TableDataProps> = () => {
   useEffect(() => {
     fetchData(
       find,
-      { 'page.num': page.num, 'page.size': page.size, objType: '6666' },
+      { 'page.num': page.num, 'page.size': page.size, objType: '6666', isExport: true },
       '正在加载列表中，请稍后...'
     )
   }, [fetchData, page.num, page.size])

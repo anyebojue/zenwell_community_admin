@@ -39,4 +39,5 @@ export interface ReportFeeYearCollectionParams {
 export interface FindReportFeeYearCollectionReply {
   page: Page
   list: Array<ReportFeeYearCollectionReply>
+  exportUrl: string
 }

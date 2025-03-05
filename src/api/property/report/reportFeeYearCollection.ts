@@ -17,7 +17,7 @@ const ApiPrefix = {
  * @returns
  */
 export const FindReportFeeYearCollection = (
-  params: ReportFeeYearCollectionParams & PaginationParams
+  params: ReportFeeYearCollectionParams & PaginationParams & { isExport?: boolean }
 ) => {
   return request
     .get<FindReportFeeYearCollectionReply>({

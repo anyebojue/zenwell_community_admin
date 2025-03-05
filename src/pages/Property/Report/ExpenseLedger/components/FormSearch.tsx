@@ -5,7 +5,7 @@ import { find } from 'modules/property/report/reportFeeYearCollection'
 import { find as findFeeConfigType } from 'modules/property/feeConfig/feeConfigType'
 import { find as findFeeConfig } from 'modules/property/feeConfig/feeConfig'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
-import { History, Search } from '@mui/icons-material'
+import { Download, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 
@@ -29,7 +29,7 @@ interface SearchFormProps {}
 
 const FormSearch: React.FC<SearchFormProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.ReportFeeYearCollectionSlice)
+  const { page, exportUrl } = useSelector((state: RootState) => state.ReportFeeYearCollectionSlice)
   const { list: feeConfigTypeList } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
   const { list: feeConfigList } = useSelector((state: RootState) => state.FeeConfigSlice)
 
@@ -182,6 +182,24 @@ const FormSearch: React.FC<SearchFormProps> = () => {
         >
           重置
         </Button>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'right' }}>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            startIcon={<Download />}
+            sx={buttonStyles('#2660ad', '#1d428a')}
+            onClick={() => {
+              if (exportUrl) {
+                window.open(exportUrl, '_blank')
+              } else {
+                alert('暂无导出链接')
+              }
+            }}
+          >
+            导出
+          </Button>
+        </Box>
       </Stack>
     </Box>
   )
