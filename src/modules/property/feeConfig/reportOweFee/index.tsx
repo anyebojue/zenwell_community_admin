@@ -21,6 +21,9 @@ const PAGE = {
 interface IInitialState {
   page: Page
   list: ReportOweFeeReply[]
+  exportUrl: string
+  sum: string
+  allSum: string
 }
 
 const initialState: IInitialState = {
@@ -30,12 +33,18 @@ const initialState: IInitialState = {
     total: '0',
     disable: false
   },
-  list: []
+  list: [],
+  exportUrl: '',
+  sum: '',
+  allSum: ''
 }
 
 export const find = createAsyncThunk(
   `${namespace}/find`,
-  async (params: ReportOweFeeParams & PaginationParams) => {
+  async (
+    params: ReportOweFeeParams &
+      PaginationParams & { exportUrl: string; sum: string; allSum: string }
+  ) => {
     const res = await FindReportOweFee(params)
     return res
   }
@@ -72,6 +81,9 @@ export const ReportOweFeeSlice = createSlice({
     builder.addCase(find.fulfilled, (state, action) => {
       state.page = action.payload.page
       state.list = action.payload.list
+      state.exportUrl = action.payload.exportUrl
+      state.sum = action.payload.sum
+      state.allSum = action.payload.allSum
     })
     // 请求失败后的数据
     builder.addCase(find.rejected, state => {

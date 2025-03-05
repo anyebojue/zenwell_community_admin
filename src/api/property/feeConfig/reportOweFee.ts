@@ -16,7 +16,9 @@ const ApiPrefix = {
  * @param params
  * @returns
  */
-export const FindReportOweFee = (params: ReportOweFeeParams & PaginationParams) => {
+export const FindReportOweFee = (
+  params: ReportOweFeeParams & PaginationParams & { exportUrl: string; sum: string; allSum: string }
+) => {
   return request
     .get<FindReportOweFeeReply>({
       url: ApiPrefix.FindReportOweFee,

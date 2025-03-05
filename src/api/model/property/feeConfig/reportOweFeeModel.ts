@@ -41,4 +41,7 @@ export interface ReportOweFeeParams {
 export interface FindReportOweFeeReply {
   page: Page
   list: Array<ReportOweFeeReply>
+  exportUrl: string
+  sum: string
+  allSum: string
 }

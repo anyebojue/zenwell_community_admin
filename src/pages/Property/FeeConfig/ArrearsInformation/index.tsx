@@ -4,6 +4,7 @@ import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import { buttonStyles } from 'components/DeleteModal'
 import { Add } from '@mui/icons-material'
+import { useSelector } from 'react-redux'
 import TableData from './components/TableData'
 import FormSearch from './components/FormSearch'
 
@@ -15,6 +16,8 @@ const contentBoxStyle = (theme: Theme) => ({
 })
 
 const ReportOweFeeIndex = () => {
+  const { exportUrl } = useSelector((state: RootState) => state.ReportOweFeeSlice)
+
   return (
     <Box sx={{ mt: 3.5, width: '100%' }}>
       <NavbarBreadcrumbs />
@@ -28,7 +31,13 @@ const ReportOweFeeIndex = () => {
             color="error"
             startIcon={<Add />}
             sx={buttonStyles('#2660ad', '#1d428a')}
-            onClick={() => {}}
+            onClick={() => {
+              if (exportUrl) {
+                window.open(exportUrl, '_blank')
+              } else {
+                alert('暂无导出链接')
+              }
+            }}
           >
             导出
           </Button>

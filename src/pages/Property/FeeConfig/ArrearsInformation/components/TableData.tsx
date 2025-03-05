@@ -10,7 +10,7 @@ interface TableDataProps {}
 
 const TableData: React.FC<TableDataProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.ReportOweFeeSlice)
+  const { page, list, sum, allSum } = useSelector((state: RootState) => state.ReportOweFeeSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -36,8 +36,8 @@ const TableData: React.FC<TableDataProps> = () => {
   return (
     <>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Typography variant="body1">小计 合计: 165490.23 元</Typography>
-        <Typography variant="body1">大计 合计: 219824.31 元</Typography>
+        <Typography variant="body1">小计 合计: {sum} 元</Typography>
+        <Typography variant="body1">大计 合计: {allSum} 元</Typography>
       </Box>
       <DataGrid
         sx={{ mt: 2 }}
