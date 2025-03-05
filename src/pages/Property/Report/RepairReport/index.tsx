@@ -1,9 +1,10 @@
-import { memo, useState } from 'react'
+import { memo, useEffect, useMemo, useState } from 'react'
 import { Box, Button, ButtonGroup, Stack, Theme, Typography } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import { Download, Print } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
+import { useSelector } from 'react-redux'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
 
@@ -15,7 +16,27 @@ const contentBoxStyle = (theme: Theme) => ({
 })
 
 const CommunityAnnouncementIndex = () => {
+  const { list: dictList } = useSelector((state: RootState) => state.ReportDictSlice)
+  const repairItems = useMemo(
+    () =>
+      dictList
+        .filter(item => item.tableDesc === 'repair')
+        .slice()
+        .reverse(),
+    [dictList]
+  )
   const [selectedButton, setSelectedButton] = useState('0')
+
+  useEffect(() => {
+    if (repairItems.length) {
+      setSelectedButton(repairItems[0]?.value || '0')
+    }
+  }, [repairItems])
+
+  const selectedItem = useMemo(
+    () => repairItems.find(item => item.value === selectedButton),
+    [repairItems, selectedButton]
+  )
 
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
@@ -28,15 +49,7 @@ const CommunityAnnouncementIndex = () => {
           orientation="vertical"
           aria-label="Vertical button group"
         >
-          {[
-            { value: '0', label: '报修分项表' },
-            { value: '1', label: '报修明细' },
-            { value: '2', label: '报修统计' },
-            { value: '3', label: '报修未完成' },
-            { value: '4', label: '报修收费' },
-            { value: '5', label: '报修不满意' },
-            { value: '6', label: '投诉咨询' }
-          ].map(item => (
+          {repairItems.map(item => (
             <Button
               key={item.value}
               size="large"
@@ -50,7 +63,7 @@ const CommunityAnnouncementIndex = () => {
               }}
               onClick={() => setSelectedButton(item.value || '0')}
             >
-              {item.label}
+              {item.name}
             </Button>
           ))}
         </ButtonGroup>
@@ -58,23 +71,7 @@ const CommunityAnnouncementIndex = () => {
           {selectedButton !== '6' && <FormSearch selectedButton={selectedButton} />}
           <Box sx={contentBoxStyle}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography variant="h6">
-                {selectedButton === '0'
-                  ? '报修分项表'
-                  : selectedButton === '1'
-                    ? '报修明细'
-                    : selectedButton === '2'
-                      ? '报修统计'
-                      : selectedButton === '3'
-                        ? '报修未完成'
-                        : selectedButton === '4'
-                          ? '报修收费'
-                          : selectedButton === '5'
-                            ? '报修不满意'
-                            : selectedButton === '6'
-                              ? '投诉咨询'
-                              : ''}
-              </Typography>
+              <Typography variant="h6">{selectedItem?.name}</Typography>
               <Stack direction="row" spacing={1}>
                 <Button
                   size="small"

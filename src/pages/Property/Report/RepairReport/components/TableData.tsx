@@ -1,6 +1,7 @@
 import { memo, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { find } from 'modules/property/feeConfig/meterType'
+import { find as findDict } from 'modules/property/report/reportDict'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
@@ -33,6 +34,7 @@ const TableData: React.FC<TableDataProps> = ({ selectedButton }) => {
 
   useEffect(() => {
     fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+    fetchData(findDict, { 'page.disable': true }, '正在加载列表中，请稍后...')
   }, [fetchData, page.num, page.size])
 
   return (

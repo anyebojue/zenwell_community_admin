@@ -18,7 +18,11 @@ const contentBoxStyle = (theme: Theme) => ({
 const CommunityAnnouncementIndex = () => {
   const { list: dictList } = useSelector((state: RootState) => state.ReportDictSlice)
   const inspectionItems = useMemo(
-    () => dictList.filter(item => item.tableDesc === 'inspection'),
+    () =>
+      dictList
+        .filter(item => item.tableDesc === 'inspection')
+        .slice()
+        .reverse(),
     [dictList]
   )
   const [selectedButton, setSelectedButton] = useState(inspectionItems[0]?.value || '')
@@ -65,7 +69,7 @@ const CommunityAnnouncementIndex = () => {
           <FormSearch />
           <Box sx={contentBoxStyle}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography variant="h6">{selectedItem?.name || '未选择'}</Typography>
+              <Typography variant="h6">{selectedItem?.name}</Typography>
               <Stack direction="row" spacing={1}>
                 <Button
                   size="small"
