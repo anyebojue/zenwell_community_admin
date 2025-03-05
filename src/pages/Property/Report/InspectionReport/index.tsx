@@ -1,8 +1,9 @@
-import { memo, useState } from 'react'
-import { Box, Button, ButtonGroup, Stack, Theme, Typography } from '@mui/material'
+import { memo, useEffect, useState, useMemo } from 'react'
+import { Box, Button, ButtonGroup, Stack, Typography, Theme } from '@mui/material'
+import { Download, Print } from '@mui/icons-material'
+import { useSelector } from 'react-redux'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
-import { Download, Print } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
@@ -10,28 +11,39 @@ import TableData from './components/TableData'
 const contentBoxStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
   borderRadius: '15px',
-  padding: '15px 15px',
+  padding: '15px',
   width: '100%'
 })
 
 const CommunityAnnouncementIndex = () => {
-  const [selectedButton, setSelectedButton] = useState('0')
+  const { list: dictList } = useSelector((state: RootState) => state.ReportDictSlice)
+  const inspectionItems = useMemo(
+    () => dictList.filter(item => item.tableDesc === 'inspection'),
+    [dictList]
+  )
+  const [selectedButton, setSelectedButton] = useState(inspectionItems[0]?.value || '')
+
+  useEffect(() => {
+    if (inspectionItems.length) {
+      setSelectedButton(inspectionItems[0]?.value || '')
+    }
+  }, [inspectionItems])
+
+  const selectedItem = useMemo(
+    () => inspectionItems.find(item => item.value === selectedButton),
+    [inspectionItems, selectedButton]
+  )
 
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
       <Stack sx={{ mt: 2, mb: 1.5, width: '100%' }} direction="row" spacing={3}>
         <ButtonGroup
-          sx={{
-            width: '150px'
-          }}
+          sx={{ width: '150px' }}
           orientation="vertical"
           aria-label="Vertical button group"
         >
-          {[
-            { value: '0', label: '巡检点统计' },
-            { value: '1', label: '今日巡检' }
-          ].map(item => (
+          {inspectionItems.map(item => (
             <Button
               key={item.value}
               size="large"
@@ -45,7 +57,7 @@ const CommunityAnnouncementIndex = () => {
               }}
               onClick={() => setSelectedButton(item.value || '0')}
             >
-              {item.label}
+              {item.name}
             </Button>
           ))}
         </ButtonGroup>
@@ -53,9 +65,7 @@ const CommunityAnnouncementIndex = () => {
           <FormSearch />
           <Box sx={contentBoxStyle}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography variant="h6">
-                {selectedButton === '0' ? '巡检点统计' : '今日巡检'}
-              </Typography>
+              <Typography variant="h6">{selectedItem?.name || '未选择'}</Typography>
               <Stack direction="row" spacing={1}>
                 <Button
                   size="small"
