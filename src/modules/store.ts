@@ -62,6 +62,7 @@ import StaffSlice from './property/repair/staff'
 import SpectionTaskSlice from './property/inspection/spectionTask'
 import SpectionTaskDetailSlice from './property/inspection/spectionTaskDetail'
 import SystemSettingsSlice from './property/systemSettings'
+import ReportFeeYearCollectionSlice from './property/report/reportFeeYearCollection'
 
 const store = configureStore({
   reducer: {
@@ -127,7 +128,8 @@ const store = configureStore({
     StaffSlice,
     SpectionTaskSlice,
     SpectionTaskDetailSlice,
-    SystemSettingsSlice
+    SystemSettingsSlice,
+    ReportFeeYearCollectionSlice
   },
   // 关闭序列化检测
   middleware: getDefaultMiddleware =>
