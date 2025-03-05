@@ -23,9 +23,11 @@ const textFieldStyles = {
   }
 }
 
-interface FormSearchProps {}
+interface FormSearchProps {
+  selectedButton: string
+}
 
-const FormSearch: React.FC<FormSearchProps> = () => {
+const FormSearch: React.FC<FormSearchProps> = ({ selectedButton }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.CommunityAnnouncementSlice)
   const [searchParams, setSearchParams] = useState<RoomRenovationParams>({
@@ -72,38 +74,67 @@ const FormSearch: React.FC<FormSearchProps> = () => {
   return (
     <Box>
       <Stack direction="row" spacing={3} component="form" sx={{ mb: 1.5 }}>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            size="small"
-            label="请输入开始时间"
-            type="date"
-            variant="outlined"
-            sx={textFieldStyles}
-            value={searchParams.startTime}
-            onChange={handleInputChange('startTime')}
-            slotProps={{
-              inputLabel: {
-                shrink: true
-              }
-            }}
-          />
-        </FormControl>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            size="small"
-            label="请输入结束时间"
-            type="date"
-            variant="outlined"
-            sx={textFieldStyles}
-            value={searchParams.endTime}
-            onChange={handleInputChange('endTime')}
-            slotProps={{
-              inputLabel: {
-                shrink: true
-              }
-            }}
-          />
-        </FormControl>
+        {selectedButton === '1' ? (
+          <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+            <TextField
+              size="small"
+              label="请输入业主姓名"
+              type="text"
+              variant="outlined"
+              sx={textFieldStyles}
+              value={searchParams.id}
+              onChange={handleInputChange('id')}
+            />
+          </FormControl>
+        ) : (
+          <>
+            <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+              <TextField
+                size="small"
+                label="请输入开始时间"
+                type="date"
+                variant="outlined"
+                sx={textFieldStyles}
+                value={searchParams.startTime}
+                onChange={handleInputChange('startTime')}
+                slotProps={{
+                  inputLabel: {
+                    shrink: true
+                  }
+                }}
+              />
+            </FormControl>
+            <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+              <TextField
+                size="small"
+                label="请输入结束时间"
+                type="date"
+                variant="outlined"
+                sx={textFieldStyles}
+                value={searchParams.endTime}
+                onChange={handleInputChange('endTime')}
+                slotProps={{
+                  inputLabel: {
+                    shrink: true
+                  }
+                }}
+              />
+            </FormControl>
+          </>
+        )}
+        {(selectedButton === '3' || selectedButton === '4') && (
+          <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+            <TextField
+              size="small"
+              label="请输入账户名称"
+              type="text"
+              variant="outlined"
+              sx={textFieldStyles}
+              value={searchParams.id}
+              onChange={handleInputChange('id')}
+            />
+          </FormControl>
+        )}
         <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
           <Button
             size="small"

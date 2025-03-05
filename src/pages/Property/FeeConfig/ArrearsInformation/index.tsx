@@ -3,7 +3,7 @@ import { Box, Button, Theme, Typography } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import { buttonStyles } from 'components/DeleteModal'
-import { Add } from '@mui/icons-material'
+import { Download } from '@mui/icons-material'
 import { useSelector } from 'react-redux'
 import TableData from './components/TableData'
 import FormSearch from './components/FormSearch'
@@ -29,7 +29,7 @@ const ReportOweFeeIndex = () => {
             size="small"
             variant="contained"
             color="error"
-            startIcon={<Add />}
+            startIcon={<Download />}
             sx={buttonStyles('#2660ad', '#1d428a')}
             onClick={() => {
               if (exportUrl) {
