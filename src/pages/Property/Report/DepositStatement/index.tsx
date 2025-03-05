@@ -16,7 +16,9 @@ const contentBoxStyle = (theme: Theme) => ({
 })
 
 const ReturnPayFeeIndex = () => {
-  const { exportUrl } = useSelector((state: RootState) => state.ReturnPayFeeSlice)
+  const { exportUrl, sumTotal } = useSelector(
+    (state: RootState) => state.ReportQueryPayFeeDepositSlice
+  )
 
   return (
     <Box sx={{ mt: 3.5, width: '100%' }}>
@@ -41,6 +43,18 @@ const ReturnPayFeeIndex = () => {
           >
             导出
           </Button>
+        </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Typography variant="body1">
+            小计 未收费：{sumTotal.unpaidfeeAmount} 元 已收费：{sumTotal.paidfeeAmount} 元 已退费：
+            {sumTotal.refundedAmount} 元 退费中：{sumTotal.refundInProgressAmount} 元 退费失败：
+            {sumTotal.refundFailedAmount} 元
+          </Typography>
+          <Typography variant="body1">
+            大计 未收费：{sumTotal.unpaidfeeAmounts} 元 已收费：{sumTotal.paidfeeAmounts} 元
+            已退费：{sumTotal.refundedAmounts} 元 退费中：{sumTotal.refundInProgressAmounts} 元
+            退费失败：{sumTotal.refundFailedAmounts} 元
+          </Typography>
         </Box>
         <TableData />
       </Box>

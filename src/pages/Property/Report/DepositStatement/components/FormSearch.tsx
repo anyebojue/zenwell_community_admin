@@ -25,15 +25,20 @@ const textFieldStyles = {
 
 const FormSearch: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
+  const { page } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
+  const { list: floorList } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { list: unitList } = useSelector((state: RootState) => state.UnitSlice)
+  const { list: feeList } = useSelector((state: RootState) => state.FeeConfigSlice)
   const [searchParams, setSearchParams] = useState<ReturnPayFeeParams>({
-    applyPersonName: '',
-    auditPersonName: '',
-    payerObjId: '',
-    stateCd: '',
-    feeTypeCd: '',
+    floorId: '',
+    unitId: '',
+    roomNum: '',
+    feeId: '',
+    state: '',
+    payerObjType: '',
     startTime: '',
-    endTime: ''
+    endTime: '',
+    detailState: ''
   })
 
   const handleInputChange = useCallback(
@@ -68,13 +73,15 @@ const FormSearch: React.FC = () => {
 
   const handleReset = useCallback(() => {
     const initialParams = {
-      applyPersonName: '',
-      auditPersonName: '',
-      payerObjId: '',
-      stateCd: '',
-      feeTypeCd: '',
+      floorId: '',
+      unitId: '',
+      roomNum: '',
+      feeId: '',
+      state: '',
+      payerObjType: '',
       startTime: '',
-      endTime: ''
+      endTime: '',
+      detailState: ''
     }
     setSearchParams(initialParams)
     fetchData({ ...initialParams, 'page.num': page.num, 'page.size': page.size })
@@ -96,14 +103,14 @@ const FormSearch: React.FC = () => {
             select
             size="small"
             label="请选择楼栋"
-            value={searchParams.feeTypeCd}
-            onChange={handleSelectChange('feeTypeCd')}
+            value={searchParams.floorId}
+            onChange={handleSelectChange('floorId')}
             variant="outlined"
             sx={textFieldStyles}
           >
-            {list.map(option => (
+            {floorList.map(option => (
               <MenuItem key={option.id} value={option.id}>
-                {option.name}
+                {option.floorNum}
               </MenuItem>
             ))}
           </TextField>
@@ -113,14 +120,14 @@ const FormSearch: React.FC = () => {
             select
             size="small"
             label="请选择单元"
-            value={searchParams.feeTypeCd}
-            onChange={handleSelectChange('feeTypeCd')}
+            value={searchParams.unitId}
+            onChange={handleSelectChange('unitId')}
             variant="outlined"
             sx={textFieldStyles}
           >
-            {list.map(option => (
+            {unitList.map(option => (
               <MenuItem key={option.id} value={option.id}>
-                {option.name}
+                {option.unitNum}
               </MenuItem>
             ))}
           </TextField>
@@ -132,8 +139,8 @@ const FormSearch: React.FC = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.payerObjId}
-            onChange={handleInputChange('payerObjId')}
+            value={searchParams.roomNum}
+            onChange={handleInputChange('roomNum')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -141,16 +148,18 @@ const FormSearch: React.FC = () => {
             select
             size="small"
             label="请选择费用项名称"
-            value={searchParams.feeTypeCd}
-            onChange={handleSelectChange('feeTypeCd')}
+            value={searchParams.feeId}
+            onChange={handleSelectChange('feeId')}
             variant="outlined"
             sx={textFieldStyles}
           >
-            {list.map(option => (
-              <MenuItem key={option.id} value={option.id}>
-                {option.name}
-              </MenuItem>
-            ))}
+            {feeList
+              .filter(option => option.name === '押金')
+              .map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
+                </MenuItem>
+              ))}
           </TextField>
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -158,8 +167,8 @@ const FormSearch: React.FC = () => {
             select
             size="small"
             label="请选择退费状态"
-            value={searchParams.stateCd}
-            onChange={handleSelectChange('stateCd')}
+            value={searchParams.detailState}
+            onChange={handleSelectChange('detailState')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -183,8 +192,8 @@ const FormSearch: React.FC = () => {
             select
             size="small"
             label="请选择收费状态"
-            value={searchParams.stateCd}
-            onChange={handleSelectChange('stateCd')}
+            value={searchParams.state}
+            onChange={handleSelectChange('state')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -204,8 +213,8 @@ const FormSearch: React.FC = () => {
             select
             size="small"
             label="请选择收费对象"
-            value={searchParams.stateCd}
-            onChange={handleSelectChange('stateCd')}
+            value={searchParams.payerObjType}
+            onChange={handleSelectChange('payerObjType')}
             variant="outlined"
             sx={textFieldStyles}
           >

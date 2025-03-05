@@ -1,7 +1,10 @@
 import { memo, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ReturnPayFeeReply } from 'api/model/property/feeConfig/returnPayFeeModel'
-import { find } from 'modules/property/feeConfig/returnPayFee'
+import { ReportFeeYearCollectionDetailReply } from 'api/model/property/report/queryPayFeeDepositModel'
+import { find } from 'modules/property/report/queryPayFeeDeposit'
+import { find as findHousing } from 'modules/property/houses/housingManagement'
+import { find as findUnit } from 'modules/property/houses/unit'
+import { find as findFeeConfig } from 'modules/property/feeConfig/feeConfig'
 import { Chip } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
@@ -10,16 +13,10 @@ import { useNavigate } from 'react-router-dom'
 
 interface TableDataProps {}
 
-const statusValue: Record<string, string> = {
-  '1001': '待审核',
-  '2002': '审核通过',
-  '3003': '审核不通过'
-}
-
 const TableData: React.FC<TableDataProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
-  const { page, list } = useSelector((state: RootState) => state.ReturnPayFeeSlice)
+  const { page, list } = useSelector((state: RootState) => state.ReportQueryPayFeeDepositSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -44,10 +41,13 @@ const TableData: React.FC<TableDataProps> = () => {
       { 'page.num': page.num, 'page.size': page.size, is_export: true },
       '正在加载列表中，请稍后...'
     )
+    fetchData(findHousing, { 'page.disable': true }, '正在加载房屋列表中，请稍后...')
+    fetchData(findUnit, { 'page.disable': true }, '正在加载单元列表中，请稍后...')
+    fetchData(findFeeConfig, { 'page.disable': true }, '正在加载费用配置列表中，请稍后...')
   }, [fetchData, page.num, page.size])
 
   const handleActionClick = useCallback(
-    (actionType: string, row: ReturnPayFeeReply) => {
+    (actionType: string, row: ReportFeeYearCollectionDetailReply) => {
       switch (actionType) {
         case 'details':
           navigate('/FeeConfig/RefundDetails', { state: { value: row } })
@@ -57,7 +57,7 @@ const TableData: React.FC<TableDataProps> = () => {
     [navigate]
   )
 
-  const renderActionButtons = (row: ReturnPayFeeReply) => {
+  const renderActionButtons = (row: ReportFeeYearCollectionDetailReply) => {
     const actionButtons = [{ title: '详情', action: 'details', condition: true }]
     return actionButtons.map(({ title, action }) => (
       <Chip
@@ -91,79 +91,72 @@ const TableData: React.FC<TableDataProps> = () => {
       disableVirtualization={false}
       rows={list}
       columns={[
+        { field: 'objName', headerName: '房号', flex: 1, headerAlign: 'center', align: 'center' },
+        { field: 'ownerName', headerName: '业主', flex: 1, headerAlign: 'center', align: 'center' },
         {
-          field: 'payFeeDetail.payFee.feeConfig.feeConfigType.name',
+          field: 'feeTypeCdName',
           headerName: '费用类型',
           flex: 1,
           headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => row.payFeeDetail?.payFee?.feeConfig?.feeConfigType?.name
+          align: 'center'
         },
+        { field: 'feeName', headerName: '费用项', flex: 1, headerAlign: 'center', align: 'center' },
         {
-          field: 'payFeeDetail.payFee.payerObjName',
-          headerName: '付费对象',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => row.payFeeDetail?.payFee?.payerObjName
-        },
-        {
-          field: 'cycles',
-          headerName: '付费周期(单位:月)',
-          headerAlign: 'center',
-          align: 'center',
-          flex: 1
-        },
-        {
-          field: 'receivableAmount',
-          headerName: '应付金额/实付金额',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => `${row.receivableAmount} / ${row.receivedAmount}`
-        },
-        {
-          field: 'createdAt',
-          headerName: '申请时间',
-          headerAlign: 'center',
-          align: 'center',
-          width: 180
-        },
-        {
-          field: 'reason',
-          headerName: '退费原因',
-          headerAlign: 'center',
-          align: 'center',
-          flex: 1
-        },
-        {
-          field: 'applyPersonName',
-          headerName: '申请人',
+          field: 'startTime',
+          headerName: '费用开始时间',
           flex: 1,
           headerAlign: 'center',
           align: 'center'
         },
         {
-          field: 'stateCd',
-          headerName: '审核状态',
+          field: 'deadlineTime',
+          headerName: '费用结束时间',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'createTime',
+          headerName: '创建时间',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'payerObjTypeName',
+          headerName: '付费对象类型',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'payerObjId',
+          headerName: '付款方ID',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'additionalAmount',
+          headerName: '应收金额',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'stateName',
+          headerName: '状态',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'state',
+          headerName: '退费状态',
           flex: 1,
           headerAlign: 'center',
           align: 'center',
-          renderCell: ({ row }) => <Chip label={statusValue[row.stateCd!] || '未知类型'} />
-        },
-        {
-          field: 'auditPersonName',
-          headerName: '审核人',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center'
-        },
-        {
-          field: 'statusCd',
-          headerName: '	退款情况',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center'
+          renderCell: ({ row }) => (row.state === '2009001' ? '已缴费' : '未缴费')
         },
         {
           field: 'actions',
