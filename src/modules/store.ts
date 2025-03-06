@@ -73,6 +73,7 @@ import QueryReceivedReportSlice from './property/report/queryReceivedReport'
 import QueryRepairReportSlice from './property/report/queryRepairReport'
 import QueryReportOwnerPayFeeSlice from './property/report/queryReportOwnerPayFee'
 import QueryNoFeeRoomsSlice from './property/report/queryNoFeeRooms'
+import QueryRepairSlice from './property/report/queryRepair'
 
 const store = configureStore({
   reducer: {
@@ -149,7 +150,8 @@ const store = configureStore({
     QueryReceivedReportSlice,
     QueryRepairReportSlice,
     QueryReportOwnerPayFeeSlice,
-    QueryNoFeeRoomsSlice
+    QueryNoFeeRoomsSlice,
+    QueryRepairSlice
   },
   // 关闭序列化检测
   middleware: getDefaultMiddleware =>
