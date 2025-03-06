@@ -1,7 +1,7 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RoomRenovationParams } from 'api/model/property/communitys/roomRenovationModel'
-import { find } from 'modules/property/communitys/communityAnnouncement'
+import { QueryReceivedReportParams } from 'api/model/property/report/queryReceivedReportModel'
+import { find } from 'modules/property/report/queryReceivedReport'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -30,13 +30,13 @@ interface FormSearchProps {
 const FormSearch: React.FC<FormSearchProps> = ({ selectedButton }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.CommunityAnnouncementSlice)
-  const [searchParams, setSearchParams] = useState<RoomRenovationParams>({
+  const [searchParams, setSearchParams] = useState<QueryReceivedReportParams>({
     startTime: '',
     endTime: ''
   })
 
   const handleInputChange =
-    (field: keyof RoomRenovationParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof QueryReceivedReportParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -44,7 +44,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton }) => {
     }
 
   const fetchData = useCallback(
-    async (params: RoomRenovationParams & PaginationParams) => {
+    async (params: QueryReceivedReportParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
@@ -82,8 +82,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton }) => {
               type="text"
               variant="outlined"
               sx={textFieldStyles}
-              value={searchParams.id}
-              onChange={handleInputChange('id')}
+              value={searchParams.startTime}
+              onChange={handleInputChange('startTime')}
             />
           </FormControl>
         ) : (
@@ -130,8 +130,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton }) => {
               type="text"
               variant="outlined"
               sx={textFieldStyles}
-              value={searchParams.id}
-              onChange={handleInputChange('id')}
+              value={searchParams.startTime}
+              onChange={handleInputChange('startTime')}
             />
           </FormControl>
         )}
