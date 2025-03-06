@@ -16,7 +16,9 @@ const contentBoxStyle = (theme: Theme) => ({
 })
 
 const ReleasesIndex = () => {
-  const { exportUrl } = useSelector((state: RootState) => state.QueryRepairSlice)
+  const { exportUrl, allOweAmount, totalPreferentialAmount } = useSelector(
+    (state: RootState) => state.QueryOweFeeDetailSlice
+  )
 
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
@@ -24,7 +26,7 @@ const ReleasesIndex = () => {
       <FormSearch />
       <Box sx={contentBoxStyle}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h6">报修汇总表(以员工为维度，展示员工处理工单情况汇总)</Typography>
+          <Typography variant="h6">欠费明细表(房屋与费用项关联的欠费明细按天更新)</Typography>
           <Button
             size="small"
             variant="contained"
@@ -43,6 +45,20 @@ const ReleasesIndex = () => {
           </Button>
         </Box>
         <TableData />
+        <Box sx={{ display: 'flex', flexDirection: 'column', mt: 2, ml: 1 }}>
+          <Typography variant="body1">小计 {totalPreferentialAmount} 元</Typography>
+          <Typography variant="body1">大计 {allOweAmount} 元</Typography>
+          <Typography variant="body1" sx={{ mt: 1 }}>
+            费用开始时间：所创建费用的计费起始时间
+          </Typography>
+          <Typography variant="body1">
+            欠费时长（天）：押金费用项欠费时长是费用开始时间到当天的天数
+          </Typography>
+          <Typography variant="body1">
+            除押金外的费用项欠费时长是费用的开始时间到费用的结束时间的天数
+          </Typography>
+          <Typography variant="body1">欠费金额：欠费周期内应缴费用</Typography>
+        </Box>
       </Box>
       <Copyright />
     </Box>

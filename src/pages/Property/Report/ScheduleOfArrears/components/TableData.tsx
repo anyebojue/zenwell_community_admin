@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { find } from 'modules/property/report/queryRepair'
+import { find } from 'modules/property/report/queryOweFeeDetail'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
@@ -9,7 +9,7 @@ interface TableDataProps {}
 
 const TableData: React.FC<TableDataProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.QueryRepairSlice)
+  const { page, list } = useSelector((state: RootState) => state.QueryOweFeeDetailSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -44,15 +44,15 @@ const TableData: React.FC<TableDataProps> = () => {
       disableVirtualization={false}
       rows={list}
       columns={[
-        { field: 'staffName', headerName: '员工姓名', flex: 1 },
-        { field: 'staffId', headerName: '员工ID', flex: 1 },
-        { field: 'dealAmount', headerName: '处理中(条)', flex: 1 },
-        { field: 'dispatchAmount', headerName: '派单(条)', flex: 1 },
-        { field: 'transferOrderAmount', headerName: '转单(条)', flex: 1 },
-        { field: 'chargebackAmount', headerName: '退单(条)', flex: 1 },
-        { field: 'returnAmount', headerName: '已回访(条)', flex: 1 },
-        { field: 'statementAmount', headerName: '已完结(条)', flex: 1 },
-        { field: 'score', headerName: '员工评分', flex: 1 }
+        { field: 'objName', headerName: '房号', flex: 1 },
+        { field: 'ownerName', headerName: '业主', flex: 1 },
+        { field: 'link', headerName: '业主电话', flex: 1 },
+        { field: 'builtUpArea', headerName: '面积', flex: 1 },
+        { field: 'feeName', headerName: '费用项', flex: 1 },
+        { field: 'feeCreateTime', headerName: '费用开始时间', flex: 1 },
+        { field: 'updateTime', headerName: '更新时间', flex: 1 },
+        { field: 'oweDay', headerName: '欠费时长(天)', flex: 1 },
+        { field: 'oweAmount', headerName: '欠费金额(月)	', flex: 1 }
       ]}
       pageSizeOptions={[10, 20, 50, 100]}
       paginationMode="server"

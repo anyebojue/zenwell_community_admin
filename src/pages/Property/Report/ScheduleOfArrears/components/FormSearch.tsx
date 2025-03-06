@@ -1,23 +1,13 @@
 import { ChangeEvent, memo, useState, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { QueryRepairParams } from 'api/model/property/report/queryRepairModel'
-import { find } from 'modules/property/report/queryRepair'
-import { find as findEmployee } from 'modules/platform/organization/employees'
+import { QueryOweFeeDetailParams } from 'api/model/property/report/queryOweFeeDetailModel'
+import { find } from 'modules/property/report/queryOweFeeDetail'
+import { find as findFloor } from 'modules/property/houses/housingManagement'
+import { find as findUnit } from 'modules/property/houses/unit'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-
-const formatDateTime = (date: Date | string | undefined): string => {
-  const validDate = date ? new Date(date) : new Date()
-  const year = validDate.getFullYear()
-  const month = String(validDate.getMonth() + 1).padStart(2, '0')
-  const day = String(validDate.getDate()).padStart(2, '0')
-  const hours = String(validDate.getHours()).padStart(2, '0')
-  const minutes = String(validDate.getMinutes()).padStart(2, '0')
-  const seconds = String(validDate.getSeconds()).padStart(2, '0')
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
-}
 
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {
@@ -40,21 +30,21 @@ interface SearchFormProps {}
 const FormSearch: React.FC<SearchFormProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const info = useSelector((state: RootState) => state.info.userInfo)
-  const { page } = useSelector((state: RootState) => state.QueryRepairSlice)
-  const { list: employeeList } = useSelector((state: RootState) => state.EmployeesSlice)
+  const { page } = useSelector((state: RootState) => state.QueryOweFeeDetailSlice)
+  const { list: floorList } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { list: unitList } = useSelector((state: RootState) => state.UnitSlice)
 
-  const [searchParams, setSearchParams] = useState<QueryRepairParams>({
-    beginStartTime: formatDateTime(new Date()),
-    beginEndTime: formatDateTime(new Date()),
-    finishStartTime: formatDateTime(new Date()),
-    finishEndTime: formatDateTime(new Date()),
-    communityId: '',
-    staffId: '',
-    state: ''
+  const [searchParams, setSearchParams] = useState<QueryOweFeeDetailParams>({
+    floorId: '',
+    unitId: '',
+    roomNum: '',
+    startTime: '',
+    endTime: '',
+    communityId: ''
   })
 
   const handleInputChange =
-    (field: keyof QueryRepairParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof QueryOweFeeDetailParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -84,8 +74,18 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   )
 
   useEffect(() => {
-    fetchData(findEmployee, { 'page.disable': true }, '正在加载员工列表，请稍后...')
+    fetchData(findFloor, { 'page.disable': true }, '正在加载楼栋列表，请稍后...')
   }, [fetchData])
+
+  useEffect(() => {
+    if (searchParams.floorId) {
+      fetchData(
+        findUnit,
+        { 'page.disable': true, floorId: searchParams.floorId },
+        '正在加载单元列表，请稍后...'
+      )
+    }
+  }, [fetchData, searchParams.floorId])
 
   const handleSearch = () => {
     fetchData(
@@ -96,7 +96,7 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   }
 
   const handleSelectChange =
-    (field: keyof QueryRepairParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof QueryOweFeeDetailParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -108,13 +108,58 @@ const FormSearch: React.FC<SearchFormProps> = () => {
       <Stack direction="row" spacing={3} component="form" sx={{ mb: 1.5 }}>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
+            select
             size="small"
-            label="请选择创建开始时间"
-            type="date"
+            label="请选择楼栋"
+            value={searchParams.floorId}
+            onChange={handleSelectChange('floorId')}
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.beginStartTime}
-            onChange={handleInputChange('beginStartTime')}
+          >
+            {floorList.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.floorNum}
+              </MenuItem>
+            ))}
+          </TextField>
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            select
+            size="small"
+            label="请选择单元"
+            value={searchParams.unitId}
+            onChange={handleSelectChange('unitId')}
+            variant="outlined"
+            sx={textFieldStyles}
+          >
+            {unitList.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.unitNum}
+              </MenuItem>
+            ))}
+          </TextField>
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            size="small"
+            label="请输入房屋编号"
+            type="text"
+            variant="outlined"
+            sx={textFieldStyles}
+            value={searchParams.roomNum}
+            onChange={handleInputChange('roomNum')}
+          />
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            size="small"
+            label="请输入创建开始时间"
+            type="datetime-local"
+            variant="outlined"
+            sx={textFieldStyles}
+            value={searchParams.startTime}
+            onChange={handleInputChange('startTime')}
             slotProps={{
               inputLabel: {
                 shrink: true
@@ -125,12 +170,12 @@ const FormSearch: React.FC<SearchFormProps> = () => {
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
-            label="请选择创建结束时间"
-            type="date"
+            label="请输入创建结束时间"
+            type="datetime-local"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.beginEndTime}
-            onChange={handleInputChange('beginEndTime')}
+            value={searchParams.endTime}
+            onChange={handleInputChange('endTime')}
             slotProps={{
               inputLabel: {
                 shrink: true
@@ -138,38 +183,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             }}
           />
         </FormControl>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            size="small"
-            label="请选择完结开始时间"
-            type="date"
-            variant="outlined"
-            sx={textFieldStyles}
-            value={searchParams.finishStartTime}
-            onChange={handleInputChange('finishStartTime')}
-            slotProps={{
-              inputLabel: {
-                shrink: true
-              }
-            }}
-          />
-        </FormControl>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            size="small"
-            label="请选择完结结束时间"
-            type="date"
-            variant="outlined"
-            sx={textFieldStyles}
-            value={searchParams.finishEndTime}
-            onChange={handleInputChange('finishEndTime')}
-            slotProps={{
-              inputLabel: {
-                shrink: true
-              }
-            }}
-          />
-        </FormControl>
+      </Stack>
+      <Stack direction="row" spacing={3} component="form" sx={{ mb: 1.5 }}>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             select
@@ -183,54 +198,6 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             {info.community.map(option => (
               <MenuItem key={option.id} value={option.id}>
                 {option.name}
-              </MenuItem>
-            ))}
-          </TextField>
-        </FormControl>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            select
-            size="small"
-            label="请选择员工"
-            value={searchParams.staffId}
-            onChange={handleSelectChange('staffId')}
-            variant="outlined"
-            sx={textFieldStyles}
-          >
-            {employeeList.map(option => (
-              <MenuItem key={option.id} value={option.id}>
-                {option.username}
-              </MenuItem>
-            ))}
-          </TextField>
-        </FormControl>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            select
-            size="small"
-            label="请选择状态"
-            value={searchParams.state}
-            onChange={handleSelectChange('state')}
-            variant="outlined"
-            sx={textFieldStyles}
-          >
-            {[
-              { value: '10001', label: '处理中' },
-              { value: '10002', label: '结单' },
-              { value: '10003', label: '退单' },
-              { value: '10004', label: '转单' },
-              { value: '10006', label: '已派单' },
-              { value: '10007', label: '已评价' },
-              { value: '10008', label: '已回访' },
-              { value: '10009', label: '待支付' },
-              { value: '11000', label: '待评价' },
-              { value: '12000', label: '已支付' },
-              { value: '12001', label: '暂停' },
-              { value: '12002', label: '启动' },
-              { value: '10010', label: '评价回复' }
-            ].map(option => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
               </MenuItem>
             ))}
           </TextField>
@@ -255,24 +222,22 @@ const FormSearch: React.FC<SearchFormProps> = () => {
           sx={buttonStyles('darkgray', '#696969')}
           onClick={() => {
             setSearchParams({
-              beginStartTime: formatDateTime(new Date()),
-              beginEndTime: formatDateTime(new Date()),
-              finishStartTime: formatDateTime(new Date()),
-              finishEndTime: formatDateTime(new Date()),
-              communityId: '',
-              staffId: '',
-              state: ''
+              floorId: '',
+              unitId: '',
+              roomNum: '',
+              startTime: '',
+              endTime: '',
+              communityId: ''
             })
             fetchData(
               find,
               {
-                beginStartTime: formatDateTime(new Date()),
-                beginEndTime: formatDateTime(new Date()),
-                finishStartTime: formatDateTime(new Date()),
-                finishEndTime: formatDateTime(new Date()),
-                communityId: '',
-                staffId: '',
-                state: ''
+                floorId: '',
+                unitId: '',
+                roomNum: '',
+                startTime: '',
+                endTime: '',
+                communityId: ''
               },
               '正在重置，请稍后...'
             )
