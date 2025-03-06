@@ -34,7 +34,7 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   const { list: feeConfigList } = useSelector((state: RootState) => state.FeeConfigSlice)
 
   const [searchParams, setSearchParams] = useState<ReportFeeYearCollectionParams>({
-    feeId: '',
+    feeTypeCd: '',
     configId: '',
     objName: ''
   })
@@ -78,10 +78,10 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   }, [fetchData, page.num, page.size])
 
   useEffect(() => {
-    if (searchParams.feeId) {
+    if (searchParams.feeTypeCd) {
       fetchData(
         findFeeConfig,
-        { 'page.num': page.num, 'page.size': page.size, feeTypeCd: searchParams.feeId },
+        { 'page.num': page.num, 'page.size': page.size, feeTypeCd: searchParams.feeTypeCd },
         '正在加载费用配置，请稍后...'
       )
     }
@@ -102,9 +102,9 @@ const FormSearch: React.FC<SearchFormProps> = () => {
           <TextField
             select
             size="small"
-            label="请选择收费类型"
-            value={searchParams.feeId || ''}
-            onChange={handleInputChange('feeId')}
+            label="请选择费用类型"
+            value={searchParams.feeTypeCd}
+            onChange={handleInputChange('feeTypeCd')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -120,7 +120,7 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             select
             size="small"
             label="请选择收费项"
-            value={searchParams.configId || ''}
+            value={searchParams.configId}
             onChange={handleInputChange('configId')}
             variant="outlined"
             sx={textFieldStyles}
@@ -163,14 +163,14 @@ const FormSearch: React.FC<SearchFormProps> = () => {
           sx={buttonStyles('darkgray', '#696969')}
           onClick={() => {
             setSearchParams({
-              feeId: '',
+              feeTypeCd: '',
               configId: '',
               objName: ''
             })
             fetchData(
               find,
               {
-                feeId: '',
+                feeTypeCd: '',
                 configId: '',
                 objName: '',
                 'page.num': page.num,

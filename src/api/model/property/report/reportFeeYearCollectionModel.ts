@@ -17,20 +17,17 @@ export interface ReportFeeYearCollectionReply {
   feeName?: string
   communityId?: string
   statusCd?: string
-  reportFeeYearCollectionDetail: ReportFeeYearCollectionDetailReply
+  reportFeeYearCollectionDetail?: ReportFeeYearCollectionDetailReply
 }
 
 export interface ReportFeeYearCollectionParams {
   id?: string
   communityId?: string
-  isExport?: boolean
   configId?: string
-  feeTypeCd?: string
-  floorNum?: string
-  year?: string
-  month?: string
-  row?: string
+  objName?: string
+  isExport?: boolean
   objType?: string
+  feeTypeCd?: string
 }
 
 export interface FindReportFeeYearCollectionReply {
