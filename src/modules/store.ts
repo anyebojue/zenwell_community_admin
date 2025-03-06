@@ -65,6 +65,7 @@ import SystemSettingsSlice from './property/systemSettings'
 import ReportFeeYearCollectionSlice from './property/report/reportFeeYearCollection'
 import ReportDictSlice from './property/report/reportDict'
 import ReportQueryPayFeeDepositSlice from './property/report/queryPayFeeDeposit'
+import QueryHuaningOweFeeSlice from './property/report/queryHuaningOweFee'
 
 const store = configureStore({
   reducer: {
@@ -133,7 +134,8 @@ const store = configureStore({
     SystemSettingsSlice,
     ReportFeeYearCollectionSlice,
     ReportDictSlice,
-    ReportQueryPayFeeDepositSlice
+    ReportQueryPayFeeDepositSlice,
+    QueryHuaningOweFeeSlice
   },
   // 关闭序列化检测
   middleware: getDefaultMiddleware =>

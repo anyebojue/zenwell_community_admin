@@ -1,7 +1,7 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ReturnPayFeeParams } from 'api/model/property/feeConfig/returnPayFeeModel'
-import { find } from 'modules/property/feeConfig/returnPayFee'
+import { ReportFeeYearCollectionDetailParams } from 'api/model/property/report/queryPayFeeDepositModel'
+import { find } from 'modules/property/report/queryPayFeeDeposit'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -29,7 +29,7 @@ const FormSearch: React.FC = () => {
   const { list: floorList } = useSelector((state: RootState) => state.HousingManagementSlice)
   const { list: unitList } = useSelector((state: RootState) => state.UnitSlice)
   const { list: feeList } = useSelector((state: RootState) => state.FeeConfigSlice)
-  const [searchParams, setSearchParams] = useState<ReturnPayFeeParams>({
+  const [searchParams, setSearchParams] = useState<ReportFeeYearCollectionDetailParams>({
     floorId: '',
     unitId: '',
     roomNum: '',
@@ -42,14 +42,15 @@ const FormSearch: React.FC = () => {
   })
 
   const handleInputChange = useCallback(
-    (field: keyof ReturnPayFeeParams) => (event: ChangeEvent<HTMLInputElement>) => {
-      setSearchParams(prev => ({ ...prev, [field]: event.target.value }))
-    },
+    (field: keyof ReportFeeYearCollectionDetailParams) =>
+      (event: ChangeEvent<HTMLInputElement>) => {
+        setSearchParams(prev => ({ ...prev, [field]: event.target.value }))
+      },
     []
   )
 
   const fetchData = useCallback(
-    async (params: ReturnPayFeeParams & PaginationParams) => {
+    async (params: ReportFeeYearCollectionDetailParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
@@ -88,7 +89,8 @@ const FormSearch: React.FC = () => {
   }, [fetchData, page.num, page.size])
 
   const handleSelectChange =
-    (field: keyof ReturnPayFeeParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof ReportFeeYearCollectionDetailParams) =>
+    (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value

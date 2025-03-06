@@ -94,6 +94,24 @@ export interface ReportFeeYearCollectionDetailReply {
   feeConfigDtos?: Array<FeeConfigDto>
 }
 
+export interface ReportFeeYearCollectionDetailParams {
+  id?: string
+  communityId?: string
+  isExport?: boolean
+  floorId?: string
+  floorName?: string
+  roomNum?: string
+  unitId?: string
+  feeId?: string
+  state?: string
+  payerObjType?: string
+  startTime?: string
+  endTime?: string
+  configId?: string
+  detailState?: string
+  feeTypeCd?: string
+}
+
 export interface FindReportFeeYearCollectionDetailReply {
   page: Page
   list: Array<ReportFeeYearCollectionDetailReply>
