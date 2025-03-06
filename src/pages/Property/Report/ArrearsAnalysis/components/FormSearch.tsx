@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ReportFeeYearCollectionParams } from 'api/model/property/report/reportFeeYearCollectionModel'
 import { find } from 'modules/property/report/reportFeeYearCollection'
 import { find as findFeeConfigType } from 'modules/property/feeConfig/feeConfigType'
-import { find as findFeeConfig } from 'modules/property/feeConfig/feeConfig'
+import { find as findFloor } from 'modules/property/houses/housingManagement'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -31,12 +31,11 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.ReportFeeYearCollectionSlice)
   const { list: feeConfigTypeList } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
-  const { list: feeConfigList } = useSelector((state: RootState) => state.FeeConfigSlice)
+  const { list: floorList } = useSelector((state: RootState) => state.HousingManagementSlice)
 
   const [searchParams, setSearchParams] = useState<ReportFeeYearCollectionParams>({
-    feeId: '',
-    configId: '',
-    objName: ''
+    feeTypeCd: '',
+    floorNum: ''
   })
 
   const handleInputChange =
@@ -70,22 +69,9 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   )
 
   useEffect(() => {
-    fetchData(
-      findFeeConfigType,
-      { 'page.num': page.num, 'page.size': page.size },
-      '正在加载列表中，请稍后...'
-    )
+    fetchData(findFeeConfigType, { 'page.disable': true }, '正在加载列表中，请稍后...')
+    fetchData(findFloor, { 'page.disable': true }, '正在加载费用配置，请稍后...')
   }, [fetchData, page.num, page.size])
-
-  useEffect(() => {
-    if (searchParams.feeId) {
-      fetchData(
-        findFeeConfig,
-        { 'page.num': page.num, 'page.size': page.size, feeTypeCd: searchParams.feeId },
-        '正在加载费用配置，请稍后...'
-      )
-    }
-  }, [fetchData, page.num, page.size, searchParams])
 
   const handleSearch = () => {
     fetchData(
@@ -103,8 +89,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             select
             size="small"
             label="请选择收费类型"
-            value={searchParams.feeId || ''}
-            onChange={handleInputChange('feeId')}
+            value={searchParams.feeTypeCd || ''}
+            onChange={handleInputChange('feeTypeCd')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -120,12 +106,12 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             select
             size="small"
             label="请选择楼栋"
-            value={searchParams.configId || ''}
-            onChange={handleInputChange('configId')}
+            value={searchParams.floorNum || ''}
+            onChange={handleInputChange('floorNum')}
             variant="outlined"
             sx={textFieldStyles}
           >
-            {feeConfigList.map(option => (
+            {floorList.map(option => (
               <MenuItem key={option.id} value={option.id}>
                 {option.name}
               </MenuItem>
@@ -152,16 +138,14 @@ const FormSearch: React.FC<SearchFormProps> = () => {
           sx={buttonStyles('darkgray', '#696969')}
           onClick={() => {
             setSearchParams({
-              feeId: '',
-              configId: '',
-              objName: ''
+              feeTypeCd: '',
+              floorNum: ''
             })
             fetchData(
               find,
               {
-                feeId: '',
-                configId: '',
-                objName: '',
+                feeTypeCd: '',
+                floorNum: '',
                 'page.num': page.num,
                 'page.size': page.size
               },

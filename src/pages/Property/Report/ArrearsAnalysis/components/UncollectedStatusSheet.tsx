@@ -45,18 +45,18 @@ const TableData: React.FC<TableDataProps> = () => {
       disableVirtualization={false}
       rows={list}
       columns={[
-        { field: 'ownerName', headerName: '楼栋号', flex: 1 },
+        { field: 'floorNum', headerName: '楼栋号', flex: 1 },
         {
-          field: 'objName',
+          field: 'oweAmount',
           headerName: `总未收金额 (截止${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日)`,
           flex: 1
         },
         {
-          field: 'ownerLink',
+          field: 'curOweAmount',
           headerName: `${today.getFullYear()}年${today.getMonth() - 1}-${today.getMonth() + 1}月 未收金额`,
           flex: 1
         },
-        { field: 'builtUpArea', headerName: `${today.getFullYear()}年前未收金额`, flex: 1 }
+        { field: 'preOweAmount', headerName: `${today.getFullYear()}年前未收金额`, flex: 1 }
       ]}
       pageSizeOptions={[10, 20, 50, 100]}
       paginationMode="server"
