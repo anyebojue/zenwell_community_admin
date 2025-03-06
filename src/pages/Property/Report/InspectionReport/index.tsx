@@ -1,10 +1,13 @@
-import { memo, useEffect, useState, useMemo } from 'react'
+import { memo, useEffect, useState, useMemo, useCallback } from 'react'
 import { Box, Button, ButtonGroup, Stack, Typography, Theme } from '@mui/material'
 import { Download, Print } from '@mui/icons-material'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import { buttonStyles } from 'components/DeleteModal'
+import { find } from 'modules/property/feeConfig/meterType'
+import { find as findDict } from 'modules/property/report/reportDict'
+import message from 'components/Message'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
 
@@ -16,7 +19,8 @@ const contentBoxStyle = (theme: Theme) => ({
 })
 
 const CommunityAnnouncementIndex = () => {
-  const { list: dictList } = useSelector((state: RootState) => state.ReportDictSlice)
+  const dispatch = useDispatch<AppDispatch>()
+  const { page, list: dictList } = useSelector((state: RootState) => state.ReportDictSlice)
   const inspectionItems = useMemo(
     () =>
       dictList
@@ -37,6 +41,35 @@ const CommunityAnnouncementIndex = () => {
     () => inspectionItems.find(item => item.value === selectedButton),
     [inspectionItems, selectedButton]
   )
+
+  const fetchData = useCallback(
+    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
+      const closeLoading = message.loading(loadingMessage)
+      try {
+        const res = await dispatch(action(params))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
+      }
+    },
+    [dispatch]
+  )
+
+  useEffect(() => {
+    fetchData(findDict, { 'page.disable': true }, '正在加载列表中，请稍后...')
+  }, [fetchData])
+
+  useEffect(() => {
+    fetchData(
+      find,
+      { 'page.num': page.num, 'page.size': page.size, componentType: selectedButton },
+      '正在加载列表中，请稍后...'
+    )
+  }, [fetchData, page.num, page.size, selectedButton])
 
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
@@ -93,7 +126,7 @@ const CommunityAnnouncementIndex = () => {
                 </Button>
               </Stack>
             </Box>
-            <TableData selectedButton={selectedButton} />
+            <TableData />
           </Box>
         </Box>
       </Stack>
