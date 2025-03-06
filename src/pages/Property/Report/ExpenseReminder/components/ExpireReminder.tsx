@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { find } from 'modules/property/report/reportFeeYearCollection'
+import { find } from 'modules/property/report/queryDeadlineFee'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
@@ -9,7 +9,7 @@ interface TableDataProps {}
 
 const TableData: React.FC<TableDataProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.ReportFeeYearCollectionSlice)
+  const { page, list } = useSelector((state: RootState) => state.QueryDeadlineFeeSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -44,10 +44,10 @@ const TableData: React.FC<TableDataProps> = () => {
       disableVirtualization={false}
       rows={list}
       columns={[
-        { field: 'ownerName', headerName: '房号/车辆/合同', flex: 1 },
-        { field: 'objName', headerName: '费用项', flex: 1 },
-        { field: 'ownerLink', headerName: '费用结束时间', flex: 1 },
-        { field: 'feeTypeCdName', headerName: '距离费用结束时间（天）', flex: 1 }
+        { field: 'objName', headerName: '房号/车辆/合同', flex: 1 },
+        { field: 'feeName', headerName: '费用项', flex: 1 },
+        { field: 'endTime', headerName: '费用结束时间', flex: 1 },
+        { field: 'oweDay', headerName: '距离费用结束时间（天）', flex: 1 }
       ]}
       pageSizeOptions={[10, 20, 50, 100]}
       paginationMode="server"
