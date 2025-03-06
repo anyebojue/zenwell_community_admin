@@ -40,7 +40,8 @@ interface SearchFormProps {}
 const FormSearch: React.FC<SearchFormProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const info = useSelector((state: RootState) => state.info.userInfo)
-  const { page } = useSelector((state: RootState) => state.ReportFeeYearCollectionSlice)
+  const { page } = useSelector((state: RootState) => state.QueryRepairSlice)
+  const { list: employeeList } = useSelector((state: RootState) => state.EmployeesSlice)
 
   const [searchParams, setSearchParams] = useState<QueryRepairParams>({
     beginStartTime: formatDateTime(new Date()),
@@ -196,9 +197,9 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             variant="outlined"
             sx={textFieldStyles}
           >
-            {info.community.map(option => (
+            {employeeList.map(option => (
               <MenuItem key={option.id} value={option.id}>
-                {option.name}
+                {option.username}
               </MenuItem>
             ))}
           </TextField>
