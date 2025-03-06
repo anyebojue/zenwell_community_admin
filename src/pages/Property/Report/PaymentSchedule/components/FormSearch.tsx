@@ -9,17 +9,6 @@ import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 
-const formatDateTime = (date: Date | string | undefined): string => {
-  const validDate = date ? new Date(date) : new Date()
-  const year = validDate.getFullYear()
-  const month = String(validDate.getMonth() + 1).padStart(2, '0')
-  const day = String(validDate.getDate()).padStart(2, '0')
-  const hours = String(validDate.getHours()).padStart(2, '0')
-  const minutes = String(validDate.getMinutes()).padStart(2, '0')
-  const seconds = String(validDate.getSeconds()).padStart(2, '0')
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
-}
-
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {
     '& fieldset': {
@@ -44,10 +33,12 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   const { page } = useSelector((state: RootState) => state.QueryRepairSlice)
   const { list: feeConfigTypeList } = useSelector((state: RootState) => state.FeeConfigSlice)
   const { list: feeConfigList } = useSelector((state: RootState) => state.FeeConfigSlice)
+  const current_community = localStorage.getItem('current_community')
+  const community = JSON.parse(current_community || '')
 
   const [searchParams, setSearchParams] = useState<QueryPayFeeDetailParams>({
-    startTime: formatDateTime(new Date()),
-    endTime: formatDateTime(new Date()),
+    startTime: '',
+    endTime: '',
     primeRate: '',
     state: '',
     payerObjName: '',
@@ -55,7 +46,7 @@ const FormSearch: React.FC<SearchFormProps> = () => {
     configId: '',
     feeStartTime: '',
     feeEndTime: '',
-    communityId: ''
+    communityId: community?.id
   })
 
   const handleInputChange =
@@ -221,7 +212,7 @@ const FormSearch: React.FC<SearchFormProps> = () => {
           <TextField
             select
             size="small"
-            label="请选择收费类型"
+            label="请选择费用类型"
             value={searchParams.feeTypeCd}
             onChange={handleInputChange('feeTypeCd')}
             variant="outlined"
@@ -288,7 +279,7 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             select
             size="small"
             label="请选择小区"
-            value={searchParams.communityId}
+            value={searchParams.communityId || community?.id}
             onChange={handleSelectChange('communityId')}
             variant="outlined"
             sx={textFieldStyles}
@@ -320,8 +311,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
           sx={buttonStyles('darkgray', '#696969')}
           onClick={() => {
             setSearchParams({
-              startTime: formatDateTime(new Date()),
-              endTime: formatDateTime(new Date()),
+              startTime: '',
+              endTime: '',
               primeRate: '',
               state: '',
               payerObjName: '',
@@ -334,8 +325,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             fetchData(
               find,
               {
-                startTime: formatDateTime(new Date()),
-                endTime: formatDateTime(new Date()),
+                startTime: '',
+                endTime: '',
                 primeRate: '',
                 state: '',
                 payerObjName: '',

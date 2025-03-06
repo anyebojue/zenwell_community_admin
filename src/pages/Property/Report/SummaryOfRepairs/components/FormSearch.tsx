@@ -8,17 +8,6 @@ import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 
-const formatDateTime = (date: Date | string | undefined): string => {
-  const validDate = date ? new Date(date) : new Date()
-  const year = validDate.getFullYear()
-  const month = String(validDate.getMonth() + 1).padStart(2, '0')
-  const day = String(validDate.getDate()).padStart(2, '0')
-  const hours = String(validDate.getHours()).padStart(2, '0')
-  const minutes = String(validDate.getMinutes()).padStart(2, '0')
-  const seconds = String(validDate.getSeconds()).padStart(2, '0')
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
-}
-
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {
     '& fieldset': {
@@ -42,13 +31,15 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   const info = useSelector((state: RootState) => state.info.userInfo)
   const { page } = useSelector((state: RootState) => state.QueryRepairSlice)
   const { list: employeeList } = useSelector((state: RootState) => state.EmployeesSlice)
+  const current_community = localStorage.getItem('current_community')
+  const community = JSON.parse(current_community || '')
 
   const [searchParams, setSearchParams] = useState<QueryRepairParams>({
-    beginStartTime: formatDateTime(new Date()),
-    beginEndTime: formatDateTime(new Date()),
-    finishStartTime: formatDateTime(new Date()),
-    finishEndTime: formatDateTime(new Date()),
-    communityId: '',
+    beginStartTime: '',
+    beginEndTime: '',
+    finishStartTime: '',
+    finishEndTime: '',
+    communityId: community?.id,
     staffId: '',
     state: ''
   })
@@ -175,7 +166,7 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             select
             size="small"
             label="请选择小区"
-            value={searchParams.communityId}
+            value={searchParams.communityId || community?.id}
             onChange={handleSelectChange('communityId')}
             variant="outlined"
             sx={textFieldStyles}
@@ -255,10 +246,10 @@ const FormSearch: React.FC<SearchFormProps> = () => {
           sx={buttonStyles('darkgray', '#696969')}
           onClick={() => {
             setSearchParams({
-              beginStartTime: formatDateTime(new Date()),
-              beginEndTime: formatDateTime(new Date()),
-              finishStartTime: formatDateTime(new Date()),
-              finishEndTime: formatDateTime(new Date()),
+              beginStartTime: '',
+              beginEndTime: '',
+              finishStartTime: '',
+              finishEndTime: '',
               communityId: '',
               staffId: '',
               state: ''
@@ -266,10 +257,10 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             fetchData(
               find,
               {
-                beginStartTime: formatDateTime(new Date()),
-                beginEndTime: formatDateTime(new Date()),
-                finishStartTime: formatDateTime(new Date()),
-                finishEndTime: formatDateTime(new Date()),
+                beginStartTime: '',
+                beginEndTime: '',
+                finishStartTime: '',
+                finishEndTime: '',
                 communityId: '',
                 staffId: '',
                 state: ''
