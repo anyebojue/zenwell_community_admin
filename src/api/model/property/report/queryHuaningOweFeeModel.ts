@@ -34,5 +34,4 @@ export interface QueryHuaningOweFeeParams {
 export interface FindQueryHuaningOweFeeReply {
   page: Page
   list: Array<QueryHuaningOweFeeReply>
-  exportUrl: string
 }

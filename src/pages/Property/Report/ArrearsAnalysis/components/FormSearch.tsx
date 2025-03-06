@@ -2,6 +2,8 @@ import { ChangeEvent, memo, useState, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ReportFeeYearCollectionParams } from 'api/model/property/report/reportFeeYearCollectionModel'
 import { find } from 'modules/property/report/reportFeeYearCollection'
+import { find as findQueryHuaningOweFeeDetail } from 'modules/property/report/queryHuaningOweFeeDetail'
+import { find as findQueryHuaningPayFee } from 'modules/property/report/queryHuaningPayFee'
 import { find as findFeeConfigType } from 'modules/property/feeConfig/feeConfigType'
 import { find as findFloor } from 'modules/property/houses/housingManagement'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
@@ -25,9 +27,11 @@ const textFieldStyles = {
   }
 }
 
-interface SearchFormProps {}
+interface SearchFormProps {
+  activeTabIndex: number
+}
 
-const FormSearch: React.FC<SearchFormProps> = () => {
+const FormSearch: React.FC<SearchFormProps> = ({ activeTabIndex }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.ReportFeeYearCollectionSlice)
   const { list: feeConfigTypeList } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
@@ -74,11 +78,25 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   }, [fetchData, page.num, page.size])
 
   const handleSearch = () => {
-    fetchData(
-      find,
-      { ...searchParams, 'page.num': page.num, 'page.size': page.size },
-      '正在搜索，请稍后...'
-    )
+    if (activeTabIndex === 0) {
+      fetchData(
+        find,
+        { ...searchParams, 'page.num': page.num, 'page.size': page.size },
+        '正在搜索，请稍后...'
+      )
+    } else if (activeTabIndex === 1) {
+      fetchData(
+        findQueryHuaningOweFeeDetail,
+        { ...searchParams, 'page.num': page.num, 'page.size': page.size },
+        '正在搜索，请稍后...'
+      )
+    } else if (activeTabIndex === 2) {
+      fetchData(
+        findQueryHuaningPayFee,
+        { ...searchParams, 'page.num': page.num, 'page.size': page.size },
+        '正在搜索，请稍后...'
+      )
+    }
   }
 
   return (

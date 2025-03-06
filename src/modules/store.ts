@@ -66,6 +66,8 @@ import ReportFeeYearCollectionSlice from './property/report/reportFeeYearCollect
 import ReportDictSlice from './property/report/reportDict'
 import ReportQueryPayFeeDepositSlice from './property/report/queryPayFeeDeposit'
 import QueryHuaningOweFeeSlice from './property/report/queryHuaningOweFee'
+import QueryHuaningOweFeeDetailSlice from './property/report/queryHuaningOweFeeDetail'
+import QueryHuaningPayFeeSlice from './property/report/queryHuaningPayFee'
 
 const store = configureStore({
   reducer: {
@@ -135,7 +137,9 @@ const store = configureStore({
     ReportFeeYearCollectionSlice,
     ReportDictSlice,
     ReportQueryPayFeeDepositSlice,
-    QueryHuaningOweFeeSlice
+    QueryHuaningOweFeeSlice,
+    QueryHuaningOweFeeDetailSlice,
+    QueryHuaningPayFeeSlice
   },
   // 关闭序列化检测
   middleware: getDefaultMiddleware =>

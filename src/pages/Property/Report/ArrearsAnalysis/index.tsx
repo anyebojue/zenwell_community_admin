@@ -25,7 +25,7 @@ const ReleasesIndex = () => {
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
       <Box sx={{ width: '100%' }}>
-        <FormSearch />
+        <FormSearch activeTabIndex={activeTabIndex} />
         <Box sx={contentBoxStyle}>
           <Tabs
             sx={{

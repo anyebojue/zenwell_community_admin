@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
-import { FindQueryHuaningOweFee } from 'api/property/report/queryHuaningOweFee'
+import { FindQueryHuaningOweFeeDetail } from 'api/property/report/queryHuaningOweFeeDetail'
 import {
-  QueryHuaningOweFeeReply,
-  QueryHuaningOweFeeParams
-} from 'api/model/property/report/queryHuaningOweFeeModel'
+  QueryHuaningOweFeeDetailReply,
+  QueryHuaningOweFeeDetailParams
+} from 'api/model/property/report/queryHuaningOweFeeDetailModel'
 
-const namespace = 'queryHuaningOweFee'
+const namespace = 'queryHuaningOweFeeDetail'
 
 const PAGE = {
   NUM: '1',
@@ -15,7 +15,7 @@ const PAGE = {
 
 interface IInitialState {
   page: Page
-  list: QueryHuaningOweFeeReply[]
+  list: QueryHuaningOweFeeDetailReply[]
 }
 
 const initialState: IInitialState = {
@@ -30,13 +30,13 @@ const initialState: IInitialState = {
 
 export const find = createAsyncThunk(
   `${namespace}/find`,
-  async (params: QueryHuaningOweFeeParams & PaginationParams) => {
-    const res = await FindQueryHuaningOweFee(params)
+  async (params: QueryHuaningOweFeeDetailParams & PaginationParams) => {
+    const res = await FindQueryHuaningOweFeeDetail(params)
     return res
   }
 )
 
-export const QueryHuaningOweFeeSlice = createSlice({
+export const QueryHuaningOweFeeDetailSlice = createSlice({
   name: namespace,
   initialState,
   reducers: {
@@ -59,8 +59,9 @@ export const QueryHuaningOweFeeSlice = createSlice({
   }
 })
 
-export const { reset } = QueryHuaningOweFeeSlice.actions
+export const { reset } = QueryHuaningOweFeeDetailSlice.actions
 
-export const selectQueryHuaningOweFee = (state: RootState) => state.QueryHuaningOweFeeSlice
+export const selectQueryHuaningOweFeeDetail = (state: RootState) =>
+  state.QueryHuaningOweFeeDetailSlice
 
-export default QueryHuaningOweFeeSlice.reducer
+export default QueryHuaningOweFeeDetailSlice.reducer
