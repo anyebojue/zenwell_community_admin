@@ -5,11 +5,12 @@ import Copyright from 'layouts/components/Copyright'
 import FormSearch from './components/FormSearch'
 import HouseTableData from './components/HouseTableData'
 import VehicleTableData from './components/VehicleTableData'
+import Statistics from './components/Statistics'
 
 const contentBoxStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
   borderRadius: '15px',
-  padding: '15px 15px',
+  padding: '5px 15px',
   width: '100%'
 })
 
@@ -25,7 +26,8 @@ const ReleasesIndex = () => {
       <NavbarBreadcrumbs />
       <Box sx={{ width: '100%' }}>
         <FormSearch />
-        <Box sx={contentBoxStyle}>
+        <Statistics />
+        <Box sx={contentBoxStyle} position="relative">
           <Tabs
             sx={{
               mt: 1,

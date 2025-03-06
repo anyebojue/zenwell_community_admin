@@ -43,7 +43,15 @@ const TableData: React.FC<TableDataProps> = () => {
 
   return (
     <>
-      <Box sx={{ display: 'flex', justifyContent: 'right' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'right',
+          position: 'absolute',
+          top: '5%',
+          right: '1.5%'
+        }}
+      >
         <Button
           size="small"
           variant="contained"
