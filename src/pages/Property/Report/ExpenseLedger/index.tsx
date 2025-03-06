@@ -1,7 +1,10 @@
 import { memo, useState } from 'react'
-import { Box, Tab, Tabs, Theme } from '@mui/material'
+import { Box, Button, Tab, Tabs, Theme, Typography } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
+import { Download } from '@mui/icons-material'
+import { buttonStyles } from 'components/DeleteModal'
+import { useSelector } from 'react-redux'
 import FormSearch from './components/FormSearch'
 import HouseTableData from './components/HouseTableData'
 import VehicleTableData from './components/VehicleTableData'
@@ -14,6 +17,7 @@ const contentBoxStyle = (theme: Theme) => ({
 })
 
 const ReleasesIndex = () => {
+  const { exportUrl } = useSelector((state: RootState) => state.ReportFeeYearCollectionSlice)
   const [activeTabIndex, setActiveTabIndex] = useState(0)
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
@@ -26,8 +30,28 @@ const ReleasesIndex = () => {
       <Box sx={{ width: '100%' }}>
         <FormSearch />
         <Box sx={contentBoxStyle}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography variant="h6">费用台账</Typography>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              startIcon={<Download />}
+              sx={buttonStyles('#2660ad', '#1d428a')}
+              onClick={() => {
+                if (exportUrl) {
+                  window.open(exportUrl, '_blank')
+                } else {
+                  alert('暂无导出链接')
+                }
+              }}
+            >
+              导出
+            </Button>
+          </Box>
           <Tabs
             sx={{
+              mt: 1,
               border: 'none',
               boxShadow: 'none',
               '& .MuiTab-root': {
