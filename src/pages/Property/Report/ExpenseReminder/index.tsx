@@ -28,7 +28,7 @@ const ReleasesIndex = () => {
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
       <Box sx={{ width: '100%' }}>
-        <FormSearch />
+        <FormSearch activeTabIndex={activeTabIndex} />
         <Box sx={contentBoxStyle}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Typography variant="h6">费用提醒</Typography>

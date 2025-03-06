@@ -1,7 +1,8 @@
 import { ChangeEvent, memo, useState, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ReportFeeYearCollectionParams } from 'api/model/property/report/reportFeeYearCollectionModel'
-import { find } from 'modules/property/report/reportFeeYearCollection'
+import { QueryPrePaymentParams } from 'api/model/property/report/queryPrePaymentModel'
+import { find as findPrePayment } from 'modules/property/report/queryPrePayment'
+import { find as findDeadlineFee } from 'modules/property/report/queryDeadlineFee'
 import { find as findFeeConfig } from 'modules/property/feeConfig/feeConfig'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
@@ -24,24 +25,28 @@ const textFieldStyles = {
   }
 }
 
-interface SearchFormProps {}
+interface SearchFormProps {
+  activeTabIndex: number
+}
 
-const FormSearch: React.FC<SearchFormProps> = () => {
+const FormSearch: React.FC<SearchFormProps> = ({ activeTabIndex }) => {
   const dispatch = useDispatch<AppDispatch>()
   const info = useSelector((state: RootState) => state.info.userInfo)
-  const { page } = useSelector((state: RootState) => state.ReportFeeYearCollectionSlice)
+  const { page } = useSelector((state: RootState) => state.QueryPrePaymentSlice)
   const { list: feeConfigList } = useSelector((state: RootState) => state.FeeConfigSlice)
   const current_community = localStorage.getItem('current_community')
   const community = JSON.parse(current_community || '')
 
-  const [searchParams, setSearchParams] = useState<ReportFeeYearCollectionParams>({
-    feeTypeCd: '',
+  const [searchParams, setSearchParams] = useState<QueryPrePaymentParams>({
+    objName: '',
+    ownerName: '',
+    link: '',
     configId: '',
-    objName: ''
+    communityId: ''
   })
 
   const handleInputChange =
-    (field: keyof ReportFeeYearCollectionParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof QueryPrePaymentParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -76,14 +81,14 @@ const FormSearch: React.FC<SearchFormProps> = () => {
 
   const handleSearch = () => {
     fetchData(
-      find,
+      findPrePayment,
       { ...searchParams, 'page.num': page.num, 'page.size': page.size },
       '正在搜索，请稍后...'
     )
   }
 
   const handleSelectChange =
-    (field: keyof ReportFeeYearCollectionParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof QueryPrePaymentParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -180,16 +185,20 @@ const FormSearch: React.FC<SearchFormProps> = () => {
           sx={buttonStyles('darkgray', '#696969')}
           onClick={() => {
             setSearchParams({
-              feeTypeCd: '',
+              objName: '',
+              ownerName: '',
+              link: '',
               configId: '',
-              objName: ''
+              communityId: ''
             })
             fetchData(
-              find,
+              activeTabIndex === 0 ? findPrePayment : findDeadlineFee,
               {
-                feeTypeCd: '',
-                configId: '',
                 objName: '',
+                ownerName: '',
+                link: '',
+                configId: '',
+                communityId: '',
                 'page.num': page.num,
                 'page.size': page.size
               },
