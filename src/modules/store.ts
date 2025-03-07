@@ -82,6 +82,14 @@ import QueryFeeDataReportSlice from './property/report/queryFeeDataReport'
 import QueryOrderDataReportSlice from './property/report/queryOrderDataReport'
 import QueryInoutDataReportSlice from './property/report/queryInoutDataReport'
 import QueryOthersDataReportSlice from './property/report/queryOthersDataReport'
+import QueryMonthReceivedDetailSlice from './property/report/queryMonthReceivedDetail'
+import QueryMonthOweDetailSlice from './property/report/queryMonthOweDetail'
+import QueryReceivedDetailStatisticsSlice from './property/report/queryReceivedDetailStatistics'
+import QueryReceivedWayStatisticsSlice from './property/report/queryReceivedWayStatistics'
+import QueryOweStatisticsSlice from './property/report/queryOweStatistics'
+import QueryOweDetailStatisticsSlice from './property/report/queryOweDetailStatistics'
+import QueryDataReportFeeStatisticsSlice from './property/report/queryDataReportFeeStatistics'
+import QueryReceivedStatisticsSlice from './property/report/queryReceivedStatistics'
 
 const store = configureStore({
   reducer: {
@@ -167,7 +175,15 @@ const store = configureStore({
     QueryFeeDataReportSlice,
     QueryOrderDataReportSlice,
     QueryInoutDataReportSlice,
-    QueryOthersDataReportSlice
+    QueryOthersDataReportSlice,
+    QueryMonthReceivedDetailSlice,
+    QueryMonthOweDetailSlice,
+    QueryReceivedDetailStatisticsSlice,
+    QueryReceivedWayStatisticsSlice,
+    QueryOweStatisticsSlice,
+    QueryOweDetailStatisticsSlice,
+    QueryDataReportFeeStatisticsSlice,
+    QueryReceivedStatisticsSlice
   },
   // 关闭序列化检测
   middleware: getDefaultMiddleware =>
