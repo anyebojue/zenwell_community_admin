@@ -1,9 +1,7 @@
-import { memo, useCallback, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { find } from 'modules/property/report/reportFeeYearCollection'
+import { memo } from 'react'
+import { useSelector } from 'react-redux'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
-import message from 'components/Message'
 import { Box, Button } from '@mui/material'
 import { Download } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -11,35 +9,9 @@ import { buttonStyles } from 'components/DeleteModal'
 interface TableDataProps {}
 
 const TableData: React.FC<TableDataProps> = () => {
-  const dispatch = useDispatch<AppDispatch>()
   const { page, list, exportUrl } = useSelector(
-    (state: RootState) => state.ReportFeeYearCollectionSlice
+    (state: RootState) => state.QueryReceivedWayStatisticsSlice
   )
-
-  const fetchData = useCallback(
-    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
-      const closeLoading = message.loading(loadingMessage)
-      try {
-        const res = await dispatch(action(params))
-        if ('error' in res && res.error?.message) {
-          throw new Error(res.error.message)
-        }
-      } catch (err: unknown) {
-        if (err instanceof Error) message.error(err.message)
-      } finally {
-        closeLoading()
-      }
-    },
-    [dispatch]
-  )
-
-  useEffect(() => {
-    fetchData(
-      find,
-      { 'page.num': page.num, 'page.size': page.size, objType: '3333', isExport: true },
-      '正在加载列表中，请稍后...'
-    )
-  }, [fetchData, page.num, page.size])
 
   return (
     <>
@@ -76,12 +48,10 @@ const TableData: React.FC<TableDataProps> = () => {
         disableVirtualization={false}
         rows={list}
         columns={[
-          { field: 'ownerName', headerName: '姓名', flex: 1 },
-          { field: 'objName', headerName: '房号', flex: 1 },
-          { field: 'ownerLink', headerName: '联系电话', flex: 1 },
-          { field: 'builtUpArea', headerName: '面积', flex: 1 },
-          { field: 'feeTypeCdName', headerName: '收费类型', flex: 1 },
-          { field: 'feeName', headerName: '费用名称', flex: 1 }
+          { field: 'id', headerName: '现金', flex: 1 },
+          { field: 'name', headerName: '微信二维码', flex: 1 },
+          { field: 'primeRate', headerName: '支付宝二维码', flex: 1 },
+          { field: 'receivedAmount', headerName: '押金退款到账户', flex: 1 }
         ]}
         pageSizeOptions={[10, 20, 50, 100]}
         paginationMode="server"

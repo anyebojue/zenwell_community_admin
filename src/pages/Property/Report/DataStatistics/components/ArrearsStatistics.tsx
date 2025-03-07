@@ -1,45 +1,54 @@
-import { memo, useCallback, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { find } from 'modules/property/report/reportFeeYearCollection'
+import { memo } from 'react'
+import { useSelector } from 'react-redux'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
-import message from 'components/Message'
-import { Box, Button } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { Download } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
+import { QueryReceivedStatisticsReply } from 'api/model/property/report/queryReceivedStatisticsModel'
 
 interface TableDataProps {}
 
+interface FeeData {
+  [key: string]: number | string
+}
+
+interface FeeItem {
+  key?: string
+  val?: string | number
+}
+
 const TableData: React.FC<TableDataProps> = () => {
-  const dispatch = useDispatch<AppDispatch>()
   const { page, list, exportUrl } = useSelector(
-    (state: RootState) => state.ReportFeeYearCollectionSlice
+    (state: RootState) => state.QueryReceivedStatisticsSlice
   )
 
-  const fetchData = useCallback(
-    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
-      const closeLoading = message.loading(loadingMessage)
-      try {
-        const res = await dispatch(action(params))
-        if ('error' in res && res.error?.message) {
-          throw new Error(res.error.message)
-        }
-      } catch (err: unknown) {
-        if (err instanceof Error) message.error(err.message)
-      } finally {
-        closeLoading()
+  const dynamicColumns =
+    list?.[0]?.receivedFees?.map((fee: FeeItem) => ({
+      field: fee.key || '未知费用',
+      headerName: fee.key || '未知费用',
+      flex: 1
+    })) || []
+
+  const columns = [
+    { field: 'floorNum', headerName: '楼栋', flex: 1 },
+    { field: 'roomCount', headerName: '户数', flex: 1 },
+    { field: 'feeRoomCount', headerName: '收费户数', flex: 1 },
+    { field: 'oweRoomCount', headerName: '欠费户数', flex: 1 },
+    { field: 'oweFee', headerName: '欠费', flex: 1 },
+    ...dynamicColumns
+  ]
+
+  const rows = list.map((item: QueryReceivedStatisticsReply, index: number) => {
+    const feeData = item.receivedFees?.reduce((acc: FeeData, fee) => {
+      if (fee.key) {
+        acc[fee.key] = fee.val ?? ''
       }
-    },
-    [dispatch]
-  )
+      return acc
+    }, {} as FeeData)
 
-  useEffect(() => {
-    fetchData(
-      find,
-      { 'page.num': page.num, 'page.size': page.size, objType: '3333', isExport: true },
-      '正在加载列表中，请稍后...'
-    )
-  }, [fetchData, page.num, page.size])
+    return { id: item.floorId || index, ...item, ...feeData }
+  })
 
   return (
     <>
@@ -74,15 +83,8 @@ const TableData: React.FC<TableDataProps> = () => {
         localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
         disableColumnResize
         disableVirtualization={false}
-        rows={list}
-        columns={[
-          { field: 'ownerName', headerName: '姓名', flex: 1 },
-          { field: 'objName', headerName: '房号', flex: 1 },
-          { field: 'ownerLink', headerName: '联系电话', flex: 1 },
-          { field: 'builtUpArea', headerName: '面积', flex: 1 },
-          { field: 'feeTypeCdName', headerName: '收费类型', flex: 1 },
-          { field: 'feeName', headerName: '费用名称', flex: 1 }
-        ]}
+        rows={rows}
+        columns={columns}
         pageSizeOptions={[10, 20, 50, 100]}
         paginationMode="server"
         rowCount={Number(page.total)}
@@ -94,6 +96,9 @@ const TableData: React.FC<TableDataProps> = () => {
           }
         }}
       />
+      <Typography variant="body1" sx={{ mt: 1, ml: 1 }}>
+        总欠费： 271.00
+      </Typography>
     </>
   )
 }
