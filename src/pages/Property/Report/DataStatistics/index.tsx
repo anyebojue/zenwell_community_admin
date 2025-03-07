@@ -3,9 +3,15 @@ import { Box, Tab, Tabs, Theme } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import FormSearch from './components/FormSearch'
-import HouseTableData from './components/HouseTableData'
-import VehicleTableData from './components/VehicleTableData'
+import ActualStatistics from './components/ActualStatistics'
+import ActualReceiptDetails from './components/ActualReceiptDetails'
 import Statistics from './components/Statistics'
+import CollectionMethodStatistics from './components/CollectionMethodStatistics'
+import ArrearsStatistics from './components/ArrearsStatistics'
+import DetailsOfArrears from './components/DetailsOfArrears'
+import CollectionSituation from './components/CollectionSituation'
+import MonthlyActualIncomeDetails from './components/MonthlyActualIncomeDetails'
+import MonthlyArrearsDetails from './components/MonthlyArrearsDetails'
 
 const contentBoxStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -25,7 +31,7 @@ const ReleasesIndex = () => {
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
       <Box sx={{ width: '100%' }}>
-        <FormSearch />
+        <FormSearch activeTabIndex={activeTabIndex} />
         <Statistics />
         <Box sx={contentBoxStyle} position="relative">
           <Tabs
@@ -57,14 +63,14 @@ const ReleasesIndex = () => {
             <Tab sx={{ pl: 2, pr: 2 }} label="月欠费明细" value={7} />
           </Tabs>
           <Box sx={{ mt: 2 }}>
-            {activeTabIndex === 0 && <HouseTableData />}
-            {activeTabIndex === 1 && <VehicleTableData />}
-            {activeTabIndex === 2 && <VehicleTableData />}
-            {activeTabIndex === 3 && <VehicleTableData />}
-            {activeTabIndex === 4 && <VehicleTableData />}
-            {activeTabIndex === 5 && <VehicleTableData />}
-            {activeTabIndex === 6 && <VehicleTableData />}
-            {activeTabIndex === 7 && <VehicleTableData />}
+            {activeTabIndex === 0 && <ActualStatistics />}
+            {activeTabIndex === 1 && <ActualReceiptDetails />}
+            {activeTabIndex === 2 && <CollectionMethodStatistics />}
+            {activeTabIndex === 3 && <ArrearsStatistics />}
+            {activeTabIndex === 4 && <DetailsOfArrears />}
+            {activeTabIndex === 5 && <CollectionSituation />}
+            {activeTabIndex === 6 && <MonthlyActualIncomeDetails />}
+            {activeTabIndex === 7 && <MonthlyArrearsDetails />}
           </Box>
         </Box>
       </Box>

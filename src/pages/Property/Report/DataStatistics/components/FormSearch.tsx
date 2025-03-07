@@ -8,9 +8,11 @@ import { find as findOthersDataReport } from 'modules/property/report/queryOther
 import { Box, Button, MenuItem, Stack, TextField, Typography } from '@mui/material'
 import message from 'components/Message'
 
-interface SearchFormProps {}
+interface SearchFormProps {
+  activeTabIndex: number
+}
 
-const FormSearch: React.FC<SearchFormProps> = () => {
+const FormSearch: React.FC<SearchFormProps> = ({ activeTabIndex }) => {
   const dispatch = useDispatch<AppDispatch>()
   const info = useSelector((state: RootState) => state.info.userInfo)
   const current_community = localStorage.getItem('current_community')
@@ -77,6 +79,28 @@ const FormSearch: React.FC<SearchFormProps> = () => {
     }))
     setSelectedRange(days)
   }
+
+  useEffect(() => {
+    if (activeTabIndex === 0) {
+      console.log('实收统计')
+    } else if (activeTabIndex === 1) {
+      console.log('实收明细')
+    } else if (activeTabIndex === 2) {
+      console.log('收款方式统计')
+    } else if (activeTabIndex === 3) {
+      console.log('欠费统计')
+    } else if (activeTabIndex === 4) {
+      console.log('欠费明细')
+    } else if (activeTabIndex === 5) {
+      console.log('收缴情况')
+    } else if (activeTabIndex === 6) {
+      console.log('月实收明细')
+    } else if (activeTabIndex === 7) {
+      console.log('月欠费明细')
+    } else {
+      console.log('')
+    }
+  }, [activeTabIndex])
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', my: 2 }}>
