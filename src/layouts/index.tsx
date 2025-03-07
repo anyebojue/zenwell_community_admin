@@ -96,7 +96,7 @@ const App = ({ disableCustomTheme }: { disableCustomTheme?: boolean }) => {
     <AppTheme disableCustomTheme={disableCustomTheme} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
       {!isFullPage ? (
-        <Box sx={{ display: 'flex', height: '100%' }}>
+        <Box sx={{ display: 'flex' }}>
           <SideMenu isMenuOpen={isMenuOpen} />
           <Stack sx={{ width: 'calc(100% - 260px)', height: '100%' }}>
             <Header isMenuOpen={isMenuOpen} onToggleMenu={() => setIsMenuOpen(prev => !prev)} />
