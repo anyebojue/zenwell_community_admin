@@ -104,8 +104,7 @@ const TableData: React.FC<TableDataProps> = () => {
               whiteSpace: 'normal',
               wordWrap: 'break-word',
               lineHeight: '1.2'
-            },
-            mt: 1
+            }
           }}
           localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
           disableColumnResize
