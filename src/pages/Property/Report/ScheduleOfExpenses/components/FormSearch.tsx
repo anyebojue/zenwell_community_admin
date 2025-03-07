@@ -1,9 +1,9 @@
-import { ChangeEvent, memo, useState, useCallback, useEffect } from 'react'
+import { memo, useState, useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ReportFeeYearCollectionParams } from 'api/model/property/report/reportFeeYearCollectionModel'
-import { find } from 'modules/property/report/reportFeeYearCollection'
-import { find as findFeeConfigType } from 'modules/property/feeConfig/feeConfigType'
-import { find as findFeeConfig } from 'modules/property/feeConfig/feeConfig'
+import { find as findRoom } from 'modules/property/report/queryReportFeeDetailRoom'
+import { find as findOwner } from 'modules/property/report/queryReportFeeDetailOwner'
+import { find as findContract } from 'modules/property/report/queryReportFeeDetailContract'
+import { find as findCar } from 'modules/property/report/queryReportFeeDetailCar'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -11,41 +11,42 @@ import message from 'components/Message'
 
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {
-    '& fieldset': {
-      border: 'none'
-    },
-    '&:hover fieldset': {
-      border: '1px solid',
-      borderColor: 'primary.main'
-    },
-    '&.Mui-focused fieldset': {
-      border: '2px solid',
-      borderColor: 'primary.main'
-    }
+    '& fieldset': { border: 'none' },
+    '&:hover fieldset': { border: '1px solid', borderColor: 'primary.main' },
+    '&.Mui-focused fieldset': { border: '2px solid', borderColor: 'primary.main' }
   }
 }
 
-interface SearchFormProps {}
+const getFirstDays = (date = new Date()) => [
+  new Date(date.getFullYear(), date.getMonth(), 1).toISOString().split('T')[0],
+  new Date(date.getFullYear(), date.getMonth() + 1, 1).toISOString().split('T')[0]
+]
 
-const FormSearch: React.FC<SearchFormProps> = () => {
-  const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.ReportFeeYearCollectionSlice)
-  const { list: feeConfigTypeList } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
-  const { list: feeConfigList } = useSelector((state: RootState) => state.FeeConfigSlice)
+const FormSearch = ({ activeTabIndex }: { activeTabIndex: number }) => {
+  const dispatch = useDispatch()
+  const info = useSelector((state: RootState) => state.info.userInfo)
+  const pageRoom = useSelector((state: RootState) => state.QueryReportFeeDetailRoomSlice.page)
+  const pageOwner = useSelector((state: RootState) => state.QueryReportFeeDetailOwnerSlice.page)
+  const pageContract = useSelector(
+    (state: RootState) => state.QueryReportFeeDetailContractSlice.page
+  )
+  const pageCar = useSelector((state: RootState) => state.QueryReportFeeDetailCarSlice.page)
 
-  const [searchParams, setSearchParams] = useState<ReportFeeYearCollectionParams>({
-    feeTypeCd: '',
-    configId: '',
-    objName: ''
+  const pageSlices = useMemo(
+    () => [pageRoom, pageOwner, pageContract, pageCar],
+    [pageRoom, pageOwner, pageContract, pageCar]
+  )
+
+  const currentCommunity = JSON.parse(localStorage.getItem('current_community') || '{}')
+
+  const [searchParams, setSearchParams] = useState({
+    startDate: getFirstDays()[0],
+    endDate: getFirstDays()[1],
+    objName: '',
+    ownerName: '',
+    link: '',
+    communityId: currentCommunity?.id
   })
-
-  const handleInputChange =
-    (field: keyof ReportFeeYearCollectionParams) => (event: ChangeEvent<HTMLInputElement>) => {
-      setSearchParams(prevData => ({
-        ...prevData,
-        [field]: event.target.value
-      }))
-    }
 
   const fetchData = useCallback(
     async (
@@ -56,10 +57,7 @@ const FormSearch: React.FC<SearchFormProps> = () => {
       const closeLoading = message.loading(loadingMessage)
       try {
         const res = await dispatch(action(params))
-        if ('error' in res && res.error?.message) {
-          throw new Error(res.error.message)
-        }
-        return res
+        if (res?.error?.message) throw new Error(res.error.message)
       } catch (err: unknown) {
         if (err instanceof Error) message.error(err.message)
       } finally {
@@ -69,79 +67,70 @@ const FormSearch: React.FC<SearchFormProps> = () => {
     [dispatch]
   )
 
-  useEffect(() => {
+  const handleSearch = useCallback(() => {
+    const actions = [findRoom, findOwner, findContract, findCar]
+    const action = actions[activeTabIndex]
+    const page = pageSlices[activeTabIndex]
     fetchData(
-      findFeeConfigType,
-      { 'page.num': page.num, 'page.size': page.size },
-      '正在加载列表中，请稍后...'
-    )
-  }, [fetchData, page.num, page.size])
-
-  useEffect(() => {
-    if (searchParams.feeTypeCd) {
-      fetchData(
-        findFeeConfig,
-        { 'page.num': page.num, 'page.size': page.size, feeTypeCd: searchParams.feeTypeCd },
-        '正在加载费用配置，请稍后...'
-      )
-    }
-  }, [fetchData, page.num, page.size, searchParams])
-
-  const handleSearch = () => {
-    fetchData(
-      find,
-      { ...searchParams, 'page.num': page.num, 'page.size': page.size },
+      action,
+      { ...searchParams, 'page.num': page?.num || '1', 'page.size': page?.size || '20' },
       '正在搜索，请稍后...'
     )
+  }, [activeTabIndex, pageSlices, fetchData, searchParams])
+
+  const handleReset = () => {
+    setSearchParams({
+      startDate: getFirstDays()[0],
+      endDate: getFirstDays()[1],
+      objName: '',
+      ownerName: '',
+      link: '',
+      communityId: currentCommunity?.id
+    })
+    handleSearch()
   }
+
+  useEffect(() => handleSearch(), [activeTabIndex, handleSearch])
 
   return (
     <Box>
       <Stack direction="row" spacing={3} component="form" sx={{ mb: 1.5 }}>
+        {['startDate', 'endDate', 'objName', 'ownerName', 'link'].map((field, index) => (
+          <FormControl key={index} sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+            <TextField
+              size="small"
+              label={
+                field === 'startDate'
+                  ? '请输入开始时间'
+                  : field === 'endDate'
+                    ? '请输入结束时间'
+                    : `请输入${field}`
+              }
+              type={field.includes('Date') ? 'date' : 'text'}
+              variant="outlined"
+              sx={textFieldStyles}
+              value={searchParams[field as keyof typeof searchParams]}
+              onChange={e => setSearchParams({ ...searchParams, [field]: e.target.value })}
+              slotProps={field.includes('Date') ? { inputLabel: { shrink: true } } : {}}
+            />
+          </FormControl>
+        ))}
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             select
             size="small"
-            label="请选择费用类型"
-            value={searchParams.feeTypeCd}
-            onChange={handleInputChange('feeTypeCd')}
+            label="请选择小区"
+            value={searchParams.communityId}
+            onChange={e => setSearchParams({ ...searchParams, communityId: e.target.value })}
             variant="outlined"
             sx={textFieldStyles}
           >
-            {feeConfigTypeList.map(option => (
+            {info.community.map(option => (
               <MenuItem key={option.id} value={option.id}>
                 {option.name}
               </MenuItem>
             ))}
           </TextField>
-        </FormControl>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            select
-            size="small"
-            label="请选择收费项"
-            value={searchParams.configId}
-            onChange={handleInputChange('configId')}
-            variant="outlined"
-            sx={textFieldStyles}
-          >
-            {feeConfigList.map(option => (
-              <MenuItem key={option.id} value={option.id}>
-                {option.name}
-              </MenuItem>
-            ))}
-          </TextField>
-        </FormControl>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            size="small"
-            label="请输入房屋编号"
-            type="text"
-            variant="outlined"
-            sx={textFieldStyles}
-            value={searchParams.objName}
-            onChange={handleInputChange('objName')}
-          />
         </FormControl>
       </Stack>
       <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
@@ -161,24 +150,7 @@ const FormSearch: React.FC<SearchFormProps> = () => {
           color="error"
           startIcon={<History />}
           sx={buttonStyles('darkgray', '#696969')}
-          onClick={() => {
-            setSearchParams({
-              feeTypeCd: '',
-              configId: '',
-              objName: ''
-            })
-            fetchData(
-              find,
-              {
-                feeTypeCd: '',
-                configId: '',
-                objName: '',
-                'page.num': page.num,
-                'page.size': page.size
-              },
-              '正在重置，请稍后...'
-            )
-          }}
+          onClick={handleReset}
         >
           重置
         </Button>
