@@ -57,7 +57,7 @@ const TableData: React.FC<TableDataProps> = () => {
           display: 'flex',
           justifyContent: 'right',
           position: 'absolute',
-          top: '5%',
+          top: '3%',
           right: '1.5%'
         }}
       >
