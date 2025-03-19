@@ -27,6 +27,14 @@ const reportConfiguration: IRouter[] = [
         }
       },
       {
+        path: 'AssociatedComponent',
+        element: load('Platform/ReportConfiguration/AssociatedComponent'),
+        meta: {
+          title: '报表组',
+          hidden: true
+        }
+      },
+      {
         path: 'ReportComponent',
         element: load('Platform/ReportConfiguration/ReportComponent'),
         meta: {

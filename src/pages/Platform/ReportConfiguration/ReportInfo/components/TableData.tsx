@@ -7,6 +7,7 @@ import { Chip } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
+import { useNavigate } from 'react-router-dom'
 
 interface TableDataProps {
   setDialogValue: Dispatch<SetStateAction<ReportCustomReply | undefined>>
@@ -22,6 +23,7 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.ReportCustomSlice)
   const { list: groupList } = useSelector((state: RootState) => state.ReportCustomGroupSlice)
 
@@ -57,6 +59,9 @@ const TableData: React.FC<TableDataProps> = ({
   const handleActionClick = useCallback(
     (actionType: string, row: ReportCustomReply) => {
       switch (actionType) {
+        case 'relevance':
+          navigate('/ReportConfiguration/AssociatedComponent', { state: { value: row } })
+          break
         case 'edit':
           setDialogValue(row)
           setOpenDialog(true)
@@ -67,11 +72,12 @@ const TableData: React.FC<TableDataProps> = ({
           break
       }
     },
-    [setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
+    [navigate, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
   )
 
   const renderActionButtons = (row: ReportCustomReply) =>
     [
+      { title: '关联组件', action: 'relevance' },
       { title: '修改', action: 'edit' },
       { title: '删除', action: 'delete' }
     ].map(({ title, action }) => (
