@@ -40,6 +40,22 @@ const reportConfiguration: IRouter[] = [
         meta: {
           title: '报表组件'
         }
+      },
+      {
+        path: 'SetCondition',
+        element: load('Platform/ReportConfiguration/SetCondition'),
+        meta: {
+          title: '设置条件',
+          hidden: true
+        }
+      },
+      {
+        path: 'BottomStatistics',
+        element: load('Platform/ReportConfiguration/BottomStatistics'),
+        meta: {
+          title: '底部统计',
+          hidden: true
+        }
       }
     ]
   }
