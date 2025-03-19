@@ -7,7 +7,7 @@ export interface ReportCustomComponentFooterReply {
   componentId?: string
   name?: string
   queryModel?: string
-  javaScript?: string
+  goScript?: string
   componentSql?: string
   remark?: string
   statusCd?: string
@@ -18,6 +18,9 @@ export interface ReportCustomComponentFooterParams {
   componentId?: string
   name?: string
   queryModel?: string
+  goScript?: string
+  componentSql?: string
+  remark?: string
 }
 
 export interface FindReportCustomComponentFooterReply {

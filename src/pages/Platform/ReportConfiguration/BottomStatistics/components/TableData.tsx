@@ -1,21 +1,21 @@
 import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ReportCustomComponentConditionReply } from 'api/model/platform/reportConfiguration/reportCustomComponentConditionModel'
-import { find } from 'modules/platform/reportConfiguration/reportCustomComponentCondition'
+import { ReportCustomComponentFooterReply } from 'api/model/platform/reportConfiguration/reportCustomComponentFooterModel'
+import { find } from 'modules/platform/reportConfiguration/reportCustomComponentFooter'
 import { Chip } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
 import { ReportCustomComponentReply } from 'api/model/platform/reportConfiguration/reportCustomComponentModel'
 
-const statusValue: Record<string, string> = {
-  text: '文本框',
-  date: '日期'
+const statusType: Record<string, string> = {
+  '1': 'sql',
+  '2': 'go'
 }
 
 interface TableDataProps {
   setOpenDialog: Dispatch<SetStateAction<boolean>>
-  setDialogValue: Dispatch<SetStateAction<ReportCustomComponentConditionReply>>
+  setDialogValue: Dispatch<SetStateAction<ReportCustomComponentFooterReply>>
   setDialogType: Dispatch<SetStateAction<string>>
   valueData: ReportCustomComponentReply
   setSelectedRows: Dispatch<SetStateAction<Set<string>>>
@@ -31,9 +31,7 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector(
-    (state: RootState) => state.ReportCustomComponentConditionSlice
-  )
+  const { page, list } = useSelector((state: RootState) => state.ReportCustomComponentFooterSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -61,7 +59,7 @@ const TableData: React.FC<TableDataProps> = ({
   }, [fetchData, page.num, page.size, valueData.id])
 
   const handleActionClick = useCallback(
-    (actionType: string, row: ReportCustomComponentConditionReply) => {
+    (actionType: string, row: ReportCustomComponentFooterReply) => {
       switch (actionType) {
         case 'edit':
           setDialogValue(row)
@@ -77,7 +75,7 @@ const TableData: React.FC<TableDataProps> = ({
     [setDelOpen, setDialogType, setDialogValue, setOpenDialog, setSelectedRows]
   )
 
-  const renderActionButtons = (row: ReportCustomComponentConditionReply) =>
+  const renderActionButtons = (row: ReportCustomComponentFooterReply) =>
     [
       { title: '编辑', action: 'edit' },
       { title: '删除', action: 'delete' }
@@ -105,17 +103,14 @@ const TableData: React.FC<TableDataProps> = ({
       disableVirtualization={false}
       rows={list}
       columns={[
-        { field: 'id', headerName: '条件ID', width: 200 },
+        { field: 'id', headerName: '统计ID', flex: 1 },
         { field: 'name', headerName: '名称', flex: 1 },
-        { field: 'holdpace', headerName: '提示', width: 250 },
-        { field: 'param', headerName: '参数', flex: 1 },
         {
-          field: 'type',
-          headerName: '类型',
+          field: 'queryModel',
+          headerName: '查询方式',
           flex: 1,
-          renderCell: ({ row }) => <Chip label={statusValue[row.type!] || ''} />
+          renderCell: ({ row }) => <Chip label={statusType[row.queryModel!] || '未知'} />
         },
-        { field: 'seq', headerName: '序号', flex: 1 },
         { field: 'remark', headerName: '描述', flex: 1 },
         {
           field: 'actions',

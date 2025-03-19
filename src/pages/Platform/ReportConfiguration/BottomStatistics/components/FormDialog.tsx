@@ -9,15 +9,15 @@ import React, {
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  ReportCustomComponentConditionReply,
-  ReportCustomComponentConditionParams
-} from 'api/model/platform/reportConfiguration/reportCustomComponentConditionModel'
-import { ReportCustomComponentReply } from 'api/model/platform/reportConfiguration/reportCustomComponentModel'
+  ReportCustomComponentFooterReply,
+  ReportCustomComponentFooterParams
+} from 'api/model/platform/reportConfiguration/reportCustomComponentFooterModel'
 import {
   create,
   find,
   update
-} from 'modules/platform/reportConfiguration/reportCustomComponentCondition'
+} from 'modules/platform/reportConfiguration/reportCustomComponentFooter'
+import { ReportCustomComponentReply } from 'api/model/platform/reportConfiguration/reportCustomComponentModel'
 import {
   Box,
   CircularProgress,
@@ -35,7 +35,7 @@ import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
-  dialogValue?: ReportCustomComponentConditionReply
+  dialogValue?: ReportCustomComponentFooterReply
   openDialog: boolean
   valueData: ReportCustomComponentReply
   dialogType: string
@@ -50,23 +50,22 @@ const FormDialog: React.FC<FormDialogProps> = ({
   setOpenDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.ReportCustomComponentConditionSlice)
+  const { page } = useSelector((state: RootState) => state.ReportCustomComponentFooterSlice)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(() => {
     const commonFields = {
       name: dialogType === 'edit' ? dialogValue?.name || '' : '',
-      holdpace: dialogType === 'edit' ? dialogValue?.holdpace || '' : '',
-      param: dialogType === 'edit' ? dialogValue?.param || '' : '',
-      type: dialogType === 'edit' ? dialogValue?.type || '' : '',
-      seq: dialogType === 'edit' ? dialogValue?.seq || '' : '',
+      queryModel: dialogType === 'edit' ? dialogValue?.queryModel || '1' : '1',
+      goScript: dialogType === 'edit' ? dialogValue?.goScript || '' : '',
+      componentSql: dialogType === 'edit' ? dialogValue?.componentSql || '' : '',
       remark: dialogType === 'edit' ? dialogValue?.remark || '' : ''
     }
 
     return commonFields
   }, [dialogType, dialogValue])
 
-  const [formData, setFormData] = useState<ReportCustomComponentConditionParams>(initialFormData)
+  const [formData, setFormData] = useState<ReportCustomComponentFooterParams>(initialFormData)
 
   useEffect(() => {
     setFormData(initialFormData)
@@ -89,7 +88,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
           throw new Error(res.error.message)
         }
         await dispatch(
-          find({ 'page.num': page.num || '1', 'page.size': page.size, componentId: valueData.id })
+          find({ 'page.num': page.num || '1', 'page.size': page.size, componentId: valueData.id! })
         )
         message.success(dialogType === 'add' ? '新建成功' : '编辑成功')
         setOpenDialog(false)
@@ -102,24 +101,18 @@ const FormDialog: React.FC<FormDialogProps> = ({
     },
     [
       formData,
+      valueData.id,
       dialogType,
       dialogValue?.id,
       dispatch,
       page.num,
       page.size,
-      valueData.id,
       setOpenDialog,
       initialFormData
     ]
   )
 
-  const formFields = [
-    { label: '名称', type: 'text', id: 'name', required: true },
-    { label: '提示', type: 'text', id: 'holdpace', required: true },
-    { label: '参数', type: 'text', id: 'param', required: true },
-    { label: '排序', type: 'text', id: 'seq', required: true },
-    { label: '描述', type: 'text', id: 'remark', required: true }
-  ]
+  const formFields = [{ label: '名称', type: 'text', id: 'name', required: true }]
 
   return (
     <Dialog
@@ -139,36 +132,84 @@ const FormDialog: React.FC<FormDialogProps> = ({
             >
               <FormLabel>{label}：</FormLabel>
               <TextField
+                placeholder={`请输入${label}`}
                 type={type}
                 sx={{ width: '80%' }}
                 size="small"
                 required={required}
                 id={id}
-                value={formData[id as keyof ReportCustomComponentConditionParams]}
+                value={formData[id as keyof ReportCustomComponentFooterParams]}
                 onChange={e => handleFormChange(id, e.target.value)}
               />
             </Box>
           ))}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>报表组：</FormLabel>
+            <FormLabel>查询方式：</FormLabel>
             <TextField
-              placeholder="请选择报表组"
+              label="请选择查询方式"
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.type || ''}
-              onChange={e => setFormData({ ...formData, type: e.target.value })}
+              value={formData.queryModel || ''}
+              onChange={e => setFormData({ ...formData, queryModel: e.target.value })}
               variant="outlined"
             >
               {[
-                { value: 'text', label: '文本框' },
-                { value: 'date', label: '日期' }
+                { value: '1', label: 'sql' },
+                { value: '2', label: 'go' }
               ].map(option => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
                 </MenuItem>
               ))}
             </TextField>
+          </Box>
+          {formData.queryModel === '1' ? (
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <FormLabel>sql：</FormLabel>
+              <TextField
+                placeholder="选填，请填写执行sql"
+                sx={{ width: '80%' }}
+                type="text"
+                multiline
+                rows={10}
+                size="small"
+                value={formData.componentSql}
+                onChange={e => setFormData({ ...formData, componentSql: e.target.value })}
+                variant="outlined"
+              />
+            </Box>
+          ) : formData.queryModel === '2' ? (
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <FormLabel>go：</FormLabel>
+              <TextField
+                placeholder="选填，请填写执行go脚本代码"
+                sx={{ width: '80%' }}
+                type="text"
+                multiline
+                rows={10}
+                size="small"
+                value={formData.goScript}
+                onChange={e => setFormData({ ...formData, goScript: e.target.value })}
+                variant="outlined"
+              />
+            </Box>
+          ) : (
+            ''
+          )}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>描述：</FormLabel>
+            <TextField
+              placeholder="选填，请填写描述"
+              sx={{ width: '80%' }}
+              type="text"
+              multiline
+              rows={2}
+              size="small"
+              value={formData.remark}
+              onChange={e => setFormData({ ...formData, remark: e.target.value })}
+              variant="outlined"
+            />
           </Box>
         </Stack>
       </DialogContent>

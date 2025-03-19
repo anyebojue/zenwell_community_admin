@@ -1,17 +1,14 @@
 import { memo, useCallback, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  deleteByIds,
-  find
-} from 'modules/platform/reportConfiguration/reportCustomComponentCondition'
+import { deleteByIds, find } from 'modules/platform/reportConfiguration/reportCustomComponentFooter'
 import { Box, Button, Stack, Theme, Typography } from '@mui/material'
 import { Add, Close } from '@mui/icons-material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import message from 'components/Message'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
-import { ReportCustomComponentConditionReply } from 'api/model/platform/reportConfiguration/reportCustomComponentConditionModel'
+import { ReportCustomComponentFooterReply } from 'api/model/platform/reportConfiguration/reportCustomComponentFooterModel'
 import TableData from './components/TableData'
 import FormDialog from './components/FormDialog'
 
@@ -28,10 +25,8 @@ const HousingManagementIndex = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const value = location.state.value
-  const { page, list } = useSelector(
-    (state: RootState) => state.ReportCustomComponentConditionSlice
-  )
-  const [dialogValue, setDialogValue] = useState<ReportCustomComponentConditionReply>({})
+  const { page, list } = useSelector((state: RootState) => state.ReportCustomComponentFooterSlice)
+  const [dialogValue, setDialogValue] = useState<ReportCustomComponentFooterReply>({})
   const [dialogType, setDialogType] = useState<string>('add')
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
   const [openDialog, setOpenDialog] = useState(false)
@@ -77,7 +72,7 @@ const HousingManagementIndex = () => {
       <Box sx={{ width: '100%' }}>
         <Box sx={contentBoxStyle}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h6">{value.name}组件</Typography>
+            <Typography variant="h6">{value.name}统计</Typography>
             <Stack direction="row" spacing={1}>
               <Button
                 size="small"
