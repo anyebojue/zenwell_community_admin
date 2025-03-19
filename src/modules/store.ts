@@ -8,6 +8,7 @@ import EmployeesSlice from './platform/organization/employees'
 import RolesSlice from './platform/organization/roles'
 import ReportCustomGroupSlice from './platform/reportConfiguration/reportCustomGroup'
 import ReportCustomSlice from './platform/reportConfiguration/reportCustom'
+import ReportCustomComponentSlice from './platform/reportConfiguration/reportCustomComponent'
 import CommunityAnnouncementSlice from './property/communitys/communityAnnouncement'
 import RoomRenovationSlice from './property/communitys/roomRenovation'
 import RoomRenovationDetailSlice from './property/communitys/roomRenovationDetail'
@@ -109,6 +110,7 @@ const store = configureStore({
     RolesSlice,
     ReportCustomGroupSlice,
     ReportCustomSlice,
+    ReportCustomComponentSlice,
     CommunityAnnouncementSlice,
     RoomRenovationSlice,
     RoomRenovationDetailSlice,
