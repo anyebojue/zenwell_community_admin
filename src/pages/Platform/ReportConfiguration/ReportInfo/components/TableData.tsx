@@ -1,14 +1,15 @@
 import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ReportCustomGroupReply } from 'api/model/platform/reportConfiguration/reportCustomGroupModel'
-import { find } from 'modules/platform/reportConfiguration/reportCustomGroup'
+import { ReportCustomReply } from 'api/model/platform/reportConfiguration/reportCustomModel'
+import { find } from 'modules/platform/reportConfiguration/reportCustom'
+import { find as findGroup } from 'modules/platform/reportConfiguration/reportCustomGroup'
 import { Chip } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
 
 interface TableDataProps {
-  setDialogValue: Dispatch<SetStateAction<ReportCustomGroupReply | undefined>>
+  setDialogValue: Dispatch<SetStateAction<ReportCustomReply | undefined>>
   setSelectedRows: Dispatch<SetStateAction<Set<string>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
@@ -21,7 +22,8 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.ReportCustomGroupSlice)
+  const { page, list } = useSelector((state: RootState) => state.ReportCustomSlice)
+  const { list: groupList } = useSelector((state: RootState) => state.ReportCustomGroupSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -42,6 +44,7 @@ const TableData: React.FC<TableDataProps> = ({
 
   useEffect(() => {
     fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+    fetchData(findGroup, { 'page.disable': true }, '正在加载列表中，请稍后...')
   }, [fetchData, page.num, page.size])
 
   const handleRowSelection = useCallback(
@@ -52,7 +55,7 @@ const TableData: React.FC<TableDataProps> = ({
   )
 
   const handleActionClick = useCallback(
-    (actionType: string, row: ReportCustomGroupReply) => {
+    (actionType: string, row: ReportCustomReply) => {
       switch (actionType) {
         case 'edit':
           setDialogValue(row)
@@ -67,7 +70,7 @@ const TableData: React.FC<TableDataProps> = ({
     [setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
   )
 
-  const renderActionButtons = (row: ReportCustomGroupReply) =>
+  const renderActionButtons = (row: ReportCustomReply) =>
     [
       { title: '修改', action: 'edit' },
       { title: '删除', action: 'delete' }
@@ -96,9 +99,15 @@ const TableData: React.FC<TableDataProps> = ({
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'id', headerName: 'ID', flex: 1 },
-        { field: 'name', headerName: '报表组名称', flex: 1 },
-        { field: 'url', headerName: '报表组URL', flex: 1 },
+        { field: 'id', headerName: '报表编号', flex: 1 },
+        {
+          field: 'groupId',
+          headerName: '报表组',
+          flex: 1,
+          renderCell: ({ row }) => groupList.filter(item => item.id === row.groupId)[0].name
+        },
+        { field: 'title', headerName: '选项标题', flex: 1 },
+        { field: 'seq', headerName: '排序', flex: 1 },
         { field: 'remark', headerName: '描述', flex: 1 },
         {
           field: 'actions',

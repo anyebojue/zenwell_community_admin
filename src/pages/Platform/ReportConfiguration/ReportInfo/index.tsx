@@ -1,7 +1,7 @@
 import { memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ReportCustomGroupReply } from 'api/model/platform/reportConfiguration/reportCustomGroupModel'
-import { deleteByIds, find } from 'modules/platform/reportConfiguration/reportCustomGroup'
+import { ReportCustomReply } from 'api/model/platform/reportConfiguration/reportCustomModel'
+import { deleteByIds, find } from 'modules/platform/reportConfiguration/reportCustom'
 import { Box } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
@@ -11,11 +11,11 @@ import TableData from './components/TableData'
 import FormSearch from './components/FormSearch'
 import FormDialog from './components/FormDialog'
 
-const ReportGroupIndex = () => {
+const ReportInfoIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.ReportCustomGroupSlice)
+  const { page, list } = useSelector((state: RootState) => state.ReportCustomSlice)
 
-  const [dialogValue, setDialogValue] = useState<ReportCustomGroupReply>()
+  const [dialogValue, setDialogValue] = useState<ReportCustomReply>()
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
   const [openDialog, setOpenDialog] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
@@ -25,12 +25,12 @@ const ReportGroupIndex = () => {
     return Array.from(selectedRows)
       .map(id => list.find(item => item.id === id))
       .filter(item => item)
-      .map(item => ({ id: item!.id!, name: item!.name! }))
+      .map(item => ({ id: item!.id!, title: item!.title! }))
   }, [selectedRows, list])
 
   const deleteData = getDeleteData()
   const deleteIds = deleteData.map(item => item.id)
-  const deleteNames = deleteData.map(item => item.name)
+  const deleteNames = deleteData.map(item => item.title)
 
   const handleDelete = useCallback(
     async (ids: string[]) => {
@@ -80,4 +80,4 @@ const ReportGroupIndex = () => {
   )
 }
 
-export default memo(ReportGroupIndex)
+export default memo(ReportInfoIndex)
