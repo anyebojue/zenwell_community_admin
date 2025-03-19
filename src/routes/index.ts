@@ -5,6 +5,7 @@ import menu from './modules/develop/menu'
 import control from './modules/platform/control'
 import community from './modules/platform/community'
 import propertyCompany from './modules/platform/propertyCompany'
+import reportConfiguration from './modules/platform/reportConfiguration'
 import organization from './modules/platform/organization'
 import systemSetting from './modules/platform/systemSetting'
 import communitys from './modules/property/communitys'
@@ -79,6 +80,7 @@ const useAllRoutes = (): IRouter[] => {
         ...control,
         ...community,
         ...propertyCompany,
+        ...reportConfiguration,
         ...organization,
         ...systemSetting
       ]
