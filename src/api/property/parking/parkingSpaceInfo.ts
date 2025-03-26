@@ -8,7 +8,8 @@ const ApiPrefix = {
   FindParkingSpaceInfo: '/car/parking_space_info',
   CreateParkingSpaceInfo: '/car/parking_space_info',
   UpdateParkingSpaceInfo: '/car/parking_space_info',
-  DeleteParkingSpaceInfo: '/car/parking_space_info'
+  DeleteParkingSpaceInfo: '/car/parking_space_info',
+  BatchCreateParkingSpaceInfo: '/car/parking_space_info_batch'
 }
 
 /**
@@ -23,6 +24,27 @@ export const FindParkingSpaceInfo = (
     .get<FindParkingSpaceInfoReply>({
       url: ApiPrefix.FindParkingSpaceInfo,
       params
+    })
+    .then(res => res.data)
+}
+
+/**
+ * 批量新增接口
+ * @param data
+ * @returns
+ */
+export const BatchCreateParkingSpaceInfo = (data: {
+  preNum: string
+  startNum: string
+  endNum: string
+  paId: string
+  parkingType: string
+  communityId: string
+}) => {
+  return request
+    .post({
+      url: ApiPrefix.BatchCreateParkingSpaceInfo,
+      data
     })
     .then(res => res.data)
 }

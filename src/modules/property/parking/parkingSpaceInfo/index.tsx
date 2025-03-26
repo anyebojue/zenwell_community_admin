@@ -8,7 +8,8 @@ import {
   FindParkingSpaceInfo,
   CreateParkingSpaceInfo,
   UpdateParkingSpaceInfo,
-  DeleteParkingSpaceInfo
+  DeleteParkingSpaceInfo,
+  BatchCreateParkingSpaceInfo
 } from 'api/property/parking/parkingSpaceInfo'
 
 const namespace = 'ParkingSpaceInfo'
@@ -39,6 +40,21 @@ export const find = createAsyncThunk(
   `${namespace}/find`,
   async (params: ParkingSpaceInfoParams & PaginationParams) => {
     const res = await FindParkingSpaceInfo(params)
+    return res
+  }
+)
+
+export const batchCreate = createAsyncThunk(
+  `${namespace}/create`,
+  async (data: {
+    preNum: string
+    startNum: string
+    endNum: string
+    paId: string
+    parkingType: string
+    communityId: string
+  }) => {
+    const res = await BatchCreateParkingSpaceInfo(data)
     return res
   }
 )

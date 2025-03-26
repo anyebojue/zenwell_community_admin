@@ -11,6 +11,7 @@ import { Add } from '@mui/icons-material'
 import TableData from './components/TableData'
 import FormSearch from './components/FormSearch'
 import FormDialog from './components/FormDialog'
+import BatchFormDialog from './components/BatchFormDialog'
 
 const contentBoxStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -22,6 +23,7 @@ const contentBoxStyle = (theme: Theme) => ({
 const ParkingLotManagementIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.ParkingSpaceInfoSlice)
+  const [openBatchDialog, setOpenBatchDialog] = useState(false)
 
   const [dialogValue, setDialogValue] = useState<ParkingSpaceInfoReply | undefined>()
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
@@ -68,19 +70,31 @@ const ParkingLotManagementIndex = () => {
       <Box sx={contentBoxStyle}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="h6">停车位信息</Typography>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Add />}
-            sx={buttonStyles('#2660ad', '#1d428a')}
-            onClick={() => {
-              setOpenDialog(true)
-              setDialogType('add')
-            }}
-          >
-            添加
-          </Button>
+          <Box>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              startIcon={<Add />}
+              sx={{ marginRight: '10px', ...buttonStyles('#2660ad', '#1d428a') }}
+              onClick={() => setOpenBatchDialog(true)}
+            >
+              批量添加
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              startIcon={<Add />}
+              sx={buttonStyles('#2660ad', '#1d428a')}
+              onClick={() => {
+                setOpenDialog(true)
+                setDialogType('add')
+              }}
+            >
+              添加
+            </Button>
+          </Box>
         </Box>
         <TableData
           setDialogType={setDialogType}
@@ -97,6 +111,7 @@ const ParkingLotManagementIndex = () => {
         dialogType={dialogType}
         setOpenDialog={setOpenDialog}
       />
+      <BatchFormDialog openDialog={openBatchDialog} setOpenDialog={setOpenBatchDialog} />
       <DeleteModal
         loading={loading}
         delOpen={delOpen}
