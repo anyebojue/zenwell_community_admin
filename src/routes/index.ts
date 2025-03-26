@@ -11,6 +11,7 @@ import systemSetting from './modules/platform/systemSetting'
 import communitys from './modules/property/communitys'
 import houses from './modules/property/houses'
 import feeConfig from './modules/property/feeConfig'
+import parking from './modules/property/parking'
 import repair from './modules/property/repair'
 import inspection from './modules/property/inspection'
 import report from './modules/property/report'
@@ -92,6 +93,7 @@ const useAllRoutes = (): IRouter[] => {
         ...communitys,
         ...houses,
         ...feeConfig,
+        ...parking,
         ...repair,
         ...inspection,
         ...report,
