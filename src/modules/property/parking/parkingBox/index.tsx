@@ -1,14 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
-import { ParkingAreaParams, ParkingAreaReply } from 'api/model/property/parking/parkingAreaModel'
+import { ParkingBoxParams, ParkingBoxReply } from 'api/model/property/parking/parkingBoxModel'
 import {
-  FindParkingArea,
-  CreateParkingArea,
-  UpdateParkingArea,
-  DeleteParkingArea
-} from 'api/property/parking/parkingArea'
+  FindParkingBox,
+  CreateParkingBox,
+  UpdateParkingBox,
+  DeleteParkingBox
+} from 'api/property/parking/parkingBox'
 
-const namespace = 'ParkingArea'
+const namespace = 'ParkingBox'
 
 const PAGE = {
   NUM: '1',
@@ -17,7 +17,7 @@ const PAGE = {
 
 interface IInitialState {
   page: Page
-  list: ParkingAreaReply[]
+  list: ParkingBoxReply[]
 }
 
 const initialState: IInitialState = {
@@ -32,28 +32,28 @@ const initialState: IInitialState = {
 
 export const find = createAsyncThunk(
   `${namespace}/find`,
-  async (params: ParkingAreaParams & PaginationParams) => {
-    const res = await FindParkingArea(params)
+  async (params: ParkingBoxParams & PaginationParams) => {
+    const res = await FindParkingBox(params)
     return res
   }
 )
 
-export const create = createAsyncThunk(`${namespace}/create`, async (data: ParkingAreaParams) => {
-  const res = await CreateParkingArea(data)
+export const create = createAsyncThunk(`${namespace}/create`, async (data: ParkingBoxParams) => {
+  const res = await CreateParkingBox(data)
   return res
 })
 
-export const update = createAsyncThunk(`${namespace}/update`, async (data: ParkingAreaParams) => {
-  const res = await UpdateParkingArea(data)
+export const update = createAsyncThunk(`${namespace}/update`, async (data: ParkingBoxParams) => {
+  const res = await UpdateParkingBox(data)
   return res
 })
 
 export const deleteByIds = createAsyncThunk(`${namespace}/deleteByIds`, async (ids: string[]) => {
-  const res = await DeleteParkingArea(ids)
+  const res = await DeleteParkingBox(ids)
   return res
 })
 
-export const ParkingAreaSlice = createSlice({
+export const ParkingBoxSlice = createSlice({
   name: namespace,
   initialState,
   reducers: {
@@ -77,8 +77,8 @@ export const ParkingAreaSlice = createSlice({
   }
 })
 
-export const { reset } = ParkingAreaSlice.actions
+export const { reset } = ParkingBoxSlice.actions
 
-export const selectParkingArea = (state: RootState) => state.ParkingAreaSlice
+export const selectParkingBox = (state: RootState) => state.ParkingBoxSlice
 
-export default ParkingAreaSlice.reducer
+export default ParkingBoxSlice.reducer

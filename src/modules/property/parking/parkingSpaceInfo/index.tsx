@@ -22,7 +22,6 @@ const PAGE = {
 interface IInitialState {
   page: Page
   list: ParkingSpaceInfoReply[]
-  parkingSpaceInfo: ParkingSpaceInfoReply
 }
 
 const initialState: IInitialState = {
@@ -32,8 +31,7 @@ const initialState: IInitialState = {
     total: '0',
     disable: false
   },
-  list: [],
-  parkingSpaceInfo: {}
+  list: []
 }
 
 export const find = createAsyncThunk(
