@@ -39,6 +39,41 @@ const repair: IRouter[] = [
         meta: {
           title: '业主车辆'
         }
+      },
+      {
+        path: 'EntryRecord',
+        element: load('Property/Parking/EntryRecord'),
+        meta: {
+          title: '进场记录'
+        }
+      },
+      {
+        path: 'ParkedVehicles',
+        element: load('Property/Parking/ParkedVehicles'),
+        meta: {
+          title: '在场车辆'
+        }
+      },
+      {
+        path: 'AvailableParkingSpaces',
+        element: load('Property/Parking/AvailableParkingSpaces'),
+        meta: {
+          title: '剩余车位'
+        }
+      },
+      {
+        path: 'ParkingSpaceApplication',
+        element: load('Property/Parking/ParkingSpaceApplication'),
+        meta: {
+          title: '车位申请'
+        }
+      },
+      {
+        path: 'TemporaryVehiclePayment',
+        element: load('Property/Parking/TemporaryVehiclePayment'),
+        meta: {
+          title: '临时车缴费'
+        }
       }
     ]
   }

@@ -104,6 +104,9 @@ import QueryReportFeeSummarySlice from './property/report/queryReportFeeSummary'
 import ParkingAreaSlice from './property/parking/parkingArea'
 import ParkingSpaceInfoSlice from './property/parking/parkingSpaceInfo'
 import ParkingBoxSlice from './property/parking/parkingBox'
+import OwnerCarSlice from './property/parking/ownerCar'
+import CarInoutSlice from './property/parking/carInout'
+import RemainingParkingSpaceSlice from './property/parking/remainingParkingSpace'
 
 const store = configureStore({
   reducer: {
@@ -211,7 +214,10 @@ const store = configureStore({
     QueryReportFeeSummarySlice,
     ParkingAreaSlice,
     ParkingSpaceInfoSlice,
-    ParkingBoxSlice
+    ParkingBoxSlice,
+    OwnerCarSlice,
+    CarInoutSlice,
+    RemainingParkingSpaceSlice
   },
   // 关闭序列化检测
   middleware: getDefaultMiddleware =>
