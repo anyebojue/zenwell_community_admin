@@ -13,21 +13,21 @@ const organization: IRouter[] = [
     },
     children: [
       {
-        path: 'organization-info',
+        path: 'OrganizationInfo',
         element: load('Platform/Organization/OrganizationInfo'),
         meta: {
           title: '组织信息'
         }
       },
       {
-        path: 'employees',
+        path: 'Employees',
         element: load('Platform/Organization/Employees'),
         meta: {
           title: '员工信息'
         }
       },
       {
-        path: 'roles',
+        path: 'Roles',
         element: load('Platform/Organization/Roles'),
         meta: {
           title: '角色权限'

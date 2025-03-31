@@ -1,51 +1,16 @@
-import {
-  Dispatch,
-  memo,
-  ReactNode,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from 'react'
+import { Dispatch, memo, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   OrganizationInfoReply,
   OrgUserReply
 } from 'api/model/platform/organization/organizationInfoModel'
 import { deleteOrgUserByIds, findOrgUser } from 'modules/platform/organization/organizationInfo'
-import { Box, Tooltip, IconButton, Theme, Typography, Stack, Button } from '@mui/material'
+import { Box, Theme, Typography, Stack, Button, Chip } from '@mui/material'
 import { Add, Delete, FileCopy } from '@mui/icons-material'
 import message from 'components/Message'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
-import TableList from './TableList'
-
-const renderActionButtons = ({ setDelOpen }: { setDelOpen: Dispatch<SetStateAction<boolean>> }) => {
-  return (
-    <Box>
-      {[
-        {
-          title: '详情',
-          color: 'primary' as const,
-          icon: <FileCopy fontSize="small" />,
-          onClick: () => message.info('未实现')
-        },
-        {
-          title: '删除',
-          color: 'error' as const,
-          icon: <Delete fontSize="small" />,
-          onClick: () => setDelOpen(true)
-        }
-      ].map((action, index) => (
-        <Tooltip title={action.title} key={index}>
-          <IconButton size="small" color={action.color} onClick={action.onClick}>
-            {action.icon}
-          </IconButton>
-        </Tooltip>
-      ))}
-    </Box>
-  )
-}
+import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
+import { zhCN } from '@mui/x-data-grid/locales'
 
 const contentBoxStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -64,13 +29,6 @@ const buttonCommonStyle = (
   minWidth: '80px',
   height
 })
-
-export interface Column<T> {
-  headerName: string
-  key: Exclude<keyof T, symbol> | `${Exclude<keyof T, symbol>}.${string}` | 'operate' // 过滤掉 symbol 类型
-  align?: 'left' | 'center' | 'right'
-  renderCell?: (row: T) => ReactNode
-}
 
 interface TableDataProps {
   dialogValue: OrganizationInfoReply
@@ -94,26 +52,34 @@ const TableData: React.FC<TableDataProps> = ({
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const fetchData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(
-        findOrgUser({
-          'page.num': page.num,
-          'page.size': page.size,
-          orgId: dialogValue.id || '9027438861059358721'
-        })
-      )
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
+  const fetchData = useCallback(
+    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
+      const closeLoading = message.loading(loadingMessage)
+      try {
+        const res = await dispatch(action(params))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
       }
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch, page.num, page.size, dialogValue.id])
+    },
+    [dispatch]
+  )
+
+  useEffect(() => {
+    fetchData(
+      findOrgUser,
+      {
+        'page.num': page.num,
+        'page.size': page.size,
+        orgId: dialogValue.id || '9027438861059358721'
+      },
+      '正在加载列表中，请稍后...'
+    )
+  }, [dialogValue.id, fetchData, page.num, page.size])
 
   const getDeleteData = useCallback(() => {
     if (selectedRows.size > 0) {
@@ -144,7 +110,15 @@ const TableData: React.FC<TableDataProps> = ({
         }
         setDelOpen(false)
         message.success('删除成功')
-        fetchData()
+        fetchData(
+          findOrgUser,
+          {
+            'page.num': page.num,
+            'page.size': page.size,
+            orgId: dialogValue.id || '9027438861059358721'
+          },
+          '正在加载列表中，请稍后...'
+        )
       } catch (err: unknown) {
         setLoading(false)
         if (err instanceof Error) message.error(err.message)
@@ -152,51 +126,52 @@ const TableData: React.FC<TableDataProps> = ({
         setLoading(false)
       }
     },
-    [dispatch, fetchData]
+    [dialogValue.id, dispatch, fetchData, page.num, page.size]
   )
 
-  const columns: Column<OrgUserReply>[] = [
-    {
-      key: 'users.username',
-      headerName: '名称',
-      align: 'center',
-      renderCell: (row: OrgUserReply) => row.users?.username || '无用户名'
+  const handleRowSelection = useCallback(
+    (rowSelectionModel: GridRowSelectionModel) => {
+      setSelectedRows(new Set(rowSelectionModel.map(id => String(id))))
     },
-    {
-      key: 'users.mobile',
-      headerName: '手机号',
-      align: 'center',
-      renderCell: (row: OrgUserReply) => row.users?.mobile || '无手机号'
-    },
-    {
-      key: 'users.position',
-      headerName: '岗位',
-      align: 'center',
-      renderCell: (row: OrgUserReply) => row.users?.position || '无岗位'
-    },
-    {
-      key: 'users.address',
-      headerName: '地址',
-      align: 'center',
-      renderCell: (row: OrgUserReply) => row.users?.address || '无地址'
-    },
-    {
-      key: 'users.sex',
-      headerName: '性别',
-      align: 'center',
-      renderCell: (row: OrgUserReply) => (row.users?.sex === 0 ? '女' : '男')
-    },
-    {
-      key: 'operate',
-      headerName: '操作',
-      align: 'center',
-      renderCell: () => renderActionButtons({ setDelOpen })
-    }
-  ]
+    [setSelectedRows]
+  )
 
-  useEffect(() => {
-    fetchData()
-  }, [fetchData])
+  const handleActionClick = useCallback(
+    (actionType: string, row: OrgUserReply) => {
+      switch (actionType) {
+        case 'details':
+          setDialogUserValue(row)
+          message.info('同步操作未实现')
+          break
+        case 'delete':
+          setDelOpen(true)
+          setSelectedRows(new Set([row.id || '']))
+          break
+      }
+    },
+    [setDialogUserValue, setSelectedRows]
+  )
+
+  const renderActionButtons = (row: OrgUserReply) =>
+    [
+      { title: '详情', action: 'details' },
+      { title: '删除', action: 'delete' }
+    ].map(({ title, action }) => (
+      <Chip
+        key={title}
+        sx={{
+          cursor: 'pointer',
+          marginRight: '-5px',
+          '& .MuiChip-label': {
+            fontSize: '13px'
+          }
+        }}
+        label={title}
+        color="primary"
+        variant="outlined"
+        onClick={() => handleActionClick(action, row)}
+      />
+    ))
 
   return (
     <>
@@ -240,12 +215,63 @@ const TableData: React.FC<TableDataProps> = ({
             </Button>
           </Stack>
         </Box>
-        <TableList
+        <DataGrid
+          sx={{ mt: 1 }}
+          localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
+          disableColumnResize
+          disableVirtualization={false}
+          checkboxSelection
           rows={orgUserList}
-          columns={columns}
-          setDialogUserValue={setDialogUserValue}
-          selectedRows={selectedRows}
-          setSelectedRows={setSelectedRows}
+          columns={[
+            {
+              field: 'users.username',
+              headerName: '名称',
+              flex: 1,
+              renderCell: ({ row }) => row.users?.username
+            },
+            {
+              field: 'users.mobile',
+              headerName: '手机号',
+              flex: 1,
+              renderCell: ({ row }) => row.users?.mobile
+            },
+            {
+              field: 'users.position',
+              headerName: '岗位',
+              flex: 1,
+              renderCell: ({ row }) => row.users?.position
+            },
+            {
+              field: 'users.address',
+              headerName: '地址',
+              flex: 1,
+              renderCell: ({ row }) => row.users?.address
+            },
+            {
+              field: 'users.sex',
+              headerName: '性别',
+              flex: 1,
+              renderCell: ({ row }) => row.users?.sex
+            },
+            {
+              field: 'actions',
+              headerName: '操作',
+              type: 'actions',
+              width: 200,
+              getActions: ({ row }) => renderActionButtons(row)
+            }
+          ]}
+          onRowSelectionModelChange={handleRowSelection}
+          pageSizeOptions={[10, 20, 50, 100]}
+          paginationMode="server"
+          rowCount={Number(page.total)}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: Number(page.size)
+              }
+            }
+          }}
         />
       </Box>
       <DeleteModal

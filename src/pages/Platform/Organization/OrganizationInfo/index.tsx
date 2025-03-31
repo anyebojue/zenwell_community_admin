@@ -13,7 +13,6 @@ import {
   OrganizationInfoReply,
   OrgUserReply
 } from 'api/model/platform/organization/organizationInfoModel'
-import { EmployeesReply } from 'api/model/platform/organization/employeesModel'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
 import FormDialog from './components/FormDialog'
@@ -40,7 +39,6 @@ const InfoIndex = () => {
   const [dialogType, setDialogType] = useState('')
   const [dialogValue, setDialogValue] = useState<OrganizationInfoReply>({})
   const [dialogUserValue, setDialogUserValue] = useState<OrgUserReply>({})
-  const [dialogEmployessValue, setDialogEmployessValue] = useState<EmployeesReply | undefined>()
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
 
   const [associatedOpen, setAssociatedOpen] = useState(false)
@@ -205,8 +203,6 @@ const InfoIndex = () => {
         dialogValue={dialogValue}
         associatedOpen={associatedOpen}
         setAssociatedOpen={setAssociatedOpen}
-        dialogEmployessValue={dialogEmployessValue}
-        setDialogEmployessValue={setDialogEmployessValue}
       />
     </Box>
   )
