@@ -4,7 +4,7 @@ import { IRouter } from '../../index'
 
 const propertyCompany: IRouter[] = [
   {
-    path: '/property-company',
+    path: '/PropertyCompany',
     element: null,
     meta: {
       title: '物业公司',
@@ -12,7 +12,7 @@ const propertyCompany: IRouter[] = [
     },
     children: [
       {
-        path: '/property-company',
+        path: '/PropertyCompany',
         element: load('Platform/PropertyCompany'),
         meta: {
           title: '物业公司',
@@ -20,7 +20,7 @@ const propertyCompany: IRouter[] = [
         }
       },
       {
-        path: 'company',
+        path: 'Company',
         element: load('Platform/PropertyCompany/Company'),
         meta: {
           title: '加入的小区信息',

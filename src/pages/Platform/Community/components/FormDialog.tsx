@@ -52,9 +52,9 @@ const FormDialog: React.FC<FormDialogProps> = ({
       address: dialogType === 'edit' ? dialogValue?.address || '' : '',
       nearby_landmarks: dialogType === 'edit' ? dialogValue?.nearbyLandmarks || '' : '',
       tel: dialogType === 'edit' ? dialogValue?.tel || '' : '',
-      pay_fee_month: dialogType === 'edit' ? dialogValue?.payFeeMonth || 0 : 0,
-      fee_price: dialogType === 'edit' ? dialogValue?.feePrice || 0 : 0,
-      b_id: dialogType === 'edit' ? dialogValue?.bId || '' : '',
+      payFeeMonth: dialogType === 'edit' ? dialogValue?.payFeeMonth || 0 : 0,
+      feePrice: dialogType === 'edit' ? dialogValue?.feePrice || 0 : 0,
+      bId: dialogType === 'edit' ? dialogValue?.bId || '' : '',
       state: dialogType === 'edit' ? dialogValue?.state || '0' : '0'
     }
 

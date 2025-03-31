@@ -77,7 +77,7 @@ const TableData: React.FC<TableDataProps> = ({
     (actionType: string, row: PropertyCompanyReply) => {
       switch (actionType) {
         case 'manageAccounts':
-          navigate('/property-company/company', { state: { id: row?.id } })
+          navigate('/PropertyCompany/Company', { state: { id: row?.id } })
           break
         case 'edit':
           setDialogValue(row)
