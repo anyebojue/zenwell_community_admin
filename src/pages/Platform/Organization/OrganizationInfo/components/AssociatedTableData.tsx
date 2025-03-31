@@ -58,7 +58,7 @@ const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({ setSelectedRo
       rows={list}
       columns={[
         { field: 'username', headerName: '员工名称', flex: 1 },
-        { field: 'mobile', headerName: '员工电话', width: 150 },
+        { field: 'mobile', headerName: '员工电话', flex: 1 },
         { field: 'id', headerName: '员工编号', width: 200 }
       ]}
       onRowSelectionModelChange={handleRowSelection}

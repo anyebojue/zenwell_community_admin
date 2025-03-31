@@ -65,7 +65,7 @@ const Associated: React.FC<AssociatedProps> = ({
   }
 
   return (
-    <Dialog maxWidth="md" open={associatedOpen} onClose={() => setAssociatedOpen(false)}>
+    <Dialog fullWidth maxWidth="sm" open={associatedOpen} onClose={() => setAssociatedOpen(false)}>
       <DialogTitle>
         <FormSearch dialogValue={dialogValue} />
       </DialogTitle>

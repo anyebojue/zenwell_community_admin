@@ -227,30 +227,40 @@ const TableData: React.FC<TableDataProps> = ({
               field: 'users.username',
               headerName: '名称',
               flex: 1,
+              headerAlign: 'center',
+              align: 'center',
               renderCell: ({ row }) => row.users?.username
             },
             {
               field: 'users.mobile',
               headerName: '手机号',
               flex: 1,
+              headerAlign: 'center',
+              align: 'center',
               renderCell: ({ row }) => row.users?.mobile
             },
             {
               field: 'users.position',
               headerName: '岗位',
               flex: 1,
+              headerAlign: 'center',
+              align: 'center',
               renderCell: ({ row }) => row.users?.position
             },
             {
               field: 'users.address',
               headerName: '地址',
               flex: 1,
+              headerAlign: 'center',
+              align: 'center',
               renderCell: ({ row }) => row.users?.address
             },
             {
               field: 'users.sex',
               headerName: '性别',
               flex: 1,
+              headerAlign: 'center',
+              align: 'center',
               renderCell: ({ row }) => row.users?.sex
             },
             {

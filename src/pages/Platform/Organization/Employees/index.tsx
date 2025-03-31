@@ -95,7 +95,6 @@ const EmployeesIndex = () => {
           <TableData
             setDialogType={setDialogType}
             setDialogValue={setDialogValue}
-            selectedRows={selectedRows}
             setSelectedRows={setSelectedRows}
             setOpenDialog={setOpenDialog}
             setDelOpen={setDelOpen}
