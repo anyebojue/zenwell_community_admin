@@ -1,53 +1,34 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { MenusReply } from 'api/model/develop/menuModel'
 import { RolesReply } from 'api/model/platform/organization/rolesModel'
 import { findMenus } from 'modules/develop/menu'
-import { Box } from '@mui/material'
-import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
-import { useTreeViewApiRef } from '@mui/x-tree-view/hooks'
-import { TreeViewBaseItem } from '@mui/x-tree-view/models'
+import { Box, Checkbox } from '@mui/material'
+import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView'
+import { TreeItem } from '@mui/x-tree-view/TreeItem'
 import message from 'components/Message'
-
-interface TreeViewItemWithSelected extends TreeViewBaseItem {
-  isSelected: boolean
-}
+import { TreeViewBaseItem } from '@mui/x-tree-view'
 
 interface FeatureProps {
   dialogValue: RolesReply
 }
 
-const getItemDescendantsIds = (item: TreeViewBaseItem) => {
-  const ids: string[] = []
-  item.children?.forEach(child => {
-    ids.push(child.id)
-    ids.push(...getItemDescendantsIds(child))
-  })
-
-  return ids
-}
-
-const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
-  const apiRef = useTreeViewApiRef()
+const Feature: React.FC<FeatureProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { menus } = useSelector((state: RootState) => state.MenuSlice)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
-  const toggledItemRef = useRef<{ [itemId: string]: boolean }>({})
 
   const transformData = useMemo(() => {
-    const transformNode = (node: MenusReply): TreeViewItemWithSelected => {
-      const isSelected = dialogValue.actions?.some(action => action.code === node.code) || false
+    const transformNode = (node: MenusReply): TreeViewBaseItem => {
       return {
         id: node.id as string,
         label: node.name as string,
-        children: node.children?.length ? node.children.map(transformNode) : [],
-        isSelected // Add the isSelected flag
-      } as TreeViewItemWithSelected
+        children: node.children?.map(transformNode) || []
+      }
     }
     return menus?.map(transformNode) || []
-  }, [menus, dialogValue])
+  }, [menus])
 
-  // Fetch menus from the server
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
@@ -64,82 +45,134 @@ const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
   }, [dispatch])
 
   useEffect(() => {
-    const initiallySelectedItems: string[] = []
-    const traverse = (node: TreeViewBaseItem) => {
-      if ('isSelected' in node && node.isSelected) {
-        initiallySelectedItems.push(node.id)
-      }
-      node.children?.forEach(traverse)
-    }
-    transformData.forEach(traverse)
-    setSelectedItems(initiallySelectedItems)
-  }, [transformData])
-
-  useEffect(() => {
     fetchData()
   }, [fetchData])
 
-  const handleItemSelectionToggle = (
-    event: React.SyntheticEvent,
-    itemId: string,
-    isSelected: boolean
-  ) => {
-    toggledItemRef.current[itemId] = isSelected
+  const getAllChildIds = (node: TreeViewBaseItem): string[] => {
+    let ids: string[] = [node.id]
+    if (node.children && node.children.length > 0) {
+      node.children.forEach(child => {
+        ids = [...ids, ...getAllChildIds(child as TreeViewBaseItem)]
+      })
+    }
+    return ids
   }
 
-  const handleSelectedItemsChange = (event: React.SyntheticEvent, newSelectedItems: string[]) => {
-    setSelectedItems(newSelectedItems)
-    const itemsToSelect: string[] = []
-    const itemsToUnSelect: { [itemId: string]: boolean } = {}
-    Object.entries(toggledItemRef.current).forEach(([itemId, isSelected]) => {
-      const item = apiRef.current!.getItem(itemId)
-      if (isSelected) {
-        itemsToSelect.push(...getItemDescendantsIds(item))
-      } else {
-        getItemDescendantsIds(item).forEach(descendantId => {
-          itemsToUnSelect[descendantId] = true
-        })
+  const findNodeById = (nodes: TreeViewBaseItem[], id: string): TreeViewBaseItem | null => {
+    for (const node of nodes) {
+      if (node.id === id) return node
+      if (node.children && node.children.length > 0) {
+        const found = findNodeById(node.children as TreeViewBaseItem[], id)
+        if (found) return found
       }
+    }
+    return null
+  }
+
+  const getDirectChildrenIds = (nodeId: string): string[] => {
+    const node = findNodeById(transformData, nodeId)
+    if (!node || !node.children || node.children.length === 0) return []
+
+    return (node.children as TreeViewBaseItem[]).map(child => child.id)
+  }
+
+  const getChildrenIds = (nodeId: string): string[] => {
+    const node = findNodeById(transformData, nodeId)
+    if (!node || !node.children || node.children.length === 0) return []
+    let childIds: string[] = []
+    node.children.forEach(child => {
+      childIds = [...childIds, ...getAllChildIds(child as TreeViewBaseItem)]
     })
-    let newSelectedItemsWithChildren = Array.from(
-      new Set([...newSelectedItems, ...itemsToSelect].filter(itemId => !itemsToUnSelect[itemId]))
-    )
-    const checkAndUpdateParents = (items: string[]) => {
-      const itemMap = new Map(items.map(id => [id, true]))
-      const traverse = (item: TreeViewBaseItem) => {
-        if (item.children?.length) {
-          const allChildrenSelected = item.children.every(child => itemMap.has(child.id))
-          const allChildrenUnselected = item.children.every(child => !itemMap.has(child.id))
+    return childIds
+  }
 
-          if (allChildrenSelected) {
-            itemMap.set(item.id, true)
-          }
-          if (allChildrenUnselected) {
-            itemMap.delete(item.id)
-          }
-
-          item.children.forEach(traverse)
+  const getParentId = (nodeId: string): string | null => {
+    const findParent = (
+      nodes: TreeViewBaseItem[],
+      id: string,
+      parent: string | null = null
+    ): string | null => {
+      for (const node of nodes) {
+        if (node.id === id) return parent
+        if (node.children && node.children.length > 0) {
+          const found = findParent(node.children as TreeViewBaseItem[], id, node.id)
+          if (found !== null) return found
         }
       }
-      transformData.forEach(traverse)
-      return Array.from(itemMap.keys())
+      return null
     }
-    newSelectedItemsWithChildren = checkAndUpdateParents(newSelectedItemsWithChildren)
-    setSelectedItems(newSelectedItemsWithChildren)
-    toggledItemRef.current = {}
+    return findParent(transformData, nodeId)
+  }
+
+  const isIndeterminate = (nodeId: string): boolean => {
+    const childIds = getChildrenIds(nodeId)
+    if (childIds.length === 0) return false
+    const selectedChildIds = childIds.filter(id => selectedItems.includes(id))
+    return selectedChildIds.length > 0 && selectedChildIds.length < childIds.length
+  }
+
+  const handleToggle = (itemId: string) => {
+    setSelectedItems(prev => {
+      let newSelected = [...prev]
+      const childIds = getChildrenIds(itemId)
+      if (prev.includes(itemId)) {
+        newSelected = prev.filter(id => id !== itemId && !childIds.includes(id))
+      } else {
+        newSelected = [...prev, itemId, ...childIds.filter(id => !prev.includes(id))]
+      }
+      const updateParentStatus = (nodeId: string) => {
+        const parentId = getParentId(nodeId)
+        if (!parentId) return
+        const siblingIds = getDirectChildrenIds(parentId)
+        const allSiblingsSelected = siblingIds.every(id => newSelected.includes(id))
+        if (allSiblingsSelected) {
+          if (!newSelected.includes(parentId)) {
+            newSelected.push(parentId)
+          }
+        } else {
+          if (newSelected.includes(parentId)) {
+            newSelected = newSelected.filter(id => id !== parentId)
+          }
+        }
+        updateParentStatus(parentId)
+      }
+      updateParentStatus(itemId)
+      return newSelected
+    })
+  }
+
+  const renderTreeItems = (nodes: TreeViewBaseItem[]) => {
+    return nodes.map((node: TreeViewBaseItem) => {
+      const checked = selectedItems.includes(node.id)
+      const indeterminate = !checked && isIndeterminate(node.id)
+      return (
+        <TreeItem
+          key={node.id}
+          itemId={node.id}
+          label={
+            <Box display="flex" alignItems="center">
+              <Checkbox
+                checked={checked}
+                indeterminate={indeterminate}
+                onChange={() => handleToggle(node.id)}
+              />
+              {node.label}
+            </Box>
+          }
+        >
+          {node.children &&
+            node.children.length > 0 &&
+            renderTreeItems(node.children as TreeViewBaseItem[])}
+        </TreeItem>
+      )
+    })
   }
 
   return (
     <Box>
-      <RichTreeView
-        multiSelect
-        checkboxSelection
-        apiRef={apiRef}
-        items={transformData}
-        selectedItems={selectedItems}
-        onSelectedItemsChange={handleSelectedItemsChange}
-        onItemSelectionToggle={handleItemSelectionToggle}
-      />
+      <SimpleTreeView expansionTrigger="iconContainer" multiSelect>
+        {renderTreeItems(transformData)}
+      </SimpleTreeView>
     </Box>
   )
 }
