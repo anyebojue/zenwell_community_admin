@@ -9,6 +9,10 @@ import { useTreeViewApiRef } from '@mui/x-tree-view/hooks'
 import { TreeViewBaseItem } from '@mui/x-tree-view/models'
 import message from 'components/Message'
 
+interface TreeViewItemWithSelected extends TreeViewBaseItem {
+  isSelected: boolean
+}
+
 interface FeatureProps {
   dialogValue: RolesReply
 }
@@ -29,17 +33,21 @@ const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
   const { menus } = useSelector((state: RootState) => state.MenuSlice)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
   const toggledItemRef = useRef<{ [itemId: string]: boolean }>({})
-  console.log(dialogValue)
 
   const transformData = useMemo(() => {
-    const transformNode = (node: MenusReply): TreeViewBaseItem => ({
-      id: node.id as string,
-      label: node.name as string,
-      children: node.children?.length ? node.children.map(transformNode) : []
-    })
+    const transformNode = (node: MenusReply): TreeViewItemWithSelected => {
+      const isSelected = dialogValue.actions?.some(action => action.code === node.code) || false
+      return {
+        id: node.id as string,
+        label: node.name as string,
+        children: node.children?.length ? node.children.map(transformNode) : [],
+        isSelected // Add the isSelected flag
+      } as TreeViewItemWithSelected
+    }
     return menus?.map(transformNode) || []
-  }, [menus])
+  }, [menus, dialogValue])
 
+  // Fetch menus from the server
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
@@ -54,6 +62,18 @@ const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
       closeLoading()
     }
   }, [dispatch])
+
+  useEffect(() => {
+    const initiallySelectedItems: string[] = []
+    const traverse = (node: TreeViewBaseItem) => {
+      if ('isSelected' in node && node.isSelected) {
+        initiallySelectedItems.push(node.id)
+      }
+      node.children?.forEach(traverse)
+    }
+    transformData.forEach(traverse)
+    setSelectedItems(initiallySelectedItems)
+  }, [transformData])
 
   useEffect(() => {
     fetchData()

@@ -18,7 +18,7 @@ export interface RolesReply {
   plate?: string // 平台  0 物业 1平台 2开发
   word?: string
   users?: EmployeesReply[]
-  actions?: []
+  actions?: { code: string }[]
 }
 
 export interface RolesParams {
