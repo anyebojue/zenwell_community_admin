@@ -16,6 +16,7 @@ export interface RolesReply {
   id?: string
   name?: string // 角色名称
   plate?: string // 平台  0 物业 1平台 2开发
+  communityId?: string
   word?: string
   users?: EmployeesReply[]
   actions?: { code: string }[]
