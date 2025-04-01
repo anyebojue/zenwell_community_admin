@@ -23,12 +23,13 @@ const getItemDescendantsIds = (item: TreeViewBaseItem) => {
   return ids
 }
 
-const Feature: React.FC<FeatureProps> = () => {
+const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
+  const apiRef = useTreeViewApiRef()
   const dispatch = useDispatch<AppDispatch>()
   const { menus } = useSelector((state: RootState) => state.MenuSlice)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
   const toggledItemRef = useRef<{ [itemId: string]: boolean }>({})
-  const apiRef = useTreeViewApiRef()
+  console.log(dialogValue)
 
   const transformData = useMemo(() => {
     const transformNode = (node: MenusReply): TreeViewBaseItem => ({
@@ -80,9 +81,30 @@ const Feature: React.FC<FeatureProps> = () => {
         })
       }
     })
-    const newSelectedItemsWithChildren = Array.from(
+    let newSelectedItemsWithChildren = Array.from(
       new Set([...newSelectedItems, ...itemsToSelect].filter(itemId => !itemsToUnSelect[itemId]))
     )
+    const checkAndUpdateParents = (items: string[]) => {
+      const itemMap = new Map(items.map(id => [id, true]))
+      const traverse = (item: TreeViewBaseItem) => {
+        if (item.children?.length) {
+          const allChildrenSelected = item.children.every(child => itemMap.has(child.id))
+          const allChildrenUnselected = item.children.every(child => !itemMap.has(child.id))
+
+          if (allChildrenSelected) {
+            itemMap.set(item.id, true)
+          }
+          if (allChildrenUnselected) {
+            itemMap.delete(item.id)
+          }
+
+          item.children.forEach(traverse)
+        }
+      }
+      transformData.forEach(traverse)
+      return Array.from(itemMap.keys())
+    }
+    newSelectedItemsWithChildren = checkAndUpdateParents(newSelectedItemsWithChildren)
     setSelectedItems(newSelectedItemsWithChildren)
     toggledItemRef.current = {}
   }
