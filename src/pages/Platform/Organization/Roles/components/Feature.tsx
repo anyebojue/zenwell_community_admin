@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { MenusReply } from 'api/model/develop/menuModel'
 import { RolesReply } from 'api/model/platform/organization/rolesModel'
@@ -23,7 +23,7 @@ const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
   const { menus } = useSelector((state: RootState) => state.MenuSlice)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
   const checkboxId = dialogValue.actions?.map(item => item.code)
-  const [initialized, setInitialized] = useState(false)
+  const prevCheckboxIdRef = useRef<string[] | undefined>()
 
   const transformData = useMemo(() => {
     const transformNode = (node: MenusReply): CustomTreeViewItem => {
@@ -147,38 +147,44 @@ const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
   }
 
   const handleToggle = async (itemId: string) => {
-    let newSelectedItemsValue: string[] = []
+    let newSelected: string[] = [...selectedItems]
+    const childIds = getChildrenIds(itemId)
+    if (selectedItems.includes(itemId)) {
+      newSelected = newSelected.filter(id => id !== itemId && !childIds.includes(id))
+    } else {
+      newSelected.push(itemId)
+      childIds.forEach(childId => {
+        if (!newSelected.includes(childId)) {
+          newSelected.push(childId)
+        }
+      })
+    }
 
-    setSelectedItems(prev => {
-      let newSelected = [...prev]
-      const childIds = getChildrenIds(itemId)
-      if (prev.includes(itemId)) {
-        newSelected = prev.filter(id => id !== itemId && !childIds.includes(id))
+    const updateParentStatus = (nodeId: string, items: string[]): string[] => {
+      const parentId = getParentId(nodeId)
+      if (!parentId) return items
+      const result = [...items]
+      const siblingIds = getDirectChildrenIds(parentId)
+      const allSiblingsSelected = siblingIds.every(id => result.includes(id))
+      if (allSiblingsSelected) {
+        if (!result.includes(parentId)) {
+          result.push(parentId)
+        }
       } else {
-        newSelected = [...prev, itemId, ...childIds.filter(id => !prev.includes(id))]
-      }
-      const updateParentStatus = (nodeId: string) => {
-        const parentId = getParentId(nodeId)
-        if (!parentId) return
-        const siblingIds = getDirectChildrenIds(parentId)
-        const allSiblingsSelected = siblingIds.every(id => newSelected.includes(id))
-        if (allSiblingsSelected) {
-          if (!newSelected.includes(parentId)) {
-            newSelected.push(parentId)
-          }
-        } else {
-          if (newSelected.includes(parentId)) {
-            newSelected = newSelected.filter(id => id !== parentId)
+        if (result.includes(parentId)) {
+          const index = result.indexOf(parentId)
+          if (index !== -1) {
+            result.splice(index, 1)
           }
         }
-        updateParentStatus(parentId)
       }
-      updateParentStatus(itemId)
-      newSelectedItemsValue = [...newSelected]
-      return newSelected
-    })
+
+      return updateParentStatus(parentId, result)
+    }
+    newSelected = updateParentStatus(itemId, newSelected)
+    setSelectedItems(newSelected)
     const closeLoading = message.loading('正在加载列表中，请稍后...')
-    const selectedCodes = getSelectedLeafNodesCodes(newSelectedItemsValue)
+    const selectedCodes = getSelectedLeafNodesCodes(newSelected)
     const params = {
       id: dialogValue.id,
       name: dialogValue.name,
@@ -186,7 +192,7 @@ const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
       action: selectedCodes.join(','),
       plate: dialogValue.plate,
       communityId: dialogValue.communityId,
-      users: dialogValue.users ? dialogValue.users[0].id : ''
+      users: dialogValue.users?.length ? dialogValue.users[0].id : ''
     }
     try {
       const res = await dispatch(update(params))
@@ -217,6 +223,10 @@ const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
 
   useEffect(() => {
     if (!checkboxId || !transformData.length) return
+    const currentCheckboxIdStr = checkboxId.sort().join(',')
+    const prevCheckboxIdStr = prevCheckboxIdRef.current?.sort().join(',') || ''
+    if (currentCheckboxIdStr === prevCheckboxIdStr) return
+    prevCheckboxIdRef.current = [...checkboxId]
     const newSelectedItems: string[] = []
     const findNodeByCodeInline = (
       nodes: CustomTreeViewItem[],
@@ -241,7 +251,6 @@ const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
       }
       return ids
     }
-
     checkboxId.forEach(code => {
       const node = findNodeByCodeInline(transformData, code)
       if (node) {
@@ -249,52 +258,35 @@ const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
         newSelectedItems.push(...childIds)
       }
     })
-
-    // 更新父节点的选中状态
     const updateParentNodes = (items: string[]): string[] => {
       const result = [...items]
       let hasChanges = false
-
-      // 检查每个节点的父节点
       const checkParentsRecursively = (nodeId: string) => {
         const parentId = getParentId(nodeId)
-        if (!parentId) return // 没有父节点
-
-        // 获取所有兄弟节点ID
+        if (!parentId) return
         const allSiblingIds = getDirectChildrenIds(parentId)
-
-        // 检查是否所有兄弟节点都已被选中
         const allSiblingsSelected = allSiblingIds.every(id => result.includes(id))
-
         if (allSiblingsSelected && !result.includes(parentId)) {
-          // 如果所有子节点都被选中，但父节点没有被选中，则选中父节点
           result.push(parentId)
           hasChanges = true
-          // 递归检查更高层级的父节点
           checkParentsRecursively(parentId)
         }
       }
-
-      // 对所有已选择的节点检查其父节点
       items.forEach(nodeId => {
         checkParentsRecursively(nodeId)
       })
-
-      // 如果有变化，继续递归调用，直到没有更多的变化
       if (hasChanges) {
         return updateParentNodes(result)
       }
       return result
     }
-
-    // 对已选择的项目应用父节点更新
     const finalSelectedItems = updateParentNodes(newSelectedItems)
-
-    if (finalSelectedItems.length > 0 && !initialized) {
+    const newSelectedStr = finalSelectedItems.sort().join(',')
+    const currentSelectedStr = selectedItems.sort().join(',')
+    if (newSelectedStr !== currentSelectedStr) {
       setSelectedItems(finalSelectedItems)
-      setInitialized(true)
     }
-  }, [checkboxId, transformData, initialized, getParentId, getDirectChildrenIds])
+  }, [checkboxId, transformData, getParentId, getDirectChildrenIds, selectedItems])
 
   const renderTreeItems = (nodes: CustomTreeViewItem[]) => {
     return nodes.map((node: CustomTreeViewItem) => {
