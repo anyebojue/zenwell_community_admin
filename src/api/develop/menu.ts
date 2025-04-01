@@ -1,5 +1,5 @@
 import { request } from 'utils/request/axios'
-import { FindMenuReply, MenuParams } from '../model/develop/menuModel'
+import { FindMenuReply, FindMenusReply, MenuParams } from '../model/develop/menuModel'
 
 const ApiPrefix = {
   FindMenus: '/auth/actions',
@@ -16,7 +16,7 @@ const ApiPrefix = {
  */
 export const FindMenus = (params: MenuParams & PaginationParams) => {
   return request
-    .get<FindMenuReply>({
+    .get<FindMenusReply>({
       url: ApiPrefix.FindMenus,
       params
     })

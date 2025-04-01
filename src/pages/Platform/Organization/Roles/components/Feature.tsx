@@ -1,6 +1,6 @@
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { MenuReply } from 'api/model/develop/menuModel'
+import { MenusReply } from 'api/model/develop/menuModel'
 import { RolesReply } from 'api/model/platform/organization/rolesModel'
 import { findMenus } from 'modules/develop/menu'
 import { Box } from '@mui/material'
@@ -23,20 +23,21 @@ const getItemDescendantsIds = (item: TreeViewBaseItem) => {
   return ids
 }
 
-const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
+const Feature: React.FC<FeatureProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { list } = useSelector((state: RootState) => state.MenuSlice)
+  const { menus } = useSelector((state: RootState) => state.MenuSlice)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
   const toggledItemRef = useRef<{ [itemId: string]: boolean }>({})
   const apiRef = useTreeViewApiRef()
 
-  const renameNameToLabel = (obj: MenuReply[]): MenuReply[] => {
-    return obj.map(({ name, children, ...rest }) => ({
-      label: name,
-      children: children ? renameNameToLabel(children) : undefined,
-      ...rest
-    }))
-  }
+  const transformData = useMemo(() => {
+    const transformNode = (node: MenusReply): TreeViewBaseItem => ({
+      id: node.id as string,
+      label: node.name as string,
+      children: node.children?.length ? node.children.map(transformNode) : []
+    })
+    return menus?.map(transformNode) || []
+  }, [menus])
 
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
@@ -56,8 +57,6 @@ const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
   useEffect(() => {
     fetchData()
   }, [fetchData])
-
-  const transformedList: MenuReply[] = Array.isArray(list) ? renameNameToLabel(list) : []
 
   const handleItemSelectionToggle = (
     event: React.SyntheticEvent,
@@ -94,7 +93,7 @@ const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
         multiSelect
         checkboxSelection
         apiRef={apiRef}
-        items={transformedList}
+        items={transformData}
         selectedItems={selectedItems}
         onSelectedItemsChange={handleSelectedItemsChange}
         onItemSelectionToggle={handleItemSelectionToggle}

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
-import { MenuParams, MenuReply } from 'api/model/develop/menuModel'
+import { MenuParams, MenuReply, MenusReply } from 'api/model/develop/menuModel'
 import { FindMenu, CreateMenu, UpdateMenu, DeleteMenu, FindMenus } from 'api/develop/menu'
 
 const namespace = 'Menu'
@@ -13,6 +13,7 @@ const PAGE = {
 interface IInitialState {
   page: Page
   list: MenuReply[]
+  menus: MenusReply[]
 }
 
 const initialState: IInitialState = {
@@ -22,11 +23,12 @@ const initialState: IInitialState = {
     total: '0',
     disable: false
   },
-  list: []
+  list: [],
+  menus: []
 }
 
 export const findMenus = createAsyncThunk(
-  `${namespace}/find`,
+  `${namespace}/findMenus`,
   async (params: MenuParams & PaginationParams) => {
     const res = await FindMenus(params)
     return res
@@ -63,9 +65,21 @@ export const MenuSlice = createSlice({
     reset: () => initialState
   },
   extraReducers: builder => {
+    // 请求加载时的数据
+    builder.addCase(find.pending, state => {
+      state.list = []
+    })
+    // 请求成功的数据
     builder.addCase(find.fulfilled, (state, action) => {
       state.page = action.payload.page
       state.list = action.payload.list
+    })
+    builder.addCase(findMenus.fulfilled, (state, action) => {
+      state.menus = action.payload.list
+    })
+    // 请求失败后的数据
+    builder.addCase(find.rejected, state => {
+      state.list = []
     })
   }
 })
