@@ -70,10 +70,10 @@ const TableData: React.FC<TableDataProps> = ({
     (actionType: string, row: ReportCustomComponentReply) => {
       switch (actionType) {
         case 'settings':
-          navigate('/ReportConfiguration/SetCondition', { state: { value: row } })
+          navigate('/reportConfiguration/SetCondition', { state: { value: row } })
           break
         case 'statistics':
-          navigate('/ReportConfiguration/BottomStatistics', { state: { value: row } })
+          navigate('/reportConfiguration/BottomStatistics', { state: { value: row } })
           break
         case 'edit':
           setDialogValue(row)

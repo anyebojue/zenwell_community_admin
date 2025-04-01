@@ -4,7 +4,7 @@ import { IRouter } from '../../index'
 
 const reportConfiguration: IRouter[] = [
   {
-    path: '/ReportConfiguration',
+    path: '/reportConfiguration',
     element: null,
     meta: {
       title: '报表配置',

@@ -4,7 +4,7 @@ import { IRouter } from '../../index'
 
 const communitys: IRouter[] = [
   {
-    path: '/Report',
+    path: '/report',
     element: null,
     meta: {
       title: '报表信息',

@@ -98,7 +98,7 @@ const TableData: React.FC<TableDataProps> = ({
     (actionType: string, row: FeeConfigReply) => {
       switch (actionType) {
         case 'discount':
-          navigate('/FeeConfig/ExpenseDiscount', { state: { data: row } })
+          navigate('/feeConfig/ExpenseDiscount', { state: { data: row } })
           break
         case 'edit':
           setDialogValue(row)
@@ -109,7 +109,7 @@ const TableData: React.FC<TableDataProps> = ({
           setSelectedRows(new Set([row.id || '']))
           break
         case 'details':
-          navigate('/FeeConfig/ExpenseItemInformation', { state: { value: row } })
+          navigate('/feeConfig/ExpenseItemInformation', { state: { value: row } })
           break
       }
     },

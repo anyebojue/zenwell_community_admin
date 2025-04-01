@@ -4,7 +4,7 @@ import { IRouter } from '../../index'
 
 const repair: IRouter[] = [
   {
-    path: '/Parking',
+    path: '/parking',
     element: null,
     meta: {
       title: '停车管理',

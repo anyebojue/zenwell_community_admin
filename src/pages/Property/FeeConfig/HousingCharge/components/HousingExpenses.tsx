@@ -56,7 +56,7 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue }) => {
     { label: '水电抄表', onClick: () => setOpenDialog(true) },
     {
       label: '费用套餐',
-      onClick: () => navigate('/FeeConfig/HousingFeePackage', { state: dialogValue })
+      onClick: () => navigate('/feeConfig/HousingFeePackage', { state: dialogValue })
     },
     { label: '创建费用', onClick: () => setOpenExpense(true) },
     { label: '欠费缴费', onClick: () => {} }

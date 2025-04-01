@@ -13,14 +13,14 @@ const communitys: IRouter[] = [
     },
     children: [
       {
-        path: 'my-communitys',
+        path: 'MyCommunity',
         element: load('Property/Communitys/MyCommunity'),
         meta: {
           title: '我的小区'
         }
       },
       {
-        path: 'house-decoration',
+        path: 'HouseDecoration',
         element: load('Property/Communitys/HouseDecoration'),
         meta: {
           title: '房屋装修'
@@ -43,7 +43,7 @@ const communitys: IRouter[] = [
         }
       },
       {
-        path: 'community-announcement',
+        path: 'CommunityAnnouncement',
         element: load('Property/Communitys/CommunityAnnouncement'),
         meta: {
           title: '小区公示'

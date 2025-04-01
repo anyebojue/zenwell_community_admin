@@ -50,7 +50,7 @@ const TableData: React.FC<TableDataProps> = () => {
     (actionType: string, row: ReportFeeYearCollectionDetailReply) => {
       switch (actionType) {
         case 'details':
-          navigate('/FeeConfig/RefundDetails', { state: { value: row } })
+          navigate('/feeConfig/RefundDetails', { state: { value: row } })
           break
       }
     },

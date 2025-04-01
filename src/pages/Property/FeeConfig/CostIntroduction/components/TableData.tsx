@@ -74,7 +74,7 @@ const TableData: React.FC<TableDataProps> = () => {
     (actionType: string, row: ImportFeeReply) => {
       switch (actionType) {
         case 'details':
-          navigate('/FeeConfig/ImportFeeDetails', { state: { value: row } })
+          navigate('/feeConfig/ImportFeeDetails', { state: { value: row } })
           break
       }
     },

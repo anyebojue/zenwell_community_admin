@@ -57,7 +57,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
           setOpenDialog(true)
           break
         case 'details':
-          navigate('/FeeConfig/RefundDetails', { state: { value: row } })
+          navigate('/feeConfig/RefundDetails', { state: { value: row } })
           setDialogValue(row)
           break
       }

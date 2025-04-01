@@ -4,7 +4,7 @@ import { IRouter } from '../../index'
 
 const systemSettings: IRouter[] = [
   {
-    path: '/SystemSetting',
+    path: '/systemSetting',
     element: null,
     meta: {
       title: '系统设置',

@@ -4,7 +4,7 @@ import { IRouter } from '../../index'
 
 const feeConfig: IRouter[] = [
   {
-    path: '/FeeConfig',
+    path: '/feeConfig',
     element: null,
     meta: {
       title: '费用设置',

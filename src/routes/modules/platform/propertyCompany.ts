@@ -4,7 +4,7 @@ import { IRouter } from '../../index'
 
 const propertyCompany: IRouter[] = [
   {
-    path: '/PropertyCompany',
+    path: '/propertyCompany',
     element: null,
     meta: {
       title: '物业公司',

@@ -59,7 +59,7 @@ const TableData: React.FC<TableDataProps> = ({
     (actionType: string, row: FeeComboReply) => {
       switch (actionType) {
         case 'item':
-          navigate('/FeeConfig/ExpenseItem', { state: { id: row?.id } })
+          navigate('/feeConfig/ExpenseItem', { state: { id: row?.id } })
           break
         case 'edit':
           setDialogType('edit')
