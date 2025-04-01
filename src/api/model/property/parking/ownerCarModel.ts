@@ -22,6 +22,7 @@ export interface OwnerCarReply {
   leaseType?: string
   roomName?: string
   ownerName?: string
+  parkingBox?: string
 }
 
 export interface OwnerCarParams {
@@ -42,6 +43,7 @@ export interface OwnerCarParams {
   carTypeCd?: string
   memberId?: string
   leaseType?: string
+  carId?: string
 }
 
 export interface FindOwnerCarReply {

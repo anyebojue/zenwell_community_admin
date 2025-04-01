@@ -2,9 +2,9 @@ import BadgeIcon from '@mui/icons-material/Badge'
 import { load } from '../../load'
 import { IRouter } from '../../index'
 
-const organization: IRouter[] = [
+const organizations: IRouter[] = [
   {
-    path: '/organization',
+    path: '/organizations',
     element: null,
     meta: {
       title: '组织设置',
@@ -37,4 +37,4 @@ const organization: IRouter[] = [
   }
 ]
 
-export default organization
+export default organizations

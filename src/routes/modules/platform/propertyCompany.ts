@@ -12,7 +12,7 @@ const propertyCompany: IRouter[] = [
     },
     children: [
       {
-        path: '/PropertyCompany',
+        path: '/propertyCompany',
         element: load('Platform/PropertyCompany'),
         meta: {
           title: '物业公司',
