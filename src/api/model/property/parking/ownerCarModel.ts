@@ -1,4 +1,5 @@
 import { Page } from '../../pageModel'
+import { ParkingSpaceInfoReply } from './parkingSpaceInfoModel'
 
 export interface OwnerCarReply {
   id?: string
@@ -23,6 +24,7 @@ export interface OwnerCarReply {
   roomName?: string
   ownerName?: string
   parkingBox?: string
+  parkingSpace: ParkingSpaceInfoReply
 }
 
 export interface OwnerCarParams {

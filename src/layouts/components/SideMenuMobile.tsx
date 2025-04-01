@@ -14,10 +14,10 @@ interface SideMenuMobileProps {
 export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobileProps) {
   const navigate = useNavigate()
   const handleLogout = () => {
-    navigate('/login')
     localStorage.removeItem('zenwell_token')
     localStorage.removeItem('user_info')
     localStorage.removeItem('current_community')
+    navigate('/login')
   }
 
   return (

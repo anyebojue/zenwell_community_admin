@@ -126,7 +126,12 @@ const TableData: React.FC<TableDataProps> = ({
         { field: 'carType', headerName: '车辆类型', flex: 1 },
         { field: 'carColor', headerName: '颜色', flex: 1 },
         { field: 'ownerName', headerName: '业主', flex: 1 },
-        { field: 'parkingSpace.name', headerName: '车位', flex: 1 },
+        {
+          field: 'parkingSpace.name',
+          headerName: '车位',
+          flex: 1,
+          renderCell: ({ row }) => row.parkingSpace.num
+        },
         {
           field: 'startTime',
           headerName: '有效期',

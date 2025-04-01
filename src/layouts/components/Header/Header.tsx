@@ -19,7 +19,6 @@ import ColorModeIconDropdown from 'theme/ColorModeIconDropdown'
 import { useSelector } from 'react-redux'
 import { DataGrid } from '@mui/x-data-grid'
 import { CommunityReply } from 'api/model/platform/communityModel'
-import { useNavigate } from 'react-router-dom'
 import Search from './Search'
 import OptionsMenu from './OptionsMenu'
 
@@ -46,7 +45,6 @@ interface HeaderProps {
 }
 
 const Header = ({ isMenuOpen, onToggleMenu }: HeaderProps) => {
-  const navigate = useNavigate()
   const info = useSelector((state: RootState) => state.info.userInfo)
   const [community, setCommunity] = useState<string | undefined>()
   const [openDialog, setOpenDialog] = useState(false)
@@ -79,7 +77,6 @@ const Header = ({ isMenuOpen, onToggleMenu }: HeaderProps) => {
       if (selectedCommunity) {
         localStorage.setItem('current_community', JSON.stringify(selectedCommunity))
         window.location.reload()
-        navigate('/communitys/my-communitys')
       }
     }
   }
@@ -95,7 +92,6 @@ const Header = ({ isMenuOpen, onToggleMenu }: HeaderProps) => {
   const handleSelect = (row: CommunityReply) => {
     localStorage.setItem('current_community', JSON.stringify(row))
     window.location.reload()
-    navigate('/communitys/my-communitys')
   }
 
   return (

@@ -29,11 +29,10 @@ const OptionsMenu = () => {
     setAnchorEl(null)
   }
   const handleLogout = () => {
-    setAnchorEl(null)
-    navigate('/login')
     localStorage.removeItem('zenwell_token')
     localStorage.removeItem('user_info')
     localStorage.removeItem('current_community')
+    navigate('/login')
   }
   return (
     <Fragment>
