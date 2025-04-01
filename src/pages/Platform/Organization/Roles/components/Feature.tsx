@@ -66,23 +66,29 @@ const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
     return ids
   }, [])
 
-  const findNodeById = (nodes: CustomTreeViewItem[], id: string): CustomTreeViewItem | null => {
-    for (const node of nodes) {
-      if (node.id === id) return node
-      if (node.children && node.children.length > 0) {
-        const found = findNodeById(node.children as CustomTreeViewItem[], id)
-        if (found) return found
+  const findNodeById = useCallback(
+    (nodes: CustomTreeViewItem[], id: string): CustomTreeViewItem | null => {
+      for (const node of nodes) {
+        if (node.id === id) return node
+        if (node.children && node.children.length > 0) {
+          const found = findNodeById(node.children as CustomTreeViewItem[], id)
+          if (found) return found
+        }
       }
-    }
-    return null
-  }
+      return null
+    },
+    []
+  )
 
-  const getDirectChildrenIds = (nodeId: string): string[] => {
-    const node = findNodeById(transformData, nodeId)
-    if (!node || !node.children || node.children.length === 0) return []
+  const getDirectChildrenIds = useCallback(
+    (nodeId: string): string[] => {
+      const node = findNodeById(transformData, nodeId)
+      if (!node || !node.children || node.children.length === 0) return []
 
-    return (node.children as CustomTreeViewItem[]).map(child => child.id)
-  }
+      return (node.children as CustomTreeViewItem[]).map(child => child.id)
+    },
+    [findNodeById, transformData]
+  )
 
   const getChildrenIds = (nodeId: string): string[] => {
     const node = findNodeById(transformData, nodeId)
@@ -94,23 +100,26 @@ const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
     return childIds
   }
 
-  const getParentId = (nodeId: string): string | null => {
-    const findParent = (
-      nodes: CustomTreeViewItem[],
-      id: string,
-      parent: string | null = null
-    ): string | null => {
-      for (const node of nodes) {
-        if (node.id === id) return parent
-        if (node.children && node.children.length > 0) {
-          const found = findParent(node.children as CustomTreeViewItem[], id, node.id)
-          if (found !== null) return found
+  const getParentId = useCallback(
+    (nodeId: string): string | null => {
+      const findParent = (
+        nodes: CustomTreeViewItem[],
+        id: string,
+        parent: string | null = null
+      ): string | null => {
+        for (const node of nodes) {
+          if (node.id === id) return parent
+          if (node.children && node.children.length > 0) {
+            const found = findParent(node.children as CustomTreeViewItem[], id, node.id)
+            if (found !== null) return found
+          }
         }
+        return null
       }
-      return null
-    }
-    return findParent(transformData, nodeId)
-  }
+      return findParent(transformData, nodeId)
+    },
+    [transformData]
+  )
 
   const isIndeterminate = (nodeId: string): boolean => {
     const childIds = getChildrenIds(nodeId)
@@ -241,11 +250,51 @@ const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
       }
     })
 
-    if (newSelectedItems.length > 0 && !initialized) {
-      setSelectedItems(newSelectedItems)
+    // 更新父节点的选中状态
+    const updateParentNodes = (items: string[]): string[] => {
+      const result = [...items]
+      let hasChanges = false
+
+      // 检查每个节点的父节点
+      const checkParentsRecursively = (nodeId: string) => {
+        const parentId = getParentId(nodeId)
+        if (!parentId) return // 没有父节点
+
+        // 获取所有兄弟节点ID
+        const allSiblingIds = getDirectChildrenIds(parentId)
+
+        // 检查是否所有兄弟节点都已被选中
+        const allSiblingsSelected = allSiblingIds.every(id => result.includes(id))
+
+        if (allSiblingsSelected && !result.includes(parentId)) {
+          // 如果所有子节点都被选中，但父节点没有被选中，则选中父节点
+          result.push(parentId)
+          hasChanges = true
+          // 递归检查更高层级的父节点
+          checkParentsRecursively(parentId)
+        }
+      }
+
+      // 对所有已选择的节点检查其父节点
+      items.forEach(nodeId => {
+        checkParentsRecursively(nodeId)
+      })
+
+      // 如果有变化，继续递归调用，直到没有更多的变化
+      if (hasChanges) {
+        return updateParentNodes(result)
+      }
+      return result
+    }
+
+    // 对已选择的项目应用父节点更新
+    const finalSelectedItems = updateParentNodes(newSelectedItems)
+
+    if (finalSelectedItems.length > 0 && !initialized) {
+      setSelectedItems(finalSelectedItems)
       setInitialized(true)
     }
-  }, [checkboxId, transformData, initialized])
+  }, [checkboxId, transformData, initialized, getParentId, getDirectChildrenIds])
 
   const renderTreeItems = (nodes: CustomTreeViewItem[]) => {
     return nodes.map((node: CustomTreeViewItem) => {
