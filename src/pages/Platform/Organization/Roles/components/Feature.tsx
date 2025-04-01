@@ -29,7 +29,6 @@ const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
   const [selectedItems, setSelectedItems] = useState<string[]>([])
   const toggledItemRef = useRef<{ [itemId: string]: boolean }>({})
   const apiRef = useTreeViewApiRef()
-  console.log(dialogValue)
 
   const renameNameToLabel = (obj: MenuReply[]): MenuReply[] => {
     return obj.map(({ name, children, ...rest }) => ({
