@@ -4,6 +4,7 @@ import { find } from 'modules/platform/organization/employees'
 import message from 'components/Message'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
+import { Checkbox } from '@mui/material'
 
 export interface Column<T> {
   headerName: string
@@ -19,6 +20,8 @@ interface AssociatedTableDataProps {
 const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({ setSelectedRows }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.EmployeesSlice)
+  const { orgUserList } = useSelector((state: RootState) => state.OrganizationInfoSlice)
+  const checkboxId = orgUserList.map(item => item.userId)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -70,6 +73,12 @@ const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({ setSelectedRo
           paginationModel: {
             pageSize: Number(page.size)
           }
+        }
+      }}
+      isRowSelectable={params => !checkboxId.includes(params.row.id)}
+      slots={{
+        baseCheckbox: params => {
+          return <Checkbox checked={params.disabled} disabled={params.disabled} />
         }
       }}
     />

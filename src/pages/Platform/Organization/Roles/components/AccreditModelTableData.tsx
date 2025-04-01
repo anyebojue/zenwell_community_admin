@@ -4,6 +4,7 @@ import { find } from 'modules/platform/community'
 import message from 'components/Message'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
+import { Checkbox } from '@mui/material'
 
 interface AccreditTableDataProps {
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
@@ -12,6 +13,8 @@ interface AccreditTableDataProps {
 const AccreditModelTableData: React.FC<AccreditTableDataProps> = ({ setSelectedRows }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.CommunitySlice)
+  const { rolesGroupList } = useSelector((state: RootState) => state.RolesSlice)
+  const checkboxId = rolesGroupList.map(item => item.communityId)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -46,6 +49,7 @@ const AccreditModelTableData: React.FC<AccreditTableDataProps> = ({ setSelectedR
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
+      getRowId={row => row.id || ''}
       checkboxSelection
       rows={list}
       columns={[
@@ -62,6 +66,12 @@ const AccreditModelTableData: React.FC<AccreditTableDataProps> = ({ setSelectedR
           paginationModel: {
             pageSize: Number(page.size)
           }
+        }
+      }}
+      isRowSelectable={params => !checkboxId.includes(params.row.id)}
+      slots={{
+        baseCheckbox: params => {
+          return <Checkbox checked={params.disabled} disabled={params.disabled} />
         }
       }}
     />
