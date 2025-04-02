@@ -1,4 +1,4 @@
-import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { OwnerCarReply } from 'api/model/property/parking/ownerCarModel'
 import { find } from 'modules/property/parking/ownerCar'
@@ -8,8 +8,11 @@ import { Box, Chip, Typography } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
+import Release from './Release'
 
 interface TableDataProps {
+  dialogValue?: OwnerCarReply
+  openDiscount: boolean
   setDialogType: Dispatch<SetStateAction<string>>
   selectedButton: string
   setDialogValue: Dispatch<SetStateAction<OwnerCarReply | undefined>>
@@ -17,6 +20,7 @@ interface TableDataProps {
   openDialog: boolean
   setOpenDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
+  setOpenDiscout: Dispatch<SetStateAction<boolean>>
 }
 
 const statusValue: Record<string, string> = {
@@ -44,16 +48,20 @@ const statusCd: Record<string, string> = {
 }
 
 const TableData: React.FC<TableDataProps> = ({
+  dialogValue,
+  openDiscount,
   setDialogType,
   selectedButton,
   setDialogValue,
   setSelectedRows,
   openDialog,
   setOpenDialog,
-  setDelOpen
+  setDelOpen,
+  setOpenDiscout
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.OwnerCarSlice)
+  const [openRelease, setOpenRelease] = useState(false)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -83,11 +91,11 @@ const TableData: React.FC<TableDataProps> = ({
       },
       '正在加载列表中，请稍后...'
     )
-    if (openDialog) {
+    if (openDialog || openDiscount) {
       fetchData(findOwner, { 'page.disable': true }, '正在加载列表中，请稍后...')
       fetchData(findParkingSpace, { 'page.disable': true }, '正在加载列表中，请稍后...')
     }
-  }, [fetchData, openDialog, page.num, page.size, selectedButton])
+  }, [fetchData, openDialog, openDiscount, page.num, page.size, selectedButton])
 
   const handleRowSelection = useCallback(
     (rowSelectionModel: GridRowSelectionModel) => {
@@ -100,8 +108,12 @@ const TableData: React.FC<TableDataProps> = ({
     (actionType: string, row: OwnerCarReply) => {
       switch (actionType) {
         case 'discount':
+          setDialogValue(row)
+          setOpenDiscout(true)
           break
         case 'release':
+          setDialogValue(row)
+          setOpenRelease(true)
           break
         case 'card':
           break
@@ -116,7 +128,7 @@ const TableData: React.FC<TableDataProps> = ({
           break
       }
     },
-    [setDialogType, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
+    [setOpenDiscout, setDialogType, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
   )
 
   const renderActionButtons = (row: OwnerCarReply) => {
@@ -148,129 +160,143 @@ const TableData: React.FC<TableDataProps> = ({
   }
 
   return (
-    <DataGrid
-      sx={{
-        mt: 1,
-        '& .MuiDataGrid-columnHeaderTitle': {
-          whiteSpace: 'normal',
-          wordWrap: 'break-word',
-          lineHeight: '1.2'
-        }
-      }}
-      localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
-      disableColumnResize
-      disableVirtualization={false}
-      checkboxSelection
-      rows={list}
-      columns={[
-        {
-          field: 'carNum',
-          headerName: '车牌号',
-          width: 100,
-          headerAlign: 'center',
-          align: 'center'
-        },
-        {
-          field: 'memberCount',
-          headerName: '成员车辆',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center'
-        },
-        {
-          field: 'roomName',
-          headerName: '房屋号',
-          width: 100,
-          headerAlign: 'center',
-          align: 'center'
-        },
-        {
-          field: 'leaseType',
-          headerName: '车牌类型',
-          width: 100,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => <Chip label={statusValue[row.leaseType!] || '未知状态'} />
-        },
-        {
-          field: 'carType',
-          headerName: '车辆类型',
-          width: 100,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => <Chip label={statusType[row.carType!] || '未知状态'} />
-        },
-        { field: 'carColor', headerName: '颜色', flex: 1, headerAlign: 'center', align: 'center' },
-        {
-          field: 'ownerName',
-          headerName: '业主',
-          width: 100,
-          headerAlign: 'center',
-          align: 'center'
-        },
-        {
-          field: 'parkingSpace.name',
-          headerName: '车位',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => row.parkingSpace.num
-        },
-        {
-          field: 'startTime',
-          headerName: '有效期',
-          minWidth: 190,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => (
-            <Box
-              sx={{
-                whiteSpace: 'normal',
-                wordWrap: 'break-word',
-                lineHeight: '1.2',
-                width: '100%',
-                height: '100%',
-                textAlign: 'center',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}
-            >
-              <Typography variant="body1">{row.startTime}～</Typography>
-              <Typography variant="body1">{row.endTime}</Typography>
-            </Box>
-          )
-        },
-        {
-          field: 'stateCd',
-          headerName: '状态',
-          width: 100,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => <Chip label={statusCd[row.stateCd!] || '未知状态'} />
-        },
-        { field: 'remark', headerName: '备注', flex: 1, headerAlign: 'center', align: 'center' },
-        {
-          field: 'actions',
-          headerName: '操作',
-          type: 'actions',
-          width: 240,
-          getActions: ({ row }) => renderActionButtons(row)
-        }
-      ]}
-      onRowSelectionModelChange={handleRowSelection}
-      pageSizeOptions={[10, 20, 50, 100]}
-      paginationMode="server"
-      rowCount={Number(page.total)}
-      initialState={{
-        pagination: {
-          paginationModel: {
-            pageSize: Number(page.size)
+    <>
+      <DataGrid
+        sx={{
+          mt: 1,
+          '& .MuiDataGrid-columnHeaderTitle': {
+            whiteSpace: 'normal',
+            wordWrap: 'break-word',
+            lineHeight: '1.2'
           }
-        }
-      }}
-    />
+        }}
+        localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
+        disableColumnResize
+        disableVirtualization={false}
+        checkboxSelection
+        rows={list}
+        columns={[
+          {
+            field: 'carNum',
+            headerName: '车牌号',
+            width: 100,
+            headerAlign: 'center',
+            align: 'center'
+          },
+          {
+            field: 'memberCount',
+            headerName: '成员车辆',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center'
+          },
+          {
+            field: 'roomName',
+            headerName: '房屋号',
+            width: 100,
+            headerAlign: 'center',
+            align: 'center'
+          },
+          {
+            field: 'leaseType',
+            headerName: '车牌类型',
+            width: 100,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) => <Chip label={statusValue[row.leaseType!] || '未知状态'} />
+          },
+          {
+            field: 'carType',
+            headerName: '车辆类型',
+            width: 100,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) => <Chip label={statusType[row.carType!] || '未知状态'} />
+          },
+          {
+            field: 'carColor',
+            headerName: '颜色',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center'
+          },
+          {
+            field: 'ownerName',
+            headerName: '业主',
+            width: 100,
+            headerAlign: 'center',
+            align: 'center'
+          },
+          {
+            field: 'parkingSpace.num',
+            headerName: '车位',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) => row.parkingSpace.num
+          },
+          {
+            field: 'startTime',
+            headerName: '有效期',
+            minWidth: 190,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) => (
+              <Box
+                sx={{
+                  whiteSpace: 'normal',
+                  wordWrap: 'break-word',
+                  lineHeight: '1.2',
+                  width: '100%',
+                  height: '100%',
+                  textAlign: 'center',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+              >
+                <Typography variant="body1">{row.startTime}～</Typography>
+                <Typography variant="body1">{row.endTime}</Typography>
+              </Box>
+            )
+          },
+          {
+            field: 'stateCd',
+            headerName: '状态',
+            width: 100,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) => <Chip label={statusCd[row.stateCd!] || '未知状态'} />
+          },
+          { field: 'remark', headerName: '备注', flex: 1, headerAlign: 'center', align: 'center' },
+          {
+            field: 'actions',
+            headerName: '操作',
+            type: 'actions',
+            width: 240,
+            getActions: ({ row }) => renderActionButtons(row)
+          }
+        ]}
+        onRowSelectionModelChange={handleRowSelection}
+        pageSizeOptions={[10, 20, 50, 100]}
+        paginationMode="server"
+        rowCount={Number(page.total)}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: Number(page.size)
+            }
+          }
+        }}
+      />
+      <Release
+        selectedButton={selectedButton}
+        dialogValue={dialogValue}
+        openRelease={openRelease}
+        setOpenRelease={setOpenRelease}
+      />
+    </>
   )
 }
 

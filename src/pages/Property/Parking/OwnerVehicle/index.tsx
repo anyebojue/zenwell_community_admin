@@ -12,6 +12,7 @@ import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
 import FormDialog from './components/FormDialog'
 import ImportVehicle from './components/ImportVehicle'
+import Discount from './components/Discount'
 
 const OwnerCarIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -33,6 +34,7 @@ const OwnerCarIndex = () => {
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [openImportVehicle, setOpenImportVehicle] = useState(false)
+  const [openDiscount, setOpenDiscout] = useState(false)
 
   const getDeleteData = useCallback(() => {
     if (selectedRows.size > 0) {
@@ -153,6 +155,8 @@ const OwnerCarIndex = () => {
               </Button>
             </Stack>
             <TableData
+              dialogValue={dialogValue}
+              openDiscount={openDiscount}
               setDialogType={setDialogType}
               selectedButton={selectedButton}
               setDialogValue={setDialogValue}
@@ -160,12 +164,12 @@ const OwnerCarIndex = () => {
               openDialog={openDialog}
               setOpenDialog={setOpenDialog}
               setDelOpen={setDelOpen}
+              setOpenDiscout={setOpenDiscout}
             />
           </Box>
         </Box>
       </Stack>
       <Copyright />
-
       <FormDialog
         selectedButton={selectedButton}
         dialogValue={dialogValue}
@@ -183,6 +187,12 @@ const OwnerCarIndex = () => {
       <ImportVehicle
         openImportVehicle={openImportVehicle}
         setOpenImportVehicle={setOpenImportVehicle}
+      />
+      <Discount
+        selectedButton={selectedButton}
+        dialogValue={dialogValue}
+        openDialog={openDiscount}
+        setOpenDialog={setOpenDiscout}
       />
     </Box>
   )
