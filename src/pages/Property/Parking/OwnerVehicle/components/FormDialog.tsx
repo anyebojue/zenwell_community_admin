@@ -26,6 +26,17 @@ import {
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
+const formatDateTime = (date: Date | string | undefined): string => {
+  const validDate = date ? new Date(date) : new Date()
+  const year = validDate.getFullYear()
+  const month = String(validDate.getMonth() + 1).padStart(2, '0')
+  const day = String(validDate.getDate()).padStart(2, '0')
+  const hours = String(validDate.getHours()).padStart(2, '0')
+  const minutes = String(validDate.getMinutes()).padStart(2, '0')
+  const seconds = String(validDate.getSeconds()).padStart(2, '0')
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
+
 interface FormDialogProps {
   selectedButton: string
   dialogValue?: OwnerCarReply
@@ -42,26 +53,30 @@ const FormDialog: React.FC<FormDialogProps> = ({
   setOpenDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.OwnerCarTypeSlice)
+  const { page } = useSelector((state: RootState) => state.OwnerCarSlice)
+  const { list: ownerList } = useSelector((state: RootState) => state.OwnerSlice)
+  const { list: parkingSpaceList } = useSelector((state: RootState) => state.ParkingSpaceInfoSlice)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(
     () => ({
-      name: dialogType === 'edit' ? dialogValue?.name || '' : '',
-      feeTypeCd: dialogType === 'edit' ? dialogValue?.feeTypeCd || '' : '',
-      feeFlag: dialogType === 'edit' ? dialogValue?.feeFlag || '' : '',
-      paymentCycle: dialogType === 'edit' ? dialogValue?.paymentCycle || '' : '',
-      paymentCd: dialogType === 'edit' ? dialogValue?.paymentCd || '1200' : '1200',
-      prepaymentPeriod: dialogType === 'edit' ? dialogValue?.prepaymentPeriod || '1' : '1',
-      units: dialogType === 'edit' ? dialogValue?.units || '元' : '元',
-      deductFrom: dialogType === 'edit' ? dialogValue?.deductFrom || 'Y' : 'Y',
-      payOnline: dialogType === 'edit' ? dialogValue?.payOnline || 'Y' : 'Y',
-      scale: dialogType === 'edit' ? dialogValue?.scale || '1' : '1',
-      decimalPlace: dialogType === 'edit' ? dialogValue?.decimalPlace || 2 : 2,
-      status: dialogType === 'edit' ? dialogValue?.status || 1 : 1,
-      computingFormula: dialogType === 'edit' ? dialogValue?.computingFormula || '' : '',
-      squarePrice: dialogType === 'edit' ? dialogValue?.squarePrice || 0 : 0,
-      additionalAmount: dialogType === 'edit' ? dialogValue?.additionalAmount || 0 : 0
+      carNum: dialogType === 'edit' ? dialogValue?.carNum || '' : '',
+      carBrand: dialogType === 'edit' ? dialogValue?.carBrand || '' : '',
+      carType: dialogType === 'edit' ? dialogValue?.carType || '' : '',
+      carColor: dialogType === 'edit' ? dialogValue?.carColor || '' : '',
+      leaseType: dialogType === 'edit' ? dialogValue?.leaseType || '' : '',
+      startTime:
+        dialogType === 'edit'
+          ? dialogValue?.startTime || formatDateTime(new Date())
+          : formatDateTime(new Date()),
+      endTime:
+        dialogType === 'edit'
+          ? dialogValue?.endTime || formatDateTime(new Date())
+          : formatDateTime(new Date()),
+      ownerId: dialogType === 'edit' ? dialogValue?.ownerId || '' : '',
+      psId: dialogType === 'edit' ? dialogValue?.psId || '' : '',
+      carTypeCd: dialogType === 'edit' ? dialogValue?.carTypeCd || '' : '',
+      remark: dialogType === 'edit' ? dialogValue?.remark || '' : ''
     }),
     [dialogType, dialogValue]
   )
@@ -81,8 +96,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
         const params = {
           ...formData,
           communityId: community?.id,
-          startTime: new Date().toISOString().slice(0, 10),
-          endTime: '2050-01-01'
+          stateCd: '1001'
         }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
@@ -92,7 +106,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
         }
         await dispatch(
           find({
-            'page.num': page.num || '1',
+            'page.num': page.num,
             'page.size': page.size,
             ...(selectedButton && { leaseType: selectedButton })
           })
@@ -123,7 +137,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
   return (
     <Dialog
       fullWidth
-      maxWidth="md"
+      maxWidth="sm"
       open={openDialog}
       onClose={() => setOpenDialog(false)}
       slotProps={{ paper: { component: 'form', onSubmit: handleSubmit } }}
@@ -132,28 +146,130 @@ const FormDialog: React.FC<FormDialogProps> = ({
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>收费项目：</FormLabel>
+            <FormLabel>车牌号：</FormLabel>
             <TextField
               required
               sx={{ width: '80%' }}
               type="text"
               size="small"
-              value={formData.name}
-              onChange={e => setFormData({ ...formData, name: e.target.value })}
+              value={formData.carNum}
+              onChange={e => setFormData({ ...formData, carNum: e.target.value })}
               variant="outlined"
             />
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>费用类型：</FormLabel>
+            <FormLabel>汽车品牌：</FormLabel>
+            <TextField
+              required
+              sx={{ width: '80%' }}
+              type="text"
+              size="small"
+              value={formData.carBrand}
+              onChange={e => setFormData({ ...formData, carBrand: e.target.value })}
+              variant="outlined"
+            />
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>车类型：</FormLabel>
             <TextField
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.feeTypeCd}
-              onChange={e => setFormData({ ...formData, feeTypeCd: e.target.value })}
+              value={formData.carType}
+              onChange={e => setFormData({ ...formData, carType: e.target.value })}
               variant="outlined"
             >
-              {list.map(option => (
+              {[
+                { value: '9901', label: '家用小汽车' },
+                { value: '9902', label: '客车' },
+                { value: '9903', label: '货车' },
+                { value: '9904', label: '电动车' },
+                { value: '9905', label: '三轮车' },
+                { value: '9906', label: '信用期车辆（1个月）' }
+              ].map(option => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>颜色：</FormLabel>
+            <TextField
+              required
+              sx={{ width: '80%' }}
+              type="text"
+              size="small"
+              value={formData.carColor}
+              onChange={e => setFormData({ ...formData, carColor: e.target.value })}
+              variant="outlined"
+            />
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>车牌类型：</FormLabel>
+            <TextField
+              sx={{ width: '80%' }}
+              select
+              size="small"
+              value={formData.leaseType}
+              onChange={e => setFormData({ ...formData, leaseType: e.target.value })}
+              variant="outlined"
+            >
+              {[
+                { value: 'H', label: '月租车' },
+                { value: 'S', label: '出售车' },
+                { value: 'I', label: '内部车' },
+                { value: 'NM', label: '免费车' },
+                { value: 'R', label: '预约车' },
+                { value: 'C', label: '到期车辆' }
+              ].map(option => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
+          {formData.leaseType === 'H' && (
+            <>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <FormLabel>起租时间：</FormLabel>
+                <TextField
+                  sx={{ width: '80%' }}
+                  size="small"
+                  type="datetime-local"
+                  value={formatDateTime(formData.startTime)}
+                  onChange={e =>
+                    setFormData({ ...formData, startTime: formatDateTime(e.target.value) })
+                  }
+                  variant="outlined"
+                />
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <FormLabel>结租时间：</FormLabel>
+                <TextField
+                  sx={{ width: '80%' }}
+                  size="small"
+                  type="datetime-local"
+                  value={formatDateTime(formData.startTime)}
+                  onChange={e =>
+                    setFormData({ ...formData, endTime: formatDateTime(e.target.value) })
+                  }
+                  variant="outlined"
+                />
+              </Box>
+            </>
+          )}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>业主：</FormLabel>
+            <TextField
+              sx={{ width: '80%' }}
+              select
+              size="small"
+              value={formData.ownerId}
+              onChange={e => setFormData({ ...formData, ownerId: e.target.value })}
+              variant="outlined"
+            >
+              {ownerList.map(option => (
                 <MenuItem key={option.id} value={option.id}>
                   {option.name}
                 </MenuItem>
@@ -161,18 +277,35 @@ const FormDialog: React.FC<FormDialogProps> = ({
             </TextField>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>费用标识：</FormLabel>
+            <FormLabel>车位：</FormLabel>
             <TextField
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.feeFlag}
-              onChange={e => setFormData({ ...formData, feeFlag: e.target.value })}
+              value={formData.psId}
+              onChange={e => setFormData({ ...formData, psId: e.target.value })}
+              variant="outlined"
+            >
+              {parkingSpaceList.map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.num}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>是否业主车辆：</FormLabel>
+            <TextField
+              sx={{ width: '80%' }}
+              select
+              size="small"
+              value={formData.carTypeCd}
+              onChange={e => setFormData({ ...formData, carTypeCd: e.target.value })}
               variant="outlined"
             >
               {[
-                { value: '1003006', label: '周期性费用' },
-                { value: '2006012', label: '一次性费用' }
+                { value: '1001', label: '业主车辆' },
+                { value: '1002', label: '成员车辆' }
               ].map(option => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
@@ -180,261 +313,20 @@ const FormDialog: React.FC<FormDialogProps> = ({
               ))}
             </TextField>
           </Box>
-          {formData.feeFlag === '1003006' && (
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <FormLabel>缴费周期(单位:月)：</FormLabel>
-              <TextField
-                sx={{ width: '80%' }}
-                type="text"
-                size="small"
-                value={formData.paymentCycle}
-                onChange={e => setFormData({ ...formData, paymentCycle: e.target.value })}
-                variant="outlined"
-              />
-            </Box>
-          )}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>付费类型：</FormLabel>
+            <FormLabel>备注：</FormLabel>
             <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.paymentCd}
-              onChange={e => setFormData({ ...formData, paymentCd: e.target.value })}
-              variant="outlined"
-            >
-              {[
-                { value: '1200', label: '预付费' },
-                { value: '2100', label: '后付费' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          {formData.paymentCd === '1200' && (
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <FormLabel>预付期(单位:天)：</FormLabel>
-              <TextField
-                sx={{ width: '80%' }}
-                type="text"
-                size="small"
-                value={formData.prepaymentPeriod}
-                onChange={e => setFormData({ ...formData, prepaymentPeriod: e.target.value })}
-                variant="outlined"
-              />
-            </Box>
-          )}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>单位：</FormLabel>
-            <TextField
+              placeholder="选填，请填写说明"
               sx={{ width: '80%' }}
               type="text"
+              multiline
+              rows={2}
               size="small"
-              value={formData.units}
-              onChange={e => setFormData({ ...formData, units: e.target.value })}
+              value={formData.remark}
+              onChange={e => setFormData({ ...formData, remark: e.target.value })}
               variant="outlined"
             />
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>账户抵扣：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.deductFrom}
-              onChange={e => setFormData({ ...formData, deductFrom: e.target.value })}
-              variant="outlined"
-            >
-              {[
-                { value: 'Y', label: '是' },
-                { value: 'N', label: '否' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>手机缴费：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.payOnline}
-              onChange={e => setFormData({ ...formData, payOnline: e.target.value })}
-              variant="outlined"
-            >
-              {[
-                { value: 'Y', label: '是' },
-                { value: 'N', label: '否' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>进位方式：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.scale}
-              onChange={e => setFormData({ ...formData, scale: e.target.value })}
-              variant="outlined"
-            >
-              {[
-                { value: '1', label: '四舍五入' },
-                { value: '3', label: '向上进位' },
-                { value: '4', label: '向下进位' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>保留小数位：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.decimalPlace}
-              onChange={e => setFormData({ ...formData, decimalPlace: Number(e.target.value) })}
-              variant="outlined"
-            >
-              {[
-                { value: 0, label: '取整' },
-                { value: 1, label: '1位' },
-                { value: 2, label: '2位' },
-                { value: 3, label: '3位' },
-                { value: 4, label: '4位' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>状态：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.status}
-              onChange={e => setFormData({ ...formData, status: Number(e.target.value) })}
-              variant="outlined"
-            >
-              {[
-                { value: 1, label: '启用' },
-                { value: 0, label: '停用' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>计算公式：</FormLabel>
-            <TextField
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.computingFormula}
-              onChange={e => setFormData({ ...formData, computingFormula: e.target.value })}
-              variant="outlined"
-            >
-              {[
-                { value: '1001', label: '建筑面积*单价+附加费' },
-                { value: '2002', label: '固定费用' },
-                { value: '4004', label: '动态费用' },
-                { value: '5005', label: '(本期度数-上期度数)*单价+附加费' },
-                { value: '6006', label: '用量*单价+附加费' },
-                { value: '7007', label: '自定义公式' },
-                { value: '9009', label: '(本期度数-上期度数)*动态单价+附加费' },
-                { value: '1101', label: '租金' },
-                { value: '3003', label: '室内面积*单价+附加费' },
-                { value: '1102', label: '租金(递增)' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          {(formData.computingFormula === '1001' ||
-            formData.computingFormula === '5005' ||
-            formData.computingFormula === '6006' ||
-            formData.computingFormula === '3003') && (
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <FormLabel>计费单价：</FormLabel>
-              <TextField
-                sx={{ width: '80%' }}
-                type="text"
-                size="small"
-                value={formData.squarePrice}
-                onChange={e => setFormData({ ...formData, squarePrice: Number(e.target.value) })}
-                variant="outlined"
-              />
-            </Box>
-          )}
-          {formData.computingFormula === '1001' && (
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <FormLabel>附加费用：</FormLabel>
-              <TextField
-                sx={{ width: '80%' }}
-                type="text"
-                size="small"
-                value={formData.additionalAmount}
-                onChange={e =>
-                  setFormData({ ...formData, additionalAmount: Number(e.target.value) })
-                }
-                variant="outlined"
-              />
-            </Box>
-          )}
-          {(formData.computingFormula === '2002' ||
-            formData.computingFormula === '5005' ||
-            formData.computingFormula === '6006' ||
-            formData.computingFormula === '3003') && (
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <FormLabel>固定费用：</FormLabel>
-              <TextField
-                sx={{ width: '80%' }}
-                type="text"
-                size="small"
-                value={formData.additionalAmount}
-                onChange={e =>
-                  setFormData({ ...formData, additionalAmount: Number(e.target.value) })
-                }
-                variant="outlined"
-              />
-            </Box>
-          )}
-          {formData.computingFormula === '7007' && (
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <FormLabel>自定义公式：</FormLabel>
-              <TextField
-                placeholder="请输入自定义公式"
-                sx={{ width: '80%' }}
-                type="text"
-                multiline
-                rows={4}
-                size="small"
-                value={formData.computingFormulaText}
-                onChange={e => setFormData({ ...formData, computingFormulaText: e.target.value })}
-                variant="outlined"
-                helperText="说明：C 代表房屋对应小区面积；F 代表房屋对应楼栋面积；U 代表房屋对应单元面积；R 代表房屋面积；X 代表房屋收费系数（房屋管理中配置）；L 代表房屋层数；举例：电梯使用费 (层数-5)*每层单价+基础费用；公式：(L-5)*5 + 10；"
-              />
-            </Box>
-          )}
         </Stack>
       </DialogContent>
       <DialogActions>

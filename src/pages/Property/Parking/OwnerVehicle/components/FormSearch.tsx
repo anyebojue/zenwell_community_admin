@@ -25,21 +25,29 @@ const textFieldStyles = {
 }
 
 interface FormSearchProps {
+  dialogType: string
+  setDialogType: Dispatch<SetStateAction<string>>
+  openDialog: boolean
+  setOpenDialog: Dispatch<SetStateAction<boolean>>
   selectedButton: string
   selectedRows: Set<string | undefined>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, setDelOpen }) => {
+const FormSearch: React.FC<FormSearchProps> = ({
+  dialogType,
+  setDialogType,
+  openDialog,
+  setOpenDialog,
+  selectedButton,
+  selectedRows,
+  setDelOpen
+}) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.OwnerCarSlice)
-
-  const [openDialog, setOpenDialog] = useState(false)
   const [searchParams, setSearchParams] = useState<OwnerCarParams>({
-    name: '',
-    feeFlag: '',
-    paymentCd: '',
-    deductFrom: ''
+    carNum: '',
+    stateCd: ''
   })
 
   const handleInputChange =
@@ -85,67 +93,28 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
-            label="请输入收费项目"
+            label="请输入车牌号"
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.name}
-            onChange={handleInputChange('name')}
+            value={searchParams.carNum}
+            onChange={handleInputChange('carNum')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             select
             size="small"
-            label="请选择费用标识"
-            value={searchParams.feeFlag}
-            onChange={handleInputChange('feeFlag')}
+            label="请选择车位状态"
+            value={searchParams.stateCd}
+            onChange={handleInputChange('stateCd')}
             variant="outlined"
             sx={textFieldStyles}
           >
             {[
-              { value: '1003006', label: '周期性费用' },
-              { value: '2006012', label: '一次性费用' }
-            ].map(option => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-        </FormControl>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            select
-            size="small"
-            label="请选择付费类型"
-            value={searchParams.paymentCd}
-            onChange={handleInputChange('paymentCd')}
-            variant="outlined"
-            sx={textFieldStyles}
-          >
-            {[
-              { value: '1200', label: '预付费' },
-              { value: '2100', label: '后付费' }
-            ].map(option => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-        </FormControl>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            select
-            size="small"
-            label="请选择账户抵扣"
-            value={searchParams.deductFrom}
-            onChange={handleInputChange('deductFrom')}
-            variant="outlined"
-            sx={textFieldStyles}
-          >
-            {[
-              { value: 'Y', label: '是' },
-              { value: 'N', label: '否' }
+              { value: '1', label: '正常' },
+              { value: '3', label: '到期' },
+              { value: '2', label: '无车位' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -172,12 +141,11 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
           startIcon={<History />}
           sx={buttonStyles('darkgray', '#696969')}
           onClick={() => {
-            setSearchParams({ name: '', feeFlag: '', paymentCd: '', deductFrom: '' })
+            setSearchParams({ carNum: '', carId: '', stateCd: '' })
             fetchData({
-              name: '',
-              feeFlag: '',
-              paymentCd: '',
-              deductFrom: '',
+              carNum: '',
+              carId: '',
+              stateCd: '',
               'page.num': page.num,
               'page.size': page.size
             })
@@ -191,7 +159,10 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
           color="error"
           startIcon={<Add />}
           sx={buttonStyles('#2660ad', '#1d428a')}
-          onClick={() => setOpenDialog(true)}
+          onClick={() => {
+            setOpenDialog(true)
+            setDialogType('add')
+          }}
         >
           新增
         </Button>
@@ -214,7 +185,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
       <FormDialog
         selectedButton={selectedButton}
         openDialog={openDialog}
-        dialogType="add"
+        dialogType={dialogType}
         setOpenDialog={setOpenDialog}
       />
     </Box>

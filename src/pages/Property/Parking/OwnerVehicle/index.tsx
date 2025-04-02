@@ -26,6 +26,7 @@ const OwnerCarIndex = () => {
   const [dialogValue, setDialogValue] = useState<OwnerCarReply | undefined>()
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [openDialog, setOpenDialog] = useState(false)
+  const [dialogType, setDialogType] = useState('add')
   const [selectedButton, setSelectedButton] = useState<string>('')
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -80,7 +81,7 @@ const OwnerCarIndex = () => {
   return (
     <Box sx={{ mt: 3.5, width: '100%' }}>
       <NavbarBreadcrumbs />
-      <Stack sx={{ mt: 2, mb: 1.5, width: '100%' }} direction="row" spacing={3}>
+      <Stack sx={{ mt: 2, mb: 1.5, width: '100%' }} direction="row" spacing={1.5}>
         <ButtonGroup
           sx={{
             width: '150px'
@@ -108,14 +109,20 @@ const OwnerCarIndex = () => {
         </ButtonGroup>
         <Box sx={{ width: '100%', height: '100%' }}>
           <FormSearch
+            dialogType={dialogType}
+            setDialogType={setDialogType}
+            openDialog={openDialog}
+            setOpenDialog={setOpenDialog}
             selectedButton={selectedButton}
             selectedRows={selectedRows}
             setDelOpen={setDelOpen}
           />
           <TableData
+            setDialogType={setDialogType}
             selectedButton={selectedButton}
             setDialogValue={setDialogValue}
             setSelectedRows={setSelectedRows}
+            openDialog={openDialog}
             setOpenDialog={setOpenDialog}
             setDelOpen={setDelOpen}
           />
@@ -127,7 +134,7 @@ const OwnerCarIndex = () => {
         selectedButton={selectedButton}
         dialogValue={dialogValue}
         openDialog={openDialog}
-        dialogType="edit"
+        dialogType={dialogType}
         setOpenDialog={setOpenDialog}
       />
       <DeleteModal
