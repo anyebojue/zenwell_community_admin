@@ -41,6 +41,20 @@ const repair: IRouter[] = [
         }
       },
       {
+        path: 'ParkingMonthlyCard',
+        element: load('Property/Parking/ParkingMonthlyCard'),
+        meta: {
+          title: '停车月卡'
+        }
+      },
+      {
+        path: 'MonthlyCardOrder',
+        element: load('Property/Parking/MonthlyCardOrder'),
+        meta: {
+          title: '月卡订单'
+        }
+      },
+      {
         path: 'EntryRecord',
         element: load('Property/Parking/EntryRecord'),
         meta: {
