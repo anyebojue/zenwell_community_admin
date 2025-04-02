@@ -63,7 +63,6 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
         key={title}
         sx={{
           cursor: 'pointer',
-          marginRight: '-5px',
           '& .MuiChip-label': {
             fontSize: '13px'
           }
@@ -77,28 +76,51 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
 
   return (
     <DataGrid
-      sx={{ mt: 2 }}
+      sx={{
+        mt: 2,
+        '& .MuiDataGrid-columnHeaderTitle': {
+          whiteSpace: 'normal',
+          wordWrap: 'break-word',
+          lineHeight: '1.2'
+        }
+      }}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
       rows={list}
       columns={[
-        { field: 'id', headerName: '订单编号', flex: 1 },
-        { field: '', headerName: '月卡', flex: 1 },
-        { field: '', headerName: '车牌号', flex: 1 },
-        { field: '', headerName: '车位', flex: 1 },
+        { field: 'id', headerName: '订单编号', width: 180, headerAlign: 'center', align: 'center' },
+        { field: '', headerName: '月卡', flex: 1, headerAlign: 'center', align: 'center' },
+        { field: '', headerName: '车牌号', flex: 1, headerAlign: 'center', align: 'center' },
+        { field: '', headerName: '车位', flex: 1, headerAlign: 'center', align: 'center' },
         {
           field: 'primeRate',
           headerName: '支付方式',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => <Chip label={statusValue[row.primeRate!] || '未知'} />
         },
-        { field: 'receivableAmount', headerName: '应收金额', flex: 1 },
-        { field: 'receivedAmount', headerName: '实收金额', flex: 1 },
+        {
+          field: 'receivableAmount',
+          headerName: '应收金额',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'receivedAmount',
+          headerName: '实收金额',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
         {
           field: 'startTime',
           headerName: '有效期',
-          flex: 1,
+          minWidth: 190,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => (
             <Box
               sx={{
@@ -119,10 +141,16 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
             </Box>
           )
         },
-        { field: '', headerName: '状态', flex: 1 },
-        { field: '', headerName: '收银员', flex: 1 },
-        { field: 'createdAt', headerName: '购买时间', flex: 1 },
-        { field: 'remark', headerName: '备注', flex: 1 },
+        { field: '', headerName: '状态', flex: 1, headerAlign: 'center', align: 'center' },
+        { field: '', headerName: '收银员', flex: 1, headerAlign: 'center', align: 'center' },
+        {
+          field: 'createdAt',
+          headerName: '购买时间',
+          width: 170,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        { field: 'remark', headerName: '备注', flex: 1, headerAlign: 'center', align: 'center' },
         {
           field: 'actions',
           headerName: '操作',
