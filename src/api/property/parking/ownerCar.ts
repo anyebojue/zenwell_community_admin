@@ -2,10 +2,28 @@ import { request } from 'utils/request/axios'
 import { FindOwnerCarReply, OwnerCarParams } from '../../model/property/parking/ownerCarModel'
 
 const ApiPrefix = {
+  ImportCar: '/car/import/import_car',
   FindOwnerCar: '/car/owner_car',
   CreateOwnerCar: '/car/owner_car',
   UpdateOwnerCar: '/car/owner_car',
   DeleteOwnerCar: '/car/owner_car'
+}
+
+/**
+ * 导入车辆
+ * @param data
+ * @returns
+ */
+export const ImportCar = (data: FormData) => {
+  return request
+    .post({
+      url: ApiPrefix.ImportCar,
+      data,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    .then(res => res.data)
 }
 
 /**
