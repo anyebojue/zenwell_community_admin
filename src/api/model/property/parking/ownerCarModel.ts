@@ -46,9 +46,11 @@ export interface OwnerCarParams {
   memberId?: string
   leaseType?: string
   carId?: string
+  isExport?: boolean
 }
 
 export interface FindOwnerCarReply {
   page: Page
   list: Array<OwnerCarReply>
+  exportUrl: string
 }

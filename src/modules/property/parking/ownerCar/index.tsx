@@ -18,6 +18,7 @@ const PAGE = {
 interface IInitialState {
   page: Page
   list: OwnerCarReply[]
+  exportUrl: string
 }
 
 const initialState: IInitialState = {
@@ -27,12 +28,13 @@ const initialState: IInitialState = {
     total: '0',
     disable: false
   },
-  list: []
+  list: [],
+  exportUrl: ''
 }
 
 export const find = createAsyncThunk(
   `${namespace}/find`,
-  async (params: OwnerCarParams & PaginationParams) => {
+  async (params: OwnerCarParams & PaginationParams & { isExport?: boolean }) => {
     const res = await FindOwnerCar(params)
     return res
   }
@@ -69,6 +71,7 @@ export const OwnerCarSlice = createSlice({
     builder.addCase(find.fulfilled, (state, action) => {
       state.page = action.payload.page
       state.list = action.payload.list
+      state.exportUrl = action.payload.exportUrl
     })
     // 请求失败后的数据
     builder.addCase(find.rejected, state => {

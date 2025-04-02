@@ -78,7 +78,8 @@ const TableData: React.FC<TableDataProps> = ({
       {
         'page.num': page.num,
         'page.size': page.size,
-        ...(selectedButton && { leaseType: selectedButton })
+        ...(selectedButton && { leaseType: selectedButton }),
+        isExport: true
       },
       '正在加载列表中，请稍后...'
     )
@@ -100,7 +101,9 @@ const TableData: React.FC<TableDataProps> = ({
       switch (actionType) {
         case 'discount':
           break
-        case 'details':
+        case 'release':
+          break
+        case 'card':
           break
         case 'edit':
           setDialogType('edit')
@@ -116,32 +119,38 @@ const TableData: React.FC<TableDataProps> = ({
     [setDialogType, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
   )
 
-  const renderActionButtons = (row: OwnerCarReply) =>
-    [
-      { title: '续租', action: 'discount' },
-      { title: '买月卡', action: 'details' },
+  const renderActionButtons = (row: OwnerCarReply) => {
+    const actions = [
+      { title: '续租', action: 'discount', stateCd: '1001' },
+      { title: '释放', action: 'release', stateCd: '3003' },
+      { title: '买月卡', action: 'card' },
       { title: '修改', action: 'edit' },
       { title: '删除', action: 'delete' }
-    ].map(({ title, action }) => (
-      <Chip
-        key={title}
-        sx={{
-          cursor: 'pointer',
-          marginRight: '-5px',
-          '& .MuiChip-label': {
-            fontSize: '13px'
-          }
-        }}
-        label={title}
-        color="primary"
-        variant="outlined"
-        onClick={() => handleActionClick(action, row)}
-      />
-    ))
+    ]
+    return actions
+      .filter(({ stateCd }) => stateCd === undefined || row.stateCd === stateCd)
+      .map(({ title, action }) => (
+        <Chip
+          key={title}
+          sx={{
+            cursor: 'pointer',
+            marginRight: '-5px',
+            '& .MuiChip-label': {
+              fontSize: '13px'
+            }
+          }}
+          label={title}
+          color="primary"
+          variant="outlined"
+          onClick={() => handleActionClick(action, row)}
+        />
+      ))
+  }
 
   return (
     <DataGrid
       sx={{
+        mt: 1,
         '& .MuiDataGrid-columnHeaderTitle': {
           whiteSpace: 'normal',
           wordWrap: 'break-word',

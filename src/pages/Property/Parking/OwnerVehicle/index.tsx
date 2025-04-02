@@ -5,15 +5,16 @@ import { deleteByIds, find } from 'modules/property/parking/ownerCar'
 import { Box, Button, ButtonGroup, Stack } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
-import DeleteModal from 'components/DeleteModal'
+import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
+import { Add, Download } from '@mui/icons-material'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
 import FormDialog from './components/FormDialog'
 
 const OwnerCarIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.OwnerCarSlice)
+  const { page, list, exportUrl } = useSelector((state: RootState) => state.OwnerCarSlice)
   const leaseTypeList = [
     { id: '', name: '全部车辆' },
     { id: 'H', name: '月租车' },
@@ -64,7 +65,8 @@ const OwnerCarIndex = () => {
           find({
             'page.num': page.num,
             'page.size': page.size,
-            ...(selectedButton && { leaseType: selectedButton })
+            ...(selectedButton && { leaseType: selectedButton }),
+            isExport: true
           })
         )
         setLoading(false)
@@ -83,9 +85,7 @@ const OwnerCarIndex = () => {
       <NavbarBreadcrumbs />
       <Stack sx={{ mt: 2, mb: 1.5, width: '100%' }} direction="row" spacing={1.5}>
         <ButtonGroup
-          sx={{
-            width: '150px'
-          }}
+          sx={{ width: '150px' }}
           orientation="vertical"
           aria-label="Vertical button group"
         >
@@ -117,15 +117,49 @@ const OwnerCarIndex = () => {
             selectedRows={selectedRows}
             setDelOpen={setDelOpen}
           />
-          <TableData
-            setDialogType={setDialogType}
-            selectedButton={selectedButton}
-            setDialogValue={setDialogValue}
-            setSelectedRows={setSelectedRows}
-            openDialog={openDialog}
-            setOpenDialog={setOpenDialog}
-            setDelOpen={setDelOpen}
-          />
+          <Box>
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}
+            >
+              <Button
+                size="small"
+                variant="contained"
+                color="error"
+                startIcon={<Add />}
+                sx={buttonStyles('#2660ad', '#1d428a')}
+                onClick={() => {}}
+              >
+                车辆导入
+              </Button>
+              <Button
+                size="small"
+                variant="contained"
+                color="error"
+                startIcon={<Download />}
+                sx={buttonStyles('#2660ad', '#1d428a')}
+                onClick={() => {
+                  if (exportUrl) {
+                    window.open(exportUrl, '_blank')
+                  } else {
+                    alert('暂无导出链接')
+                  }
+                }}
+              >
+                导出
+              </Button>
+            </Stack>
+            <TableData
+              setDialogType={setDialogType}
+              selectedButton={selectedButton}
+              setDialogValue={setDialogValue}
+              setSelectedRows={setSelectedRows}
+              openDialog={openDialog}
+              setOpenDialog={setOpenDialog}
+              setDelOpen={setDelOpen}
+            />
+          </Box>
         </Box>
       </Stack>
       <Copyright />

@@ -67,7 +67,8 @@ const FormSearch: React.FC<FormSearchProps> = ({
             'page.num': page.num,
             'page.size': page.size,
             ...(selectedButton && { leaseType: selectedButton }),
-            ...params
+            ...params,
+            isExport: true
           })
         )
         if ('error' in res && res.error?.message) {
@@ -122,65 +123,65 @@ const FormSearch: React.FC<FormSearchProps> = ({
             ))}
           </TextField>
         </FormControl>
-      </Stack>
-      <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          startIcon={<Search />}
-          sx={buttonStyles('#2660ad', '#1d428a')}
-          onClick={handleSearch}
-        >
-          查询
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          startIcon={<History />}
-          sx={buttonStyles('darkgray', '#696969')}
-          onClick={() => {
-            setSearchParams({ carNum: '', carId: '', stateCd: '' })
-            fetchData({
-              carNum: '',
-              carId: '',
-              stateCd: '',
-              'page.num': page.num,
-              'page.size': page.size
-            })
-          }}
-        >
-          重置
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          startIcon={<Add />}
-          sx={buttonStyles('#2660ad', '#1d428a')}
-          onClick={() => {
-            setOpenDialog(true)
-            setDialogType('add')
-          }}
-        >
-          新增
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          startIcon={<Delete />}
-          sx={buttonStyles('#B22222', '#8B0000')}
-          onClick={() => {
-            if (![...selectedRows].length) {
-              return message.warning('请选择至少一项')
-            }
-            setDelOpen(true)
-          }}
-        >
-          批量删除
-        </Button>
+        <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            startIcon={<Search />}
+            sx={buttonStyles('#2660ad', '#1d428a')}
+            onClick={handleSearch}
+          >
+            查询
+          </Button>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            startIcon={<History />}
+            sx={buttonStyles('darkgray', '#696969')}
+            onClick={() => {
+              setSearchParams({ carNum: '', carId: '', stateCd: '' })
+              fetchData({
+                carNum: '',
+                carId: '',
+                stateCd: '',
+                'page.num': page.num,
+                'page.size': page.size
+              })
+            }}
+          >
+            重置
+          </Button>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            startIcon={<Add />}
+            sx={buttonStyles('#2660ad', '#1d428a')}
+            onClick={() => {
+              setOpenDialog(true)
+              setDialogType('add')
+            }}
+          >
+            新增
+          </Button>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            startIcon={<Delete />}
+            sx={buttonStyles('#B22222', '#8B0000')}
+            onClick={() => {
+              if (![...selectedRows].length) {
+                return message.warning('请选择至少一项')
+              }
+              setDelOpen(true)
+            }}
+          >
+            批量删除
+          </Button>
+        </Stack>
       </Stack>
       <FormDialog
         selectedButton={selectedButton}

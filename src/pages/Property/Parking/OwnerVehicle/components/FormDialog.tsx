@@ -108,7 +108,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
           find({
             'page.num': page.num,
             'page.size': page.size,
-            ...(selectedButton && { leaseType: selectedButton })
+            ...(selectedButton && { leaseType: selectedButton }),
+            isExport: true
           })
         )
         message.success(dialogType === 'add' ? '新建成功' : '编辑成功')
