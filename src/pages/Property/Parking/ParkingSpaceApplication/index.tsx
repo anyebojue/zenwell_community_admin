@@ -86,6 +86,7 @@ const ParkingLotManagementIndex = () => {
         <TableData
           openDialog={openDialog}
           setDialogType={setDialogType}
+          dialogValue={dialogValue}
           setDialogValue={setDialogValue}
           setSelectedRows={setSelectedRows}
           setOpenDialog={setOpenDialog}

@@ -35,6 +35,7 @@ export interface ParkingSpaceApplyParams {
   applyPersonName?: string
   applyPersonLink?: string
   carColor?: string
+  stateCd?: string
   startTime?: string
   endTime?: string
   remark?: string

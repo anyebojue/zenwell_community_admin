@@ -24,6 +24,7 @@ export interface OwnerCarReply {
   roomName?: string
   ownerName?: string
   parkingBox?: string
+  memberCount?: string
   parkingSpace: ParkingSpaceInfoReply
 }
 
