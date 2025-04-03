@@ -19,6 +19,7 @@ export interface ParkingBoxParams {
   boxName?: string
   communityId?: string
   tempCarIn?: string
+  remark?: string
 }
 
 export interface FindParkingBoxReply {
