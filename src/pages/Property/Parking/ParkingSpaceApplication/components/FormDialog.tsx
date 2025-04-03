@@ -8,8 +8,11 @@ import React, {
   memo
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ParkingAreaParams, ParkingAreaReply } from 'api/model/property/parking/parkingAreaModel'
-import { create, find, update } from 'modules/property/parking/parkingArea'
+import {
+  ParkingSpaceApplyParams,
+  ParkingSpaceApplyReply
+} from 'api/model/property/parking/parkingSpaceApplyModel'
+import { create, find, update } from 'modules/property/parking/parkingSpaceApply'
 import {
   Box,
   CircularProgress,
@@ -26,8 +29,19 @@ import {
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
+const formatDateTime = (date: Date | string | undefined): string => {
+  const validDate = date ? new Date(date) : new Date()
+  const year = validDate.getFullYear()
+  const month = String(validDate.getMonth() + 1).padStart(2, '0')
+  const day = String(validDate.getDate()).padStart(2, '0')
+  const hours = String(validDate.getHours()).padStart(2, '0')
+  const minutes = String(validDate.getMinutes()).padStart(2, '0')
+  const seconds = String(validDate.getSeconds()).padStart(2, '0')
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
+
 interface FormDialogProps {
-  dialogValue?: ParkingAreaReply
+  dialogValue?: ParkingSpaceApplyReply
   openDialog: boolean
   dialogType: string
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -40,19 +54,31 @@ const FormDialog: React.FC<FormDialogProps> = ({
   setOpenDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.ParkingAreaSlice)
+  const { page } = useSelector((state: RootState) => state.ParkingSpaceApplySlice)
+  const { list } = useSelector((state: RootState) => state.OwnerSlice)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(
     () => ({
-      name: dialogType === 'edit' ? dialogValue?.name || '' : '',
-      typeCd: dialogType === 'edit' ? dialogValue?.typeCd || '' : '',
-      num: dialogType === 'edit' ? dialogValue?.num || '' : '',
+      carNum: dialogType === 'edit' ? dialogValue?.carNum || '' : '',
+      carBrand: dialogType === 'edit' ? dialogValue?.carBrand || '' : '',
+      carType: dialogType === 'edit' ? dialogValue?.carType || '' : '',
+      carColor: dialogType === 'edit' ? dialogValue?.carColor || '' : '',
+      startTime:
+        dialogType === 'edit'
+          ? dialogValue?.startTime || formatDateTime(new Date())
+          : formatDateTime(new Date()),
+      endTime:
+        dialogType === 'edit'
+          ? dialogValue?.endTime || formatDateTime(new Date())
+          : formatDateTime(new Date()),
+      applyPersonId: dialogType === 'edit' ? dialogValue?.applyPersonId || '' : '',
+      applyPersonLink: dialogType === 'edit' ? dialogValue?.applyPersonLink || '' : '',
       remark: dialogType === 'edit' ? dialogValue?.remark || '' : ''
     }),
     [dialogType, dialogValue]
   )
-  const [formData, setFormData] = useState<ParkingAreaParams>(initialFormData)
+  const [formData, setFormData] = useState<ParkingSpaceApplyParams>(initialFormData)
 
   useEffect(() => {
     setFormData(initialFormData)
@@ -65,7 +91,12 @@ const FormDialog: React.FC<FormDialogProps> = ({
       try {
         const current_community = localStorage.getItem('current_community')
         const community = JSON.parse(current_community || '')
-        const params = { ...formData, communityId: community?.id }
+        const params = {
+          ...formData,
+          communityId: community?.id,
+          applyPersonName: list.filter(item => item.id === formData.applyPersonId)[0]?.name,
+          stateCd: '1001'
+        }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)
@@ -83,7 +114,17 @@ const FormDialog: React.FC<FormDialogProps> = ({
         setLoading(false)
       }
     },
-    [dispatch, dialogType, dialogValue, formData, page, setOpenDialog, initialFormData]
+    [
+      formData,
+      list,
+      dialogType,
+      dialogValue?.id,
+      dispatch,
+      page.num,
+      page.size,
+      setOpenDialog,
+      initialFormData
+    ]
   )
 
   return (
@@ -98,31 +139,47 @@ const FormDialog: React.FC<FormDialogProps> = ({
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>停车场编号：</FormLabel>
+            <FormLabel>车牌号：</FormLabel>
             <TextField
-              placeholder="必填，请填写停车场编号"
+              placeholder="必填，请填写车牌号"
               sx={{ width: '80%' }}
               type="text"
               size="small"
-              value={formData.name}
-              onChange={e => setFormData({ ...formData, name: e.target.value })}
+              value={formData.carNum}
+              onChange={e => setFormData({ ...formData, carNum: e.target.value })}
               variant="outlined"
             />
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>停车场类型：</FormLabel>
+            <FormLabel>汽车品牌：</FormLabel>
             <TextField
-              placeholder="请选择停车场类型"
+              placeholder="必填，请填写汽车品牌"
+              sx={{ width: '80%' }}
+              type="text"
+              size="small"
+              value={formData.carBrand}
+              onChange={e => setFormData({ ...formData, carBrand: e.target.value })}
+              variant="outlined"
+            />
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>车辆类型：</FormLabel>
+            <TextField
+              placeholder="请选择车辆类型"
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.typeCd || ''}
-              onChange={e => setFormData({ ...formData, typeCd: e.target.value })}
+              value={formData.carType || ''}
+              onChange={e => setFormData({ ...formData, carType: e.target.value })}
               variant="outlined"
             >
               {[
-                { value: '1001', label: '地上停车场' },
-                { value: '2001', label: '地下停车场' }
+                { value: '9901', label: '家用小汽车' },
+                { value: '9902', label: '客车' },
+                { value: '9903', label: '货车' },
+                { value: '9904', label: '电动车' },
+                { value: '9905', label: '三轮车' },
+                { value: '9906', label: '信用期车辆（1个月）' }
               ].map(option => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
@@ -131,14 +188,70 @@ const FormDialog: React.FC<FormDialogProps> = ({
             </TextField>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>外部编码：</FormLabel>
+            <FormLabel>颜色：</FormLabel>
             <TextField
-              placeholder="选填，请填写外部编码 一般为第三方停车场系统ID"
+              placeholder="必填，请填写颜色"
               sx={{ width: '80%' }}
               type="text"
               size="small"
-              value={formData.num}
-              onChange={e => setFormData({ ...formData, num: e.target.value })}
+              value={formData.carColor}
+              onChange={e => setFormData({ ...formData, carColor: e.target.value })}
+              variant="outlined"
+            />
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>起租时间：</FormLabel>
+            <TextField
+              sx={{ width: '80%' }}
+              size="small"
+              type="datetime-local"
+              value={formatDateTime(formData.startTime)}
+              onChange={e =>
+                setFormData({ ...formData, startTime: formatDateTime(e.target.value) })
+              }
+              variant="outlined"
+            />
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>结租时间：</FormLabel>
+            <TextField
+              sx={{ width: '80%' }}
+              size="small"
+              type="datetime-local"
+              value={formatDateTime(formData.startTime)}
+              onChange={e => setFormData({ ...formData, endTime: formatDateTime(e.target.value) })}
+              variant="outlined"
+            />
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>申请人：</FormLabel>
+            <TextField
+              disabled={dialogType === 'edit'}
+              placeholder="请选择申请人"
+              sx={{ width: '80%' }}
+              select
+              size="small"
+              value={formData.applyPersonId || ''}
+              onChange={e => setFormData({ ...formData, applyPersonId: e.target.value })}
+              variant="outlined"
+            >
+              {list.map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>申请人电话：</FormLabel>
+            <TextField
+              disabled={dialogType === 'edit'}
+              placeholder="必填，请填写申请人电话"
+              sx={{ width: '80%' }}
+              type="text"
+              size="small"
+              value={formData.applyPersonLink}
+              onChange={e => setFormData({ ...formData, applyPersonLink: e.target.value })}
               variant="outlined"
             />
           </Box>

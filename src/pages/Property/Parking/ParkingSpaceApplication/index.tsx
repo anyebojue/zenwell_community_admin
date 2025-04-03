@@ -1,7 +1,7 @@
 import { memo, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ParkingAreaReply } from 'api/model/property/parking/parkingAreaModel'
-import { deleteByIds, find } from 'modules/property/parking/parkingArea'
+import { ParkingSpaceApplyReply } from 'api/model/property/parking/parkingSpaceApplyModel'
+import { deleteByIds, find } from 'modules/property/parking/parkingSpaceApply'
 import { Box, Button, Theme, Typography } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
@@ -21,9 +21,10 @@ const contentBoxStyle = (theme: Theme) => ({
 
 const ParkingLotManagementIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.ParkingAreaSlice)
+  const { page, list } = useSelector((state: RootState) => state.ParkingSpaceApplySlice)
+  console.log(page)
 
-  const [dialogValue, setDialogValue] = useState<ParkingAreaReply | undefined>()
+  const [dialogValue, setDialogValue] = useState<ParkingSpaceApplyReply | undefined>()
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
   const [openDialog, setOpenDialog] = useState(false)
   const [dialogType, setDialogType] = useState('add')
@@ -79,10 +80,11 @@ const ParkingLotManagementIndex = () => {
               setDialogType('add')
             }}
           >
-            添加
+            申请车位
           </Button>
         </Box>
         <TableData
+          openDialog={openDialog}
           setDialogType={setDialogType}
           setDialogValue={setDialogValue}
           setSelectedRows={setSelectedRows}

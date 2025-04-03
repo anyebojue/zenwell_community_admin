@@ -1,26 +1,40 @@
 import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ParkingAreaReply } from 'api/model/property/parking/parkingAreaModel'
-import { find } from 'modules/property/parking/parkingArea'
+import { ParkingSpaceApplyReply } from 'api/model/property/parking/parkingSpaceApplyModel'
+import { find } from 'modules/property/parking/parkingSpaceApply'
+import { find as findOwner } from 'modules/property/houses/owner'
 import { Chip } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
 
 const statusValue: Record<string, string> = {
-  '1001': '地上停车场',
-  '2001': '地下停车场'
+  '1001': '待审核',
+  '2002': '待缴费',
+  '3003': '完成',
+  '4004': '审核失败'
+}
+
+const statusType: Record<string, string> = {
+  '9901': '家用小汽车',
+  '9902': '客车',
+  '9903': '货车',
+  '9904': '电动车',
+  '9905': '三轮车',
+  '9906': '信用期车辆（1个月）'
 }
 
 interface TableDataProps {
+  openDialog: boolean
   setDialogType: Dispatch<SetStateAction<string>>
-  setDialogValue: Dispatch<SetStateAction<ParkingAreaReply | undefined>>
+  setDialogValue: Dispatch<SetStateAction<ParkingSpaceApplyReply | undefined>>
   setSelectedRows: Dispatch<SetStateAction<Set<string>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const TableData: React.FC<TableDataProps> = ({
+  openDialog,
   setDialogType,
   setDialogValue,
   setSelectedRows,
@@ -28,7 +42,7 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.ParkingAreaSlice)
+  const { page, list } = useSelector((state: RootState) => state.ParkingSpaceApplySlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -49,7 +63,10 @@ const TableData: React.FC<TableDataProps> = ({
 
   useEffect(() => {
     fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
-  }, [fetchData, page.num, page.size])
+    if (openDialog) {
+      fetchData(findOwner, { 'page.disable': true }, '正在加载列表中，请稍后...')
+    }
+  }, [fetchData, openDialog, page.num, page.size])
 
   const handleRowSelection = useCallback(
     (rowSelectionModel: GridRowSelectionModel) => {
@@ -59,8 +76,11 @@ const TableData: React.FC<TableDataProps> = ({
   )
 
   const handleActionClick = useCallback(
-    (actionType: string, row: ParkingAreaReply) => {
+    (actionType: string, row: ParkingSpaceApplyReply) => {
       switch (actionType) {
+        case 'examine':
+          setDialogValue(row)
+          break
         case 'edit':
           setDialogType('edit')
           setDialogValue(row)
@@ -75,52 +95,118 @@ const TableData: React.FC<TableDataProps> = ({
     [setDialogType, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
   )
 
-  const renderActionButtons = (row: ParkingAreaReply) =>
-    [
-      { title: '修改', action: 'edit' },
+  const renderActionButtons = (row: ParkingSpaceApplyReply) => {
+    const actions = [
+      { title: '审核', action: 'examine', stateCd: '2002' },
+      { title: '修改', action: 'edit', stateCd: '1001' },
       { title: '删除', action: 'delete' }
-    ].map(({ title, action }) => (
-      <Chip
-        key={title}
-        sx={{
-          cursor: 'pointer',
-          marginRight: '-5px',
-          '& .MuiChip-label': {
-            fontSize: '13px'
-          }
-        }}
-        label={title}
-        color="primary"
-        variant="outlined"
-        onClick={() => handleActionClick(action, row)}
-      />
-    ))
+    ]
+    return actions
+      .filter(({ stateCd }) => stateCd === undefined || String(row.stateCd) === String(stateCd))
+      .map(({ title, action, stateCd }) => (
+        <Chip
+          key={title}
+          sx={{
+            cursor: 'pointer',
+            marginRight: stateCd ? '-5px' : undefined,
+            '& .MuiChip-label': { fontSize: '13px' }
+          }}
+          label={title}
+          color="primary"
+          variant="outlined"
+          onClick={() => handleActionClick(action, row)}
+        />
+      ))
+  }
 
   return (
     <DataGrid
-      sx={{ mt: 2 }}
+      sx={{
+        mt: 1,
+        '& .MuiDataGrid-columnHeaderTitle': {
+          whiteSpace: 'normal',
+          wordWrap: 'break-word',
+          lineHeight: '1.2'
+        }
+      }}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'id', headerName: '停车场ID', flex: 1 },
-        { field: 'name', headerName: '停车场编号', flex: 1 },
         {
-          field: 'typeCd',
-          headerName: '停车场类型',
-          flex: 1,
-          renderCell: ({ row }) => <Chip label={statusValue[row.typeCd!] || '未知类型'} />
+          field: 'carNum',
+          headerName: '车牌号',
+          width: 110,
+          headerAlign: 'center',
+          align: 'center'
         },
-        { field: 'num', headerName: '外部编码', flex: 1 },
-        { field: 'remark', headerName: '备注', flex: 1 },
-        { field: 'createdAt', headerName: '创建时间', width: 180 },
+        {
+          field: 'parkingSpace.num',
+          headerName: '停车位',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.parkingSpace?.num
+        },
+        {
+          field: 'carBrand',
+          headerName: '汽车品牌',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'carType',
+          headerName: '车辆类型',
+          width: 100,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => <Chip label={statusType[row.carType!] || '未知状态'} />
+        },
+        { field: 'carColor', headerName: '颜色', flex: 1, headerAlign: 'center', align: 'center' },
+        {
+          field: 'startTime',
+          headerName: '起租时间',
+          width: 180,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'endTime',
+          headerName: '结租时间',
+          width: 180,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'applyPersonName',
+          headerName: '申请人',
+          width: 100,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'applyPersonLink',
+          headerName: '手机号',
+          width: 110,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'stateCd',
+          headerName: '审核结果',
+          width: 100,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => <Chip label={statusValue[row.stateCd!] || '未知状态'} />
+        },
         {
           field: 'actions',
           headerName: '操作',
           type: 'actions',
-          width: 200,
+          width: 150,
           getActions: ({ row }) => renderActionButtons(row)
         }
       ]}
