@@ -2,7 +2,7 @@ import BadgeIcon from '@mui/icons-material/Badge'
 import { load } from '../../load'
 import { IRouter } from '../../index'
 
-const communitys: IRouter[] = [
+const report: IRouter[] = [
   {
     path: '/report',
     element: null,
@@ -121,4 +121,4 @@ const communitys: IRouter[] = [
   }
 ]
 
-export default communitys
+export default report

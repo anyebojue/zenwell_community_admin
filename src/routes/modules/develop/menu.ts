@@ -2,7 +2,7 @@ import { Apartment } from '@mui/icons-material'
 import { load } from '../../load'
 import { IRouter } from '../../index'
 
-const menuRoute: IRouter[] = [
+const menu: IRouter[] = [
   {
     path: '/menu',
     element: load('Develop/Menu'),
@@ -14,4 +14,4 @@ const menuRoute: IRouter[] = [
   }
 ]
 
-export default menuRoute
+export default menu

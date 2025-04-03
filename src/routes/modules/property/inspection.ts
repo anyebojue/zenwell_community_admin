@@ -2,7 +2,7 @@ import BadgeIcon from '@mui/icons-material/Badge'
 import { load } from '../../load'
 import { IRouter } from '../../index'
 
-const repair: IRouter[] = [
+const inspection: IRouter[] = [
   {
     path: '/inspection',
     element: null,
@@ -82,4 +82,4 @@ const repair: IRouter[] = [
   }
 ]
 
-export default repair
+export default inspection

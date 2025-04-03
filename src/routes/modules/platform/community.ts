@@ -2,7 +2,7 @@ import { Apartment } from '@mui/icons-material'
 import { load } from '../../load'
 import { IRouter } from '../../index'
 
-const communityRoute: IRouter[] = [
+const community: IRouter[] = [
   {
     path: '/community',
     element: load('Platform/Community'),
@@ -14,4 +14,4 @@ const communityRoute: IRouter[] = [
   }
 ]
 
-export default communityRoute
+export default community
