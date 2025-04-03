@@ -114,6 +114,7 @@ import CarBlackWhiteSlice from './property/parking/carBlackWhite'
 import MachineSlice from './property/parking/machine'
 import CarInoutPaymentSlice from './property/parking/carInoutPayment'
 import WorkflowSlice from './property/purchase/workflow'
+import StorehouseSlice from './property/purchase/storehouse'
 
 const store = configureStore({
   reducer: {
@@ -231,7 +232,8 @@ const store = configureStore({
     CarBlackWhiteSlice,
     MachineSlice,
     CarInoutPaymentSlice,
-    WorkflowSlice
+    WorkflowSlice,
+    StorehouseSlice
   },
   // 关闭序列化检测
   middleware: getDefaultMiddleware =>

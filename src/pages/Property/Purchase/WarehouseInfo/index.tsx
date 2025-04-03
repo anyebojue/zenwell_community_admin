@@ -1,7 +1,7 @@
 import { memo, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ParkingAreaReply } from 'api/model/property/parking/parkingAreaModel'
-import { deleteByIds, find } from 'modules/property/parking/parkingArea'
+import { StorehouseReply } from 'api/model/property/purchase/storehouseModel'
+import { deleteByIds, find } from 'modules/property/purchase/storehouse'
 import { Box, Button, Theme, Typography } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
@@ -21,9 +21,9 @@ const contentBoxStyle = (theme: Theme) => ({
 
 const ParkingLotManagementIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.ParkingAreaSlice)
+  const { page, list } = useSelector((state: RootState) => state.StorehouseSlice)
 
-  const [dialogValue, setDialogValue] = useState<ParkingAreaReply | undefined>()
+  const [dialogValue, setDialogValue] = useState<StorehouseReply | undefined>()
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
   const [openDialog, setOpenDialog] = useState(false)
   const [dialogType, setDialogType] = useState('add')
@@ -34,12 +34,12 @@ const ParkingLotManagementIndex = () => {
     return Array.from(selectedRows)
       .map(id => list.find(item => item.id === id))
       .filter(item => item)
-      .map(item => ({ id: item!.id!, name: item!.name! }))
+      .map(item => ({ id: item!.id!, shName: item!.shName! }))
   }, [selectedRows, list])
 
   const deleteData = getDeleteData()
   const deleteIds = deleteData.map(item => item.id)
-  const deleteNames = deleteData.map(item => item.name)
+  const deleteNames = deleteData.map(item => item.shName)
 
   const handleDelete = useCallback(
     async (ids: string[]) => {

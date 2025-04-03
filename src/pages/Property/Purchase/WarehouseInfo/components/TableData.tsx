@@ -1,20 +1,25 @@
 import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ParkingAreaReply } from 'api/model/property/parking/parkingAreaModel'
-import { find } from 'modules/property/parking/parkingArea'
+import { StorehouseReply } from 'api/model/property/purchase/storehouseModel'
+import { find } from 'modules/property/purchase/storehouse'
 import { Chip } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
 
+const statusType: Record<string, string> = {
+  '2806': '集团仓库',
+  '2807': '项目仓库'
+}
+
 const statusValue: Record<string, string> = {
-  '1001': '地上停车场',
-  '2001': '地下停车场'
+  Y: '是',
+  N: '否'
 }
 
 interface TableDataProps {
   setDialogType: Dispatch<SetStateAction<string>>
-  setDialogValue: Dispatch<SetStateAction<ParkingAreaReply | undefined>>
+  setDialogValue: Dispatch<SetStateAction<StorehouseReply | undefined>>
   setSelectedRows: Dispatch<SetStateAction<Set<string>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
@@ -28,7 +33,7 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.ParkingAreaSlice)
+  const { page, list } = useSelector((state: RootState) => state.StorehouseSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -59,7 +64,7 @@ const TableData: React.FC<TableDataProps> = ({
   )
 
   const handleActionClick = useCallback(
-    (actionType: string, row: ParkingAreaReply) => {
+    (actionType: string, row: StorehouseReply) => {
       switch (actionType) {
         case 'edit':
           setDialogType('edit')
@@ -75,7 +80,7 @@ const TableData: React.FC<TableDataProps> = ({
     [setDialogType, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
   )
 
-  const renderActionButtons = (row: ParkingAreaReply) =>
+  const renderActionButtons = (row: StorehouseReply) =>
     [
       { title: '修改', action: 'edit' },
       { title: '删除', action: 'delete' }
@@ -105,17 +110,22 @@ const TableData: React.FC<TableDataProps> = ({
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'id', headerName: '停车场ID', flex: 1 },
-        { field: 'name', headerName: '停车场编号', flex: 1 },
+        { field: 'id', headerName: '仓库编号', flex: 1 },
+        { field: 'shName', headerName: '仓库名称', flex: 1 },
         {
-          field: 'typeCd',
-          headerName: '停车场类型',
+          field: 'shType',
+          headerName: '仓库类型',
           flex: 1,
-          renderCell: ({ row }) => <Chip label={statusValue[row.typeCd!] || '未知类型'} />
+          renderCell: ({ row }) => <Chip label={statusType[row.shType!] || '未知'} />
         },
-        { field: 'num', headerName: '外部编码', flex: 1 },
-        { field: 'remark', headerName: '备注', flex: 1 },
+        {
+          field: 'isShow',
+          headerName: '对外开放',
+          flex: 1,
+          renderCell: ({ row }) => <Chip label={statusValue[row.isShow!] || '未知'} />
+        },
         { field: 'createdAt', headerName: '创建时间', width: 180 },
+        { field: 'shDesc', headerName: '描述', width: 180 },
         {
           field: 'actions',
           headerName: '操作',

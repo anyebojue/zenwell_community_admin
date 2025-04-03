@@ -8,8 +8,8 @@ import React, {
   memo
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ParkingAreaParams, ParkingAreaReply } from 'api/model/property/parking/parkingAreaModel'
-import { create, find, update } from 'modules/property/parking/parkingArea'
+import { StorehouseParams, StorehouseReply } from 'api/model/property/purchase/storehouseModel'
+import { create, find, update } from 'modules/property/purchase/storehouse'
 import {
   Box,
   CircularProgress,
@@ -27,7 +27,7 @@ import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
-  dialogValue?: ParkingAreaReply
+  dialogValue?: StorehouseReply
   openDialog: boolean
   dialogType: string
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -40,19 +40,19 @@ const FormDialog: React.FC<FormDialogProps> = ({
   setOpenDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.ParkingAreaSlice)
+  const { page } = useSelector((state: RootState) => state.StorehouseSlice)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(
     () => ({
-      name: dialogType === 'edit' ? dialogValue?.name || '' : '',
-      typeCd: dialogType === 'edit' ? dialogValue?.typeCd || '' : '',
-      num: dialogType === 'edit' ? dialogValue?.num || '' : '',
-      remark: dialogType === 'edit' ? dialogValue?.remark || '' : ''
+      shName: dialogType === 'edit' ? dialogValue?.shName || '' : '',
+      shType: dialogType === 'edit' ? dialogValue?.shType || '' : '',
+      isShow: dialogType === 'edit' ? dialogValue?.isShow || '' : '',
+      shDesc: dialogType === 'edit' ? dialogValue?.shDesc || '' : ''
     }),
     [dialogType, dialogValue]
   )
-  const [formData, setFormData] = useState<ParkingAreaParams>(initialFormData)
+  const [formData, setFormData] = useState<StorehouseParams>(initialFormData)
 
   useEffect(() => {
     setFormData(initialFormData)
@@ -98,31 +98,31 @@ const FormDialog: React.FC<FormDialogProps> = ({
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>停车场编号：</FormLabel>
+            <FormLabel>仓库名称：</FormLabel>
             <TextField
-              placeholder="必填，请填写停车场编号"
+              placeholder="必填，请填写仓库名称"
               sx={{ width: '80%' }}
               type="text"
               size="small"
-              value={formData.name}
-              onChange={e => setFormData({ ...formData, name: e.target.value })}
+              value={formData.shName}
+              onChange={e => setFormData({ ...formData, shName: e.target.value })}
               variant="outlined"
             />
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>停车场类型：</FormLabel>
+            <FormLabel>仓库类型：</FormLabel>
             <TextField
-              placeholder="请选择停车场类型"
+              placeholder="请选择仓库类型"
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.typeCd || ''}
-              onChange={e => setFormData({ ...formData, typeCd: e.target.value })}
+              value={formData.shType || ''}
+              onChange={e => setFormData({ ...formData, shType: e.target.value })}
               variant="outlined"
             >
               {[
-                { value: '1001', label: '地上停车场' },
-                { value: '2001', label: '地下停车场' }
+                { value: '2806', label: '集团仓库' },
+                { value: '2807', label: '项目仓库' }
               ].map(option => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
@@ -131,16 +131,25 @@ const FormDialog: React.FC<FormDialogProps> = ({
             </TextField>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>外部编码：</FormLabel>
+            <FormLabel>对外开放：</FormLabel>
             <TextField
-              placeholder="选填，请填写外部编码 一般为第三方停车场系统ID"
+              placeholder="请选择对外开放"
               sx={{ width: '80%' }}
-              type="text"
+              select
               size="small"
-              value={formData.num}
-              onChange={e => setFormData({ ...formData, num: e.target.value })}
+              value={formData.isShow || ''}
+              onChange={e => setFormData({ ...formData, isShow: e.target.value })}
               variant="outlined"
-            />
+            >
+              {[
+                { value: 'Y', label: '是' },
+                { value: 'N', label: '否' }
+              ].map(option => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>备注：</FormLabel>
@@ -148,8 +157,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
               placeholder="请输入"
               sx={{ width: '80%' }}
               size="small"
-              value={formData.remark}
-              onChange={e => setFormData({ ...formData, remark: e.target.value })}
+              value={formData.shDesc}
+              onChange={e => setFormData({ ...formData, shDesc: e.target.value })}
               variant="outlined"
               multiline
               rows={2}
