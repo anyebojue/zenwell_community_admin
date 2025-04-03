@@ -27,6 +27,13 @@ const purchase: IRouter[] = [
         }
       },
       {
+        path: 'ItemType',
+        element: load('Property/Purchase/ItemType'),
+        meta: {
+          title: '物品类型'
+        }
+      },
+      {
         path: 'ItemSpec',
         element: load('Property/Purchase/ItemSpec'),
         meta: {
@@ -44,7 +51,7 @@ const purchase: IRouter[] = [
         path: 'Supplier',
         element: load('Property/Purchase/Supplier'),
         meta: {
-          title: '供应商'
+          title: '物品供应商'
         }
       },
       {
