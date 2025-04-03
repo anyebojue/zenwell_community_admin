@@ -1,12 +1,11 @@
-import { ChangeEvent, memo, useState, useCallback, Dispatch, SetStateAction } from 'react'
+import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CommunityAnnouncementParams } from 'api/model/property/communitys/communityAnnouncementModel'
-import { find } from 'modules/property/communitys/communityAnnouncement'
+import { CarInoutPaymentParams } from 'api/model/property/parking/carInoutPaymentModel'
+import { find } from 'modules/property/parking/carInoutPayment'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
-import { Add, Delete, History, Search } from '@mui/icons-material'
+import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import FormDialog from './FormDialog'
 
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {
@@ -25,22 +24,18 @@ const textFieldStyles = {
 }
 
 interface FormSearchProps {
-  selectedButton: number
-  selectedRows: Set<string | undefined>
-  setDelOpen: Dispatch<SetStateAction<boolean>>
+  selectedButton: string
 }
 
-const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, setDelOpen }) => {
+const FormSearch: React.FC<FormSearchProps> = ({ selectedButton }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.CommunityAnnouncementSlice)
-
-  const [openDialog, setOpenDialog] = useState(false)
-  const [searchParams, setSearchParams] = useState<CommunityAnnouncementParams>({
-    title: ''
+  const { page } = useSelector((state: RootState) => state.CarInoutPaymentSlice)
+  const [searchParams, setSearchParams] = useState<CarInoutPaymentParams>({
+    statusCd: ''
   })
 
   const handleInputChange =
-    (field: keyof CommunityAnnouncementParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof CarInoutPaymentParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -48,13 +43,14 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
     }
 
   const fetchData = useCallback(
-    async (params: CommunityAnnouncementParams & PaginationParams) => {
+    async (params: CarInoutPaymentParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
           find({
             'page.num': page.num,
             'page.size': page.size,
+            ...(selectedButton && { paId: selectedButton }),
             ...params
           })
         )
@@ -68,7 +64,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
         closeLoading()
       }
     },
-    [dispatch, page.num, page.size]
+    [dispatch, page.num, page.size, selectedButton]
   )
 
   const handleSearch = () => {
@@ -81,12 +77,12 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
-            label="请填写公示标题"
+            label="请输入车牌号"
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.title}
-            onChange={handleInputChange('title')}
+            value={searchParams.statusCd}
+            onChange={handleInputChange('statusCd')}
           />
         </FormControl>
         <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
@@ -107,9 +103,9 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             startIcon={<History />}
             sx={buttonStyles('darkgray', '#696969')}
             onClick={() => {
-              setSearchParams({ title: '' })
+              setSearchParams({ statusCd: '' })
               fetchData({
-                title: '',
+                statusCd: '',
                 'page.num': page.num,
                 'page.size': page.size
               })
@@ -117,39 +113,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
           >
             重置
           </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Add />}
-            sx={buttonStyles('#2660ad', '#1d428a')}
-            onClick={() => setOpenDialog(true)}
-          >
-            新增
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Delete />}
-            sx={buttonStyles('#B22222', '#8B0000')}
-            onClick={() => {
-              if (![...selectedRows].length) {
-                return message.warning('请选择至少一项')
-              }
-              setDelOpen(true)
-            }}
-          >
-            批量删除
-          </Button>
         </Stack>
       </Stack>
-      <FormDialog
-        selectedButton={selectedButton}
-        openDialog={openDialog}
-        dialogType="add"
-        setOpenDialog={setOpenDialog}
-      />
     </Box>
   )
 }

@@ -112,6 +112,7 @@ import ChargeMonthOrderSlice from './property/parking/chargeMonthOrder'
 import ParkingSpaceApplySlice from './property/parking/parkingSpaceApply'
 import CarBlackWhiteSlice from './property/parking/carBlackWhite'
 import MachineSlice from './property/parking/machine'
+import CarInoutPaymentSlice from './property/parking/carInoutPayment'
 
 const store = configureStore({
   reducer: {
@@ -227,7 +228,8 @@ const store = configureStore({
     ChargeMonthOrderSlice,
     ParkingSpaceApplySlice,
     CarBlackWhiteSlice,
-    MachineSlice
+    MachineSlice,
+    CarInoutPaymentSlice
   },
   // 关闭序列化检测
   middleware: getDefaultMiddleware =>

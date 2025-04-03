@@ -1,111 +1,82 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
+import { memo, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CommunityAnnouncementReply } from 'api/model/property/communitys/communityAnnouncementModel'
-import { find } from 'modules/property/communitys/communityAnnouncement'
-import { Box, Tooltip, IconButton } from '@mui/material'
-import { Delete, Edit } from '@mui/icons-material'
+import { find } from 'modules/property/parking/carInoutPayment'
+import { find as findArea } from 'modules/property/parking/parkingArea'
+import { DataGrid } from '@mui/x-data-grid'
+import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
-import TableList from './TableList'
-
-const renderActionButtons = (
-  setOpenDialog: Dispatch<SetStateAction<boolean>>,
-  setDelOpen: Dispatch<SetStateAction<boolean>>
-) => (
-  <Box>
-    {[
-      {
-        title: '修改',
-        color: 'secondary' as const,
-        icon: <Edit fontSize="small" />,
-        onClick: () => setOpenDialog(true)
-      },
-      {
-        title: '删除',
-        color: 'error' as const,
-        icon: <Delete fontSize="small" />,
-        onClick: () => setDelOpen(true)
-      }
-    ].map((action, index) => (
-      <Tooltip title={action.title} key={index}>
-        <IconButton size="small" color={action.color} onClick={action.onClick}>
-          {action.icon}
-        </IconButton>
-      </Tooltip>
-    ))}
-  </Box>
-)
-
-export interface Column<T> {
-  headerName: string
-  key: string
-  align?: 'left' | 'right' | 'center'
-  renderCell?: (_value: T[keyof T]) => ReactNode
-}
 
 interface TableDataProps {
-  selectedButton: number
-  setDialogValue: Dispatch<SetStateAction<CommunityAnnouncementReply | undefined>>
-  selectedRows: Set<string | undefined>
-  setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
-  setOpenDialog: Dispatch<SetStateAction<boolean>>
-  setDelOpen: Dispatch<SetStateAction<boolean>>
+  selectedButton: string
 }
 
-const TableData: React.FC<TableDataProps> = ({
-  selectedButton,
-  setDialogValue,
-  selectedRows,
-  setSelectedRows,
-  setOpenDialog,
-  setDelOpen
-}) => {
+const TableData: React.FC<TableDataProps> = ({ selectedButton }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.CommunityAnnouncementSlice)
-  const current_community = localStorage.getItem('current_community')
-  const community = JSON.parse(current_community || '')
+  const { page, list } = useSelector((state: RootState) => state.CarInoutPaymentSlice)
 
-  const columns: Column<CommunityAnnouncementReply>[] = [
-    { key: 'photo', headerName: '头部照片', align: 'center' },
-    { key: 'title', headerName: '公示标题', align: 'center' },
-    { key: 'type', headerName: '公示类型', align: 'center' },
-    { key: 'createdAt', headerName: '公示时间', align: 'center' },
-    { key: 'communityId', headerName: '发布人', align: 'center', renderCell: () => community.name },
-    {
-      key: 'operate',
-      headerName: '操作',
-      align: 'center',
-      renderCell: () => renderActionButtons(setOpenDialog, setDelOpen)
-    }
-  ]
-
-  const fetchData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(
-        find({ 'page.num': page.num, 'page.size': page.size, type: selectedButton })
-      )
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
+  const fetchData = useCallback(
+    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
+      const closeLoading = message.loading(loadingMessage)
+      try {
+        const res = await dispatch(action(params))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
       }
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch, page.num, page.size, selectedButton])
+    },
+    [dispatch]
+  )
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    fetchData(
+      find,
+      {
+        'page.num': page.num,
+        'page.size': page.size,
+        ...(selectedButton && { paId: selectedButton })
+      },
+      '正在加载列表中，请稍后...'
+    )
+    fetchData(findArea, { 'page.disable': true }, '正在加载列表中，请稍后...')
+  }, [fetchData, page.num, page.size, selectedButton])
 
   return (
-    <TableList
+    <DataGrid
+      sx={{
+        '& .MuiDataGrid-columnHeaderTitle': {
+          whiteSpace: 'normal',
+          wordWrap: 'break-word',
+          lineHeight: '1.2'
+        }
+      }}
+      localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
+      disableColumnResize
+      disableVirtualization={false}
       rows={list}
-      columns={columns}
-      setDialogValue={setDialogValue}
-      selectedRows={selectedRows}
-      setSelectedRows={setSelectedRows}
+      columns={[
+        { field: 'id', headerName: '进出场编号', flex: 1 },
+        { field: '', headerName: '车辆状态', flex: 1 },
+        { field: 'carInout.carNum', headerName: '车牌号', flex: 1 },
+        { field: 'carInout.inTime', headerName: '进场时间', flex: 1 },
+        { field: 'payType', headerName: '收费类型', flex: 1 },
+        { field: 'payCharge', headerName: '应收金额', flex: 1 },
+        { field: 'realCharge', headerName: '实收金额', flex: 1 },
+        { field: '', headerName: '支付时间', flex: 1 }
+      ]}
+      pageSizeOptions={[10, 20, 50, 100]}
+      paginationMode="server"
+      rowCount={Number(page.total)}
+      initialState={{
+        pagination: {
+          paginationModel: {
+            pageSize: Number(page.size)
+          }
+        }
+      }}
     />
   )
 }
