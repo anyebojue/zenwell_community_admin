@@ -76,6 +76,20 @@ const repair: IRouter[] = [
         }
       },
       {
+        path: 'BlackWhiteList',
+        element: load('Property/Parking/BlackWhiteList'),
+        meta: {
+          title: '黑白名单'
+        }
+      },
+      {
+        path: 'SurveillanceCamera',
+        element: load('Property/Parking/SurveillanceCamera'),
+        meta: {
+          title: '摄像头管理'
+        }
+      },
+      {
         path: 'ParkingSpaceApplication',
         element: load('Property/Parking/ParkingSpaceApplication'),
         meta: {
