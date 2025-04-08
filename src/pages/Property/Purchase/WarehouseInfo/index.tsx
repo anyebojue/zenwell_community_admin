@@ -67,7 +67,7 @@ const ParkingLotManagementIndex = () => {
       <FormSearch setDelOpen={setDelOpen} selectedRows={selectedRows} />
       <Box sx={contentBoxStyle}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h6">停车场信息</Typography>
+          <Typography variant="h6">仓库信息</Typography>
           <Button
             size="small"
             variant="contained"
