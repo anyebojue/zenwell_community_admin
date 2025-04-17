@@ -1,46 +1,12 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CommunityAnnouncementReply } from 'api/model/property/communitys/communityAnnouncementModel'
 import { find } from 'modules/property/communitys/communityAnnouncement'
-import { Box, Tooltip, IconButton } from '@mui/material'
-import { Delete, Edit } from '@mui/icons-material'
+import { Chip } from '@mui/material'
+import { DataGrid } from '@mui/x-data-grid'
+import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
-import TableList from './TableList'
-
-const renderActionButtons = (
-  setOpenDialog: Dispatch<SetStateAction<boolean>>,
-  setDelOpen: Dispatch<SetStateAction<boolean>>
-) => (
-  <Box>
-    {[
-      {
-        title: '修改',
-        color: 'secondary' as const,
-        icon: <Edit fontSize="small" />,
-        onClick: () => setOpenDialog(true)
-      },
-      {
-        title: '删除',
-        color: 'error' as const,
-        icon: <Delete fontSize="small" />,
-        onClick: () => setDelOpen(true)
-      }
-    ].map((action, index) => (
-      <Tooltip title={action.title} key={index}>
-        <IconButton size="small" color={action.color} onClick={action.onClick}>
-          {action.icon}
-        </IconButton>
-      </Tooltip>
-    ))}
-  </Box>
-)
-
-export interface Column<T> {
-  headerName: string
-  key: string
-  align?: 'left' | 'right' | 'center'
-  renderCell?: (_value: T[keyof T]) => ReactNode
-}
+import { GridRowSelectionModel } from '@mui/x-data-grid-pro'
 
 interface TableDataProps {
   selectedButton: number
@@ -54,7 +20,6 @@ interface TableDataProps {
 const TableData: React.FC<TableDataProps> = ({
   selectedButton,
   setDialogValue,
-  selectedRows,
   setSelectedRows,
   setOpenDialog,
   setDelOpen
@@ -64,48 +29,112 @@ const TableData: React.FC<TableDataProps> = ({
   const current_community = localStorage.getItem('current_community')
   const community = JSON.parse(current_community || '')
 
-  const columns: Column<CommunityAnnouncementReply>[] = [
-    { key: 'photo', headerName: '头部照片', align: 'center' },
-    { key: 'title', headerName: '公示标题', align: 'center' },
-    { key: 'type', headerName: '公示类型', align: 'center' },
-    { key: 'createdAt', headerName: '公示时间', align: 'center' },
-    { key: 'communityId', headerName: '发布人', align: 'center', renderCell: () => community.name },
-    {
-      key: 'operate',
-      headerName: '操作',
-      align: 'center',
-      renderCell: () => renderActionButtons(setOpenDialog, setDelOpen)
-    }
-  ]
-
-  const fetchData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(
-        find({ 'page.num': page.num, 'page.size': page.size, type: selectedButton })
-      )
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
+  const fetchData = useCallback(
+    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
+      const closeLoading = message.loading(loadingMessage)
+      try {
+        const res = await dispatch(action(params))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
       }
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch, page.num, page.size, selectedButton])
+    },
+    [dispatch]
+  )
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    fetchData(
+      find,
+      { 'page.num': page.num, 'page.size': page.size, type: String(selectedButton) },
+      '正在加载列表中，请稍后...'
+    )
+  }, [fetchData, page.num, page.size, selectedButton])
+
+  const handleRowSelection = useCallback(
+    (rowSelectionModel: GridRowSelectionModel) => {
+      setSelectedRows(new Set(rowSelectionModel.map(id => String(id))))
+    },
+    [setSelectedRows]
+  )
+
+  const handleActionClick = useCallback(
+    (actionType: string, row: CommunityAnnouncementReply) => {
+      switch (actionType) {
+        case 'edit':
+          setDialogValue(row)
+          setOpenDialog(true)
+          break
+        case 'delete':
+          setDelOpen(true)
+          setSelectedRows(new Set([row.id || '']))
+          break
+      }
+    },
+    [setDelOpen, setDialogValue, setOpenDialog, setSelectedRows]
+  )
+
+  const renderActionButtons = (row: CommunityAnnouncementReply) => {
+    const actions = [
+      { title: '修改', action: 'edit' },
+      { title: '删除', action: 'delete' }
+    ]
+    return actions.map(({ title, action }) => (
+      <Chip
+        key={title}
+        sx={{
+          cursor: 'pointer',
+          marginRight: '-5px',
+          '& .MuiChip-label': {
+            fontSize: '13px'
+          }
+        }}
+        label={title}
+        color="primary"
+        variant="outlined"
+        onClick={() => handleActionClick(action, row)}
+      />
+    ))
+  }
 
   return (
-    <TableList
+    <DataGrid
+      sx={{ mt: 1 }}
+      localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
+      disableColumnResize
+      disableVirtualization={false}
+      checkboxSelection
       rows={list}
-      columns={columns}
-      setDialogValue={setDialogValue}
-      selectedRows={selectedRows}
-      setSelectedRows={setSelectedRows}
+      columns={[
+        { field: 'photo', headerName: '头部照片', flex: 1 },
+        { field: 'title', headerName: '公示标题', flex: 1 },
+        { field: 'type', headerName: '公示类型', flex: 1 },
+        { field: 'createdAt', headerName: '公示时间', flex: 1 },
+        { field: 'community', headerName: '发布人', flex: 1, renderCell: () => community.name },
+        {
+          field: 'actions',
+          headerName: '操作',
+          type: 'actions',
+          width: 280,
+          getActions: ({ row }) => renderActionButtons(row),
+          headerAlign: 'center',
+          align: 'center'
+        }
+      ]}
+      onRowSelectionModelChange={handleRowSelection}
+      pageSizeOptions={[10, 20, 50, 100]}
+      paginationMode="server"
+      rowCount={Number(page.total)}
+      initialState={{
+        pagination: {
+          paginationModel: {
+            pageSize: Number(page.size)
+          }
+        }
+      }}
     />
   )
 }

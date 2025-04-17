@@ -135,12 +135,7 @@ const TableData: React.FC<TableDataProps> = ({
         checkboxSelection
         rows={list}
         columns={[
-          {
-            field: 'roomName',
-            headerName: '房屋',
-            renderCell: ({ row }) =>
-              `${row.room?.unit?.floor?.name}-${row.room?.unit?.unitNum}-${row.room.roomNum}`
-          },
+          { field: 'roomName', headerName: '房屋' },
           { field: 'personName', headerName: '联系人' },
           { field: 'personTel', headerName: '联系电话' },
           {
