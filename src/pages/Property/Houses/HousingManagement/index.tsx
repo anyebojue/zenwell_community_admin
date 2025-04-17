@@ -1,8 +1,8 @@
 import { memo, useCallback, useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { HousingManagementReply } from 'api/model/property/houses/housingManagementModel'
+import { FloorReply } from 'api/model/property/houses/floorModel'
 import { RoomReply } from 'api/model/property/houses/roomModel'
-import { deleteByIds, find } from 'modules/property/houses/housingManagement'
+import { deleteByIds, find } from 'modules/property/houses/floor'
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
 import { Box, Button, Stack, Theme } from '@mui/material'
 import { Add, Delete, Edit, FileCopy } from '@mui/icons-material'
@@ -31,14 +31,14 @@ const buttonCommonStyle = (color: string = '#2660ad', height: string = '32px') =
   height
 })
 
-const HousingManagementIndex = () => {
+const FloorIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { list } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { list } = useSelector((state: RootState) => state.FloorSlice)
   const [openFloorDialog, setOpenFloorDialog] = useState(false)
   const [openUnitDialog, setOpenUnitDialog] = useState(false)
   const [openRoomDialog, setOpenRoomDialog] = useState(false)
   const [dialogType, setDialogType] = useState('edit')
-  const [dialogValue, setDialogValue] = useState<HousingManagementReply>({})
+  const [dialogValue, setDialogValue] = useState<FloorReply>({})
   const [dialogRoomValue, setDialogRoomValue] = useState<RoomReply>({})
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [delRoomOpen, setDelRoomOpen] = useState(false)
@@ -109,19 +109,16 @@ const HousingManagementIndex = () => {
     [dispatch]
   )
 
-  const findItemById = useCallback(
-    (items: HousingManagementReply[], targetId: string): HousingManagementReply | null => {
-      for (const item of items) {
-        if (item.id === targetId) return item
-        if (item.unit?.length) {
-          const foundInChildren = findItemById(item.unit, targetId)
-          if (foundInChildren) return foundInChildren
-        }
+  const findItemById = useCallback((items: FloorReply[], targetId: string): FloorReply | null => {
+    for (const item of items) {
+      if (item.id === targetId) return item
+      if (item.unit?.length) {
+        const foundInChildren = findItemById(item.unit, targetId)
+        if (foundInChildren) return foundInChildren
       }
-      return null
-    },
-    []
-  )
+    }
+    return null
+  }, [])
 
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
@@ -329,4 +326,4 @@ const HousingManagementIndex = () => {
   )
 }
 
-export default memo(HousingManagementIndex)
+export default memo(FloorIndex)

@@ -1,7 +1,7 @@
 import { Page } from '../../pageModel'
 import { UnitReply } from './unitModel'
 
-export interface HousingManagementReply {
+export interface FloorReply {
   id?: string
   createdAt?: string
   updatedAt?: string
@@ -16,7 +16,7 @@ export interface HousingManagementReply {
   unit?: UnitReply[] // 单元
 }
 
-export interface HousingManagementParams {
+export interface FloorParams {
   id?: string
   name?: string // 楼栋名称
   status?: number // 状态
@@ -28,7 +28,7 @@ export interface HousingManagementParams {
   sort?: number // 排序
 }
 
-export interface FindHousingManagementReply {
+export interface FindFloorReply {
   page: Page
-  list: Array<HousingManagementReply>
+  list: Array<FloorReply>
 }

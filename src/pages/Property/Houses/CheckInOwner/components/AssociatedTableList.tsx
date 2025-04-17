@@ -1,5 +1,5 @@
 import { memo, useState, useMemo, ChangeEvent, ReactNode } from 'react'
-import { HousingManagementReply } from 'api/model/property/houses/housingManagementModel'
+import { HousingManagementReply } from 'api/model/property/houses/floorModel'
 import { RoomReply } from 'api/model/property/houses/roomModel'
 import {
   Pagination,

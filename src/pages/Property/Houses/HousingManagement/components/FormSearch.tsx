@@ -1,6 +1,6 @@
 import { ChangeEvent, memo, useState, useCallback, Dispatch, SetStateAction } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { HousingManagementReply } from 'api/model/property/houses/housingManagementModel'
+import { FloorReply } from 'api/model/property/houses/floorModel'
 import { find } from 'modules/property/houses/room'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { Delete, History, Search } from '@mui/icons-material'
@@ -25,7 +25,7 @@ const textFieldStyles = {
 }
 
 interface FormSearchProps {
-  dialogValue: HousingManagementReply
+  dialogValue: FloorReply
   selectedRows: Set<string | undefined>
   setDelRoomOpen: Dispatch<SetStateAction<boolean>>
 }

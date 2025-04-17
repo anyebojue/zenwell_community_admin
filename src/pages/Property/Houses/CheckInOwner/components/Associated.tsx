@@ -1,6 +1,6 @@
 import { Dispatch, memo, SetStateAction, useState } from 'react'
 import { Dialog, DialogContent, DialogTitle } from '@mui/material'
-import { HousingManagementReply } from 'api/model/property/houses/housingManagementModel'
+import { HousingManagementReply } from 'api/model/property/houses/floorModel'
 import { RoomReply } from 'api/model/property/houses/roomModel'
 import FormSearch from './FormSearch'
 import AssociatedTableData from './AssociatedTableData'

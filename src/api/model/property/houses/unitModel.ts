@@ -1,5 +1,5 @@
 import { Page } from '../../pageModel'
-import { HousingManagementReply } from './housingManagementModel'
+import { HousingManagementReply } from './floorModel'
 
 export interface UnitReply {
   id?: string

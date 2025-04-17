@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { find } from 'modules/property/report/queryReportFeeSummary'
-import { find as findFloor } from 'modules/property/houses/housingManagement'
+import { find as findFloor } from 'modules/property/houses/floor'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'

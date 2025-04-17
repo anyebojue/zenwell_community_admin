@@ -6,7 +6,7 @@ import { Chip } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
-import { HousingManagementReply } from 'api/model/property/houses/housingManagementModel'
+import { HousingManagementReply } from 'api/model/property/houses/floorModel'
 
 interface TableDataProps {
   dialogValue: HousingManagementReply

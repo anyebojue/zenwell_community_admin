@@ -10,7 +10,7 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux'
 import { UnitParams, UnitReply } from 'api/model/property/houses/unitModel'
 import { create, update } from 'modules/property/houses/unit'
-import { find } from 'modules/property/houses/housingManagement'
+import { find } from 'modules/property/houses/floor'
 import {
   Box,
   CircularProgress,

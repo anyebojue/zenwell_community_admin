@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { find } from 'modules/property/houses/housingManagement'
+import { find } from 'modules/property/houses/floor'
 import { find as findRoom } from 'modules/property/houses/room'
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
 import { Box, Button, Stack, Theme, Typography } from '@mui/material'

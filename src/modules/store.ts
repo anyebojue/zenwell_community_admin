@@ -16,7 +16,7 @@ import CommunityAnnouncementSlice from './property/communitys/communityAnnouncem
 import RoomRenovationSlice from './property/communitys/roomRenovation'
 import RoomRenovationDetailSlice from './property/communitys/roomRenovationDetail'
 import RoomRenovationRecordSlice from './property/communitys/roomRenovationRecord'
-import HousingManagementSlice from './property/houses/housingManagement'
+import FloorSlice from './property/houses/floor'
 import ReleaseSlice from './property/communitys/release'
 import ReleaseTypeSlice from './property/communitys/releaseType'
 import UnitSlice from './property/houses/unit'
@@ -136,7 +136,7 @@ const store = configureStore({
     RoomRenovationSlice,
     RoomRenovationDetailSlice,
     RoomRenovationRecordSlice,
-    HousingManagementSlice,
+    FloorSlice,
     ReleaseSlice,
     ReleaseTypeSlice,
     UnitSlice,

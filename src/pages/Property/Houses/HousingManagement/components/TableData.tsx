@@ -1,33 +1,17 @@
-import {
-  Dispatch,
-  memo,
-  ReactNode,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from 'react'
+import { Dispatch, memo, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { FloorReply } from 'api/model/property/houses/floorModel'
 import { RoomReply } from 'api/model/property/houses/roomModel'
 import { deleteByIds, find } from 'modules/property/houses/room'
-import { Box, Tooltip, IconButton, Chip } from '@mui/material'
-import { Delete, Edit, ExitToApp, House, Key } from '@mui/icons-material'
+import { Chip } from '@mui/material'
+import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
+import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
-import DeleteModal from 'components/DeleteModal'
-import { HousingManagementReply } from 'api/model/property/houses/housingManagementModel'
 import { useNavigate } from 'react-router-dom'
-import TableList from './TableList'
-
-export interface Column<T> {
-  headerName: string
-  key: Exclude<keyof T, symbol> | `${Exclude<keyof T, symbol>}.${string}` | 'operate' // 过滤掉 symbol 类型
-  align?: 'left' | 'center' | 'right'
-  renderCell?: (row: T) => ReactNode
-}
+import DeleteModal from 'components/DeleteModal'
 
 interface TableDataProps {
-  dialogValue: HousingManagementReply
+  dialogValue: FloorReply
   dialogRoomValue: RoomReply
   setDialogRoomValue: Dispatch<SetStateAction<RoomReply>>
   setOpenRoomDialog: Dispatch<SetStateAction<boolean>>
@@ -35,6 +19,25 @@ interface TableDataProps {
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   delRoomOpen: boolean
   setDelRoomOpen: Dispatch<SetStateAction<boolean>>
+}
+
+const statusType: Record<string, string> = {
+  '110': '住宅',
+  '120': '办公室',
+  '119': '宿舍',
+  '128': '储物间'
+}
+
+const statusValue: Record<string, string> = {
+  '2001': '已入住',
+  '2002': '未销售',
+  '2003': '已交房',
+  '2004': '未入住',
+  '2005': '已装修',
+  '2006': '已出租',
+  '2007': '已出售',
+  '2008': '空闲',
+  '2009': '装修中'
 }
 
 const TableData: React.FC<TableDataProps> = ({
@@ -73,6 +76,42 @@ const TableData: React.FC<TableDataProps> = ({
       closeLoading()
     }
   }, [dialogValue.id, dialogValue.name, dispatch, page.num, page.size])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
+  const handleRowSelection = useCallback(
+    (rowSelectionModel: GridRowSelectionModel) => {
+      setSelectedRows(new Set(rowSelectionModel.map(id => String(id))))
+    },
+    [setSelectedRows]
+  )
+
+  const handleActionClick = useCallback(
+    (actionType: string, row: RoomReply) => {
+      switch (actionType) {
+        case 'edit':
+          setDialogRoomValue(row)
+          setOpenRoomDialog(true)
+          break
+        case 'delete':
+          setDelRoomOpen(true)
+          setSelectedRows(new Set([row.id || '']))
+          break
+        case 'checkIn':
+          navigate('/houses/CheckIn', { state: { value: row } })
+          break
+        case 'checkOut':
+          navigate('/houses/CheckOut', { state: { value: row } })
+          break
+        case 'business':
+          message.info('未实现')
+          break
+      }
+    },
+    [navigate, setDelRoomOpen, setDialogRoomValue, setOpenRoomDialog, setSelectedRows]
+  )
 
   const getDeleteData = useCallback(() => {
     if (selectedRows.size > 0) {
@@ -114,158 +153,91 @@ const TableData: React.FC<TableDataProps> = ({
     [dispatch, fetchData, setDelRoomOpen]
   )
 
-  const columns: Column<RoomReply>[] = [
-    {
-      key: 'roomNum',
-      headerName: '房屋',
-      align: 'center',
-      renderCell: row => `${row.unit?.floor?.name}-${row.unit?.unitNum}-${row.roomNum}`
-    },
-    {
-      key: 'layer',
-      headerName: '楼层',
-      align: 'center'
-    },
-    {
-      key: 'layer',
-      headerName: '业主',
-      align: 'center'
-    },
-    {
-      key: 'roomSubType',
-      headerName: '类型',
-      align: 'center',
-      renderCell: row => {
-        return row.roomSubType === '110' ? (
-          <Chip label="住宅" />
-        ) : row.roomSubType === '120' ? (
-          <Chip label="办公室" />
-        ) : row.roomSubType === '119' ? (
-          <Chip label="宿舍" />
-        ) : row.roomSubType === '128' ? (
-          <Chip label="储物间" />
-        ) : (
-          <Chip label="其他" />
-        )
-      }
-    },
-    {
-      key: 'builtUpArea',
-      headerName: '建筑/室内面积',
-      align: 'center',
-      renderCell: row => `${row.builtUpArea} / ${row.roomArea}`
-    },
-    {
-      key: 'roomRent',
-      headerName: '租金',
-      align: 'center'
-    },
-    {
-      key: 'state',
-      headerName: '房屋状态',
-      align: 'center',
-      renderCell: row => {
-        return row.roomSubType === '2001' ? (
-          <Chip label="已入住" />
-        ) : row.roomSubType === '2002' ? (
-          <Chip label="未销售" />
-        ) : row.roomSubType === '2003' ? (
-          <Chip label="已交房" />
-        ) : row.roomSubType === '2004' ? (
-          <Chip label="未入住" />
-        ) : row.roomSubType === '2005' ? (
-          <Chip label="已装修" />
-        ) : row.roomSubType === '2006' ? (
-          <Chip label="已出租" />
-        ) : row.roomSubType === '2007' ? (
-          <Chip label="已出售" />
-        ) : row.roomSubType === '2008' ? (
-          <Chip label="空闲" />
-        ) : row.roomSubType === '2009' ? (
-          <Chip label="装修中" />
-        ) : (
-          <Chip label="其他" />
-        )
-      }
-    },
-    {
-      key: 'createdAt',
-      headerName: '入住时间',
-      align: 'center'
-    },
-    {
-      key: 'layer',
-      headerName: '业主成员',
-      align: 'center'
-    },
-    {
-      key: 'layer',
-      headerName: '业主车辆',
-      align: 'center'
-    },
-    {
-      key: 'operate',
-      headerName: '操作',
-      align: 'center',
-      renderCell: row => {
-        const actions = [
-          {
-            title: '修改',
-            color: 'secondary' as const,
-            icon: <Edit fontSize="small" />,
-            onClick: () => setOpenRoomDialog(true)
-          },
-          {
-            title: '删除',
-            color: 'error' as const,
-            icon: <Delete fontSize="small" />,
-            onClick: () => setDelRoomOpen(true)
-          },
-          {
-            title: row.userId !== '-1' ? '退房' : '交房',
-            color: 'secondary' as const,
-            icon: row.userId !== '-1' ? <ExitToApp fontSize="small" /> : <Key fontSize="small" />,
-            onClick: () =>
-              row.userId !== '-1'
-                ? navigate('/houses/CheckOut', { state: { value: row } })
-                : navigate('/houses/CheckIn', { state: { value: row } })
-          }
-        ]
-        if (row.userId !== '-1') {
-          actions.push({
-            title: '业务受理',
-            color: 'secondary' as const,
-            icon: <House fontSize="small" />,
-            onClick: () => message.info('未实现')
-          })
-        }
-        return (
-          <Box>
-            {actions.map((action, index) => (
-              <Tooltip title={action.title} key={index}>
-                <IconButton size="small" color={action.color} onClick={action.onClick}>
-                  {action.icon}
-                </IconButton>
-              </Tooltip>
-            ))}
-          </Box>
-        )
-      }
-    }
-  ]
-
-  useEffect(() => {
-    fetchData()
-  }, [fetchData])
+  const renderActionButtons = (row: RoomReply) => {
+    const actions = [
+      { title: '修改', action: 'edit' },
+      { title: '删除', action: 'delete' },
+      { title: '交房', action: 'checkIn', userId: '-1' },
+      { title: '退房', action: 'checkOut' },
+      { title: '业务受理', action: 'business', userId: '-1' }
+    ]
+    return actions
+      .filter(({ userId }) => userId === undefined || row.userId === userId)
+      .map(({ title, action }) => (
+        <Chip
+          key={title}
+          sx={{
+            cursor: 'pointer',
+            marginRight: '-5px',
+            '& .MuiChip-label': {
+              fontSize: '13px'
+            }
+          }}
+          label={title}
+          color="primary"
+          variant="outlined"
+          onClick={() => handleActionClick(action, row)}
+        />
+      ))
+  }
 
   return (
     <>
-      <TableList
+      <DataGrid
+        sx={{
+          '& .MuiDataGrid-columnHeaderTitle': {
+            whiteSpace: 'normal',
+            wordWrap: 'break-word',
+            lineHeight: '1.2'
+          }
+        }}
+        localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
+        disableColumnResize
+        disableVirtualization={false}
+        checkboxSelection
         rows={list}
-        columns={columns}
-        setDialogRoomValue={setDialogRoomValue}
-        selectedRows={selectedRows}
-        setSelectedRows={setSelectedRows}
+        columns={[
+          { field: 'roomNum', headerName: '房屋', flex: 1 },
+          { field: 'layer', headerName: '楼层', flex: 1 },
+          { field: 'layer', headerName: '业主', flex: 1 },
+          {
+            field: 'roomSubType',
+            headerName: '类型',
+            flex: 1,
+            renderCell: ({ row }) => <Chip label={statusType[row.roomSubType!] || '其它'} />
+          },
+          { field: 'builtUpArea', headerName: '建筑/室内面积', flex: 1 },
+          { field: 'roomRent', headerName: '租金', flex: 1 },
+          {
+            field: 'state',
+            headerName: '房屋状态',
+            flex: 1,
+            renderCell: ({ row }) => <Chip label={statusValue[row.state!] || '未知'} />
+          },
+          { field: 'createdAt', headerName: '入住时间', flex: 1 },
+          { field: 'layer', headerName: '业主成员', flex: 1 },
+          { field: 'layer', headerName: '业主车辆', flex: 1 },
+          {
+            field: 'actions',
+            headerName: '操作',
+            type: 'actions',
+            width: 280,
+            getActions: ({ row }) => renderActionButtons(row),
+            headerAlign: 'center',
+            align: 'center'
+          }
+        ]}
+        onRowSelectionModelChange={handleRowSelection}
+        pageSizeOptions={[10, 20, 50, 100]}
+        paginationMode="server"
+        rowCount={Number(page.total)}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: Number(page.size)
+            }
+          }
+        }}
       />
       <DeleteModal
         loading={loading}

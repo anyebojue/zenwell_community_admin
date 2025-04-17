@@ -9,7 +9,7 @@ import React, {
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RoomReply, RoomParams } from 'api/model/property/houses/roomModel'
-import { HousingManagementReply } from 'api/model/property/houses/housingManagementModel'
+import { FloorReply } from 'api/model/property/houses/floorModel'
 import { create, find, update } from 'modules/property/houses/room'
 import {
   Box,
@@ -28,7 +28,7 @@ import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
-  dialogValue?: HousingManagementReply
+  dialogValue?: FloorReply
   dialogRoomValue: RoomReply
   openRoomDialog: boolean
   setOpenRoomDialog: Dispatch<SetStateAction<boolean>>
@@ -42,7 +42,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
   dialogType
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { list: floorList } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { list: floorList } = useSelector((state: RootState) => state.FloorSlice)
   const [loading, setLoading] = useState(false)
   console.log(dialogRoomValue)
 

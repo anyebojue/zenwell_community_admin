@@ -8,11 +8,8 @@ import React, {
   useState
 } from 'react'
 import { useDispatch } from 'react-redux'
-import {
-  HousingManagementReply,
-  HousingManagementParams
-} from 'api/model/property/houses/housingManagementModel'
-import { create, find, update } from 'modules/property/houses/housingManagement'
+import { FloorReply, FloorParams } from 'api/model/property/houses/floorModel'
+import { create, find, update } from 'modules/property/houses/floor'
 import {
   Box,
   CircularProgress,
@@ -29,7 +26,7 @@ import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
-  dialogValue?: HousingManagementReply
+  dialogValue?: FloorReply
   openFloorDialog: boolean
   setOpenFloorDialog: Dispatch<SetStateAction<boolean>>
   dialogType: string
@@ -54,7 +51,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
     }),
     [dialogType, dialogValue]
   )
-  const [formData, setFormData] = useState<HousingManagementParams>(initialFormData)
+  const [formData, setFormData] = useState<FloorParams>(initialFormData)
 
   useEffect(() => {
     setFormData(initialFormData)
@@ -117,7 +114,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
                 size="small"
                 required={required}
                 id={id}
-                value={formData[id as keyof HousingManagementParams]}
+                value={formData[id as keyof FloorParams]}
                 onChange={e => setFormData({ ...formData, [id]: e.target.value })}
               />
             </Box>
