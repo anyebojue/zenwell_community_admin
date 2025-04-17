@@ -101,7 +101,7 @@ const SendOrders: React.FC<SendOrdersProps> = ({ dialogValue, sendOpen, setSendO
       maxWidth="sm"
       open={sendOpen}
       onClose={() => setSendOpen(false)}
-      PaperProps={{ component: 'form', onSubmit: handleSubmit }}
+      slotProps={{ paper: { component: 'form', onSubmit: handleSubmit } }}
     >
       <DialogTitle>报修派单</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>

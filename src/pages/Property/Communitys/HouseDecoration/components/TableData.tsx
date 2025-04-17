@@ -72,9 +72,11 @@ const TableData: React.FC<TableDataProps> = ({
     (actionType: string, row: RoomRenovationReply) => {
       switch (actionType) {
         case 'examine':
+          setDialogValue(row)
           setExamineOpen(true)
           break
         case 'acceptanceCheck':
+          setDialogValue(row)
           setAcceptanceCheckOpen(true)
           break
         case 'acceptanceDetail':

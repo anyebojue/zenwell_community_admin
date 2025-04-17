@@ -79,7 +79,7 @@ const ReturnVisitFlag: React.FC<ReturnVisitFlagProps> = ({
       maxWidth="sm"
       open={returnVisitFlag}
       onClose={() => setReturnVisitFlag(false)}
-      PaperProps={{ component: 'form', onSubmit: handleSubmit }}
+      slotProps={{ paper: { component: 'form', onSubmit: handleSubmit } }}
     >
       <DialogTitle>回访</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>

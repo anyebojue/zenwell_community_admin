@@ -110,7 +110,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
       maxWidth="sm"
       open={openRoomDialog}
       onClose={() => setOpenRoomDialog(false)}
-      PaperProps={{ component: 'form', onSubmit: handleSubmit }}
+      slotProps={{ paper: { component: 'form', onSubmit: handleSubmit } }}
     >
       <DialogTitle>{dialogType === 'add' ? '新增' : '编辑'}</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>

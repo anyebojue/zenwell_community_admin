@@ -24,7 +24,6 @@ const RoomRenovationRecordsIndex = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const row = location.state.value
-  console.log(row)
   const { page, list } = useSelector((state: RootState) => state.RoomRenovationRecordSlice)
   const [dialogValue, setDialogValue] = useState<RoomRenovationRecordReply>()
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
@@ -76,9 +75,7 @@ const RoomRenovationRecordsIndex = () => {
       <Box sx={{ width: '100%' }}>
         <Box sx={contentBoxStyle}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h6">
-              {row.room.unit.floor.name}-{row.room.unit.unitNum}-{row.room.roomNum} 装修跟踪记录
-            </Typography>
+            <Typography variant="h6">{row.roomName} 装修跟踪记录</Typography>
             <Stack spacing={1} direction="row">
               <Button
                 size="small"

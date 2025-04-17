@@ -18,7 +18,6 @@ const RoomRenovationRecordsIndex = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const row = location.state.value
-  console.log(row)
 
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
@@ -26,9 +25,7 @@ const RoomRenovationRecordsIndex = () => {
       <Box sx={{ width: '100%' }}>
         <Box sx={contentBoxStyle}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h6">
-              {row.room.unit.floor.name}-{row.room.unit.unitNum}-{row.room.roomNum} 验收明细
-            </Typography>
+            <Typography variant="h6">{row.roomName} 验收明细</Typography>
             <Stack spacing={1} direction="row">
               <Button
                 size="small"

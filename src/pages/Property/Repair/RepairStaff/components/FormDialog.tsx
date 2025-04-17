@@ -61,7 +61,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
       maxWidth="sm"
       open={openDialog}
       onClose={() => setOpenDialog(false)}
-      PaperProps={{ component: 'form', onSubmit: handleSubmit }}
+      slotProps={{ paper: { component: 'form', onSubmit: handleSubmit } }}
     >
       <DialogTitle>变更</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>

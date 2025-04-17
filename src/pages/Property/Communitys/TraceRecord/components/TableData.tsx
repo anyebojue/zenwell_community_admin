@@ -82,7 +82,6 @@ const TableData: React.FC<TableDataProps> = ({
         key={title}
         sx={{
           cursor: 'pointer',
-          marginRight: '-5px',
           '& .MuiChip-label': {
             fontSize: '13px'
           }
@@ -108,8 +107,7 @@ const TableData: React.FC<TableDataProps> = ({
           field: 'id',
           headerName: '房屋',
           flex: 1,
-          renderCell: () =>
-            `${value.room?.unit?.floor?.name}-${value.room?.unit?.unitNum}-${value.room?.roomNum}`
+          renderCell: () => value.roomName
         },
         { field: 'staffName', headerName: '操作人员', flex: 1 },
         { field: 'createdAt', headerName: '创建时间', width: 160 },

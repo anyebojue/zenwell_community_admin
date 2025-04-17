@@ -99,7 +99,7 @@ const Pause: React.FC<PauseProps> = ({ dialogValue, pauseOpen, setPauseOpen }) =
       maxWidth="sm"
       open={pauseOpen}
       onClose={() => setPauseOpen(false)}
-      PaperProps={{ component: 'form', onSubmit: handleSubmit }}
+      slotProps={{ paper: { component: 'form', onSubmit: handleSubmit } }}
     >
       <DialogTitle>暂停保修</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>

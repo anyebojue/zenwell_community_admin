@@ -97,7 +97,7 @@ const Conclude: React.FC<ConcludeProps> = ({ dialogValue, concludeOpen, setConcl
       maxWidth="sm"
       open={concludeOpen}
       onClose={() => setConcludeOpen(false)}
-      PaperProps={{ component: 'form', onSubmit: handleSubmit }}
+      slotProps={{ paper: { component: 'form', onSubmit: handleSubmit } }}
     >
       <DialogTitle>报修退单</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>

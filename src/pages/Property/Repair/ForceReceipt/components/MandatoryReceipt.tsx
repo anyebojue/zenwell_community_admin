@@ -89,7 +89,7 @@ const MandatoryReceipt: React.FC<MandatoryReceiptProps> = ({
       maxWidth="sm"
       open={mandatoryReceipt}
       onClose={() => setMandatoryReceipt(false)}
-      PaperProps={{ component: 'form', onSubmit: handleSubmit }}
+      slotProps={{ paper: { component: 'form', onSubmit: handleSubmit } }}
     >
       <DialogTitle>强制回单</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>

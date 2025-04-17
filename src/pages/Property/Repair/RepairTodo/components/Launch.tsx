@@ -84,7 +84,7 @@ const Launch: React.FC<LaunchProps> = ({ dialogValue, activateOpen, setActivateO
       maxWidth="sm"
       open={activateOpen}
       onClose={() => setActivateOpen(false)}
-      PaperProps={{ component: 'form', onSubmit: handleSubmit }}
+      slotProps={{ paper: { component: 'form', onSubmit: handleSubmit } }}
     >
       <DialogTitle>启动报修</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
