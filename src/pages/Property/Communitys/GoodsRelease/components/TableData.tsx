@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ReleaseReply } from 'api/model/property/communitys/releaseModel'
 import { find } from 'modules/property/communitys/release'
 import { find as findReleaseType } from 'modules/property/communitys/releaseType'
-import { Chip } from '@mui/material'
+import { Box, Chip, Typography } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
@@ -17,6 +17,13 @@ interface TableDataProps {
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
+}
+
+const statusValue: Record<string, string> = {
+  W: '待审核',
+  D: '审核中',
+  C: '审核完成',
+  F: '审核失败'
 }
 
 const TableData: React.FC<TableDataProps> = ({
@@ -104,27 +111,97 @@ const TableData: React.FC<TableDataProps> = ({
 
   return (
     <DataGrid
-      sx={{ mt: 1 }}
+      sx={{
+        '& .MuiDataGrid-columnHeaderTitle': {
+          whiteSpace: 'normal',
+          wordWrap: 'break-word',
+          lineHeight: '1.2'
+        },
+        mt: 1
+      }}
+      getRowHeight={() => 100}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'id', headerName: '单号', flex: 1 },
+        { field: 'id', headerName: '单号', width: 200, headerAlign: 'center', align: 'center' },
         {
           field: 'releaseType.typeName',
           headerName: '放行类型',
-          flex: 1,
-          renderCell: ({ row }) => row.releaseType && row.releaseType[0].typeName
+          width: 80,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => (row.releaseType ? row.releaseType[0].typeName : '')
         },
-        { field: 'applyCompany', headerName: '申请单位', flex: 1 },
-        { field: 'applyPerson', headerName: '申请人', flex: 1 },
-        { field: 'idCard', headerName: '身份证', flex: 1 },
-        { field: 'applyTel', headerName: '手机号', flex: 1 },
-        { field: 'passTime', headerName: '通行时间', flex: 1 },
-        { field: 'statusCd', headerName: '状态', flex: 1 },
-        { field: 'carNum', headerName: '车牌号', flex: 1 },
+        {
+          field: 'applyCompany',
+          headerName: '申请单位',
+          width: 80,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'applyPerson',
+          headerName: '申请人',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        { field: 'idCard', headerName: '身份证', flex: 1, headerAlign: 'center', align: 'center' },
+        {
+          field: 'applyTel',
+          headerName: '手机号',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'passTime',
+          headerName: '通行时间',
+          width: 200,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'releaseRes',
+          headerName: '物品',
+          width: 150,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => (
+            <Box
+              sx={{
+                whiteSpace: 'normal',
+                wordWrap: 'break-word',
+                lineHeight: '1.2',
+                width: '100%',
+                height: '100%',
+                textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              {row.releaseRes?.map(item => (
+                <Typography key={item.id} variant="body1">
+                  名称：{item.resName}；数量：{item.amount}
+                </Typography>
+              ))}
+            </Box>
+          )
+        },
+        {
+          field: 'statusCd',
+          headerName: '状态',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => <Chip label={statusValue[row.statusCd!] || '未知'} />
+        },
+        { field: 'carNum', headerName: '车牌号', flex: 1, headerAlign: 'center', align: 'center' },
         {
           field: 'actions',
           headerName: '操作',

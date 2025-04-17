@@ -236,7 +236,7 @@ const TableData: React.FC<TableDataProps> = ({
           width: 100,
           headerAlign: 'center',
           align: 'center',
-          renderCell: ({ row }) => <Chip label={statusValue[row.stateCd!] || '未知类型'} />
+          renderCell: ({ row }) => <Chip label={statusValue[row.stateCd!] || '未知'} />
         },
         {
           field: 'createdAt',

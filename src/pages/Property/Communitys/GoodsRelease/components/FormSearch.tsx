@@ -38,7 +38,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
     applyPerson: '',
     idCard: '',
     applyTel: '',
-    statusCd: 0
+    statusCd: ''
   })
 
   const handleInputChange =
@@ -153,7 +153,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
               { value: 'W', label: '待审核' },
               { value: 'D', label: '审核中' },
               { value: 'C', label: '审核完成' },
-              { value: 'D', label: '审核失败' }
+              { value: 'F', label: '审核失败' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -186,7 +186,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
               applyPerson: '',
               idCard: '',
               applyTel: '',
-              statusCd: 0
+              statusCd: ''
             })
             fetchData({
               typeId: '',
@@ -194,7 +194,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
               applyPerson: '',
               idCard: '',
               applyTel: '',
-              statusCd: 0,
+              statusCd: '',
               'page.num': page.num,
               'page.size': page.size
             })
