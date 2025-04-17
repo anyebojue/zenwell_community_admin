@@ -89,9 +89,11 @@ const FormDialog: React.FC<FormDialogProps> = ({
       event.preventDefault()
       setLoading(true)
       try {
-        const params = { ...formData, statusCd: 'W' }
+        const params = { ...formData }
         const action =
-          dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
+          dialogType === 'add'
+            ? create({ ...params, statusCd: 'W' })
+            : update({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
@@ -207,7 +209,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
               <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
                 <FormLabel>物品名称：</FormLabel>
                 <TextField
-                  placeholder="请输入"
+                  placeholder="物品名称"
                   sx={{
                     marginLeft: '37px'
                   }}
@@ -215,8 +217,9 @@ const FormDialog: React.FC<FormDialogProps> = ({
                   value={item.resName}
                   onChange={e => {
                     if (Array.isArray(formData.releaseRes)) {
-                      const updatedOptions = [...formData.releaseRes]
-                      updatedOptions[index].resName = e.target.value
+                      const updatedOptions = formData.releaseRes.map((option, idx) =>
+                        idx === index ? { ...option, resName: e.target.value } : option
+                      )
                       setFormData({ ...formData, releaseRes: updatedOptions })
                     }
                   }}
