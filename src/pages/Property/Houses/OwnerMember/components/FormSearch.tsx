@@ -1,7 +1,7 @@
 import { ChangeEvent, memo, useState, useCallback, Dispatch, SetStateAction } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { OwnerReply } from 'api/model/property/houses/ownerModel'
-import { findOrgUser } from 'modules/platform/organization/organizationInfo'
+import { find } from 'modules/property/houses/owner'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -52,9 +52,10 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue, selectedRows, setD
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
-          findOrgUser({
+          find({
             'page.num': page.num,
             'page.size': page.size,
+            ownerTypeCd: '1002',
             ...params
           })
         )

@@ -1,87 +1,125 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { OwnerReply } from 'api/model/property/houses/ownerModel'
 import { find } from 'modules/property/houses/owner'
-import message from 'components/Message'
 import { Button } from '@mui/material'
+import { DataGrid } from '@mui/x-data-grid'
+import { zhCN } from '@mui/x-data-grid/locales'
+import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
-import AssociatedTableList from './AssociatedTableList'
-
-export interface Column<T> {
-  headerName: string
-  key: keyof T | 'operate'
-  align?: 'left' | 'center' | 'right'
-  renderCell?: (row: T) => ReactNode
-}
 
 interface AssociatedTableDataProps {
-  selectedRows: Set<string | undefined>
-  setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   setOwnerUser: Dispatch<SetStateAction<OwnerReply | undefined>>
   setAssociatedOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({
-  selectedRows,
-  setSelectedRows,
   setOwnerUser,
   setAssociatedOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.OwnerSlice)
 
-  const columns: Column<OwnerReply>[] = [
-    { key: 'name', headerName: '名称', align: 'center' },
-    { key: 'sex', headerName: '性别', align: 'center' },
-    { key: 'idCard', headerName: '身份证', align: 'center' },
-    { key: 'link', headerName: '联系方式', align: 'center' },
-    { key: 'userId', headerName: '创建员工', align: 'center' },
-    {
-      key: 'operate',
-      headerName: '操作',
-      align: 'center',
-      renderCell: row => (
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          sx={{ ...buttonStyles('#2660ad', '#1d428a') }}
-          onClick={() => {
-            setOwnerUser(row)
-            setAssociatedOpen(false)
-          }}
-        >
-          选择
-        </Button>
-      )
-    }
-  ]
-
-  const fetchData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
+  const fetchData = useCallback(
+    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
+      const closeLoading = message.loading(loadingMessage)
+      try {
+        const res = await dispatch(action(params))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
       }
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch, page.num, page.size])
+    },
+    [dispatch]
+  )
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+  }, [fetchData, page.num, page.size])
+
+  const handleActionClick = useCallback(
+    (actionType: string, row: OwnerReply) => {
+      switch (actionType) {
+        case 'select':
+          setOwnerUser(row)
+          setAssociatedOpen(false)
+          break
+      }
+    },
+    [setAssociatedOpen, setOwnerUser]
+  )
+
+  const renderActionButtons = (row: OwnerReply) => {
+    const actions = [{ title: '选择', action: 'select' }]
+    return actions.map(({ title, action }) => (
+      <Button
+        key={title}
+        size="small"
+        variant="contained"
+        color="error"
+        sx={{ ...buttonStyles('#2660ad', '#1d428a') }}
+        onClick={() => handleActionClick(action, row)}
+      >
+        选择
+      </Button>
+    ))
+  }
 
   return (
-    <AssociatedTableList
+    <DataGrid
+      sx={{ width: '700px', mt: 1 }}
+      localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
+      disableColumnResize
+      disableVirtualization={false}
       rows={list}
-      columns={columns}
-      selectedRows={selectedRows}
-      setSelectedRows={setSelectedRows}
+      columns={[
+        { field: 'name', headerName: '名称', width: 80, headerAlign: 'center', align: 'center' },
+        { field: 'sex', headerName: '性别', width: 80, headerAlign: 'center', align: 'center' },
+        {
+          field: 'idCard',
+          headerName: '身份证',
+          width: 180,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'link',
+          headerName: '联系方式',
+          width: 120,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'userId',
+          headerName: '创建员工',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'actions',
+          headerName: '操作',
+          type: 'actions',
+          width: 100,
+          getActions: ({ row }) => renderActionButtons(row),
+          headerAlign: 'center',
+          align: 'center'
+        }
+      ]}
+      pageSizeOptions={[10, 20, 50, 100]}
+      paginationMode="server"
+      rowCount={Number(page.total)}
+      initialState={{
+        pagination: {
+          paginationModel: {
+            pageSize: Number(page.size)
+          }
+        }
+      }}
     />
   )
 }

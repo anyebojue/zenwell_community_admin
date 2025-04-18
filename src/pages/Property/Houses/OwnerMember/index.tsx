@@ -68,7 +68,7 @@ const InfoIndex = () => {
         }
         setDelOpen(false)
         message.success('删除成功')
-        await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+        await dispatch(find({ 'page.num': page.num, 'page.size': page.size, ownerTypeCd: '1002' }))
         setLoading(false)
       } catch (err: unknown) {
         setLoading(false)
