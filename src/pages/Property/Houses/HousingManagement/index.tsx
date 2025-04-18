@@ -276,7 +276,7 @@ const FloorIndex = () => {
             expansionTrigger="iconContainer" // 只有点击左边的按钮才展开
           />
         </Box>
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%', height: '100%' }}>
           <FormSearch
             dialogValue={dialogValue}
             selectedRows={selectedRows}

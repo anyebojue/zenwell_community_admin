@@ -1,15 +1,15 @@
 import { Dispatch, memo, SetStateAction, useState } from 'react'
 import { Dialog, DialogContent, DialogTitle } from '@mui/material'
-import { HousingManagementReply } from 'api/model/property/houses/floorModel'
+import { FloorReply } from 'api/model/property/houses/floorModel'
 import { RoomReply } from 'api/model/property/houses/roomModel'
 import FormSearch from './FormSearch'
 import AssociatedTableData from './AssociatedTableData'
 
 interface AssociatedProps {
   activeStep: number
-  selectfloorValue: HousingManagementReply | undefined
+  selectfloorValue: FloorReply | undefined
   setSelectRoomValue: Dispatch<SetStateAction<RoomReply | undefined>>
-  setSelectFloorValue: Dispatch<SetStateAction<HousingManagementReply | undefined>>
+  setSelectFloorValue: Dispatch<SetStateAction<FloorReply | undefined>>
   associatedOpen: boolean
   setAssociatedOpen: Dispatch<SetStateAction<boolean>>
 }

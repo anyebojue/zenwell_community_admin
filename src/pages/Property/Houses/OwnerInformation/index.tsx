@@ -2,20 +2,29 @@ import { memo, useCallback, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { OwnerReply } from 'api/model/property/houses/ownerModel'
 import { deleteByIds, find } from 'modules/property/houses/owner'
-import { Box } from '@mui/material'
+import { Box, Button, Theme, Typography } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import message from 'components/Message'
-import DeleteModal from 'components/DeleteModal'
+import DeleteModal, { buttonStyles } from 'components/DeleteModal'
+import { Add } from '@mui/icons-material'
 import TableData from './components/TableData'
 import FormSearch from './components/FormSearch'
 import FormDialog from './components/FormDialog'
+
+const contentBoxStyle = (theme: Theme) => ({
+  background: theme.palette.background.default,
+  borderRadius: '15px',
+  padding: '15px 15px',
+  width: '100%'
+})
 
 const OwnerIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.OwnerSlice)
   const [dialogValue, setDialogValue] = useState<OwnerReply>()
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
+  const [dialogType, setDialogType] = useState('add')
   const [openDialog, setOpenDialog] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -65,20 +74,39 @@ const OwnerIndex = () => {
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
       <FormSearch setDelOpen={setDelOpen} selectedRows={selectedRows} />
-      <TableData
-        dialogValue={dialogValue}
-        setDialogValue={setDialogValue}
-        selectedRows={selectedRows}
-        setSelectedRows={setSelectedRows}
-        setOpenDialog={setOpenDialog}
-        setDelOpen={setDelOpen}
-      />
+      <Box sx={contentBoxStyle}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="h6">业主信息</Typography>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            startIcon={<Add />}
+            sx={buttonStyles('#2660ad', '#1d428a')}
+            onClick={() => {
+              setOpenDialog(true)
+              setDialogType('add')
+            }}
+          >
+            添加
+          </Button>
+        </Box>
+        <TableData
+          dialogValue={dialogValue}
+          setDialogType={setDialogType}
+          setDialogValue={setDialogValue}
+          selectedRows={selectedRows}
+          setSelectedRows={setSelectedRows}
+          setOpenDialog={setOpenDialog}
+          setDelOpen={setDelOpen}
+        />
+      </Box>
       <Copyright />
 
       <FormDialog
         dialogValue={dialogValue}
         openDialog={openDialog}
-        dialogType="edit"
+        dialogType={dialogType}
         setOpenDialog={setOpenDialog}
       />
       <DeleteModal

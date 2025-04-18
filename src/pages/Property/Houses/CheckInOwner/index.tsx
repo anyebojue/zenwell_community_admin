@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid2'
 import { StepConnector, stepConnectorClasses } from '@mui/material'
 import { StepIconProps } from '@mui/material/StepIcon'
 import { Add, Business, ContactEmergency, MapsHomeWork } from '@mui/icons-material'
-import { HousingManagementReply } from 'api/model/property/houses/floorModel'
+import { FloorReply } from 'api/model/property/houses/floorModel'
 import { RoomReply } from 'api/model/property/houses/roomModel'
 import message from 'components/Message'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -106,7 +106,7 @@ const CheckInOwner = () => {
   const location = useLocation()
   const data = location.state?.value
   const [associatedOpen, setAssociatedOpen] = useState(false)
-  const [selectfloorValue, setSelectFloorValue] = useState<HousingManagementReply | undefined>()
+  const [selectfloorValue, setSelectFloorValue] = useState<FloorReply | undefined>()
   const [selectRoomValue, setSelectRoomValue] = useState<RoomReply | undefined>()
   const [activeStep, setActiveStep] = useState(0)
 

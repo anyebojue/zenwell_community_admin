@@ -45,7 +45,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
   setOpenDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { page, list } = useSelector((state: RootState) => state.FloorSlice)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(

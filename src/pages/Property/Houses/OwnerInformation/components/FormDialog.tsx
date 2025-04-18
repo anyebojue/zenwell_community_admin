@@ -65,7 +65,9 @@ const FormDialog: React.FC<FormDialogProps> = ({
       event.preventDefault()
       setLoading(true)
       try {
-        const params = { ...formData }
+        const current_community = localStorage.getItem('current_community')
+        const community = JSON.parse(current_community || '')
+        const params = { ...formData, communityId: community?.id }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)

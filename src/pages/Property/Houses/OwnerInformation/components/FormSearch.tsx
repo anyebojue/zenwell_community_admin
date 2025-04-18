@@ -3,10 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { OwnerParams } from 'api/model/property/houses/ownerModel'
 import { find } from 'modules/property/houses/owner'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
-import { Add, Delete, History, Search } from '@mui/icons-material'
+import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import FormDialog from './FormDialog'
 
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {
@@ -33,7 +32,6 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.OwnerSlice)
 
-  const [openDialog, setOpenDialog] = useState(false)
   const [searchParams, setSearchParams] = useState<OwnerParams>({
     name: '',
     link: '',
@@ -143,16 +141,6 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
           size="small"
           variant="contained"
           color="error"
-          startIcon={<Add />}
-          sx={buttonStyles('#2660ad', '#1d428a')}
-          onClick={() => setOpenDialog(true)}
-        >
-          新增
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
           startIcon={<Delete />}
           sx={buttonStyles('#B22222', '#8B0000')}
           onClick={() => {
@@ -165,7 +153,6 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
           批量删除
         </Button>
       </Stack>
-      <FormDialog openDialog={openDialog} dialogType="add" setOpenDialog={setOpenDialog} />
     </Box>
   )
 }

@@ -6,7 +6,7 @@ export interface FloorReply {
   createdAt?: string
   updatedAt?: string
   name?: string // 楼栋名称
-  status?: number // 状态
+  status?: string // 状态
   remark?: string // 备注
   floorNum?: string // 楼栋编号
   userId?: string // 用户ID
@@ -19,7 +19,7 @@ export interface FloorReply {
 export interface FloorParams {
   id?: string
   name?: string // 楼栋名称
-  status?: number // 状态
+  status?: string // 状态
   remark?: string // 备注
   floorNum?: string // 楼栋编号
   userId?: string // 用户ID
