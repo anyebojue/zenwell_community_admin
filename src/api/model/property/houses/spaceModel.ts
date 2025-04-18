@@ -14,8 +14,8 @@ export interface SpaceReply {
   tel?: string // 管理员电话
   bId?: string // 业务ID
   communityId?: string // 小区ID
-  stateCd?: number // 状态 1 可预约状态 2 不可预约状态
-  statusCd?: number // 数据状态，详细参考c_status表，S 保存，0 在用，1 失效
+  stateCd?: string // 状态 1 可预约状态 2 不可预约状态
+  statusCd?: string // 数据状态，详细参考c_status表，S 保存，0 在用，1 失效
   venueId?: string // 场馆ID
   venue?: VenueReply
   spaceOpenTime?: SpaceOpenTimeReply[]
@@ -31,8 +31,8 @@ export interface SpaceParams {
   tel?: string // 管理员电话
   bId?: string // 业务ID
   communityId?: string // 小区ID
-  stateCd?: number // 状态 1 可预约状态 2 不可预约状态
-  statusCd?: number // 数据状态，详细参考c_status表，S 保存，0 在用，1 失效
+  stateCd?: string // 状态 1 可预约状态 2 不可预约状态
+  statusCd?: string // 数据状态，详细参考c_status表，S 保存，0 在用，1 失效
   venueId?: string // 场馆ID
   appointmentTime?: string
 }

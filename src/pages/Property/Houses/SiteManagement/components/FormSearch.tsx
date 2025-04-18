@@ -32,7 +32,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
   const { page } = useSelector((state: RootState) => state.OrganizationInfoSlice)
   const [searchParams, setSearchParams] = useState<SpaceParams>({
     name: '',
-    stateCd: 0
+    stateCd: ''
   })
 
   const handleInputChange =
@@ -105,8 +105,8 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
             sx={textFieldStyles}
           >
             {[
-              { value: 1, label: '可预约' },
-              { value: 2, label: '不可预约' }
+              { value: '1', label: '可预约' },
+              { value: '2', label: '不可预约' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -132,10 +132,10 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
             startIcon={<History />}
             sx={buttonStyles('darkgray', '#696969')}
             onClick={() => {
-              setSearchParams({ name: '', stateCd: 0 })
+              setSearchParams({ name: '', stateCd: '' })
               fetchData({
                 name: '',
-                stateCd: 0,
+                stateCd: '',
                 venueId: dialogValue.id,
                 'page.num': page.num,
                 'page.size': page.size

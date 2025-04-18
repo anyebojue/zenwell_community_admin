@@ -116,9 +116,7 @@ const TableData: React.FC<TableDataProps> = ({
           headerAlign: 'center',
           align: 'center',
           flex: 1,
-          renderCell: ({ row }: { row: CommunityReply }) => (
-            <Chip label={statusValue[row.state!] || '未知状态'} />
-          )
+          renderCell: ({ row }) => <Chip label={statusValue[row.state!] || '未知状态'} />
         },
         {
           field: 'actions',
