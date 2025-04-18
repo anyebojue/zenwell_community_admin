@@ -1,5 +1,4 @@
-import { memo, useState } from 'react'
-import { SpaceConfirmOrderReply } from 'api/model/property/houses/spaceConfirmOrderModel'
+import { memo } from 'react'
 import { Box, Button, FormControl, Stack, TextField, Theme } from '@mui/material'
 import { CheckCircle } from '@mui/icons-material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
@@ -12,12 +11,10 @@ const treeViewStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
   borderRadius: '15px',
   padding: '15px 15px',
-  width: '100%'
+  width: '20%'
 })
 
 const InfoIndex = () => {
-  const [dialogValue, setDialogValue] = useState<SpaceConfirmOrderReply | undefined>({})
-
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
@@ -68,9 +65,9 @@ const InfoIndex = () => {
             ))}
           </Box>
         </Box>
-        <Box sx={{ width: '350%' }}>
+        <Box sx={{ width: '100%', height: '100%' }}>
           <FormSearch />
-          <TableData dialogValue={dialogValue} setDialogValue={setDialogValue} />
+          <TableData />
         </Box>
       </Stack>
       <Copyright />

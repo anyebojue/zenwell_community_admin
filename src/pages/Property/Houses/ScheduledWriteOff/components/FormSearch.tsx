@@ -1,7 +1,7 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { SpaceConfirmOrderParams } from 'api/model/property/houses/spaceConfirmOrderModel'
-import { findOrgUser } from 'modules/platform/organization/organizationInfo'
+import { find } from 'modules/property/houses/spaceConfirmOrder'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -45,11 +45,7 @@ const FormSearch: React.FC = () => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
-          findOrgUser({
-            'page.num': page.num,
-            'page.size': page.size,
-            ...params
-          })
+          find({ 'page.num': page.num, 'page.size': page.size, ...params })
         )
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)

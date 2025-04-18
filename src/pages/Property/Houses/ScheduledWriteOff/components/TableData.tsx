@@ -1,93 +1,114 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
+import { memo, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import message from 'components/Message'
 import { find } from 'modules/property/houses/spaceConfirmOrder'
-import { SpaceConfirmOrderReply } from 'api/model/property/houses/spaceConfirmOrderModel'
-import TableList from './TableList'
+import { DataGrid } from '@mui/x-data-grid'
+import { zhCN } from '@mui/x-data-grid/locales'
+import message from 'components/Message'
 
-export interface Column<T> {
-  headerName: string
-  key: Exclude<keyof T, symbol> | `${Exclude<keyof T, symbol>}.${string}` | 'operate' // 过滤掉 symbol 类型
-  align?: 'left' | 'center' | 'right'
-  renderCell?: (row: T) => ReactNode
-}
+interface TableDataProps {}
 
-interface TableDataProps {
-  dialogValue: SpaceConfirmOrderReply | undefined
-  setDialogValue: Dispatch<SetStateAction<SpaceConfirmOrderReply | undefined>>
-}
-
-const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
+const TableData: React.FC<TableDataProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.SpaceConfirmOrderSlice)
 
-  const columns: Column<SpaceConfirmOrderReply>[] = [
-    { key: 'id', headerName: '核销订单', align: 'center' },
-    {
-      key: 'spacePerson',
-      headerName: '场馆',
-      align: 'center',
-      renderCell: row => row.spacePerson?.space?.venue?.name
-    },
-    {
-      key: 'spaceId',
-      headerName: '场地',
-      align: 'center',
-      renderCell: row => row.spacePerson?.space?.name
-    },
-    {
-      key: 'spacePerson.appointmentTime',
-      headerName: '预约日期',
-      align: 'center',
-      renderCell: row => row.spacePerson?.appointmentTime
-    },
-    {
-      key: 'spacePerson.hours',
-      headerName: '预约时间',
-      align: 'center',
-      renderCell: row => row.spacePerson?.hours
-    },
-    {
-      key: 'spacePerson.personName',
-      headerName: '预约人',
-      align: 'center',
-      renderCell: row => row.spacePerson?.personName
-    },
-    {
-      key: 'spacePerson.personTel',
-      headerName: '预约电话',
-      align: 'center',
-      renderCell: row => row.spacePerson?.personTel
-    },
-    {
-      key: 'spacePerson.appointmentTime',
-      headerName: '核销时间',
-      align: 'center',
-      renderCell: row => row.spacePerson?.appointmentTime
-    },
-    { key: 'remark', headerName: '备注', align: 'center' }
-  ]
-
-  const fetchData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
+  const fetchData = useCallback(
+    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
+      const closeLoading = message.loading(loadingMessage)
+      try {
+        const res = await dispatch(action(params))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
       }
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch, page.num, page.size])
+    },
+    [dispatch]
+  )
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+  }, [fetchData, page.num, page.size])
 
-  return <TableList rows={list} columns={columns} setDialogValue={setDialogValue} />
+  return (
+    <DataGrid
+      sx={{ mt: 1 }}
+      localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
+      disableColumnResize
+      disableVirtualization={false}
+      rows={list}
+      columns={[
+        { field: 'id', headerName: '核销订单', width: 200, headerAlign: 'center', align: 'center' },
+        {
+          field: 'spacePerson.space.venue.name',
+          headerName: '场馆',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.spacePerson?.space?.venue?.name
+        },
+        {
+          field: 'spacePerson.space.name',
+          headerName: '场地',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.spacePerson?.space?.name
+        },
+        {
+          field: 'spacePerson.appointmentTime',
+          headerName: '预约日期',
+          width: 160,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.spacePerson?.appointmentTime
+        },
+        {
+          field: 'spacePerson.hours',
+          headerName: '预约时间',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.spacePerson?.hours
+        },
+        {
+          field: 'spacePerson.personName',
+          headerName: '预约人',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.spacePerson?.personName
+        },
+        {
+          field: 'spacePerson.personTel',
+          headerName: '预约电话',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.spacePerson?.personTel
+        },
+        {
+          field: 'createdAt',
+          headerName: '核销时间',
+          width: 170,
+          headerAlign: 'center',
+          align: 'center'
+        }
+      ]}
+      pageSizeOptions={[10, 20, 50, 100]}
+      paginationMode="server"
+      rowCount={Number(page.total)}
+      initialState={{
+        pagination: {
+          paginationModel: {
+            pageSize: Number(page.size)
+          }
+        }
+      }}
+    />
+  )
 }
 
 export default memo(TableData)
