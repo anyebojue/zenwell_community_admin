@@ -1,4 +1,4 @@
-import { Dispatch, memo, SetStateAction, useState } from 'react'
+import { Dispatch, memo, SetStateAction } from 'react'
 import { Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { OwnerReply } from 'api/model/property/houses/ownerModel'
 import AssociatedFormSearch from './AssociatedFormSearch'
@@ -15,20 +15,13 @@ const Associated: React.FC<AssociatedProps> = ({
   setAssociatedOpen,
   setOwnerUser
 }) => {
-  const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
-
   return (
     <Dialog maxWidth="md" open={associatedOpen} onClose={() => setAssociatedOpen(false)}>
       <DialogTitle>
         <AssociatedFormSearch />
       </DialogTitle>
       <DialogContent>
-        <AssociatedTableData
-          setOwnerUser={setOwnerUser}
-          selectedRows={selectedRows}
-          setAssociatedOpen={setAssociatedOpen}
-          setSelectedRows={setSelectedRows}
-        />
+        <AssociatedTableData setOwnerUser={setOwnerUser} setAssociatedOpen={setAssociatedOpen} />
       </DialogContent>
     </Dialog>
   )
