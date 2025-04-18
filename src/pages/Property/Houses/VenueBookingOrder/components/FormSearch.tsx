@@ -32,7 +32,7 @@ const FormSearch: React.FC = () => {
     appointmentTime: '',
     personName: '',
     personTel: '',
-    stateCd: 0,
+    stateCd: '',
     spaceId: ''
   })
 
@@ -139,10 +139,10 @@ const FormSearch: React.FC = () => {
             sx={textFieldStyles}
           >
             {[
-              { value: 1, label: '预约成功' },
-              { value: 2, label: '预约失败' },
-              { value: 3, label: '待审核' },
-              { value: 4, label: '待支付' }
+              { value: '1', label: '预约成功' },
+              { value: '2', label: '预约失败' },
+              { value: '3', label: '待审核' },
+              { value: '4', label: '待支付' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -190,14 +190,14 @@ const FormSearch: React.FC = () => {
               appointmentTime: '',
               personName: '',
               personTel: '',
-              stateCd: 0,
+              stateCd: '',
               spaceId: ''
             })
             fetchData({
               appointmentTime: '',
               personName: '',
               personTel: '',
-              stateCd: 0,
+              stateCd: '',
               spaceId: '',
               'page.num': page.num,
               'page.size': page.size

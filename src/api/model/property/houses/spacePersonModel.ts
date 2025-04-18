@@ -14,7 +14,7 @@ export interface SpacePersonReply {
   receivedAmount?: number // 实收金额
   payWay?: number // 支付方式，1 现金，2 微信，3 支付宝
   communityId?: string // 小区ID
-  stateCd?: number // 状态，1 预约成功，2 预约失败，3 待审核，4 待支付 5 取消预约
+  stateCd?: string // 状态，1 预约成功，2 预约失败，3 待审核，4 待支付 5 取消预约
   remark?: string // 备注
   orderId?: string // 订单编号 备用
   status?: number // 记录状态，0 禁用，1 启用
@@ -34,7 +34,7 @@ export interface SpacePersonParams {
   receivedAmount?: number // 实收金额
   payWay?: number // 支付方式，1 现金，2 微信，3 支付宝
   communityId?: string // 小区ID
-  stateCd?: number // 状态，1 预约成功，2 预约失败，3 待审核，4 待支付
+  stateCd?: string // 状态，1 预约成功，2 预约失败，3 待审核，4 待支付
   remark?: string // 备注
   orderId?: string // 订单编号 备用
   status?: number // 记录状态，0 禁用，1 启用
