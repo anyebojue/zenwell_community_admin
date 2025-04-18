@@ -136,6 +136,9 @@ const TableData: React.FC<TableDataProps> = ({
   const handleActionClick = useCallback(
     (actionType: string, row: SpaceReply) => {
       switch (actionType) {
+        case 'time':
+          setOpenTimeDialog(true)
+          break
         case 'edit':
           setDialogType('edit')
           setDialogSpaceValue(row)
@@ -152,6 +155,7 @@ const TableData: React.FC<TableDataProps> = ({
 
   const renderActionButtons = (row: SpaceReply) => {
     const actions = [
+      { title: '开放时间', action: 'time' },
       { title: '修改', action: 'edit' },
       { title: '删除', action: 'delete' }
     ]
@@ -280,7 +284,7 @@ const TableData: React.FC<TableDataProps> = ({
               field: 'actions',
               headerName: '操作',
               type: 'actions',
-              width: 150,
+              width: 200,
               getActions: ({ row }) => renderActionButtons(row),
               headerAlign: 'center',
               align: 'center'

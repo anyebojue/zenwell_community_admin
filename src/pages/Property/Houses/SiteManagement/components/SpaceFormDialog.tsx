@@ -51,7 +51,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
       feeMoney: dialogType === 'edit' ? dialogSpaceValue?.feeMoney || 0 : 0,
       adminName: dialogType === 'edit' ? dialogSpaceValue?.adminName || '' : '',
       tel: dialogType === 'edit' ? dialogSpaceValue?.tel || '' : '',
-      stateCd: dialogType === 'edit' ? dialogSpaceValue?.stateCd || 0 : 0
+      stateCd: dialogType === 'edit' ? dialogSpaceValue?.stateCd || '' : ''
     }),
     [dialogType, dialogSpaceValue]
   )
@@ -144,7 +144,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
               select
               size="small"
               value={formData.stateCd}
-              onChange={e => setFormData({ ...formData, stateCd: Number(e.target.value) })}
+              onChange={e => setFormData({ ...formData, stateCd: e.target.value })}
               variant="outlined"
             >
               {[

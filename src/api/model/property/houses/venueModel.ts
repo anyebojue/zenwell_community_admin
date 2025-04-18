@@ -7,7 +7,7 @@ export interface VenueReply {
   name?: string // 场馆名称
   remark?: string // 描述
   communityId?: string // 小区ID
-  statusCd?: number // 数据状态，详细参考c_status表，S 保存，0 在用，1 失效
+  statusCd?: string // 数据状态，详细参考c_status表，S 保存，0 在用，1 失效
   startTime?: string // 开馆时间
   endTime?: string // 闭馆时间
 }
@@ -17,7 +17,7 @@ export interface VenueParams {
   name?: string // 场馆名称
   remark?: string // 描述
   communityId?: string // 小区ID
-  statusCd?: number // 数据状态，详细参考c_status表，S 保存，0 在用，1 失效
+  statusCd?: string // 数据状态，详细参考c_status表，S 保存，0 在用，1 失效
   startTime?: string // 开馆时间
   endTime?: string // 闭馆时间
 }
