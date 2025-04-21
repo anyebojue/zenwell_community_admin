@@ -8,7 +8,7 @@ interface PlanIndexProps {
 
 const PlanIndex: React.FC<PlanIndexProps> = ({ dialogValue }) => {
   return dialogValue.invoiceImg ? (
-    <img src="" alt="维修后" style={{ width: '200px' }} />
+    <img src={dialogValue.invoiceImg} alt="invoiceImg" style={{ width: '100%' }} />
   ) : (
     <Box>没有发票</Box>
   )

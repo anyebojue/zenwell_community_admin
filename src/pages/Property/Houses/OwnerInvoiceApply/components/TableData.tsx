@@ -268,7 +268,7 @@ const TableData: React.FC<TableDataProps> = ({
             field: 'actions',
             headerName: '操作',
             type: 'actions',
-            width: 210,
+            width: 250,
             getActions: ({ row }) => renderActionButtons(row),
             headerAlign: 'center',
             align: 'center'

@@ -3,10 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { OwnerInvoiceApplyParams } from 'api/model/property/houses/ownerInvoiceApplyModel'
 import { find } from 'modules/property/houses/ownerInvoiceApply'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
-import { Add, Delete, History, Search } from '@mui/icons-material'
+import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import ApplyFor from './ApplyFor'
 
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {
@@ -25,15 +24,13 @@ const textFieldStyles = {
 }
 
 interface FormSearchProps {
-  selectedButton: string
   selectedRows: Set<string | undefined>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, setDelOpen }) => {
+const FormSearch: React.FC<FormSearchProps> = ({ selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.OwnerInvoiceApplySlice)
-  const [openDialog, setOpenDialog] = useState(false)
 
   const [searchParams, setSearchParams] = useState<OwnerInvoiceApplyParams>({
     invoiceCode: '',
@@ -197,16 +194,6 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
           size="small"
           variant="contained"
           color="error"
-          startIcon={<Add />}
-          sx={buttonStyles('#2660ad', '#1d428a')}
-          onClick={() => setOpenDialog(true)}
-        >
-          申请
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
           startIcon={<Delete />}
           sx={buttonStyles('#B22222', '#8B0000')}
           onClick={() => {
@@ -219,11 +206,6 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
           批量删除
         </Button>
       </Stack>
-      <ApplyFor
-        selectedButton={selectedButton}
-        openDialog={openDialog}
-        setOpenDialog={setOpenDialog}
-      />
     </Box>
   )
 }

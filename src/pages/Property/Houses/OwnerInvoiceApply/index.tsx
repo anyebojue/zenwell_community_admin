@@ -2,18 +2,28 @@ import { memo, useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { OwnerInvoiceApplyReply } from 'api/model/property/houses/ownerInvoiceApplyModel'
 import { deleteByIds, find } from 'modules/property/houses/ownerInvoiceApply'
-import { Box, Button, ButtonGroup, Stack } from '@mui/material'
+import { Box, Button, ButtonGroup, Stack, Theme, Typography } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
-import DeleteModal from 'components/DeleteModal'
+import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
+import { Add } from '@mui/icons-material'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
+import ApplyFor from './components/ApplyFor'
+
+const contentBoxStyle = (theme: Theme) => ({
+  background: theme.palette.background.default,
+  borderRadius: '15px',
+  padding: '15px 15px',
+  width: '100%'
+})
 
 const OwnerInvoiceApplyIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.OwnerInvoiceApplySlice)
   const [dialogValue, setDialogValue] = useState<OwnerInvoiceApplyReply>()
+  const [openDialog, setOpenDialog] = useState(false)
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [selectedButton, setSelectedButton] = useState<string>('')
   const [delOpen, setDelOpen] = useState(false)
@@ -96,23 +106,39 @@ const OwnerInvoiceApplyIndex = () => {
           ))}
         </ButtonGroup>
         <Box sx={{ width: '100%', height: '100%' }}>
-          <FormSearch
-            selectedButton={selectedButton}
-            selectedRows={selectedRows}
-            setDelOpen={setDelOpen}
-          />
-          <TableData
-            dialogValue={dialogValue}
-            selectedButton={selectedButton}
-            setDialogValue={setDialogValue}
-            selectedRows={selectedRows}
-            setSelectedRows={setSelectedRows}
-            setDelOpen={setDelOpen}
-          />
+          <FormSearch selectedRows={selectedRows} setDelOpen={setDelOpen} />
+          <Box sx={contentBoxStyle}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography variant="h6">发票抬头</Typography>
+              <Button
+                size="small"
+                variant="contained"
+                color="error"
+                startIcon={<Add />}
+                sx={buttonStyles('#2660ad', '#1d428a')}
+                onClick={() => setOpenDialog(true)}
+              >
+                申请
+              </Button>
+            </Box>
+            <TableData
+              dialogValue={dialogValue}
+              selectedButton={selectedButton}
+              setDialogValue={setDialogValue}
+              selectedRows={selectedRows}
+              setSelectedRows={setSelectedRows}
+              setDelOpen={setDelOpen}
+            />
+          </Box>
         </Box>
       </Stack>
       <Copyright />
 
+      <ApplyFor
+        selectedButton={selectedButton}
+        openDialog={openDialog}
+        setOpenDialog={setOpenDialog}
+      />
       <DeleteModal
         loading={loading}
         delOpen={delOpen}
