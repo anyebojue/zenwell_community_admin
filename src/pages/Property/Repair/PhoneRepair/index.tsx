@@ -22,7 +22,7 @@ const contentBoxStyle = (theme: Theme) => ({
 
 const RepairPoolsIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { page } = useSelector((state: RootState) => state.FloorSlice)
   const [openDialog, setOpenDialog] = useState(false)
   const [repairObjType, setRepairObjType] = useState(1)
   const [floorValue, setFloorValue] = useState('')

@@ -177,7 +177,7 @@ const TableData: React.FC<TableDataProps> = ({
         {
           field: 'computingFormula',
           headerName: '公式',
-          width: 180,
+          width: 250,
           renderCell: ({ row }) => (
             <Chip label={statusFormulaValue[row.computingFormula!] || '未知类型'} />
           )
@@ -195,7 +195,7 @@ const TableData: React.FC<TableDataProps> = ({
           field: 'actions',
           headerName: '操作',
           type: 'actions',
-          width: 200,
+          width: 220,
           getActions: ({ row }) => renderActionButtons(row)
         }
       ]}

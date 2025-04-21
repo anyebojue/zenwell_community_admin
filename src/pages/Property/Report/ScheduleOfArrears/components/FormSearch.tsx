@@ -31,7 +31,7 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const info = useSelector((state: RootState) => state.info.userInfo)
   const { page } = useSelector((state: RootState) => state.QueryOweFeeDetailSlice)
-  const { list: floorList } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { list: floorList } = useSelector((state: RootState) => state.FloorSlice)
   const { list: unitList } = useSelector((state: RootState) => state.UnitSlice)
 
   const [searchParams, setSearchParams] = useState<QueryOweFeeDetailParams>({

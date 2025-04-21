@@ -45,7 +45,7 @@ const buttonCommonStyle = (color: string = '#2660ad', height: string = '32px') =
 const HousingManagementIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const [activeTabIndex, setActiveTabIndex] = useState(0)
-  const { list } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { list } = useSelector((state: RootState) => state.FloorSlice)
   const { list: roomList } = useSelector((state: RootState) => state.RoomSlice)
   const [dialogValue, setDialogValue] = useState<{
     id?: string

@@ -80,10 +80,12 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue }) => {
   )
 
   useEffect(() => {
-    fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
     fetchData(findFeeConfigType, { 'page.disable': true }, '正在加载列表中，请稍后...')
     fetchData(findFeeConfig, { 'page.disable': true }, '正在加载列表中，请稍后...')
-  }, [fetchData, page.num, page.size])
+    if (dialogValue.id) {
+      fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+    }
+  }, [dialogValue.id, fetchData, page.num, page.size])
 
   const handleActionClick = useCallback((actionType: string, row: PayFeeReply) => {
     switch (actionType) {
@@ -314,7 +316,7 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue }) => {
             flex: 1,
             headerAlign: 'center',
             align: 'center',
-            renderCell: ({ value }) => (
+            renderCell: ({ row }) => (
               <Box
                 sx={{
                   whiteSpace: 'normal',
@@ -328,7 +330,7 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue }) => {
                   alignItems: 'center'
                 }}
               >
-                {value}
+                {row.startTime} ~ {row.endTime}
               </Box>
             )
           },

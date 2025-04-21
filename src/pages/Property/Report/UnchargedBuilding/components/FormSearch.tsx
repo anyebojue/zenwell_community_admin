@@ -31,7 +31,7 @@ interface SearchFormProps {}
 const FormSearch: React.FC<SearchFormProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.ReportFeeYearCollectionSlice)
-  const { list: floorList } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { list: floorList } = useSelector((state: RootState) => state.FloorSlice)
   const { list: unitList } = useSelector((state: RootState) => state.UnitSlice)
   const { list: roomList } = useSelector((state: RootState) => state.RoomSlice)
 

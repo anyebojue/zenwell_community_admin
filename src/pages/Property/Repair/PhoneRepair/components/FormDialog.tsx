@@ -45,7 +45,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.RepairSettingSlice)
-  const { list: floorList } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { list: floorList } = useSelector((state: RootState) => state.FloorSlice)
   const { list: unitList } = useSelector((state: RootState) => state.UnitSlice)
   const { list: roomList } = useSelector((state: RootState) => state.RoomSlice)
   const [loading, setLoading] = useState(false)

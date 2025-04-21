@@ -1,6 +1,7 @@
 import { memo, useCallback, useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { find } from 'modules/property/houses/floor'
+import { find } from 'modules/property/feeConfig/meterWater'
+import { find as findFloor } from 'modules/property/houses/floor'
 import { find as findRoom } from 'modules/property/houses/room'
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
 import { Box, Button, Stack, Theme, Typography } from '@mui/material'
@@ -34,7 +35,8 @@ const treeViewStyle = (theme: Theme) => ({
 
 const HousingManagementIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { page, list } = useSelector((state: RootState) => state.MeterWaterSlice)
+  const { list: floorList } = useSelector((state: RootState) => state.FloorSlice)
   const { list: roomList } = useSelector((state: RootState) => state.RoomSlice)
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [dialogValue, setDialogValue] = useState<{
@@ -49,7 +51,7 @@ const HousingManagementIndex = () => {
   const [loading, setLoading] = useState(false)
 
   const MUI_X_PRODUCTS: TreeViewBaseItem[] = useMemo(() => {
-    return list.map(item => ({
+    return floorList.map(item => ({
       id: `${item.id}`,
       label: `${item.name}`,
       children: item.unit?.map(unit => {
@@ -66,7 +68,7 @@ const HousingManagementIndex = () => {
         return unitWithRooms
       })
     }))
-  }, [list, roomList])
+  }, [floorList, roomList])
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -86,9 +88,9 @@ const HousingManagementIndex = () => {
   )
 
   useEffect(() => {
-    fetchData(find, { 'page.disable': true }, '正在加载列表中，请稍后...')
+    fetchData(findFloor, { 'page.disable': true }, '正在加载列表中，请稍后...')
     fetchData(findRoom, { 'page.disable': true }, '正在加载列表中，请稍后...')
-  }, [fetchData, page.disable, page.num, page.size])
+  }, [fetchData])
 
   useEffect(() => {
     if (!MUI_X_PRODUCTS || MUI_X_PRODUCTS.length === 0) {
@@ -121,23 +123,14 @@ const HousingManagementIndex = () => {
   )
 
   const getDeleteData = useCallback(() => {
-    if (selectedRows.size > 0) {
-      return list
-        .filter(item => selectedRows.has(item.id))
-        .map(item => ({ id: item.id!, name: item.name! }))
-        .filter(item => item.id && item.name)
-    }
-    if (dialogMeterWaterValue) {
-      return dialogMeterWaterValue.id && dialogMeterWaterValue.name
-        ? [{ id: dialogMeterWaterValue.id, name: dialogMeterWaterValue.name }]
-        : []
-    }
-    return []
-  }, [selectedRows, list, dialogMeterWaterValue])
+    return Array.from(selectedRows)
+      .map(id => list.find(item => item.id === id))
+      .filter(item => item)
+      .map(item => ({ id: item!.id! }))
+  }, [selectedRows, list])
 
-  const deleteData = useMemo(() => getDeleteData(), [getDeleteData])
+  const deleteData = getDeleteData()
   const deleteIds = deleteData.map(item => item.id)
-  const deleteNames = deleteData.map(item => item.name)
 
   const handleDelete = useCallback(
     async (ids: string[]) => {
@@ -150,9 +143,7 @@ const HousingManagementIndex = () => {
         setDelOpen(false)
         message.success('删除成功')
         await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
-        setLoading(false)
       } catch (err: unknown) {
-        setLoading(false)
         if (err instanceof Error) message.error(err.message)
       } finally {
         setLoading(false)
@@ -169,10 +160,10 @@ const HousingManagementIndex = () => {
           <RichTreeView
             items={MUI_X_PRODUCTS}
             defaultExpandedItems={[
-              MUI_X_PRODUCTS[0]?.id || '9031315219250413569',
-              MUI_X_PRODUCTS[0]?.children?.[0]?.id || '9031315219267190785'
+              MUI_X_PRODUCTS[0]?.id,
+              MUI_X_PRODUCTS[0]?.children?.[0]?.id as string
             ]}
-            selectedItems={dialogValue?.id || '9031315219283968001'}
+            selectedItems={dialogValue?.id}
             onSelectedItemsChange={(_, selectedItemId) => {
               if (!selectedItemId) return
               const selectedItem = findItemById(MUI_X_PRODUCTS, selectedItemId)
@@ -184,10 +175,10 @@ const HousingManagementIndex = () => {
           />
         </Box>
         <Box sx={{ width: '100%' }}>
-          <FormSearch />
+          <FormSearch selectedRows={selectedRows} setDelOpen={setDelOpen} />
           <Box sx={contentBoxStyle}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography variant="h6">抄表信息</Typography>
+              <Typography variant="h6">{dialogValue.label} 房屋抄表信息</Typography>
               <Stack direction="row" spacing={1}>
                 <Button
                   size="small"
@@ -262,7 +253,7 @@ const HousingManagementIndex = () => {
         loading={loading}
         delOpen={delOpen}
         setDelOpen={setDelOpen}
-        userName={deleteNames}
+        userName={deleteIds}
         onDelete={() => handleDelete(deleteIds)}
       />
     </Box>

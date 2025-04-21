@@ -33,7 +33,7 @@ const treeViewStyle = (theme: Theme) => ({
 
 const HousingManagementIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { page, list } = useSelector((state: RootState) => state.FloorSlice)
   const { list: roomList } = useSelector((state: RootState) => state.RoomSlice)
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [dialogValue, setDialogValue] = useState<{

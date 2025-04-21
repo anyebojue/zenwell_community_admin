@@ -23,7 +23,7 @@ interface FeeItem {
 
 const TableData: React.FC<TableDataProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { list: floorList } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { list: floorList } = useSelector((state: RootState) => state.FloorSlice)
   const modifiedFloorList = [{ id: '', name: '全部' }, ...floorList]
   const [selectedButton, setSelectedButton] = useState<string>('')
   const { page, list, exportUrl } = useSelector(

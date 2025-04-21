@@ -45,9 +45,7 @@ interface FormDialogProps {
 const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
-  const { list: housingManagementList } = useSelector(
-    (state: RootState) => state.HousingManagementSlice
-  )
+  const { list: housingManagementList } = useSelector((state: RootState) => state.FloorSlice)
   const { list: unitList } = useSelector((state: RootState) => state.UnitSlice)
   const { list: feeFormulaList } = useSelector((state: RootState) => state.FeeFormulaSlice)
   const [loading, setLoading] = useState(false)

@@ -51,73 +51,83 @@ const PlanIndex: React.FC<PlanIndexProps> = ({ dialogValue }) => {
           field: 'fee_type_cd',
           headerName: '费用类型',
           flex: 1,
-          renderCell: ({ row }) => JSON.parse(row.afterContent || '{}').fee_type_cd
+          renderCell: ({ row }) =>
+            JSON.parse(row.afterContent || row.beforeContent || '{}').fee_type_cd
         },
         {
           field: 'name',
           headerName: '收费项目',
           flex: 1,
-          renderCell: ({ row }) => JSON.parse(row.afterContent || '{}').name
+          renderCell: ({ row }) => JSON.parse(row.afterContent || row.beforeContent || '{}').name
         },
         {
           field: 'fee_flag',
           headerName: '费用标识',
           flex: 1,
-          renderCell: ({ row }) => JSON.parse(row.afterContent || '{}').fee_flag
+          renderCell: ({ row }) =>
+            JSON.parse(row.afterContent || row.beforeContent || '{}').fee_flag
         },
         {
           field: 'bill_type',
           headerName: '催缴类型',
           flex: 1,
-          renderCell: ({ row }) => JSON.parse(row.afterContent || '{}').bill_type
+          renderCell: ({ row }) =>
+            JSON.parse(row.afterContent || row.beforeContent || '{}').bill_type
         },
         {
           field: 'paymentCd',
           headerName: '付费类型',
           flex: 1,
-          renderCell: ({ row }) => JSON.parse(row.afterContent || '{}').payment_cd
+          renderCell: ({ row }) =>
+            JSON.parse(row.afterContent || row.beforeContent || '{}').payment_cd
         },
         {
           field: 'payment_cycle',
           headerName: '缴费周期(单位:月)',
           flex: 1,
-          renderCell: ({ row }) => JSON.parse(row.afterContent || '{}').payment_cycle
+          renderCell: ({ row }) =>
+            JSON.parse(row.afterContent || row.beforeContent || '{}').payment_cycle
         },
         {
           field: 'square_price',
           headerName: '计费单价(单位:元)',
           flex: 1,
-          renderCell: ({ row }) => JSON.parse(row.afterContent || '{}').square_price
+          renderCell: ({ row }) =>
+            JSON.parse(row.afterContent || row.beforeContent || '{}').square_price
         },
         {
           field: 'additional_amount',
           headerName: '附加/固定费用(单位:元)',
           flex: 1,
-          renderCell: ({ row }) => JSON.parse(row.afterContent || '{}').additional_amount
+          renderCell: ({ row }) =>
+            JSON.parse(row.afterContent || row.beforeContent || '{}').additional_amount
         },
         {
           field: 'deduct_from',
           headerName: '账户抵扣',
           flex: 1,
-          renderCell: ({ row }) => JSON.parse(row.afterContent || '{}').deduct_from
+          renderCell: ({ row }) =>
+            JSON.parse(row.afterContent || row.beforeContent || '{}').deduct_from
         },
         {
           field: 'pay_online',
           headerName: '手机缴费',
           flex: 1,
-          renderCell: ({ row }) => JSON.parse(row.afterContent || '{}').pay_online
+          renderCell: ({ row }) =>
+            JSON.parse(row.afterContent || row.beforeContent || '{}').pay_online
         },
         {
           field: 'scale',
           headerName: '进位方式',
           flex: 1,
-          renderCell: ({ row }) => JSON.parse(row.afterContent || '{}').scale
+          renderCell: ({ row }) => JSON.parse(row.afterContent || row.beforeContent || '{}').scale
         },
         {
           field: 'decimalPlace',
           headerName: '保留小数',
           flex: 1,
-          renderCell: ({ row }) => JSON.parse(row.afterContent || '{}').decimal_place
+          renderCell: ({ row }) =>
+            JSON.parse(row.afterContent || row.beforeContent || '{}').decimal_place
         },
         { field: 'action', headerName: '动作', flex: 1 },
         { field: 'createUser', headerName: '操作人', flex: 1 },

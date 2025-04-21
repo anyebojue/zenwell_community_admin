@@ -51,14 +51,14 @@ const PayFeeConfigDiscountIndex = () => {
         }
         setDelOpen(false)
         message.success('删除成功')
-        await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+        await dispatch(find({ 'page.num': page.num, 'page.size': page.size, configId: row.id }))
       } catch (err: unknown) {
         if (err instanceof Error) message.error(err.message)
       } finally {
         setLoading(false)
       }
     },
-    [dispatch, page.num, page.size]
+    [dispatch, page.num, page.size, row.id]
   )
 
   return (

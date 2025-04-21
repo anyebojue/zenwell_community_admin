@@ -9,7 +9,7 @@ import React, {
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { PayFeeParams } from 'api/model/property/feeConfig/payFeeModel'
-import { find, create } from 'modules/property/feeConfig/payFee'
+import { find, create } from 'modules/property/feeConfig/meterWater'
 import {
   Box,
   CircularProgress,
@@ -29,7 +29,6 @@ import { buttonStyles } from 'components/DeleteModal'
 import { RoomReply } from 'api/model/property/houses/roomModel'
 import { find as findFeeConfig } from 'modules/property/feeConfig/feeConfig'
 import { find as findFeeConfigType } from 'modules/property/feeConfig/feeConfigType'
-import { find as findMeterType } from 'modules/property/feeConfig/meterType'
 import { MeterWaterReply } from 'api/model/property/feeConfig/meterWaterModel'
 
 const formatDateTime = (date: Date | string | undefined): string => {
@@ -53,32 +52,34 @@ interface FormMeterReadingProps {
 
 const FormMeterReading: React.FC<FormMeterReadingProps> = ({
   dialogValue,
+  dialogMeterWaterValue,
   openDialog,
   dialogType,
   setOpenDialog
 }) => {
   const info = useSelector((state: RootState) => state.info.userInfo)
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.MeterTypeSlice)
+  const { page } = useSelector((state: RootState) => state.MeterWaterSlice)
+  const { list } = useSelector((state: RootState) => state.MeterTypeSlice)
   const { list: feeConfigList } = useSelector((state: RootState) => state.FeeConfigSlice)
   const { list: feeConfigTypeList } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
   const [loading, setLoading] = useState(false)
   const [file, setFile] = useState<File | null>(null)
   const initialFormData = useMemo(
     () => ({
-      feeId: '',
-      feeTypeCd: '',
-      configId: '',
+      feeId: dialogType === 'edit' ? dialogMeterWaterValue?.feeId || '' : '',
+      feeTypeCd: dialogType === 'edit' ? dialogMeterWaterValue?.feeId || '' : '',
+      configId: dialogType === 'edit' ? dialogMeterWaterValue?.feeId || '' : '',
       payerObjId: `${dialogValue?.roomData?.roomNum} - ${dialogValue?.roomData?.unit?.unitNum} - ${dialogValue?.roomData?.unit?.floor?.floorNum}`,
       meterWater: {
-        meterType: '',
-        preDegrees: '',
-        curDegrees: '',
+        meterType: dialogType === 'edit' ? dialogMeterWaterValue?.feeId || '' : '',
+        preDegrees: dialogType === 'edit' ? dialogMeterWaterValue?.feeId || '' : '',
+        curDegrees: dialogType === 'edit' ? dialogMeterWaterValue?.feeId || '' : '',
         preReadingTime: formatDateTime(new Date()),
         curReadingTime: formatDateTime(new Date())
       }
     }),
-    [dialogValue]
+    [dialogMeterWaterValue, dialogType, dialogValue]
   )
   const [formData, setFormData] = useState<PayFeeParams>(initialFormData)
 
@@ -103,7 +104,6 @@ const FormMeterReading: React.FC<FormMeterReadingProps> = ({
     setFormData(initialFormData)
     if (openDialog) {
       fetchData(findFeeConfig, { 'page.disable': true }, '正在加载列表中，请稍后...')
-      fetchData(findMeterType, { 'page.disable': true }, '正在加载列表中，请稍后...')
       fetchData(findFeeConfigType, { 'page.disable': true }, '正在加载列表中，请稍后...')
     }
   }, [
@@ -136,7 +136,7 @@ const FormMeterReading: React.FC<FormMeterReadingProps> = ({
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-        await dispatch(find({ 'page.num': page.num || '1', 'page.size': '20' }))
+        await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
         message.success('创建成功')
         setOpenDialog(false)
       } catch (err: unknown) {
@@ -212,11 +212,13 @@ const FormMeterReading: React.FC<FormMeterReadingProps> = ({
       <DialogTitle>
         {dialogType === 'add'
           ? '抄表'
-          : dialogType === 'code'
-            ? '二维码抄表'
-            : dialogType === 'one'
-              ? '抄表导入1'
-              : '抄表导入2'}
+          : dialogType === 'edit'
+            ? '修改抄表'
+            : dialogType === 'code'
+              ? '二维码抄表'
+              : dialogType === 'one'
+                ? '抄表导入1'
+                : '抄表导入2'}
       </DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
@@ -318,11 +320,15 @@ const FormMeterReading: React.FC<FormMeterReadingProps> = ({
               </Box>
             </>
           )}
-          {dialogType === 'add' && (
+          {(dialogType === 'add' || dialogType === 'edit') && (
             <>
               {formFields.map(({ label, id }) => (
                 <Box
-                  sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                  }}
                   key={id}
                 >
                   <FormLabel>{label}：</FormLabel>

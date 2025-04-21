@@ -19,7 +19,7 @@ const contentBoxStyle = (theme: Theme) => ({
 
 const FeeConfigIndex = () => {
   const { exportUrl } = useSelector((state: RootState) => state.QueryReportFeeSummarySlice)
-  const { list: floorList } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { list: floorList } = useSelector((state: RootState) => state.FloorSlice)
   const modifiedFloorList = [{ id: '', name: '全部' }, ...floorList]
   const [selectedButton, setSelectedButton] = useState<string>('')
 

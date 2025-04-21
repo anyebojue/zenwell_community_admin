@@ -35,7 +35,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ activeTabIndex }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.ReportFeeYearCollectionSlice)
   const { list: feeConfigTypeList } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
-  const { list: floorList } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { list: floorList } = useSelector((state: RootState) => state.FloorSlice)
 
   const [searchParams, setSearchParams] = useState<ReportFeeYearCollectionParams>({
     feeTypeCd: '',

@@ -26,7 +26,7 @@ const textFieldStyles = {
 const FormSearch: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
-  const { list: floorList } = useSelector((state: RootState) => state.HousingManagementSlice)
+  const { list: floorList } = useSelector((state: RootState) => state.FloorSlice)
   const { list: unitList } = useSelector((state: RootState) => state.UnitSlice)
   const { list: feeList } = useSelector((state: RootState) => state.FeeConfigSlice)
   const [searchParams, setSearchParams] = useState<ReportFeeYearCollectionDetailParams>({

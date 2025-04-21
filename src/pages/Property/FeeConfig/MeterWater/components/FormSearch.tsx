@@ -1,9 +1,9 @@
-import { ChangeEvent, memo, useState, useCallback } from 'react'
+import { ChangeEvent, memo, useState, useCallback, Dispatch, SetStateAction } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { MeterWaterParams } from 'api/model/property/feeConfig/meterWaterModel'
 import { find } from 'modules/property/feeConfig/meterWater'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
-import { History, Search } from '@mui/icons-material'
+import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 
@@ -24,9 +24,15 @@ const textFieldStyles = {
   }
 }
 
-const FormSearch: React.FC = () => {
+interface SearchFormProps {
+  selectedRows: Set<string | undefined>
+  setDelOpen: Dispatch<SetStateAction<boolean>>
+}
+
+const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.MeterTypeSlice)
+  const { page } = useSelector((state: RootState) => state.MeterWaterSlice)
+  const { list } = useSelector((state: RootState) => state.MeterTypeSlice)
   const [searchParams, setSearchParams] = useState<MeterWaterParams>({
     meterType: ''
   })
@@ -66,6 +72,14 @@ const FormSearch: React.FC = () => {
         [field]: event.target.value
       }))
     }
+
+  const handleBatchDelete = useCallback(() => {
+    if (selectedRows.size === 0) {
+      message.warning('请选择至少一项')
+      return
+    }
+    setDelOpen(true)
+  }, [selectedRows.size, setDelOpen])
 
   return (
     <Box>
@@ -114,6 +128,16 @@ const FormSearch: React.FC = () => {
             }}
           >
             重置
+          </Button>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            startIcon={<Delete />}
+            sx={buttonStyles('#B22222', '#8B0000')}
+            onClick={handleBatchDelete}
+          >
+            批量删除
           </Button>
         </Stack>
       </Stack>
