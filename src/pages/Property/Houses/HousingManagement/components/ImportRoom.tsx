@@ -63,11 +63,7 @@ const ImportRooms: React.FC<ImportRoomsProps> = ({ openImportRoom, setOpenImport
       maxWidth="sm"
       open={openImportRoom}
       onClose={() => setOpenImportRoom(false)}
-      PaperProps={{
-        component: 'form',
-        onSubmit: handleSubmit,
-        encType: 'multipart/form-data'
-      }}
+      slotProps={{ paper: { component: 'form', onSubmit: handleSubmit } }}
     >
       <DialogTitle>房产导入</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
