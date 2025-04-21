@@ -95,7 +95,7 @@ const OwnerInvoiceApplyIndex = () => {
             </Button>
           ))}
         </ButtonGroup>
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%', height: '100%' }}>
           <FormSearch
             selectedButton={selectedButton}
             selectedRows={selectedRows}
