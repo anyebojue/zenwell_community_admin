@@ -2,6 +2,7 @@ import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ReturnPayFeeReply } from 'api/model/property/feeConfig/returnPayFeeModel'
 import { find } from 'modules/property/feeConfig/returnPayFee'
+import { find as findConfigType } from 'modules/property/feeConfig/feeConfigType'
 import { Chip } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
@@ -42,6 +43,11 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
   )
 
   useEffect(() => {
+    fetchData(
+      findConfigType,
+      { 'page.num': page.num, 'page.size': page.size },
+      '正在加载列表中，请稍后...'
+    )
     fetchData(
       find,
       { 'page.num': page.num, 'page.size': page.size, is_export: true },
@@ -110,7 +116,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
           flex: 1,
           headerAlign: 'center',
           align: 'center',
-          renderCell: ({ row }) => row.payFeeDetail?.payFee?.feeConfig?.feeConfigType?.name
+          renderCell: ({ row }) => row.payFee?.feeConfig?.feeConfigType?.name
         },
         {
           field: 'payFeeDetail.payFee.payerObjName',
@@ -118,7 +124,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
           flex: 1,
           headerAlign: 'center',
           align: 'center',
-          renderCell: ({ row }) => row.payFeeDetail?.payFee?.payerObjName
+          renderCell: ({ row }) => row.payFee?.payerObjName
         },
         {
           field: 'cycles',

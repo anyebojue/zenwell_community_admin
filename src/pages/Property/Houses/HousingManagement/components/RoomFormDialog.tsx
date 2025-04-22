@@ -55,7 +55,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
       roomSubType: dialogType === 'edit' ? dialogRoomValue?.roomSubType || '' : '',
       builtUpArea: dialogType === 'edit' ? dialogRoomValue?.builtUpArea || 0 : 0,
       roomArea: dialogType === 'edit' ? dialogRoomValue?.roomArea || 0 : 0,
-      feeCoefficient: dialogType === 'edit' ? dialogRoomValue?.feeCoefficient || 0 : 0,
+      feeCoefficient: dialogType === 'edit' ? dialogRoomValue?.feeCoefficient || 1.0 : 1.0,
       state: dialogType === 'edit' ? dialogRoomValue?.state || '' : '',
       remark: dialogType === 'edit' ? dialogRoomValue?.remark || '' : ''
     }),
@@ -208,9 +208,6 @@ const FormDialog: React.FC<FormDialogProps> = ({
                 { value: '2003', label: '已交房' },
                 { value: '2004', label: '未入住' },
                 { value: '2005', label: '已装修' },
-                { value: '2006', label: '已出租' },
-                { value: '2007', label: '已出售' },
-                { value: '2008', label: '空闲' },
                 { value: '2009', label: '装修中' }
               ].map(option => (
                 <MenuItem key={option.value} value={option.value}>

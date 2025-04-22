@@ -1,5 +1,6 @@
 import { Page } from '../../pageModel'
 import { PayFeeDetailReply } from './payFeeDetailModel'
+import { PayFeeReply } from './payFeeModel'
 
 export interface ReturnPayFeeReply {
   id: string
@@ -24,6 +25,7 @@ export interface ReturnPayFeeReply {
   auditPersonName?: string // 审核人
   status?: number // Status, 1: Active, 0: Inactive
   remark?: string // 备注
+  payFee?: PayFeeReply
   payFeeDetail?: PayFeeDetailReply
   createTime?: string
   startTime?: string

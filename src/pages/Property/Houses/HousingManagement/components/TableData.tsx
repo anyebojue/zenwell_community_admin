@@ -214,14 +214,14 @@ const TableData: React.FC<TableDataProps> = ({
             flex: 1,
             renderCell: ({ row }) => <Chip label={statusValue[row.state!] || '未知'} />
           },
-          { field: 'createdAt', headerName: '入住时间', flex: 1 },
+          { field: 'createdAt', headerName: '入住时间', width: 180 },
           { field: 'layer', headerName: '业主成员', flex: 1 },
           { field: 'layer', headerName: '业主车辆', flex: 1 },
           {
             field: 'actions',
             headerName: '操作',
             type: 'actions',
-            width: 280,
+            width: 200,
             getActions: ({ row }) => renderActionButtons(row),
             headerAlign: 'center',
             align: 'center'
