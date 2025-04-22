@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { FeeDiscountParams } from 'api/model/property/feeConfig/feeDiscountModel'
 import { find } from 'modules/property/feeConfig/feeDiscount'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
-import { Add, Delete, History, Search } from '@mui/icons-material'
+import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 import FormDialog from './FormDialog'
@@ -147,16 +147,6 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
           onClick={handleReset}
         >
           重置
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          startIcon={<Add />}
-          sx={buttonStyles('#2660ad', '#1d428a')}
-          onClick={() => setOpenDialog(true)}
-        >
-          新增
         </Button>
         <Button
           size="small"

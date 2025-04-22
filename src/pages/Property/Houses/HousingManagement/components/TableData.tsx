@@ -199,7 +199,7 @@ const TableData: React.FC<TableDataProps> = ({
         columns={[
           { field: 'roomNum', headerName: '房屋', flex: 1 },
           { field: 'layer', headerName: '楼层', flex: 1 },
-          { field: 'layer', headerName: '业主', flex: 1 },
+          { field: 'id', headerName: '业主', flex: 1, renderCell: ({ row }) => row.id },
           {
             field: 'roomSubType',
             headerName: '类型',
@@ -215,8 +215,7 @@ const TableData: React.FC<TableDataProps> = ({
             renderCell: ({ row }) => <Chip label={statusValue[row.state!] || '未知'} />
           },
           { field: 'createdAt', headerName: '入住时间', width: 180 },
-          { field: 'layer', headerName: '业主成员', flex: 1 },
-          { field: 'layer', headerName: '业主车辆', flex: 1 },
+          { field: 'memberCount', headerName: '业主成员', flex: 1 },
           {
             field: 'actions',
             headerName: '操作',

@@ -88,32 +88,29 @@ const FormDialog: React.FC<FormDialogProps> = ({
   )
 
   useEffect(() => {
-    if (formData.ruleId) {
-      const current_community = localStorage.getItem('current_community')
-      const community = JSON.parse(current_community || '')
-      console.log(111, formData.feeDiscountSpec)
-      const updatedSpec = ruleSpecList
-        .filter(item => item.ruleId === formData.ruleId)
-        .map(({ id, name, remark }) => {
-          const existingSpec = formData.feeDiscountSpec?.find(spec => spec.specId === id)
-          console.log(222, formData.feeDiscountSpec)
-          return {
-            communityId: community?.id,
-            specId: id,
-            name,
-            specValue: existingSpec ? existingSpec.specValue : '',
-            status: existingSpec ? existingSpec.status : 1,
-            remark
-          }
-        })
-      if (dialogType !== 'edit') {
-        setFormData(prev => ({
-          ...prev,
-          feeDiscountSpec: updatedSpec
-        }))
-      }
-    }
-  }, [formData.ruleId, formData.feeDiscountSpec, ruleSpecList, dialogType])
+    if (!formData.ruleId) return
+    const current_community = localStorage.getItem('current_community')
+    const community = JSON.parse(current_community || '')
+    const updatedSpec = ruleSpecList
+      .filter(item => item.ruleId === formData.ruleId)
+      .map(({ id, name, remark }) => {
+        const existingSpec =
+          formData.feeDiscountSpec?.find(spec => spec.specId === id) ||
+          dialogValue?.feeDiscountSpec?.find(spec => spec.specId === id)
+        return {
+          communityId: community?.id,
+          specId: id,
+          name,
+          specValue: existingSpec?.specValue ?? '',
+          status: existingSpec?.status ?? 1,
+          remark
+        }
+      })
+    setFormData(prev => ({
+      ...prev,
+      feeDiscountSpec: updatedSpec
+    }))
+  }, [formData.ruleId, ruleSpecList, dialogValue])
 
   return (
     <Dialog
