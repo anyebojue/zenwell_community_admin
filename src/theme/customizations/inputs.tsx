@@ -223,7 +223,7 @@ export const inputsCustomizations: Components<Theme> = {
         fontWeight: theme.typography.fontWeightMedium,
         letterSpacing: 0,
         color: theme.palette.text.primary,
-        border: '1px solid ',
+        // border: '1px solid ',
         borderColor: gray[200],
         backgroundColor: alpha(gray[50], 0.3),
         '&:hover': {

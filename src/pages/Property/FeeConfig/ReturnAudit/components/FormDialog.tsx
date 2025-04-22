@@ -51,7 +51,9 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-        await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))
+        await dispatch(
+          find({ 'page.num': page.num || '1', 'page.size': page.size, is_export: true })
+        )
         message.success('成功')
         setOpenDialog(false)
       } catch (err: unknown) {

@@ -2,10 +2,16 @@ import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ReturnPayFeeParams } from 'api/model/property/feeConfig/returnPayFeeModel'
 import { find } from 'modules/property/feeConfig/returnPayFee'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
+import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import dayjs from 'dayjs'
+import 'dayjs/locale/zh-cn'
+
+dayjs.locale('zh-cn')
 
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {
@@ -48,7 +54,7 @@ const FormSearch: React.FC = () => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
-          find({ 'page.num': page.num, 'page.size': page.size, ...params })
+          find({ 'page.num': page.num, 'page.size': page.size, ...params, is_export: true })
         )
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
@@ -166,36 +172,54 @@ const FormSearch: React.FC = () => {
       </Stack>
       <Stack direction="row" spacing={3} component="form" sx={{ mt: 2, mb: 1.5 }}>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            size="small"
-            label="请输入申请开始时间"
-            type="datetime-local"
-            variant="outlined"
-            sx={textFieldStyles}
-            value={searchParams.startTime}
-            onChange={handleInputChange('startTime')}
-            slotProps={{
-              inputLabel: {
-                shrink: true
-              }
-            }}
-          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateTimePicker
+              ampm={false}
+              label="申请开始时间"
+              value={searchParams.startTime ? dayjs(searchParams.startTime) : null}
+              onChange={newValue => {
+                if (newValue) {
+                  const formatted = dayjs(newValue).format('YYYY-MM-DD HH:mm:ss')
+                  setSearchParams(prev => ({ ...prev, startTime: formatted }))
+                }
+              }}
+              format="YYYY-MM-DD HH:mm:ss"
+              slotProps={{
+                textField: {
+                  size: 'small',
+                  sx: {
+                    ...textFieldStyles,
+                    '& .MuiSvgIcon-root': { fontSize: 17 }
+                  }
+                }
+              }}
+            />
+          </LocalizationProvider>
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            size="small"
-            label="请输入申请结束时间"
-            type="datetime-local"
-            variant="outlined"
-            sx={textFieldStyles}
-            value={searchParams.endTime}
-            onChange={handleInputChange('endTime')}
-            slotProps={{
-              inputLabel: {
-                shrink: true
-              }
-            }}
-          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateTimePicker
+              ampm={false}
+              label="申请结束时间"
+              value={searchParams.endTime ? dayjs(searchParams.endTime) : null}
+              onChange={newValue => {
+                if (newValue) {
+                  const formatted = dayjs(newValue).format('YYYY-MM-DD HH:mm:ss')
+                  setSearchParams(prev => ({ ...prev, endTime: formatted }))
+                }
+              }}
+              format="YYYY-MM-DD HH:mm:ss"
+              slotProps={{
+                textField: {
+                  size: 'small',
+                  sx: {
+                    ...textFieldStyles,
+                    '& .MuiSvgIcon-root': { fontSize: 17 }
+                  }
+                }
+              }}
+            />
+          </LocalizationProvider>
         </FormControl>
       </Stack>
       <Stack direction="row" spacing={1} component="form" sx={{ mb: 2 }}>
