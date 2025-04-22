@@ -31,7 +31,8 @@ interface SearchFormProps {
 
 const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.ApplyRoomDiscountTypeSlice)
+  const { page } = useSelector((state: RootState) => state.ApplyRoomDiscountSlice)
+  const { list } = useSelector((state: RootState) => state.ApplyRoomDiscountTypeSlice)
 
   const [openDialog, setOpenDialog] = useState(false)
   const [searchParams, setSearchParams] = useState<ApplyRoomDiscountParams>({
@@ -51,7 +52,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
-          find({ 'page.num': page.num, 'page.size': page.size, ...params })
+          find({ 'page.num': page.num, 'page.size': page.size, ...params, is_export: true })
         )
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)

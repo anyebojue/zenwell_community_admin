@@ -87,30 +87,35 @@ const FormDialog: React.FC<FormDialogProps> = ({
     [dispatch, dialogType, dialogValue, formData, page, setOpenDialog, initialFormData]
   )
 
+  const generateFeeDiscountSpec = useCallback(
+    (ruleId: string) => {
+      const current_community = localStorage.getItem('current_community')
+      const community = JSON.parse(current_community || '')
+      return ruleSpecList
+        .filter(item => item.ruleId === ruleId)
+        .map(({ id, name, remark }) => {
+          const existingSpec = dialogValue?.feeDiscountSpec?.find(spec => spec.specId === id)
+          return {
+            communityId: community?.id,
+            specId: id,
+            name,
+            specValue: existingSpec?.specValue ?? '',
+            status: existingSpec?.status ?? 1,
+            remark
+          }
+        })
+    },
+    [dialogValue?.feeDiscountSpec, ruleSpecList]
+  )
+
   useEffect(() => {
     if (!formData.ruleId) return
-    const current_community = localStorage.getItem('current_community')
-    const community = JSON.parse(current_community || '')
-    const updatedSpec = ruleSpecList
-      .filter(item => item.ruleId === formData.ruleId)
-      .map(({ id, name, remark }) => {
-        const existingSpec =
-          formData.feeDiscountSpec?.find(spec => spec.specId === id) ||
-          dialogValue?.feeDiscountSpec?.find(spec => spec.specId === id)
-        return {
-          communityId: community?.id,
-          specId: id,
-          name,
-          specValue: existingSpec?.specValue ?? '',
-          status: existingSpec?.status ?? 1,
-          remark
-        }
-      })
+    const updatedSpec = generateFeeDiscountSpec(formData.ruleId)
     setFormData(prev => ({
       ...prev,
       feeDiscountSpec: updatedSpec
     }))
-  }, [formData.ruleId, ruleSpecList, dialogValue])
+  }, [formData.ruleId, ruleSpecList, dialogValue, generateFeeDiscountSpec])
 
   return (
     <Dialog

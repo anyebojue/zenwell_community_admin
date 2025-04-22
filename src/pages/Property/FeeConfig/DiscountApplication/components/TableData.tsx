@@ -266,7 +266,7 @@ const TableData: React.FC<TableDataProps> = ({
           width: 100,
           headerAlign: 'center',
           align: 'center',
-          renderCell: ({ row }) => <Chip label={statusInUse[row.inUse!] || '未知类型'} />
+          renderCell: ({ row }) => <Chip label={statusInUse[row.inUse!] || '未知'} />
         },
         {
           field: 'returnWay',
@@ -274,7 +274,7 @@ const TableData: React.FC<TableDataProps> = ({
           width: 100,
           headerAlign: 'center',
           align: 'center',
-          renderCell: ({ row }) => <Chip label={statusReturnWay[row.returnWay!] || '未知类型'} />
+          renderCell: ({ row }) => <Chip label={statusReturnWay[row.returnWay!] || '未知'} />
         },
         {
           field: 'returnAmount',

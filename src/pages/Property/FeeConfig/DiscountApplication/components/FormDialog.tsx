@@ -58,7 +58,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
   setOpenDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.ApplyRoomDiscountTypeSlice)
+  const { page } = useSelector((state: RootState) => state.ApplyRoomDiscountSlice)
+  const { list } = useSelector((state: RootState) => state.ApplyRoomDiscountTypeSlice)
   const { list: feeConfigList } = useSelector((state: RootState) => state.FeeConfigSlice)
   const { list: feeDiscountList } = useSelector((state: RootState) => state.FeeDiscountSlice)
   const [loading, setLoading] = useState(false)
@@ -125,7 +126,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-        await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))
+        await dispatch(find({ 'page.num': page.num, 'page.size': page.size, is_export: true }))
         message.success(dialogType === 'add' ? '新建成功' : '编辑成功')
         setOpenDialog(false)
         setFormData(initialFormData)
