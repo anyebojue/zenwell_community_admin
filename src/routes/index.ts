@@ -59,13 +59,13 @@ const baseRoutes: IRouter[] = [
     meta: { hidden: true }
   },
   {
-    path: '/FeeConfig/ReceiptReprint',
+    path: '/feeConfig/ReceiptReprint',
     element: load('Property/FeeConfig/ReceiptReprint'),
     isFullPage: true,
     meta: { hidden: true }
   },
   {
-    path: '/FeeConfig/MakeUpTheReceipt',
+    path: '/feeConfig/MakeUpTheReceipt',
     element: load('Property/FeeConfig/MakeUpTheReceipt'),
     isFullPage: true,
     meta: { hidden: true }

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ImportFeeReply } from 'api/model/property/feeConfig/importFeeModel'
 import { find } from 'modules/property/feeConfig/importFee'
 import { find as findFeeConfigType } from 'modules/property/feeConfig/feeConfigType'
-import { find as findHousingManagement } from 'modules/property/houses/floor'
+import { find as findFloor } from 'modules/property/houses/floor'
 import { find as findUnit } from 'modules/property/houses/unit'
 import { find as findFeeFormula } from 'modules/property/feeConfig/feeFormula'
 import { Chip } from '@mui/material'
@@ -12,9 +12,11 @@ import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
 import { useNavigate } from 'react-router-dom'
 
-interface TableDataProps {}
+interface TableDataProps {
+  expense: boolean
+}
 
-const TableData: React.FC<TableDataProps> = () => {
+const TableData: React.FC<TableDataProps> = ({ expense }) => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.ImportFeeSlice)
@@ -47,28 +49,31 @@ const TableData: React.FC<TableDataProps> = () => {
   )
 
   useEffect(() => {
-    fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
-    fetchData(
-      findFeeFormula,
-      { 'page.num': page.num, 'page.size': page.size },
-      '正在加载列表中，请稍后...'
-    )
-    fetchData(
-      findHousingManagement,
-      { 'page.num': page.num, 'page.size': page.size },
-      '正在加载列表中，请稍后...'
-    )
-    fetchData(
-      findUnit,
-      { 'page.num': page.num, 'page.size': page.size },
-      '正在加载列表中，请稍后...'
-    )
     fetchData(
       findFeeConfigType,
       { 'page.num': page.num, 'page.size': page.size },
       '正在加载列表中，请稍后...'
     )
-  }, [fetchData, page.num, page.size])
+    if (expense) {
+      fetchData(
+        findFeeFormula,
+        { 'page.num': page.num, 'page.size': page.size },
+        '正在加载列表中，请稍后...'
+      )
+      fetchData(
+        findFloor,
+        { 'page.num': page.num, 'page.size': page.size },
+        '正在加载列表中，请稍后...'
+      )
+      fetchData(
+        findUnit,
+        { 'page.num': page.num, 'page.size': page.size },
+        '正在加载列表中，请稍后...'
+      )
+    } else {
+      fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+    }
+  }, [expense, fetchData, page.num, page.size])
 
   const handleActionClick = useCallback(
     (actionType: string, row: ImportFeeReply) => {

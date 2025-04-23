@@ -68,6 +68,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
       await ImportFee(formValue)
       message.success('文件上传成功')
       setFile(null)
+      setOpenDialog(false)
     } catch (err: unknown) {
       setLoading(false)
       if (err instanceof Error) message.error(err.message)

@@ -53,7 +53,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
         startIcon={loading && <CircularProgress size={24} color="inherit" />}
         onClick={onDelete}
       >
-        {loading ? '保存中...' : '保存'}
+        {loading ? '删除中...' : '确定'}
       </Button>
     </DialogActions>
   </Dialog>

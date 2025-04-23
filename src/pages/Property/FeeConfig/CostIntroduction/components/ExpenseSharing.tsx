@@ -48,6 +48,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
   const { list: housingManagementList } = useSelector((state: RootState) => state.FloorSlice)
   const { list: unitList } = useSelector((state: RootState) => state.UnitSlice)
   const { list: feeFormulaList } = useSelector((state: RootState) => state.FeeFormulaSlice)
+  console.log(feeFormulaList)
   const [loading, setLoading] = useState(false)
   const [disabled, setDisabled] = useState(true)
 
@@ -290,7 +291,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
             >
               {feeFormulaList.map(option => (
                 <MenuItem key={option.id} value={option.id}>
-                  {option.name}
+                  {option.formulaValue}
                 </MenuItem>
               ))}
             </TextField>
@@ -314,7 +315,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
               sx={{ width: '80%' }}
               size="small"
               type="datetime-local"
-              value={formatDateTime(formData.startTime)}
+              value={formatDateTime(formData.endTime)}
               onChange={e => setFormData({ ...formData, endTime: formatDateTime(e.target.value) })}
               variant="outlined"
             />

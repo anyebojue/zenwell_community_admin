@@ -49,7 +49,7 @@ const ImportFeeIndex = () => {
             </Button>
           </Stack>
         </Box>
-        <TableData />
+        <TableData expense={expense} />
       </Box>
       <Copyright />
       <ExpenseSharing openDialog={expense} setOpenDialog={setExpense} />

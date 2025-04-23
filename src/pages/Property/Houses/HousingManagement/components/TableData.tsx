@@ -199,7 +199,12 @@ const TableData: React.FC<TableDataProps> = ({
         columns={[
           { field: 'roomNum', headerName: '房屋', flex: 1 },
           { field: 'layer', headerName: '楼层', flex: 1 },
-          { field: 'id', headerName: '业主', flex: 1, renderCell: ({ row }) => row.id },
+          {
+            field: 'owner',
+            headerName: '业主',
+            flex: 1,
+            renderCell: ({ row }) => (row.owner ? `${row.owner.name}(${row.owner.link})` : '-')
+          },
           {
             field: 'roomSubType',
             headerName: '类型',
