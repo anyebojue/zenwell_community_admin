@@ -43,7 +43,7 @@ export const find = createAsyncThunk(
   `${namespace}/find`,
   async (
     params: ReportOweFeeParams &
-      PaginationParams & { exportUrl?: string; sum?: string; allSum?: string }
+      PaginationParams & { is_export?: boolean; sum?: string; allSum?: string }
   ) => {
     const res = await FindReportOweFee(params)
     return res

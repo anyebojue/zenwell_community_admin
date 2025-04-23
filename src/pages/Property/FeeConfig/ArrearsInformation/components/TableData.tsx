@@ -30,17 +30,17 @@ const TableData: React.FC<TableDataProps> = () => {
   )
 
   useEffect(() => {
-    fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+    fetchData(
+      find,
+      { 'page.num': page.num, 'page.size': page.size, is_export: true },
+      '正在加载列表中，请稍后...'
+    )
   }, [fetchData, page.num, page.size])
 
   return (
     <>
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Typography variant="body1">小计 合计: {sum} 元</Typography>
-        <Typography variant="body1">大计 合计: {allSum} 元</Typography>
-      </Box>
       <DataGrid
-        sx={{ mt: 2 }}
+        sx={{ mt: 1 }}
         localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
         disableColumnResize
         disableVirtualization={false}
@@ -107,6 +107,10 @@ const TableData: React.FC<TableDataProps> = () => {
           }
         }}
       />
+      <Box sx={{ display: 'flex', flexDirection: 'column', mt: 1 }}>
+        <Typography variant="body1">小计 合计: {sum} 元</Typography>
+        <Typography variant="body1">大计 合计: {allSum} 元</Typography>
+      </Box>
     </>
   )
 }
