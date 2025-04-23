@@ -1,4 +1,5 @@
 import { Page } from '../../pageModel'
+import { ParkingAreaReply } from './parkingAreaModel'
 
 export interface ParkingBoxReply {
   id?: string
@@ -12,6 +13,8 @@ export interface ParkingBoxReply {
   yelowCarIn?: string
   remark?: string
   statusCd?: string
+  paId?: string
+  parkingArea?: ParkingAreaReply
 }
 
 export interface ParkingBoxParams {

@@ -25,8 +25,6 @@ const TableData: React.FC<TableDataProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.ParkingBoxSlice)
-  const { list: areaList } = useSelector((state: RootState) => state.ParkingAreaSlice)
-  console.log(areaList)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -102,7 +100,7 @@ const TableData: React.FC<TableDataProps> = ({
 
   return (
     <DataGrid
-      sx={{ mt: 2 }}
+      sx={{ mt: 1 }}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
@@ -111,12 +109,12 @@ const TableData: React.FC<TableDataProps> = ({
       columns={[
         { field: 'id', headerName: '岗亭编号', flex: 1 },
         { field: 'boxName', headerName: '岗亭名称', flex: 1 },
-        { field: 'area', headerName: '停车场', flex: 1 },
-        { field: 'area', headerName: '临时车进场', flex: 1 },
-        { field: 'area', headerName: '临时车审核', flex: 1 },
-        { field: 'area', headerName: '是否收费', flex: 1 },
-        { field: 'area', headerName: '已在场', flex: 1 },
-        { field: 'area', headerName: '未在场', flex: 1 },
+        { field: 'parkingArea.name', headerName: '停车场', flex: 1 },
+        { field: 'tempCarIn', headerName: '临时车进场', flex: 1 },
+        { field: '', headerName: '临时车审核', flex: 1 },
+        { field: 'fee', headerName: '是否收费', flex: 1 },
+        { field: 'blueCarIn', headerName: '已在场', flex: 1 },
+        { field: 'yelowCarIn', headerName: '未在场', flex: 1 },
         { field: 'remark', headerName: '备注', flex: 1 },
         {
           field: 'actions',

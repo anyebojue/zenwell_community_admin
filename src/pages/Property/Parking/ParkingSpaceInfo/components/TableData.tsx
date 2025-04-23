@@ -109,7 +109,7 @@ const TableData: React.FC<TableDataProps> = ({
 
   return (
     <DataGrid
-      sx={{ mt: 2 }}
+      sx={{ mt: 1 }}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
@@ -122,7 +122,7 @@ const TableData: React.FC<TableDataProps> = ({
           flex: 1,
           renderCell: ({ row }) => areaList.filter(item => item.id === row.paId)[0]?.name
         },
-        { field: 'num', headerName: '车位', flex: 1 },
+        { field: 'num', headerName: '车位编号', flex: 1 },
         {
           field: 'stateCd',
           headerName: '车位状态',
