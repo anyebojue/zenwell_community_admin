@@ -149,13 +149,14 @@ const InfoIndex = () => {
             ))}
           </Box>
         </Box>
-        <Box sx={{ width: '350%' }}>
+        <Box sx={{ width: '350%', height: '100%' }}>
           <FormSearch
             dialogValue={dialogValue}
             selectedRows={selectedRows}
             setDelOpen={setDelOpen}
           />
           <TableData
+            ownerUser={ownerUser}
             dialogValue={dialogValue}
             setDialogValue={setDialogValue}
             selectedRows={selectedRows}

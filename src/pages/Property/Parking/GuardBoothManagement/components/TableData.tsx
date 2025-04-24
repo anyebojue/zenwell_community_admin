@@ -16,6 +16,16 @@ interface TableDataProps {
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
 }
 
+const statusValue: Record<string, string> = {
+  Y: '是',
+  N: '否'
+}
+
+const statusData: Record<string, string> = {
+  Y: '可进场',
+  N: '不可进场'
+}
+
 const TableData: React.FC<TableDataProps> = ({
   setDialogValue,
   setDialogType,
@@ -107,14 +117,33 @@ const TableData: React.FC<TableDataProps> = ({
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'id', headerName: '岗亭编号', flex: 1 },
+        { field: 'id', headerName: '岗亭编号', width: 200 },
         { field: 'boxName', headerName: '岗亭名称', flex: 1 },
         { field: 'parkingArea.name', headerName: '停车场', flex: 1 },
-        { field: 'tempCarIn', headerName: '临时车进场', flex: 1 },
-        { field: '', headerName: '临时车审核', flex: 1 },
-        { field: 'fee', headerName: '是否收费', flex: 1 },
-        { field: 'blueCarIn', headerName: '已在场', flex: 1 },
-        { field: 'yelowCarIn', headerName: '未在场', flex: 1 },
+        {
+          field: 'tempCarIn',
+          headerName: '临时车进场',
+          flex: 1,
+          renderCell: ({ row }) => <Chip label={statusValue[row.tempCarIn!] || '未知'} />
+        },
+        {
+          field: 'fee',
+          headerName: '是否收费',
+          flex: 1,
+          renderCell: ({ row }) => <Chip label={statusValue[row.fee!] || '未知'} />
+        },
+        {
+          field: 'blueCarIn',
+          headerName: '已在场',
+          flex: 1,
+          renderCell: ({ row }) => <Chip label={statusData[row.blueCarIn!] || '未知'} />
+        },
+        {
+          field: 'yelowCarIn',
+          headerName: '未在场',
+          flex: 1,
+          renderCell: ({ row }) => <Chip label={statusData[row.yelowCarIn!] || '未知'} />
+        },
         { field: 'remark', headerName: '备注', flex: 1 },
         {
           field: 'actions',

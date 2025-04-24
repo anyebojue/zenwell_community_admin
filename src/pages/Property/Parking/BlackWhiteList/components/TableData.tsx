@@ -1,6 +1,6 @@
 import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { find } from 'modules/property/report/queryReportFeeSummary'
+import { find } from 'modules/property/parking/carBlackWhite'
 import { find as findParking } from 'modules/property/parking/parkingArea'
 import { CarBlackWhiteReply } from 'api/model/property/parking/carBlackWhiteModel'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'

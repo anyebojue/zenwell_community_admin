@@ -9,6 +9,7 @@ import message from 'components/Message'
 import { GridRowSelectionModel } from '@mui/x-data-grid-pro'
 
 interface TableDataProps {
+  ownerUser: OwnerReply | undefined
   dialogValue: OwnerReply | undefined
   setDialogValue: Dispatch<SetStateAction<OwnerReply | undefined>>
   selectedRows: Set<string | undefined>
@@ -18,6 +19,7 @@ interface TableDataProps {
 }
 
 const TableData: React.FC<TableDataProps> = ({
+  ownerUser,
   setDialogValue,
   setSelectedRows,
   setOpenDialog,
@@ -46,10 +48,15 @@ const TableData: React.FC<TableDataProps> = ({
   useEffect(() => {
     fetchData(
       find,
-      { 'page.num': page.num, 'page.size': page.size, ownerTypeCd: '1002' },
+      {
+        'page.num': page.num,
+        'page.size': page.size,
+        ownerTypeCd: '1002',
+        userId: ownerUser?.id as string
+      },
       '正在加载列表中，请稍后...'
     )
-  }, [fetchData, page.num, page.size])
+  }, [fetchData, ownerUser?.id, page.num, page.size])
 
   const handleRowSelection = useCallback(
     (rowSelectionModel: GridRowSelectionModel) => {

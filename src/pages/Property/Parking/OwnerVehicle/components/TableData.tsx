@@ -4,7 +4,7 @@ import { OwnerCarReply } from 'api/model/property/parking/ownerCarModel'
 import { find } from 'modules/property/parking/ownerCar'
 import { find as findOwner } from 'modules/property/houses/owner'
 import { find as findParkingSpace } from 'modules/property/parking/parkingSpaceInfo'
-import { Box, Chip, Typography } from '@mui/material'
+import { Box, Button, Chip, Typography } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
@@ -42,9 +42,9 @@ const statusType: Record<string, string> = {
 }
 
 const statusCd: Record<string, string> = {
-  '1001': '正常状态',
-  '2002': '欠费状态',
-  '3003': '车位释放'
+  '1': '正常',
+  '3': '到期',
+  '2': '无车位'
 }
 
 const TableData: React.FC<TableDataProps> = ({
@@ -264,10 +264,14 @@ const TableData: React.FC<TableDataProps> = ({
           {
             field: 'stateCd',
             headerName: '状态',
-            width: 100,
+            width: 150,
             headerAlign: 'center',
             align: 'center',
-            renderCell: ({ row }) => <Chip label={statusCd[row.stateCd!] || '未知状态'} />
+            renderCell: ({ row }) => (
+              <Button variant="text" color="secondary">
+                <Box color="black">{statusCd[row.stateCd!]}</Box>(同步失败)
+              </Button>
+            )
           },
           { field: 'remark', headerName: '备注', flex: 1, headerAlign: 'center', align: 'center' },
           {

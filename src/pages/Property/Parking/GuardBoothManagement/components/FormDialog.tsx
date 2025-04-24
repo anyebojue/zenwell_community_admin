@@ -48,8 +48,11 @@ const FormDialog: React.FC<FormDialogProps> = ({
   const initialFormData = useMemo(
     () => ({
       boxName: dialogType === 'edit' ? dialogValue?.boxName || '' : '',
+      pId: dialogType === 'edit' ? dialogValue?.pId || '' : '',
       tempCarIn: dialogType === 'edit' ? dialogValue?.tempCarIn || '' : '',
       fee: dialogType === 'edit' ? dialogValue?.fee || '' : '',
+      blueCarIn: dialogType === 'edit' ? dialogValue?.blueCarIn || '' : '',
+      yelowCarIn: dialogType === 'edit' ? dialogValue?.yelowCarIn || '' : '',
       remark: dialogType === 'edit' ? dialogValue?.remark || '' : ''
     }),
     [dialogType, dialogValue]
@@ -130,8 +133,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.boxName}
-              onChange={e => setFormData({ ...formData, boxName: e.target.value })}
+              value={formData.pId}
+              onChange={e => setFormData({ ...formData, pId: e.target.value })}
               variant="outlined"
             >
               {parkingAreaList.map(option => (
@@ -147,8 +150,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.boxName}
-              onChange={e => setFormData({ ...formData, boxName: e.target.value })}
+              value={formData.tempCarIn}
+              onChange={e => setFormData({ ...formData, tempCarIn: e.target.value })}
               variant="outlined"
             >
               {[
@@ -167,8 +170,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.boxName}
-              onChange={e => setFormData({ ...formData, boxName: e.target.value })}
+              value={formData.fee}
+              onChange={e => setFormData({ ...formData, fee: e.target.value })}
               variant="outlined"
             >
               {[
@@ -187,8 +190,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.boxName}
-              onChange={e => setFormData({ ...formData, boxName: e.target.value })}
+              value={formData.blueCarIn}
+              onChange={e => setFormData({ ...formData, blueCarIn: e.target.value })}
               variant="outlined"
             >
               {[
@@ -202,13 +205,13 @@ const FormDialog: React.FC<FormDialogProps> = ({
             </TextField>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>已在场：</FormLabel>
+            <FormLabel>未在场：</FormLabel>
             <TextField
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.boxName}
-              onChange={e => setFormData({ ...formData, boxName: e.target.value })}
+              value={formData.yelowCarIn}
+              onChange={e => setFormData({ ...formData, yelowCarIn: e.target.value })}
               variant="outlined"
             >
               {[
