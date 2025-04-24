@@ -8,8 +8,11 @@ import React, {
   memo
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ParkingAreaParams, ParkingAreaReply } from 'api/model/property/parking/parkingAreaModel'
-import { create, find, update } from 'modules/property/parking/parkingArea'
+import {
+  ResourceStoreSpecificationParams,
+  ResourceStoreSpecificationReply
+} from 'api/model/property/purchase/resourceStoreSpecificationModel'
+import { create, find, update } from 'modules/property/purchase/resourceStoreSpecification'
 import {
   Box,
   CircularProgress,
@@ -27,7 +30,7 @@ import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
-  dialogValue?: ParkingAreaReply
+  dialogValue?: ResourceStoreSpecificationReply
   openDialog: boolean
   dialogType: string
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -40,19 +43,20 @@ const FormDialog: React.FC<FormDialogProps> = ({
   setOpenDialog
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.ParkingAreaSlice)
+  const { page } = useSelector((state: RootState) => state.ResourceStoreSpecificationSlice)
+  const { list } = useSelector((state: RootState) => state.StoreTypeSlice)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(
     () => ({
-      name: dialogType === 'edit' ? dialogValue?.name || '' : '',
-      typeCd: dialogType === 'edit' ? dialogValue?.typeCd || '' : '',
-      num: dialogType === 'edit' ? dialogValue?.num || '' : '',
-      remark: dialogType === 'edit' ? dialogValue?.remark || '' : ''
+      specName: dialogType === 'edit' ? dialogValue?.specName || '' : '',
+      parentRstId: dialogType === 'edit' ? dialogValue?.parentRstId || '' : '',
+      rstId: dialogType === 'edit' ? dialogValue?.rstId || '' : '',
+      description: dialogType === 'edit' ? dialogValue?.description || '' : ''
     }),
     [dialogType, dialogValue]
   )
-  const [formData, setFormData] = useState<ParkingAreaParams>(initialFormData)
+  const [formData, setFormData] = useState<ResourceStoreSpecificationParams>(initialFormData)
 
   useEffect(() => {
     setFormData(initialFormData)
@@ -98,58 +102,58 @@ const FormDialog: React.FC<FormDialogProps> = ({
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>停车场编号：</FormLabel>
+            <FormLabel>规格名称：</FormLabel>
             <TextField
-              placeholder="必填，请填写停车场编号"
+              placeholder="必填，请填写规格名称"
               sx={{ width: '80%' }}
               type="text"
               size="small"
-              value={formData.name}
-              onChange={e => setFormData({ ...formData, name: e.target.value })}
+              value={formData.specName}
+              onChange={e => setFormData({ ...formData, specName: e.target.value })}
               variant="outlined"
             />
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>停车场类型：</FormLabel>
+            <FormLabel>商品类型：</FormLabel>
             <TextField
               placeholder="请选择停车场类型"
-              sx={{ width: '80%' }}
+              sx={{ width: '36%' }}
               select
               size="small"
-              value={formData.typeCd || ''}
-              onChange={e => setFormData({ ...formData, typeCd: e.target.value })}
+              value={formData.parentRstId || ''}
+              onChange={e => setFormData({ ...formData, parentRstId: e.target.value })}
               variant="outlined"
             >
-              {[
-                { value: '1001', label: '地上停车场' },
-                { value: '2001', label: '地下停车场' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
+              {list.map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              placeholder="请选择停车场类型"
+              sx={{ width: '37%' }}
+              select
+              size="small"
+              value={formData.parentRstId || ''}
+              onChange={e => setFormData({ ...formData, parentRstId: e.target.value })}
+              variant="outlined"
+            >
+              {list.map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
                 </MenuItem>
               ))}
             </TextField>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>外部编码：</FormLabel>
-            <TextField
-              placeholder="选填，请填写外部编码 一般为第三方停车场系统ID"
-              sx={{ width: '80%' }}
-              type="text"
-              size="small"
-              value={formData.num}
-              onChange={e => setFormData({ ...formData, num: e.target.value })}
-              variant="outlined"
-            />
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>备注：</FormLabel>
+            <FormLabel>描述：</FormLabel>
             <TextField
               placeholder="请输入"
               sx={{ width: '80%' }}
               size="small"
-              value={formData.remark}
-              onChange={e => setFormData({ ...formData, remark: e.target.value })}
+              value={formData.description}
+              onChange={e => setFormData({ ...formData, description: e.target.value })}
               variant="outlined"
               multiline
               rows={2}

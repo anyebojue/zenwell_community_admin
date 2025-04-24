@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, memo, SetStateAction, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ParkingAreaParams } from 'api/model/property/parking/parkingAreaModel'
-import { find } from 'modules/property/parking/parkingArea'
+import { ResourceStoreSpecificationParams } from 'api/model/property/purchase/resourceStoreSpecificationModel'
+import { find } from 'modules/property/purchase/resourceStoreSpecification'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { Add, Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -31,23 +31,26 @@ interface SearchFormProps {
 
 const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.ParkingAreaSlice)
+  const { page } = useSelector((state: RootState) => state.ResourceStoreSpecificationSlice)
+  const { list } = useSelector((state: RootState) => state.StoreTypeSlice)
 
   const [openDialog, setOpenDialog] = useState(false)
-  const [searchParams, setSearchParams] = useState<ParkingAreaParams>({
-    name: '',
-    typeCd: ''
+  const [searchParams, setSearchParams] = useState<ResourceStoreSpecificationParams>({
+    parentRstId: '',
+    rstId: '',
+    specName: '',
+    id: ''
   })
 
   const handleInputChange = useCallback(
-    (field: keyof ParkingAreaParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof ResourceStoreSpecificationParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prev => ({ ...prev, [field]: event.target.value }))
     },
     []
   )
 
   const fetchData = useCallback(
-    async (params: ParkingAreaParams & PaginationParams) => {
+    async (params: ResourceStoreSpecificationParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
@@ -70,7 +73,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
   }, [fetchData, searchParams])
 
   const handleReset = useCallback(() => {
-    const initialParams = { name: '', tel: '' }
+    const initialParams = { parentRstId: '', rstId: '', specName: '', id: '' }
     setSearchParams(initialParams)
     fetchData({ ...initialParams, 'page.num': page.num, 'page.size': page.size })
   }, [fetchData, page.num, page.size])
@@ -84,7 +87,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
   }, [selectedRows.size, setDelOpen])
 
   const handleSelectChange =
-    (field: keyof ParkingAreaParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof ResourceStoreSpecificationParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -96,34 +99,59 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
       <Stack direction="row" spacing={3} component="form" sx={{ mt: 2, mb: 1.5 }}>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
+            select
             size="small"
-            label="请输入停车场编号"
-            type="text"
+            label="请选择物品类型"
+            value={searchParams.parentRstId}
+            onChange={handleSelectChange('parentRstId')}
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.name}
-            onChange={handleInputChange('name')}
-          />
+          >
+            {list.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.name}
+              </MenuItem>
+            ))}
+          </TextField>
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             select
             size="small"
-            label="请选择停车场类型"
-            value={searchParams.typeCd}
-            onChange={handleSelectChange('typeCd')}
+            label="请选择二级分类"
+            value={searchParams.rstId}
+            onChange={handleSelectChange('rstId')}
             variant="outlined"
             sx={textFieldStyles}
           >
-            {[
-              { value: '1001', label: '地上停车场' },
-              { value: '2001', label: '地下停车场' }
-            ].map(option => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
+            {list.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.name}
               </MenuItem>
             ))}
           </TextField>
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            size="small"
+            label="请输入规格名称"
+            type="text"
+            variant="outlined"
+            sx={textFieldStyles}
+            value={searchParams.specName}
+            onChange={handleInputChange('specName')}
+          />
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            size="small"
+            label="请输入规格编号"
+            type="text"
+            variant="outlined"
+            sx={textFieldStyles}
+            value={searchParams.id}
+            onChange={handleInputChange('id')}
+          />
         </FormControl>
       </Stack>
       <Stack direction="row" spacing={1} component="form" sx={{ mb: 2 }}>

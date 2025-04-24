@@ -116,6 +116,7 @@ import CarInoutPaymentSlice from './property/parking/carInoutPayment'
 import WorkflowSlice from './property/purchase/workflow'
 import StorehouseSlice from './property/purchase/storehouse'
 import StoreTypeSlice from './property/purchase/storeType'
+import ResourceStoreSpecificationSlice from './property/purchase/resourceStoreSpecification'
 
 const store = configureStore({
   reducer: {
@@ -235,7 +236,8 @@ const store = configureStore({
     CarInoutPaymentSlice,
     WorkflowSlice,
     StorehouseSlice,
-    StoreTypeSlice
+    StoreTypeSlice,
+    ResourceStoreSpecificationSlice
   },
   // 关闭序列化检测
   middleware: getDefaultMiddleware =>

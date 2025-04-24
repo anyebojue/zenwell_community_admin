@@ -1,20 +1,16 @@
 import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ParkingAreaReply } from 'api/model/property/parking/parkingAreaModel'
-import { find } from 'modules/property/parking/parkingArea'
+import { ResourceStoreSpecificationReply } from 'api/model/property/purchase/resourceStoreSpecificationModel'
+import { find } from 'modules/property/purchase/resourceStoreSpecification'
+import { find as findStoreType } from 'modules/property/purchase/storeType'
 import { Chip } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
 
-const statusValue: Record<string, string> = {
-  '1001': '地上停车场',
-  '2001': '地下停车场'
-}
-
 interface TableDataProps {
   setDialogType: Dispatch<SetStateAction<string>>
-  setDialogValue: Dispatch<SetStateAction<ParkingAreaReply | undefined>>
+  setDialogValue: Dispatch<SetStateAction<ResourceStoreSpecificationReply | undefined>>
   setSelectedRows: Dispatch<SetStateAction<Set<string>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
@@ -49,6 +45,7 @@ const TableData: React.FC<TableDataProps> = ({
 
   useEffect(() => {
     fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+    fetchData(findStoreType, { 'page.disable': true }, '正在加载列表中，请稍后...')
   }, [fetchData, page.num, page.size])
 
   const handleRowSelection = useCallback(
@@ -59,7 +56,7 @@ const TableData: React.FC<TableDataProps> = ({
   )
 
   const handleActionClick = useCallback(
-    (actionType: string, row: ParkingAreaReply) => {
+    (actionType: string, row: ResourceStoreSpecificationReply) => {
       switch (actionType) {
         case 'edit':
           setDialogType('edit')
@@ -75,7 +72,7 @@ const TableData: React.FC<TableDataProps> = ({
     [setDialogType, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
   )
 
-  const renderActionButtons = (row: ParkingAreaReply) =>
+  const renderActionButtons = (row: ResourceStoreSpecificationReply) =>
     [
       { title: '修改', action: 'edit' },
       { title: '删除', action: 'delete' }
@@ -98,24 +95,17 @@ const TableData: React.FC<TableDataProps> = ({
 
   return (
     <DataGrid
-      sx={{ mt: 2 }}
+      sx={{ mt: 1 }}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'id', headerName: '停车场ID', flex: 1 },
-        { field: 'name', headerName: '停车场编号', flex: 1 },
-        {
-          field: 'typeCd',
-          headerName: '停车场类型',
-          flex: 1,
-          renderCell: ({ row }) => <Chip label={statusValue[row.typeCd!] || '未知类型'} />
-        },
-        { field: 'num', headerName: '外部编码', flex: 1 },
-        { field: 'remark', headerName: '备注', flex: 1 },
-        { field: 'createdAt', headerName: '创建时间', width: 180 },
+        { field: 'id', headerName: '规格编号', flex: 1 },
+        { field: 'resourceStoreType.name', headerName: '类型名称', flex: 1 },
+        { field: 'specName', headerName: '规格名称', flex: 1 },
+        { field: 'description', headerName: '描述', flex: 1 },
         {
           field: 'actions',
           headerName: '操作',
