@@ -1,7 +1,7 @@
 import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ParkingAreaReply } from 'api/model/property/parking/parkingAreaModel'
-import { find } from 'modules/property/parking/parkingArea'
+import { ResourceStoreReply } from 'api/model/property/purchase/resourceStoreModel'
+import { find } from 'modules/property/purchase/resourceStore'
 import { Chip } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
@@ -14,7 +14,7 @@ const statusValue: Record<string, string> = {
 
 interface TableDataProps {
   setDialogType: Dispatch<SetStateAction<string>>
-  setDialogValue: Dispatch<SetStateAction<ParkingAreaReply | undefined>>
+  setDialogValue: Dispatch<SetStateAction<ResourceStoreReply | undefined>>
   setSelectedRows: Dispatch<SetStateAction<Set<string>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
@@ -59,7 +59,7 @@ const TableData: React.FC<TableDataProps> = ({
   )
 
   const handleActionClick = useCallback(
-    (actionType: string, row: ParkingAreaReply) => {
+    (actionType: string, row: ResourceStoreReply) => {
       switch (actionType) {
         case 'edit':
           setDialogType('edit')
@@ -75,7 +75,7 @@ const TableData: React.FC<TableDataProps> = ({
     [setDialogType, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
   )
 
-  const renderActionButtons = (row: ParkingAreaReply) =>
+  const renderActionButtons = (row: ResourceStoreReply) =>
     [
       { title: '修改', action: 'edit' },
       { title: '删除', action: 'delete' }

@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, memo, SetStateAction, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ParkingAreaParams } from 'api/model/property/parking/parkingAreaModel'
-import { find } from 'modules/property/parking/parkingArea'
+import { ResourceStoreParams } from 'api/model/property/purchase/resourceStoreModel'
+import { find } from 'modules/property/purchase/resourceStore'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { Add, Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -34,20 +34,25 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
   const { page } = useSelector((state: RootState) => state.ParkingAreaSlice)
 
   const [openDialog, setOpenDialog] = useState(false)
-  const [searchParams, setSearchParams] = useState<ParkingAreaParams>({
-    name: '',
-    typeCd: ''
+  const [searchParams, setSearchParams] = useState<ResourceStoreParams>({
+    shId: '',
+    resName: '',
+    resCode: '',
+    parentRstId: '',
+    rstId: '',
+    id: '',
+    is_fixed: ''
   })
 
   const handleInputChange = useCallback(
-    (field: keyof ParkingAreaParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof ResourceStoreParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prev => ({ ...prev, [field]: event.target.value }))
     },
     []
   )
 
   const fetchData = useCallback(
-    async (params: ParkingAreaParams & PaginationParams) => {
+    async (params: ResourceStoreParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
@@ -70,7 +75,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
   }, [fetchData, searchParams])
 
   const handleReset = useCallback(() => {
-    const initialParams = { name: '', tel: '' }
+    const initialParams = { shId: '' }
     setSearchParams(initialParams)
     fetchData({ ...initialParams, 'page.num': page.num, 'page.size': page.size })
   }, [fetchData, page.num, page.size])
@@ -84,7 +89,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
   }, [selectedRows.size, setDelOpen])
 
   const handleSelectChange =
-    (field: keyof ParkingAreaParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof ResourceStoreParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -101,8 +106,8 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.name}
-            onChange={handleInputChange('name')}
+            value={searchParams.shId}
+            onChange={handleInputChange('shId')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -110,8 +115,8 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             select
             size="small"
             label="请选择停车场类型"
-            value={searchParams.typeCd}
-            onChange={handleSelectChange('typeCd')}
+            value={searchParams.shId}
+            onChange={handleSelectChange('shId')}
             variant="outlined"
             sx={textFieldStyles}
           >
