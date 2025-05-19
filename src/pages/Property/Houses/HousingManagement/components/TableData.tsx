@@ -12,8 +12,8 @@ import DeleteModal from 'components/DeleteModal'
 
 interface TableDataProps {
   dialogValue: FloorReply
-  dialogRoomValue: RoomReply
-  setDialogRoomValue: Dispatch<SetStateAction<RoomReply>>
+  dialogRoomValue: RoomReply | undefined
+  setDialogRoomValue: Dispatch<SetStateAction<RoomReply | undefined>>
   setOpenRoomDialog: Dispatch<SetStateAction<boolean>>
   selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
@@ -154,31 +154,36 @@ const TableData: React.FC<TableDataProps> = ({
   )
 
   const renderActionButtons = (row: RoomReply) => {
-    const actions = [
+    const baseActions = [
       { title: '修改', action: 'edit' },
-      { title: '删除', action: 'delete' },
-      { title: '交房', action: 'checkIn', userId: '-1' },
-      { title: '退房', action: 'checkOut' },
-      { title: '业务受理', action: 'business', userId: '-1' }
+      { title: '删除', action: 'delete' }
     ]
-    return actions
-      .filter(({ userId }) => userId === undefined || row.userId === userId)
-      .map(({ title, action }) => (
-        <Chip
-          key={title}
-          sx={{
-            cursor: 'pointer',
-            marginRight: '-5px',
-            '& .MuiChip-label': {
-              fontSize: '13px'
-            }
-          }}
-          label={title}
-          color="primary"
-          variant="outlined"
-          onClick={() => handleActionClick(action, row)}
-        />
-      ))
+    let conditionalActions: { title: string; action: string }[] = []
+    if (row.userId === '' || row.userId === '-1') {
+      conditionalActions = [{ title: '交房', action: 'checkIn' }]
+    } else {
+      conditionalActions = [
+        { title: '退房', action: 'checkOut' },
+        { title: '业务受理', action: 'business' }
+      ]
+    }
+    const actions = [...baseActions, ...conditionalActions]
+    return actions.map(({ title, action }) => (
+      <Chip
+        key={title}
+        sx={{
+          cursor: 'pointer',
+          marginRight: '-5px',
+          '& .MuiChip-label': {
+            fontSize: '13px'
+          }
+        }}
+        label={title}
+        color="primary"
+        variant="outlined"
+        onClick={() => handleActionClick(action, row)}
+      />
+    ))
   }
 
   return (
@@ -225,7 +230,7 @@ const TableData: React.FC<TableDataProps> = ({
             field: 'actions',
             headerName: '操作',
             type: 'actions',
-            width: 200,
+            width: 250,
             getActions: ({ row }) => renderActionButtons(row),
             headerAlign: 'center',
             align: 'center'

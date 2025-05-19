@@ -39,7 +39,7 @@ const FloorIndex = () => {
   const [openRoomDialog, setOpenRoomDialog] = useState(false)
   const [dialogType, setDialogType] = useState('edit')
   const [dialogValue, setDialogValue] = useState<FloorReply>({})
-  const [dialogRoomValue, setDialogRoomValue] = useState<RoomReply>({})
+  const [dialogRoomValue, setDialogRoomValue] = useState<RoomReply | undefined>()
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [delRoomOpen, setDelRoomOpen] = useState(false)
   const [openImportRoom, setOpenImportRoom] = useState(false)

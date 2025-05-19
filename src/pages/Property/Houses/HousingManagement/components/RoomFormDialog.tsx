@@ -29,7 +29,7 @@ import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
   dialogValue?: FloorReply
-  dialogRoomValue: RoomReply
+  dialogRoomValue: RoomReply | undefined
   openRoomDialog: boolean
   setOpenRoomDialog: Dispatch<SetStateAction<boolean>>
   dialogType: string

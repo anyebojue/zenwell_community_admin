@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { find } from 'modules/property/houses/floor'
 import { find as findRoom } from 'modules/property/houses/room'
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
-import { Box, Button, Stack, Tab, Tabs, Theme, Typography } from '@mui/material'
+import { Box, Button, Stack, Theme, Typography } from '@mui/material'
 import { Add, Download } from '@mui/icons-material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
@@ -13,12 +13,6 @@ import { RoomReply } from 'api/model/property/houses/roomModel'
 import { TreeViewBaseItem } from '@mui/x-tree-view'
 import FormSearch from './components/FormSearch'
 import HousingExpenses from './components/HousingExpenses'
-import CallForPayment from './components/CallForPayment'
-import ReprintReceipt from './components/ReprintReceipt'
-import MeterReadingRecord from './components/MeterReadingRecord'
-import SecurityDeposit from './components/SecurityDeposit'
-import BillingRule from './components/BillingRule'
-import ExpenseStatement from './components/ExpenseStatement'
 
 const contentBoxStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -44,7 +38,6 @@ const buttonCommonStyle = (color: string = '#2660ad', height: string = '32px') =
 
 const HousingManagementIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const [activeTabIndex, setActiveTabIndex] = useState(0)
   const { list } = useSelector((state: RootState) => state.FloorSlice)
   const { list: roomList } = useSelector((state: RootState) => state.RoomSlice)
   const [dialogValue, setDialogValue] = useState<{
@@ -124,10 +117,6 @@ const HousingManagementIndex = () => {
     },
     []
   )
-
-  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
-    setActiveTabIndex(newValue)
-  }
 
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
@@ -214,41 +203,7 @@ const HousingManagementIndex = () => {
           </Stack>
           <FormSearch />
           <Box sx={contentBoxStyle}>
-            <Tabs
-              sx={{
-                border: 'none',
-                boxShadow: 'none',
-                '& .MuiTab-root': {
-                  border: 'none',
-                  boxShadow: 'none'
-                },
-                '& .MuiTab-root:hover': {
-                  border: 'none',
-                  boxShadow: 'none'
-                }
-              }}
-              value={activeTabIndex}
-              onChange={handleTabChange}
-              textColor="secondary"
-              indicatorColor="secondary"
-            >
-              <Tab sx={{ pl: 2, pr: 2 }} label="房屋费用" value={0} />
-              <Tab sx={{ pl: 2, pr: 2 }} label="催缴" value={1} />
-              <Tab sx={{ pl: 2, pr: 2 }} label="补打收据" value={2} />
-              <Tab sx={{ pl: 2, pr: 2 }} label="抄表记录" value={3} />
-              <Tab sx={{ pl: 2, pr: 2 }} label="押金" value={4} />
-              <Tab sx={{ pl: 2, pr: 2 }} label="账单规则" value={5} />
-              <Tab sx={{ pl: 2, pr: 2 }} label="费用账单" value={6} />
-            </Tabs>
-            <Box sx={{ mt: 2 }}>
-              {activeTabIndex === 0 && <HousingExpenses dialogValue={dialogValue} />}
-              {activeTabIndex === 1 && <CallForPayment dialogValue={dialogValue} />}
-              {activeTabIndex === 2 && <ReprintReceipt dialogValue={dialogValue} />}
-              {activeTabIndex === 3 && <MeterReadingRecord dialogValue={dialogValue} />}
-              {activeTabIndex === 4 && <SecurityDeposit dialogValue={dialogValue} />}
-              {activeTabIndex === 5 && <BillingRule dialogValue={dialogValue} />}
-              {activeTabIndex === 6 && <ExpenseStatement dialogValue={dialogValue} />}
-            </Box>
+            <HousingExpenses dialogValue={dialogValue} />
           </Box>
         </Box>
       </Stack>

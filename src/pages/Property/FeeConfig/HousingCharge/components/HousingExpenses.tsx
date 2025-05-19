@@ -80,12 +80,17 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue }) => {
   )
 
   useEffect(() => {
+    console.log(dialogValue.roomData)
     fetchData(findFeeConfigType, { 'page.disable': true }, '正在加载列表中，请稍后...')
     fetchData(findFeeConfig, { 'page.disable': true }, '正在加载列表中，请稍后...')
     if (dialogValue.id) {
-      fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+      fetchData(
+        find,
+        { 'page.num': page.num, 'page.size': page.size, paymentCd: dialogValue.id },
+        '正在加载列表中，请稍后...'
+      )
     }
-  }, [dialogValue.id, fetchData, page.num, page.size])
+  }, [dialogValue.id, dialogValue.roomData, fetchData, page.num, page.size])
 
   const handleActionClick = useCallback((actionType: string, row: PayFeeReply) => {
     switch (actionType) {
