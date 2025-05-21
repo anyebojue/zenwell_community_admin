@@ -1,22 +1,24 @@
 import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { StoreTypeReply } from 'api/model/property/purchase/storeTypeModel'
-import { find } from 'modules/property/purchase/storeType'
+import { ResourceStoreTypeReply } from 'api/model/property/purchase/resourceStoreTypeModel'
+import { find } from 'modules/property/purchase/resourceStoreType'
 import { Chip } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
-import { useNavigate } from 'react-router-dom'
+import { ResourceStoreReply } from 'api/model/property/purchase/resourceStoreModel'
 
 interface TableDataProps {
+  value?: ResourceStoreReply
   setDialogType: Dispatch<SetStateAction<string>>
-  setDialogValue: Dispatch<SetStateAction<StoreTypeReply | undefined>>
+  setDialogValue: Dispatch<SetStateAction<ResourceStoreTypeReply | undefined>>
   setSelectedRows: Dispatch<SetStateAction<Set<string>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const TableData: React.FC<TableDataProps> = ({
+  value,
   setDialogType,
   setDialogValue,
   setSelectedRows,
@@ -24,8 +26,7 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const navigate = useNavigate()
-  const { page, list } = useSelector((state: RootState) => state.StoreTypeSlice)
+  const { page, list } = useSelector((state: RootState) => state.ResourceStoreTypeSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -45,8 +46,12 @@ const TableData: React.FC<TableDataProps> = ({
   )
 
   useEffect(() => {
-    fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
-  }, [fetchData, page.num, page.size])
+    fetchData(
+      find,
+      { 'page.num': page.num, 'page.size': page.size, storeId: value?.id || '' },
+      '正在加载列表中，请稍后...'
+    )
+  }, [fetchData, page.num, page.size, value?.id])
 
   const handleRowSelection = useCallback(
     (rowSelectionModel: GridRowSelectionModel) => {
@@ -56,15 +61,12 @@ const TableData: React.FC<TableDataProps> = ({
   )
 
   const handleActionClick = useCallback(
-    (actionType: string, row: StoreTypeReply) => {
+    (actionType: string, row: ResourceStoreTypeReply) => {
       switch (actionType) {
         case 'edit':
           setDialogType('edit')
           setDialogValue(row)
           setOpenDialog(true)
-          break
-        case 'subType':
-          navigate('/purchase/SecondaryClassification', { state: { value: row } })
           break
         case 'delete':
           setDelOpen(true)
@@ -72,13 +74,12 @@ const TableData: React.FC<TableDataProps> = ({
           break
       }
     },
-    [setDialogType, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows, navigate]
+    [setDialogType, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
   )
 
-  const renderActionButtons = (row: StoreTypeReply) =>
+  const renderActionButtons = (row: ResourceStoreTypeReply) =>
     [
       { title: '修改', action: 'edit' },
-      { title: '二级分类', action: 'subType' },
       { title: '删除', action: 'delete' }
     ].map(({ title, action }) => (
       <Chip

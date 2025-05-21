@@ -34,6 +34,14 @@ const purchase: IRouter[] = [
         }
       },
       {
+        path: 'SecondaryClassification',
+        element: load('Property/Purchase/SecondaryClassification'),
+        meta: {
+          title: '二级分类',
+          hidden: true
+        }
+      },
+      {
         path: 'ItemSpec',
         element: load('Property/Purchase/ItemSpec'),
         meta: {
