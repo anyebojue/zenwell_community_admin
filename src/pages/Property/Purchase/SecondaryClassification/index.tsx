@@ -2,13 +2,13 @@ import { memo, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ResourceStoreTypeReply } from 'api/model/property/purchase/resourceStoreTypeModel'
 import { deleteByIds, find } from 'modules/property/purchase/resourceStoreType'
-import { Box, Button, Theme, Typography } from '@mui/material'
+import { Box, Button, Stack, Theme, Typography } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import message from 'components/Message'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
-import { Add } from '@mui/icons-material'
-import { useLocation } from 'react-router-dom'
+import { Add, Close } from '@mui/icons-material'
+import { useLocation, useNavigate } from 'react-router-dom'
 import TableData from './components/TableData'
 import FormSearch from './components/FormSearch'
 import FormDialog from './components/FormDialog'
@@ -22,6 +22,7 @@ const contentBoxStyle = (theme: Theme) => ({
 
 const ParkingLotManagementIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const location = useLocation()
   const { value } = location.state as { value: ResourceStoreTypeReply }
   const { page, list } = useSelector((state: RootState) => state.ResourceStoreTypeSlice)
@@ -71,19 +72,30 @@ const ParkingLotManagementIndex = () => {
       <Box sx={contentBoxStyle}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="h6">物品类型</Typography>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Add />}
-            sx={buttonStyles('#2660ad', '#1d428a')}
-            onClick={() => {
-              setOpenDialog(true)
-              setDialogType('add')
-            }}
-          >
-            添加
-          </Button>
+          <Stack direction="row" spacing={1}>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              startIcon={<Add />}
+              sx={buttonStyles('#2660ad', '#1d428a')}
+              onClick={() => {
+                setOpenDialog(true)
+                setDialogType('add')
+              }}
+            >
+              添加
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              startIcon={<Close />}
+              onClick={() => navigate(-1)}
+            >
+              返回
+            </Button>
+          </Stack>
         </Box>
         <TableData
           value={value}

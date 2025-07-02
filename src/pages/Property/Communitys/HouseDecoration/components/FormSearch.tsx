@@ -36,7 +36,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
     roomName: '',
     personName: '',
     personTel: '',
-    status: 0,
+    status: '',
     isPostpone: 0,
     createdAt: '',
     startTime: '',
@@ -122,12 +122,12 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             sx={textFieldStyles}
           >
             {[
-              { value: 1000, label: '待审核' },
-              { value: 2000, label: '审核不通过' },
-              { value: 3000, label: '装修中' },
-              { value: 4000, label: '待验收' },
-              { value: 5000, label: '验收成功' },
-              { value: 6000, label: '验收失败' }
+              { value: '1000', label: '待审核' },
+              { value: '2000', label: '审核不通过' },
+              { value: '3000', label: '装修中' },
+              { value: '4000', label: '待验收' },
+              { value: '5000', label: '验收成功' },
+              { value: '6000', label: '验收失败' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -157,7 +157,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
         </FormControl>
       </Stack>
       <Stack direction="row" spacing={3} component="form" sx={{ mb: 1.5 }}>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+        {/* <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
             label="请输入装修时间"
@@ -172,7 +172,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
               }
             }}
           />
-        </FormControl>
+        </FormControl> */}
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
@@ -228,7 +228,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
               roomName: '',
               personName: '',
               personTel: '',
-              status: 0,
+              status: '',
               isPostpone: 0,
               createdAt: '',
               startTime: '',
@@ -238,7 +238,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
               roomName: '',
               personName: '',
               personTel: '',
-              status: 0,
+              status: '',
               isPostpone: 0,
               createdAt: '',
               startTime: '',

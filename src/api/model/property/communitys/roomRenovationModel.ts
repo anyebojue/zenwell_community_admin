@@ -12,7 +12,7 @@ export interface RoomRenovationReply {
   personName?: string // 联系人
   personTel?: string // 联系电话
   statusCd?: number // 数据状态 0 在用 1 失效
-  status?: number // 状态 1000 待审核 2000 审核不通过 3000 装修中 4000 待验收 5000 验收成功 6000 验收失败
+  status?: string // 状态 1000 待审核 2000 审核不通过 3000 装修中 4000 待验收 5000 验收成功 6000 验收失败
   isViolation?: number // 是否违规 0 正常 1 违规
   violationDesc?: string // 违规说明
   remark?: string // 备注
@@ -37,7 +37,7 @@ export interface RoomRenovationParams {
   personName?: string // 联系人
   personTel?: string // 联系电话
   statusCd?: number // 数据状态 0 在用 1 失效
-  status?: number // 状态 1000 待审核 2000 审核不通过 3000 装修中 4000 待验收 5000 验收成功 6000 验收失败
+  status?: string // 状态 1000 待审核 2000 审核不通过 3000 装修中 4000 待验收 5000 验收成功 6000 验收失败
   isViolation?: number // 是否违规 0 正常 1 违规
   violationDesc?: string // 违规说明
   remark?: string // 备注

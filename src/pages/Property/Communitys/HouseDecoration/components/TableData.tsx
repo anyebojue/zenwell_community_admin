@@ -100,9 +100,9 @@ const TableData: React.FC<TableDataProps> = ({
 
   const renderActionButtons = (row: RoomRenovationReply) => {
     const actions = [
-      { title: '审核', action: 'examine', status: 1000 },
-      { title: '装修验收', action: 'acceptanceCheck', status: 4000 },
-      { title: '验收明细', action: 'acceptanceDetail', status: 5000 },
+      { title: '审核', action: 'examine', status: '1000' },
+      { title: '装修验收', action: 'acceptanceCheck', status: '4000' },
+      { title: '验收明细', action: 'acceptanceDetail', status: '5000' },
       { title: '跟踪记录', action: 'traceRecord' },
       { title: '修改', action: 'edit' },
       { title: '删除', action: 'delete' }

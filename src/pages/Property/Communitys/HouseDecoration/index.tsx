@@ -95,7 +95,6 @@ const RoomRenovationsIndex = () => {
           <TableData
             dialogValue={dialogValue}
             setDialogValue={setDialogValue}
-            selectedRows={selectedRows}
             setSelectedRows={setSelectedRows}
             setOpenDialog={setOpenDialog}
             setDelOpen={setDelOpen}

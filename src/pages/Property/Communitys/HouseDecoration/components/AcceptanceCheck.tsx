@@ -34,7 +34,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
 
   const [formData, setFormData] = useState<RoomRenovationParams>({
     roomName: dialogValue?.roomName,
-    status: 0,
+    status: '',
     remark: ''
   })
 
@@ -106,7 +106,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
               select
               size="small"
               value={formData.status}
-              onChange={e => setFormData({ ...formData, status: Number(e.target.value) })}
+              onChange={e => setFormData({ ...formData, status: e.target.value })}
               variant="outlined"
             >
               {[
