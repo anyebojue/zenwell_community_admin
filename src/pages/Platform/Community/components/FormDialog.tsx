@@ -118,7 +118,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
       event.preventDefault()
       setLoading(true)
       try {
-        const params = { ...formData, city_code: formData.county_code }
+        const params = { ...formData, state: '1000', city_code: formData.county_code }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)

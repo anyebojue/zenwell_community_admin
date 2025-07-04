@@ -15,7 +15,7 @@ const statusValue: Record<string, string> = {
 }
 
 const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) => {
-  const info = useSelector((state: RootState) => state.info.userInfo)
+  const info = useSelector((state: RootState) => state.info?.userInfo)
   const [list, setList] = useState(info.community)
 
   const handleActionClick = useCallback(
