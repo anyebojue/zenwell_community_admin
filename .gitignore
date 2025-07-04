@@ -10,6 +10,3 @@ node_modules
 .vscode/*
 !.vscode/extensions.json
 .idea
-
-# build
-dist/
