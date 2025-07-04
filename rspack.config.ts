@@ -106,7 +106,7 @@ export default defineConfig({
     splitChunks: {
       chunks: 'all', // 对所有类型的 chunk 进行拆分
       minSize: 50_000, // 拆分的模块最小大小 (50 KB)
-      maxSize: 300_000, // 拆分的模块最大大小 (300 KB)
+      maxSize: 1000_000, // 拆分的模块最大大小 (300 KB)
       minChunks: 2, // 至少被引用两次的模块才会被拆分
       maxInitialRequests: 30, // 入口点的最大并行请求数
       maxAsyncRequests: 30, // 按需加载的最大并行请求数
