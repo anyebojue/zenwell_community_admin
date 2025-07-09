@@ -1,6 +1,6 @@
 import React, { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { create, find as timeFind } from 'modules/property/houses/spaceOpenTime'
+import { update, create, find as timeFind } from 'modules/property/houses/spaceOpenTime'
 import Grid from '@mui/material/Grid2'
 import {
   Box,
@@ -67,6 +67,8 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogSpaceValue, openDialog, s
     try {
       const current_community = localStorage.getItem('current_community')
       const community = JSON.parse(current_community || '')
+      const existingItem = list.find(item => item.hours === hour)
+
       const params = {
         communityId: community.id,
         spaceId: dialogSpaceValue?.id,
@@ -74,8 +76,12 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogSpaceValue, openDialog, s
         isOpen: value,
         status: 0
       }
-      const action = create(params)
-      const res = await dispatch(action)
+      let res
+      if (existingItem) {
+        res = await dispatch(update({ ...params, id: existingItem.id }))
+      } else {
+        res = await dispatch(create(params))
+      }
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }

@@ -18,6 +18,8 @@ export interface OwnerReply {
   address?: string // 家庭住址
   remark?: string // 备注
   status?: number // 状态 1 在用 0 停用
+  facePhoto?: string // 业主人脸照片
+  accessKey?: string // 门禁钥匙
   room?: RoomReply[]
 }
 
@@ -36,6 +38,8 @@ export interface OwnerParams {
   address?: string // 家庭住址
   remark?: string // 备注
   status?: number // 状态 1 在用 0 停用
+  facePhoto?: string // 业主人脸照片
+  accessKey?: string // 门禁钥匙
 }
 
 export interface FindOwnerReply {

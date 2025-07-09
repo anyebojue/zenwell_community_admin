@@ -137,6 +137,7 @@ const TableData: React.FC<TableDataProps> = ({
     (actionType: string, row: SpaceReply) => {
       switch (actionType) {
         case 'time':
+          setDialogSpaceValue(row)
           setOpenTimeDialog(true)
           break
         case 'edit':

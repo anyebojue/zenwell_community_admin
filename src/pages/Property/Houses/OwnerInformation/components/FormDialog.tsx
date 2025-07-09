@@ -50,7 +50,9 @@ const FormDialog: React.FC<FormDialogProps> = ({
       idCard: dialogType === 'edit' ? dialogValue?.idCard || '' : '',
       address: dialogType === 'edit' ? dialogValue?.address || '' : '',
       remark: dialogType === 'edit' ? dialogValue?.remark || '' : '',
-      sex: dialogType === 'edit' ? dialogValue?.sex || '' : ''
+      sex: dialogType === 'edit' ? dialogValue?.sex || '' : '',
+      facePhoto: dialogType === 'edit' ? dialogValue?.facePhoto || '' : '',
+      accessKey: dialogType === 'edit' ? dialogValue?.accessKey || '' : ''
     }),
     [dialogType, dialogValue]
   )
@@ -102,6 +104,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
     { label: '手机', type: 'text', id: 'link', required: true },
     { label: '身份证', type: 'text', id: 'idCard', required: true },
     { label: '家庭住址', type: 'text', id: 'address', required: true },
+    { label: '业主人脸照片', type: 'text', id: 'facePhoto', required: true },
+    { label: '门禁钥匙', type: 'text', id: 'accessKey', required: true },
     { label: '备注', type: 'text', id: 'remark', required: true }
   ]
 
