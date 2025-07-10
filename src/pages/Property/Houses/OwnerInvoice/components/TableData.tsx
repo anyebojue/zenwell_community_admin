@@ -2,7 +2,7 @@ import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { OwnerInvoiceReply } from 'api/model/property/houses/ownerInvoiceModel'
 import { find } from 'modules/property/houses/ownerInvoice'
-import { Chip } from '@mui/material'
+import { Box, Chip, Typography } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
@@ -102,7 +102,15 @@ const TableData: React.FC<TableDataProps> = ({
 
   return (
     <DataGrid
-      sx={{ mt: 1 }}
+      sx={{
+        '& .MuiDataGrid-columnHeaderTitle': {
+          whiteSpace: 'normal',
+          wordWrap: 'break-word',
+          lineHeight: '1.2'
+        },
+        mt: 1
+      }}
+      getRowHeight={() => 70}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
@@ -142,10 +150,28 @@ const TableData: React.FC<TableDataProps> = ({
         {
           field: 'invoiceAddress',
           headerName: '地址/电话',
-          flex: 1,
+          width: 200,
           headerAlign: 'center',
           align: 'center',
-          renderCell: ({ row }) => `${row.invoiceAddress}/${row.invoiceLink}`
+          renderCell: ({ row }) => (
+            <Box
+              sx={{
+                whiteSpace: 'normal',
+                wordWrap: 'break-word',
+                lineHeight: '1.2',
+                width: '100%',
+                height: '100%',
+                textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <Typography variant="body1">地址：{row.invoiceAddress}</Typography>
+              <Typography variant="body1">电话：{row.invoiceLink}</Typography>
+            </Box>
+          )
         },
         {
           field: 'invoiceAccount',
