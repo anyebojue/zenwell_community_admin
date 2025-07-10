@@ -62,10 +62,13 @@ const FormDialog: React.FC<FormDialogProps> = ({ selectedButton, openDialog, set
       event.preventDefault()
       setLoading(true)
       try {
+        const current_community = localStorage.getItem('current_community')
+        const community = JSON.parse(current_community || '')
         const params = {
           ...formData,
           ownerId: ownerInvoice?.ownerId,
-          ownerName: ownerInvoice?.ownerName
+          ownerName: ownerInvoice?.ownerName,
+          communityId: community?.id
         }
         const action = create(params)
         const res = await dispatch(action)
@@ -102,6 +105,8 @@ const FormDialog: React.FC<FormDialogProps> = ({ selectedButton, openDialog, set
 
   const formFields = [
     { label: '业主', type: 'text', id: 'ownerName', required: true, disabled: true },
+    { label: '申请人', type: 'text', id: 'createUserName', required: true, disabled: true },
+    { label: '发票名头', type: 'text', id: 'invoiceName', required: true, disabled: true },
     { label: '纳税人识别号', type: 'text', id: 'invoiceNum', required: true },
     { label: '电话', type: 'text', id: 'invoiceLink', required: true },
     { label: '地址', type: 'text', id: 'invoiceAddress', required: true }

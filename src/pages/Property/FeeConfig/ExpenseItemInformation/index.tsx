@@ -57,11 +57,11 @@ const RolesIndex = () => {
                 {
                   label: '催缴类型',
                   value:
-                    row?.remindType === '001'
+                    row?.billType === '001'
                       ? '每年1月1日'
-                      : row?.remindType === '002'
+                      : row?.billType === '002'
                         ? '每月1日'
-                        : row?.remindType === '003'
+                        : row?.billType === '003'
                           ? '每日'
                           : ''
                 },
