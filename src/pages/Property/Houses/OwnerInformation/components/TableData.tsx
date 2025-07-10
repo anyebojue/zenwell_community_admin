@@ -113,6 +113,7 @@ const TableData: React.FC<TableDataProps> = ({
   return (
     <DataGrid
       sx={{ mt: 1 }}
+      getRowHeight={() => 100}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
@@ -146,6 +147,23 @@ const TableData: React.FC<TableDataProps> = ({
         {
           field: 'address',
           headerName: '家庭住址',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'facePhoto',
+          headerName: '业主人脸',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => (
+            <img style={{ height: '80px' }} src={row.facePhoto} alt={row.facePhoto} />
+          )
+        },
+        {
+          field: 'accessKey',
+          headerName: '门禁钥匙',
           flex: 1,
           headerAlign: 'center',
           align: 'center'
