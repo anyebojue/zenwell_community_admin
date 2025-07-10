@@ -67,14 +67,18 @@ const FormDialog: React.FC<FormDialogProps> = ({
       event.preventDefault()
       setLoading(true)
       try {
-        const params = { ...formData, userId: ownerUser?.id }
+        const current_community = localStorage.getItem('current_community')
+        const community = JSON.parse(current_community || '')
+        const params = { ...formData, userId: ownerUser?.id, communityId: community?.id }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-        await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))
+        await dispatch(
+          find({ 'page.num': page.num || '1', 'page.size': page.size, userId: ownerUser?.id })
+        )
         message.success(dialogType === 'add' ? '新建成功' : '编辑成功')
         setOpenDialog(false)
         setFormData(initialFormData)
