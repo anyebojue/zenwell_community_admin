@@ -1,10 +1,9 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { find } from 'modules/platform/organization/employees'
 import message from 'components/Message'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
-import { Checkbox } from '@mui/material'
 
 export interface Column<T> {
   headerName: string
@@ -21,7 +20,16 @@ const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({ setSelectedRo
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.EmployeesSlice)
   const { orgUserList } = useSelector((state: RootState) => state.OrganizationInfoSlice)
-  const checkboxId = orgUserList.map(item => item.userId)
+  const defaultSelectedIds = orgUserList.map(item => String(item.userId))
+  const [selectionModel, setSelectionModel] = useState<GridRowSelectionModel>(defaultSelectedIds)
+
+  useEffect(() => {
+    setSelectedRows(new Set(selectionModel.map(id => String(id))))
+  }, [selectionModel, setSelectedRows])
+
+  const handleRowSelection = useCallback((newSelection: GridRowSelectionModel) => {
+    setSelectionModel(newSelection)
+  }, [])
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -44,13 +52,6 @@ const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({ setSelectedRo
     fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
   }, [fetchData, page.num, page.size])
 
-  const handleRowSelection = useCallback(
-    (rowSelectionModel: GridRowSelectionModel) => {
-      setSelectedRows(new Set(rowSelectionModel.map(id => String(id))))
-    },
-    [setSelectedRows]
-  )
-
   return (
     <DataGrid
       sx={{ mt: 1 }}
@@ -64,6 +65,7 @@ const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({ setSelectedRo
         { field: 'mobile', headerName: '员工电话', flex: 1 },
         { field: 'id', headerName: '员工编号', width: 200 }
       ]}
+      rowSelectionModel={selectionModel}
       onRowSelectionModelChange={handleRowSelection}
       pageSizeOptions={[10, 20, 50, 100]}
       paginationMode="server"
@@ -73,12 +75,6 @@ const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({ setSelectedRo
           paginationModel: {
             pageSize: Number(page.size)
           }
-        }
-      }}
-      isRowSelectable={params => !checkboxId.includes(params.row.id)}
-      slots={{
-        baseCheckbox: params => {
-          return <Checkbox checked={params.disabled} disabled={params.disabled} />
         }
       }}
     />
