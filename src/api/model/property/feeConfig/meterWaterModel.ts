@@ -8,13 +8,15 @@ export interface MeterWaterReply {
   meterType?: string // 抄表类型
   objType?: string // 类型 1001 房屋 2002 车位
   objId?: string // 对象ID，1001 是房屋 2002 是车位
-  preDegrees?: number // 上期度数
-  curDegrees?: number // 本期度数
+  preDegrees?: string // 上期度数
+  curDegrees?: string // 本期度数
   preReadingTime?: string // 上期读表时间
   curReadingTime?: string // 本期读表时间
   communityId?: string //
   statusCd?: string // 数据状态，详细参考c_status表，0, 在用 1失效
   feeId?: string // 费用ID
+  feeTypeCd?: string
+  configId?: string
   objName?: string // 对象名称
   price?: number // 抄表单价
   status?: number //
@@ -27,13 +29,15 @@ export interface MeterWaterParams {
   meterType?: string // 抄表类型
   objType?: string // 类型 1001 房屋 2002 车位
   objId?: string // 对象ID，1001 是房屋 2002 是车位
-  preDegrees?: number // 上期度数
-  curDegrees?: number // 本期度数
+  preDegrees?: string // 上期度数
+  curDegrees?: string // 本期度数
   preReadingTime?: string // 上期读表时间
   curReadingTime?: string // 本期读表时间
   communityId?: string //
   statusCd?: string // 数据状态，详细参考c_status表，0, 在用 1失效
   feeId?: string // 费用ID
+  feeTypeCd?: string
+  configId?: string
   objName?: string // 对象名称
   price?: number // 抄表单价
   status?: number //

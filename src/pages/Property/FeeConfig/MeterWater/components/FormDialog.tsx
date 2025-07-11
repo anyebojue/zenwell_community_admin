@@ -57,6 +57,8 @@ const FormMeterReading: React.FC<FormMeterReadingProps> = ({
   dialogType,
   setOpenDialog
 }) => {
+  console.log('dialogValue', dialogValue)
+  console.log('dialogMeterWaterValue', dialogMeterWaterValue)
   const info = useSelector((state: RootState) => state.info.userInfo)
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.MeterWaterSlice)
@@ -68,16 +70,14 @@ const FormMeterReading: React.FC<FormMeterReadingProps> = ({
   const initialFormData = useMemo(
     () => ({
       feeId: dialogType === 'edit' ? dialogMeterWaterValue?.feeId || '' : '',
-      feeTypeCd: dialogType === 'edit' ? dialogMeterWaterValue?.feeId || '' : '',
-      configId: dialogType === 'edit' ? dialogMeterWaterValue?.feeId || '' : '',
+      feeTypeCd: dialogType === 'edit' ? dialogMeterWaterValue?.feeTypeCd || '' : '',
+      configId: dialogType === 'edit' ? dialogMeterWaterValue?.configId || '' : '',
       payerObjId: `${dialogValue?.roomData?.roomNum} - ${dialogValue?.roomData?.unit?.unitNum} - ${dialogValue?.roomData?.unit?.floor?.floorNum}`,
-      meterWater: {
-        meterType: dialogType === 'edit' ? dialogMeterWaterValue?.feeId || '' : '',
-        preDegrees: dialogType === 'edit' ? dialogMeterWaterValue?.feeId || '' : '',
-        curDegrees: dialogType === 'edit' ? dialogMeterWaterValue?.feeId || '' : '',
-        preReadingTime: formatDateTime(new Date()),
-        curReadingTime: formatDateTime(new Date())
-      }
+      meterType: dialogType === 'edit' ? dialogMeterWaterValue?.meterType || '' : '',
+      preDegrees: dialogType === 'edit' ? dialogMeterWaterValue?.preDegrees || '' : '',
+      curDegrees: dialogType === 'edit' ? dialogMeterWaterValue?.curDegrees || '' : '',
+      preReadingTime: formatDateTime(new Date()),
+      curReadingTime: formatDateTime(new Date())
     }),
     [dialogMeterWaterValue, dialogType, dialogValue]
   )
@@ -149,8 +149,8 @@ const FormMeterReading: React.FC<FormMeterReadingProps> = ({
   )
 
   const formFields = [
-    { label: '上期度数', id: 'meterWater.preDegrees' },
-    { label: '本期度数', id: 'meterWater.curDegrees' },
+    { label: '上期度数', id: 'preDegrees' },
+    { label: '本期度数', id: 'curDegrees' },
     { label: '备注', id: 'remark' }
   ]
 
@@ -262,8 +262,8 @@ const FormMeterReading: React.FC<FormMeterReadingProps> = ({
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.meterWater?.meterType}
-              onChange={e => handleFormDataChange('meterWater.meterType', e.target.value)}
+              value={formData.meterType}
+              onChange={e => handleFormDataChange('meterType', e.target.value)}
               variant="outlined"
             >
               {list.map(option => (

@@ -18,6 +18,7 @@ export interface PayFeeReply {
   userId?: string
   statusCd?: string
   feeFlag?: string
+  feeId?: string
   configId?: string
   payerObjType?: string
   batchId?: string
@@ -46,11 +47,13 @@ export interface PayFeeParams {
   userId?: string
   statusCd?: string
   feeFlag?: string
+  feeId?: string
   configId?: string
   payerObjType?: string
   batchId?: string
   status?: 1
   remark?: string
+  meterType?: string
   meterWater?: {
     meterType?: string
     preDegrees?: string
