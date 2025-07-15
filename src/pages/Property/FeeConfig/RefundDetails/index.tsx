@@ -49,21 +49,42 @@ const RolesIndex = () => {
             <Grid container spacing={2}>
               {[
                 { label: '费用ID', value: row?.feeId },
-                { label: '费用标识', value: row?.payFeeDetail?.payFee?.feeConfig?.feeFlag },
-                { label: '费用类型', value: row?.feeTypeCd },
-                { label: '付费对象', value: row?.payFeeDetail?.payFee?.incomeObjName },
-                { label: '费用项', value: row?.configId },
-                { label: '费用状态', value: row?.status },
-                { label: '建账时间', value: row?.createTime },
-                { label: '计费开始时间', value: row?.startTime },
-                { label: '计费结束时间', value: row?.endTime },
-                { label: '业主ID', value: row?.payerObjId },
-                { label: '业主名称', value: row?.payerObjName },
+                {
+                  label: '费用标识',
+                  value:
+                    row?.payFee?.feeFlag === '1003006'
+                      ? '周期性费用'
+                      : row?.payFee?.feeFlag === '2006012'
+                        ? '一次性费用'
+                        : '-'
+                },
+                { label: '费用类型', value: row.payFee?.feeConfig?.feeConfigType?.name },
+                { label: '付费对象', value: row?.payFee?.payerObjName },
+                { label: '费用项', value: row?.payFee?.feeConfig?.feeConfigType?.name },
+                {
+                  label: '费用状态',
+                  value:
+                    row?.status === 1000
+                      ? '退费中'
+                      : row.status === 1100
+                        ? '已退费'
+                        : row.status === 1200
+                          ? '退费失败'
+                          : row.status === 1300
+                            ? '退费单'
+                            : row.status === 1400
+                              ? '正常'
+                              : row.status === 1500
+                                ? '欠费'
+                                : '-'
+                },
+                { label: '建账时间', value: row?.createdAt },
+                { label: '计费开始时间', value: row?.payFeeDetail?.startTime },
+                { label: '计费结束时间', value: row?.payFeeDetail?.endTime },
                 { label: '收费截止时间', value: row?.endTime },
-                { label: '业主联系方式', value: '' },
-                { label: '面积', value: '' },
-                { label: '单价', value: row?.payFeeDetail?.payFee?.feeConfig?.squarePrice },
-                { label: '附加费', value: row?.payFeeDetail?.payFee?.feeConfig?.additionalAmount }
+                { label: '面积', value: row.payFee?.feeConfig?.scale },
+                { label: '单价', value: row?.payFee?.feeConfig?.squarePrice },
+                { label: '附加费', value: row?.payFee?.feeConfig?.additionalAmount }
               ].map((item, index) => (
                 <Grid size={{ xs: 3, sm: 3, md: 3 }} key={index}>
                   <Typography variant="body2">

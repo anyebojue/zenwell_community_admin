@@ -11,6 +11,7 @@ import { RoomReply } from 'api/model/property/houses/roomModel'
 
 interface TableDataProps {
   dialogValue: { id?: string; label?: string; roomData?: RoomReply }
+  dialogType: string
   setDialogMeterWaterValue: Dispatch<SetStateAction<MeterWaterReply>>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -20,6 +21,7 @@ interface TableDataProps {
 
 const TableData: React.FC<TableDataProps> = ({
   dialogValue,
+  dialogType,
   setDialogMeterWaterValue,
   setSelectedRows,
   setOpenDialog,
@@ -48,9 +50,13 @@ const TableData: React.FC<TableDataProps> = ({
   )
 
   useEffect(() => {
-    fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
     fetchData(findMeterType, { 'page.disable': true }, '正在加载列表中，请稍后...')
-  }, [fetchData, page.num, page.size])
+    fetchData(
+      find,
+      { 'page.num': page.num, 'page.size': page.size, objId: dialogValue.roomData?.id || '' },
+      '正在加载列表中，请稍后...'
+    )
+  }, [dialogType, dialogValue.roomData?.id, fetchData, page.num, page.size])
 
   const handleRowSelection = useCallback(
     (rowSelectionModel: GridRowSelectionModel) => {
@@ -118,13 +124,11 @@ const TableData: React.FC<TableDataProps> = ({
           }
         },
         {
-          field: 'discountType',
+          field: 'objName',
           headerAlign: 'center',
           headerName: '对象名称',
           align: 'center',
-          width: 100,
-          renderCell: () =>
-            `${dialogValue.roomData?.roomNum} - ${dialogValue.roomData?.unit?.unitNum} - ${dialogValue.roomData?.unit?.floor?.floorNum}`
+          width: 100
         },
         {
           field: 'preDegrees',

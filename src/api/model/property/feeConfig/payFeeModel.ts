@@ -11,6 +11,7 @@ export interface PayFeeReply {
   feeTypeCd?: string
   communityId?: string
   payerObjId?: string
+  objName?: string
   incomeObjId?: string
   startTime?: string
   endTime?: string
@@ -40,6 +41,7 @@ export interface PayFeeParams {
   feeTypeCd?: string
   communityId?: string
   payerObjId?: string
+  objName?: string
   incomeObjId?: string
   startTime?: string
   endTime?: string

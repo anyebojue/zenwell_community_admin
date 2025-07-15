@@ -35,7 +35,7 @@ const FormSearch: React.FC = () => {
   const [searchParams, setSearchParams] = useState<ReturnPayFeeParams>({
     applyPersonName: '',
     auditPersonName: '',
-    payerObjId: '',
+    payerObjName: '',
     stateCd: '',
     feeTypeCd: '',
     startTime: '',
@@ -76,7 +76,7 @@ const FormSearch: React.FC = () => {
     const initialParams = {
       applyPersonName: '',
       auditPersonName: '',
-      payerObjId: '',
+      payerObjName: '',
       stateCd: '',
       feeTypeCd: '',
       startTime: '',
@@ -126,8 +126,8 @@ const FormSearch: React.FC = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.payerObjId}
-            onChange={handleInputChange('payerObjId')}
+            value={searchParams.payerObjName}
+            onChange={handleInputChange('payerObjName')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -142,9 +142,9 @@ const FormSearch: React.FC = () => {
           >
             {[
               { value: '1000', label: '审核中' },
-              { value: '1100', label: '审核通过' },
-              { value: '1200', label: '审核未通过' },
-              { value: '1300', label: '退款单' }
+              { value: '1001', label: '审核通过' },
+              { value: '1002', label: '审核未通过' },
+              { value: '1003', label: '退款单' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}

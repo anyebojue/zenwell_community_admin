@@ -56,6 +56,7 @@ export interface ReturnPayFeeParams {
   status?: number // Status, 1: Active, 0: Inactive
   remark?: string // 备注
   payerObjId?: string
+  payerObjName?: string
   startTime?: string
   endTime?: string
 }

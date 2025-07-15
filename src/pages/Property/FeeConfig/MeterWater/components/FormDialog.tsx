@@ -47,6 +47,7 @@ interface FormMeterReadingProps {
   dialogMeterWaterValue: MeterWaterReply
   openDialog: boolean
   dialogType: string
+  setDialogType: Dispatch<SetStateAction<string>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
@@ -55,6 +56,7 @@ const FormMeterReading: React.FC<FormMeterReadingProps> = ({
   dialogMeterWaterValue,
   openDialog,
   dialogType,
+  setDialogType,
   setOpenDialog
 }) => {
   console.log('dialogValue', dialogValue)
@@ -72,7 +74,7 @@ const FormMeterReading: React.FC<FormMeterReadingProps> = ({
       feeId: dialogType === 'edit' ? dialogMeterWaterValue?.feeId || '' : '',
       feeTypeCd: dialogType === 'edit' ? dialogMeterWaterValue?.feeTypeCd || '' : '',
       configId: dialogType === 'edit' ? dialogMeterWaterValue?.configId || '' : '',
-      payerObjId: `${dialogValue?.roomData?.roomNum} - ${dialogValue?.roomData?.unit?.unitNum} - ${dialogValue?.roomData?.unit?.floor?.floorNum}`,
+      objName: `${dialogValue?.roomData?.roomNum} - ${dialogValue?.roomData?.unit?.unitNum} - ${dialogValue?.roomData?.unit?.floor?.floorNum}`,
       meterType: dialogType === 'edit' ? dialogMeterWaterValue?.meterType || '' : '',
       preDegrees: dialogType === 'edit' ? dialogMeterWaterValue?.preDegrees || '' : '',
       curDegrees: dialogType === 'edit' ? dialogMeterWaterValue?.curDegrees || '' : '',
@@ -130,13 +132,19 @@ const FormMeterReading: React.FC<FormMeterReadingProps> = ({
       try {
         const current_community = localStorage.getItem('current_community')
         const community = JSON.parse(current_community || '')
-        const params = { ...formData, communityId: community?.id }
+        const params = { ...formData, communityId: community?.id, objId: dialogValue?.roomData?.id }
         const action = create({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-        await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+        await dispatch(
+          find({
+            'page.num': page.num,
+            'page.size': page.size,
+            objId: dialogValue.roomData?.id || ''
+          })
+        )
         message.success('创建成功')
         setOpenDialog(false)
       } catch (err: unknown) {
@@ -201,7 +209,10 @@ const FormMeterReading: React.FC<FormMeterReadingProps> = ({
       fullWidth
       maxWidth="sm"
       open={openDialog}
-      onClose={() => setOpenDialog(false)}
+      onClose={() => {
+        setOpenDialog(false)
+        setDialogType('')
+      }}
       slotProps={{
         paper: {
           component: 'form',
@@ -281,8 +292,8 @@ const FormMeterReading: React.FC<FormMeterReadingProps> = ({
                 sx={{ width: '80%' }}
                 type="text"
                 size="small"
-                value={formData.payerObjId}
-                onChange={e => setFormData({ ...formData, payerObjId: e.target.value })}
+                value={formData.objName}
+                onChange={e => setFormData({ ...formData, objName: e.target.value })}
                 required
               />
             </Box>

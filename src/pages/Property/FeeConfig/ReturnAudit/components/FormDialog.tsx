@@ -89,8 +89,8 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
               variant="outlined"
             >
               {[
-                { value: '2002', label: '同意' },
-                { value: '3003', label: '拒绝' }
+                { value: '1001', label: '同意' },
+                { value: '1002', label: '拒绝' }
               ].map(option => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}

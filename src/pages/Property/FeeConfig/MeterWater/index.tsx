@@ -45,7 +45,7 @@ const HousingManagementIndex = () => {
     roomData?: RoomReply
   }>({})
   const [dialogMeterWaterValue, setDialogMeterWaterValue] = useState<MeterWaterReply>({})
-  const [dialogType, setDialogType] = useState('add')
+  const [dialogType, setDialogType] = useState('')
   const [openDialog, setOpenDialog] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -231,6 +231,7 @@ const HousingManagementIndex = () => {
             </Box>
             <TableData
               dialogValue={dialogValue}
+              dialogType={dialogType}
               setDialogMeterWaterValue={setDialogMeterWaterValue}
               setSelectedRows={setSelectedRows}
               setOpenDialog={setOpenDialog}
@@ -247,6 +248,7 @@ const HousingManagementIndex = () => {
         dialogMeterWaterValue={dialogMeterWaterValue}
         openDialog={openDialog}
         dialogType={dialogType}
+        setDialogType={setDialogType}
         setOpenDialog={setOpenDialog}
       />
       <DeleteModal

@@ -15,9 +15,16 @@ interface TableDataProps {
 }
 
 const statusValue: Record<string, string> = {
-  '1001': '待审核',
-  '2002': '审核通过',
-  '3003': '审核不通过'
+  '1000': '审核中',
+  '1001': '审核通过',
+  '1002': '审核不通过',
+  '1003': '退款单'
+}
+
+const statuValue: Record<string, string> = {
+  '0': '退费失败',
+  '1': '退费中',
+  '2': '退费成功'
 }
 
 const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) => {
@@ -111,7 +118,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
       rows={list}
       columns={[
         {
-          field: 'payFeeDetail.payFee.feeConfig.feeConfigType.name',
+          field: 'payFee.feeConfig.feeConfigType.name',
           headerName: '费用类型',
           flex: 1,
           headerAlign: 'center',
@@ -119,7 +126,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
           renderCell: ({ row }) => row.payFee?.feeConfig?.feeConfigType?.name
         },
         {
-          field: 'payFeeDetail.payFee.payerObjName',
+          field: 'payFee.payerObjName',
           headerName: '付费对象',
           flex: 1,
           headerAlign: 'center',
@@ -168,7 +175,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
           flex: 1,
           headerAlign: 'center',
           align: 'center',
-          renderCell: ({ row }) => <Chip label={statusValue[row.stateCd!] || '未知类型'} />
+          renderCell: ({ row }) => <Chip label={statusValue[row.stateCd!] || '未知'} />
         },
         {
           field: 'auditPersonName',
@@ -182,7 +189,8 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog }) 
           headerName: '	退款情况',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          renderCell: ({ row }) => <Chip label={statuValue[row.statusCd!] || '未知'} />
         },
         {
           field: 'actions',
