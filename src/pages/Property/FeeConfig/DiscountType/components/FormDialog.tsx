@@ -49,7 +49,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
   const initialFormData = useMemo(
     () => ({
       name: dialogType === 'edit' ? dialogValue?.name || '' : '',
-      typeDesc: dialogType === 'edit' ? dialogValue?.typeDesc || '' : ''
+      remark: dialogType === 'edit' ? dialogValue?.remark || '' : ''
     }),
     [dialogType, dialogValue]
   )
@@ -119,8 +119,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
               multiline
               rows={2}
               size="small"
-              value={formData.typeDesc}
-              onChange={e => setFormData({ ...formData, typeDesc: e.target.value })}
+              value={formData.remark}
+              onChange={e => setFormData({ ...formData, remark: e.target.value })}
               variant="outlined"
             />
           </Box>

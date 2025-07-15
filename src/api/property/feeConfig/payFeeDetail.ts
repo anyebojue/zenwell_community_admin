@@ -5,10 +5,10 @@ import {
 } from '../../model/property/feeConfig/payFeeDetailModel'
 
 const ApiPrefix = {
-  FindPayFeeDetail: '/fee/return_pay_fee',
-  CreatePayFeeDetail: '/fee/return_pay_fee',
-  UpdatePayFeeDetail: '/fee/return_pay_fee',
-  DeletePayFeeDetail: '/fee/return_pay_fee'
+  FindPayFeeDetail: '/fee/pay_fee_detail',
+  CreatePayFeeDetail: '/fee/pay_fee_detail',
+  UpdatePayFeeDetail: '/fee/pay_fee_detail',
+  DeletePayFeeDetail: '/fee/pay_fee_detail'
 }
 
 /**

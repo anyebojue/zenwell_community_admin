@@ -101,7 +101,7 @@ const TableData: React.FC<TableDataProps> = ({
       rows={list}
       columns={[
         { field: 'name', headerName: '类型名称', flex: 1 },
-        { field: 'typeDesc', headerName: '类型描述', flex: 1 },
+        { field: 'remark', headerName: '类型描述', flex: 1 },
         {
           field: 'actions',
           headerName: '操作',
