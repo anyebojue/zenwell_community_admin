@@ -36,6 +36,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
 
   const [openDialog, setOpenDialog] = useState(false)
   const [searchParams, setSearchParams] = useState<ApplyRoomDiscountParams>({
+    roomId: '',
     applyType: '',
     stateCd: ''
   })
@@ -71,7 +72,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
   }, [fetchData, searchParams])
 
   const handleReset = useCallback(() => {
-    const initialParams = { applyType: '', stateCd: '' }
+    const initialParams = { roomId: '', applyType: '', stateCd: '' }
     setSearchParams(initialParams)
     fetchData({ ...initialParams, 'page.num': page.num, 'page.size': page.size })
   }, [fetchData, page.num, page.size])
@@ -102,8 +103,8 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.applyType}
-            onChange={handleInputChange('applyType')}
+            value={searchParams.roomId}
+            onChange={handleInputChange('roomId')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
