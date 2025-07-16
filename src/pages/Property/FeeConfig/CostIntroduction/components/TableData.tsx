@@ -16,6 +16,17 @@ interface TableDataProps {
   expense: boolean
 }
 
+const statusValue: Record<string, string> = {
+  '1010301': '普通房屋',
+  '2020602': '商铺'
+}
+
+const statuValue: Record<string, string> = {
+  '1001': '当前小区',
+  '2002': '楼栋',
+  '3003': '单元'
+}
+
 const TableData: React.FC<TableDataProps> = ({ expense }) => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
@@ -112,12 +123,42 @@ const TableData: React.FC<TableDataProps> = ({ expense }) => {
       rows={list}
       columns={[
         {
+          field: 'name',
+          headerName: '费用名称',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
           field: 'feeTypeCd',
           headerName: '费用类型',
           flex: 1,
           headerAlign: 'center',
           align: 'center',
-          renderCell: ({ row }) => <Chip label={result[row.feeTypeCd!] || '未知类型'} />
+          renderCell: ({ row }) => <Chip label={result[row.feeTypeCd!] || '-'} />
+        },
+        {
+          field: 'feeFlag',
+          headerName: '房屋类型',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => <Chip label={statusValue[row.feeFlag!] || '-'} />
+        },
+        {
+          field: 'paymentCycle',
+          headerName: '使用量',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'paymentCd',
+          headerName: '公摊范围',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => <Chip label={statuValue[row.paymentCd!] || '-'} />
         },
         {
           field: 'createdAt',

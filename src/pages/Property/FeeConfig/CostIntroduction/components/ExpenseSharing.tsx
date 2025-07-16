@@ -8,8 +8,8 @@ import React, {
   useState
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { FeeConfigParams } from 'api/model/property/feeConfig/feeConfigModel'
-import { create, find } from 'modules/property/feeConfig/feeConfig'
+import { ImportFeeParams } from 'api/model/property/feeConfig/importFeeModel'
+import { create, find } from 'modules/property/feeConfig/importFee'
 import {
   Box,
   CircularProgress,
@@ -59,20 +59,19 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
       feeFlag: '',
       paymentCycle: '',
       paymentCd: '',
-      prepaymentPeriod: '',
-      units: '',
+      floorId: '',
+      floorNum: '',
+      unitId: '',
+      unitNum: '',
+      layer: '',
       deductFrom: '',
-      payOnline: 'Y',
-      scale: '1',
-      decimalPlace: 2,
-      status: 1,
       computingFormula: '',
-      squarePrice: 0,
-      additionalAmount: 0
+      startTime: '',
+      endTime: ''
     }),
     []
   )
-  const [formData, setFormData] = useState<FeeConfigParams>(initialFormData)
+  const [formData, setFormData] = useState<ImportFeeParams>(initialFormData)
 
   useEffect(() => {
     setFormData(initialFormData)
@@ -88,8 +87,14 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
         const params = {
           ...formData,
           communityId: community?.id,
-          startTime: new Date().toISOString().slice(0, 10),
-          endTime: '2050-01-01'
+          floorNum: formData.floorId
+            ? housingManagementList.find(item => item.id === formData.floorId)?.floorNum
+            : '',
+          unitNum: formData.unitId
+            ? unitList.find(item => item.id === formData.unitId)?.unitNum
+            : '',
+          startTime: formatDateTime(formData.startTime),
+          endTime: formatDateTime(formData.endTime)
         }
         const action = create(params)
         const res = await dispatch(action)
@@ -210,8 +215,8 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.paymentCd}
-              onChange={e => setFormData({ ...formData, paymentCd: e.target.value })}
+              value={formData.floorId}
+              onChange={e => setFormData({ ...formData, floorId: e.target.value })}
               variant="outlined"
             >
               {housingManagementList.map(option => (
@@ -227,8 +232,8 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.paymentCd}
-              onChange={e => setFormData({ ...formData, paymentCd: e.target.value })}
+              value={formData.unitId}
+              onChange={e => setFormData({ ...formData, unitId: e.target.value })}
               variant="outlined"
             >
               {unitList.map(option => (
@@ -244,8 +249,8 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
               disabled={disabled}
               sx={{ width: '56%' }}
               size="small"
-              value={formData.paymentCd}
-              onChange={e => setFormData({ ...formData, paymentCd: e.target.value })}
+              value={formData.layer}
+              onChange={e => setFormData({ ...formData, layer: e.target.value })}
               variant="outlined"
             />
             <Button

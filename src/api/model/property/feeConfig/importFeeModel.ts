@@ -4,20 +4,46 @@ export interface ImportFeeReply {
   id?: string
   createdAt?: string
   updatedAt?: string
-  feeTypeCd?: string // 费用类型
-  payerObjType?: string // 收费对象类型
-  communityId?: string // 小区ID
-  statusCd?: string // 数据状态，详细参考c_status表，S 保存，0, 在用 1失效
-  remark?: string // 备注
+  feeTypeCd?: string
+  communityId?: string
+  statusCd?: string
+  remark?: string
+  name?: string
+  feeFlag?: string
+  paymentCycle?: string
+  paymentCd?: string
+  floorId?: string
+  floorNum?: string
+  unitId?: string
+  unitNum?: string
+  layer?: string
+  deductFrom?: string
+  computingFormula?: string
+  startTime?: string
+  endTime?: string
+  payerObjType?: string
 }
 
 export interface ImportFeeParams {
   id?: string
-  feeTypeCd?: string // 费用类型
-  payerObjType?: string // 收费对象类型
-  communityId?: string // 小区ID
-  statusCd?: string // 数据状态，详细参考c_status表，S 保存，0, 在用 1失效
-  remark?: string // 备注
+  feeTypeCd?: string
+  communityId?: string
+  statusCd?: string
+  remark?: string
+  name?: string
+  feeFlag?: string
+  paymentCycle?: string
+  paymentCd?: string
+  floorId?: string
+  floorNum?: string
+  unitId?: string
+  unitNum?: string
+  layer?: string
+  deductFrom?: string
+  computingFormula?: string
+  startTime?: string
+  endTime?: string
+  payerObjType?: string
 }
 
 export interface FindImportFeeReply {
