@@ -6,7 +6,6 @@ export interface ParkingBoxReply {
   createdAt?: string
   updatedAt?: string
   boxName?: string
-  pId?: string
   communityId?: string
   tempCarIn?: string
   fee?: string
@@ -21,13 +20,14 @@ export interface ParkingBoxReply {
 export interface ParkingBoxParams {
   id?: string
   boxName?: string
-  pId?: string
   communityId?: string
   tempCarIn?: string
   fee?: string
   blueCarIn?: string
   yelowCarIn?: string
   remark?: string
+  statusCd?: string
+  paId?: string
 }
 
 export interface FindParkingBoxReply {

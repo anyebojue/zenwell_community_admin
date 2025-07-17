@@ -48,7 +48,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
   const initialFormData = useMemo(
     () => ({
       boxName: dialogType === 'edit' ? dialogValue?.boxName || '' : '',
-      pId: dialogType === 'edit' ? dialogValue?.pId || '' : '',
+      paId: dialogType === 'edit' ? dialogValue?.paId || '' : '',
       tempCarIn: dialogType === 'edit' ? dialogValue?.tempCarIn || '' : '',
       fee: dialogType === 'edit' ? dialogValue?.fee || '' : '',
       blueCarIn: dialogType === 'edit' ? dialogValue?.blueCarIn || '' : '',
@@ -133,8 +133,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.pId}
-              onChange={e => setFormData({ ...formData, pId: e.target.value })}
+              value={formData.paId}
+              onChange={e => setFormData({ ...formData, paId: e.target.value })}
               variant="outlined"
             >
               {parkingAreaList.map(option => (

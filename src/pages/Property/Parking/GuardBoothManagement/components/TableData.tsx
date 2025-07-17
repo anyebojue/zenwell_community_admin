@@ -119,7 +119,12 @@ const TableData: React.FC<TableDataProps> = ({
       columns={[
         { field: 'id', headerName: '岗亭编号', width: 200 },
         { field: 'boxName', headerName: '岗亭名称', flex: 1 },
-        { field: 'parkingArea.name', headerName: '停车场', flex: 1 },
+        {
+          field: 'parkingArea.name',
+          headerName: '停车场',
+          flex: 1,
+          renderCell: ({ row }) => row.parkingArea?.name
+        },
         {
           field: 'tempCarIn',
           headerName: '临时车进场',
