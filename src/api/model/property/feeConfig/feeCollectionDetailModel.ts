@@ -18,6 +18,8 @@ export interface FeeCollectionDetailReply {
   remarks?: string
   statusCd?: string
   oweAmount?: number
+  actualAmount?: number
+  cumulativeAmount?: number
 }
 
 export interface FeeCollectionDetailParams {
@@ -36,7 +38,8 @@ export interface FeeCollectionDetailParams {
   remarks?: string
   statusCd?: string
   oweAmount?: number
-  StaffName?: string
+  actualAmount?: number
+  cumulativeAmount?: number
 }
 
 export interface FindFeeCollectionDetailReply {

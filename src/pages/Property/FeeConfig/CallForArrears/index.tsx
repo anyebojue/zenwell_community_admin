@@ -2,19 +2,17 @@ import { memo, useCallback, useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { find } from 'modules/property/houses/floor'
 import { find as findRoom } from 'modules/property/houses/room'
-import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
-import { Box, Button, Stack, Theme, Typography } from '@mui/material'
+import { Box, Stack, Theme, Typography } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import message from 'components/Message'
 import { RoomReply } from 'api/model/property/houses/roomModel'
 import { TreeViewBaseItem } from '@mui/x-tree-view'
-import DeleteModal, { buttonStyles } from 'components/DeleteModal'
+import DeleteModal from 'components/DeleteModal'
 import { deleteByIds } from 'modules/property/feeConfig/feeCollectionOrder'
 import { FeeCollectionOrderReply } from 'api/model/property/feeConfig/feeCollectionOrderModel'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
-import FormDialog from './components/FormDialog'
 
 const contentBoxStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -22,13 +20,6 @@ const contentBoxStyle = (theme: Theme) => ({
   padding: '15px 15px',
   width: '100%',
   marginTop: '15px'
-})
-
-const treeViewStyle = (theme: Theme) => ({
-  background: theme.palette.background.default,
-  borderRadius: '15px',
-  padding: '15px 15px',
-  width: '250px'
 })
 
 const HousingManagementIndex = () => {
@@ -42,8 +33,6 @@ const HousingManagementIndex = () => {
     roomData?: RoomReply
   }>({})
   const [dialogMeterWaterValue, setDialogMeterWaterValue] = useState<FeeCollectionOrderReply>({})
-  const [dialogType, setDialogType] = useState('sign')
-  const [openDialog, setOpenDialog] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -164,54 +153,11 @@ const HousingManagementIndex = () => {
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
       <Stack sx={{ mt: 2, mb: 1.5, width: '100%' }} direction="row" spacing={3}>
-        <Box sx={treeViewStyle}>
-          <RichTreeView
-            items={MUI_X_PRODUCTS}
-            defaultExpandedItems={[
-              MUI_X_PRODUCTS[0]?.id || '9031315219250413569',
-              MUI_X_PRODUCTS[0]?.children?.[0]?.id || '9031315219267190785'
-            ]}
-            selectedItems={dialogValue?.id || '9031315219283968001'}
-            onSelectedItemsChange={(_, selectedItemId) => {
-              if (!selectedItemId) return
-              const selectedItem = findItemById(MUI_X_PRODUCTS, selectedItemId)
-              if (selectedItem && selectedItem.roomData) {
-                setDialogValue(selectedItem)
-              }
-            }}
-            expansionTrigger="iconContainer"
-          />
-        </Box>
         <Box sx={{ width: '100%' }}>
           <FormSearch />
           <Box sx={contentBoxStyle}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Typography variant="h6">催缴记录</Typography>
-              <Stack direction="row" spacing={1}>
-                <Button
-                  size="small"
-                  variant="contained"
-                  color="error"
-                  sx={buttonStyles('#2660ad', '#1d428a')}
-                  onClick={() => {
-                    setOpenDialog(true)
-                    setDialogType('sign')
-                  }}
-                >
-                  登记
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  color="error"
-                  onClick={() => {
-                    setOpenDialog(true)
-                    setDialogType('payment')
-                  }}
-                >
-                  催缴
-                </Button>
-              </Stack>
             </Box>
             <TableData
               dialogValue={dialogValue}
@@ -223,13 +169,6 @@ const HousingManagementIndex = () => {
         </Box>
       </Stack>
       <Copyright />
-      <FormDialog
-        dialogValue={dialogValue}
-        dialogMeterWaterValue={dialogMeterWaterValue}
-        openDialog={openDialog}
-        dialogType={dialogType}
-        setOpenDialog={setOpenDialog}
-      />
       <DeleteModal
         loading={loading}
         delOpen={delOpen}

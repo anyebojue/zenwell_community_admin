@@ -2,7 +2,6 @@ import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FeeCollectionOrderReply } from 'api/model/property/feeConfig/feeCollectionOrderModel'
 import { find } from 'modules/property/feeConfig/feeCollectionOrder'
-import { find as findMeterType } from 'modules/property/feeConfig/meterType'
 import { Chip } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
@@ -14,6 +13,11 @@ interface TableDataProps {
   setDialogMeterWaterValue: Dispatch<SetStateAction<FeeCollectionOrderReply>>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
+}
+
+const statusCd: Record<string, string> = {
+  T: '当前账单',
+  F: '往期账单'
 }
 
 const TableData: React.FC<TableDataProps> = ({
@@ -43,7 +47,6 @@ const TableData: React.FC<TableDataProps> = ({
 
   useEffect(() => {
     fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
-    fetchData(findMeterType, { 'page.disable': true }, '正在加载列表中，请稍后...')
   }, [fetchData, page.num, page.size])
 
   const handleRowSelection = useCallback(
@@ -72,7 +75,6 @@ const TableData: React.FC<TableDataProps> = ({
         key={title}
         sx={{
           cursor: 'pointer',
-          marginRight: '-5px',
           '& .MuiChip-label': {
             fontSize: '13px'
           }
@@ -93,16 +95,55 @@ const TableData: React.FC<TableDataProps> = ({
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'feeCollectionDetail.OwnerName', headerName: '业主名称', flex: 1 },
-        { field: 'feeCollectionDetail.PayerObjName', headerName: '付费对象', flex: 1 },
-        { field: 'feeCollectionDetail.FeeName', headerName: '费用名称', flex: 1 },
-        { field: 'feeCollectionDetail.OweAmount', headerName: '催缴金额', flex: 1 },
-        { field: 'feeCollectionDetail.createdAt', headerName: '欠费时间段', flex: 1 },
-        { field: 'feeCollectionDetail.CollectionWay', headerName: '催缴方式', flex: 1 },
-        { field: 'StaffName', headerName: '催缴人', flex: 1 },
-        { field: 'feeCollectionDetail.StateCd', headerName: '状态', flex: 1 },
-        { field: 'feeCollectionDetail.remark', headerName: '说明', flex: 1 },
-        { field: 'createdAt', headerName: '创建时间', flex: 1 },
+        { field: 'id', headerName: '账单编号', width: 200, headerAlign: 'center', align: 'center' },
+        {
+          field: 'payerObjName',
+          headerName: '收费项目',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.feeCollectionDetail?.payerObjName
+        },
+        { field: 'name', headerName: '账单名称', flex: 1, headerAlign: 'center', align: 'center' },
+        {
+          field: 'cumulativeAmount',
+          headerName: '累计应收',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.feeCollectionDetail?.cumulativeAmount
+        },
+        {
+          field: 'oweAmount',
+          headerName: '当期应收',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.feeCollectionDetail?.oweAmount
+        },
+        {
+          field: 'actualAmount',
+          headerName: '实收金额',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.feeCollectionDetail?.actualAmount
+        },
+        {
+          field: 'createdAt',
+          headerName: '账单日期',
+          width: 180,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'statusCd',
+          headerName: '账单类型',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => <Chip label={statusCd[row.statusCd!] || '-'} />
+        },
         {
           field: 'actions',
           headerName: '操作',
