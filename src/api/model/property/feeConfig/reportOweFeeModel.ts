@@ -18,6 +18,10 @@ export interface ReportOweFeeReply {
   communityId?: string // 小区ID
   endTime?: string // 费用结束时间，当时跑账单时的费用结束时间
   deadlineTime?: string // 截止时间
+  floorId?: string
+  floorNum?: string
+  unitId?: string
+  unitNum?: string
 }
 
 export interface ReportOweFeeParams {
@@ -36,6 +40,11 @@ export interface ReportOweFeeParams {
   communityId?: string // 小区ID
   endTime?: string // 费用结束时间，当时跑账单时的费用结束时间
   deadlineTime?: string // 截止时间
+  floorId?: string
+  floorNum?: string
+  unitId?: string
+  unitNum?: string
+  roomSubType?: string
 }
 
 export interface FindReportOweFeeReply {

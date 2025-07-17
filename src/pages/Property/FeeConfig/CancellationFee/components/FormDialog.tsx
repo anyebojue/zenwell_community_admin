@@ -79,7 +79,6 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
   )
 
   const formFields = [
-    { label: '批次号', type: 'text', id: 'id', required: true },
     { label: '员工', type: 'text', id: 'createUserName', required: true },
     { label: '创建时间', type: 'text', id: 'createdAt', required: true }
   ]

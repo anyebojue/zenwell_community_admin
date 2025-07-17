@@ -25,10 +25,20 @@ const textFieldStyles = {
 
 const FormSearch: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
+  const { page } = useSelector((state: RootState) => state.ReportOweFeeSlice)
+  const { list: feeConfigList } = useSelector((state: RootState) => state.FeeConfigSlice)
+  const { list: floorList } = useSelector((state: RootState) => state.FloorSlice)
+  const { list: unitList } = useSelector((state: RootState) => state.UnitSlice)
   const [searchParams, setSearchParams] = useState<ReportOweFeeParams>({
+    floorId: '',
+    floorNum: '',
+    unitId: '',
+    unitNum: '',
+    payerObjName: '',
+    roomSubType: '',
+    configId: '',
+    configName: '',
     ownerName: '',
-    payerObjId: '',
     payerObjType: ''
   })
 
@@ -44,7 +54,16 @@ const FormSearch: React.FC = () => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
-          find({ 'page.num': page.num, 'page.size': page.size, ...params, is_export: true })
+          find({
+            'page.num': page.num,
+            'page.size': page.size,
+            ...params,
+            floorNum: floorList.filter(item => item.id === searchParams.floorId)[0]?.floorNum || '',
+            unitNum: unitList.filter(item => item.id === searchParams.unitId)[0]?.unitNum || '',
+            configName:
+              feeConfigList.filter(item => item.id === searchParams.configId)[0]?.name || '',
+            is_export: true
+          })
         )
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
@@ -55,7 +74,7 @@ const FormSearch: React.FC = () => {
         closeLoading()
       }
     },
-    [dispatch, page.num, page.size]
+    [dispatch, floorList, page.num, page.size, searchParams.floorId, searchParams.unitId, unitList]
   )
 
   const handleSearch = useCallback(() => {
@@ -64,13 +83,16 @@ const FormSearch: React.FC = () => {
 
   const handleReset = useCallback(() => {
     const initialParams = {
-      applyPersonName: '',
-      auditPersonName: '',
-      payerObjId: '',
-      stateCd: '',
-      feeTypeCd: '',
-      startTime: '',
-      endTime: ''
+      floorId: '',
+      floorNum: '',
+      unitId: '',
+      unitNum: '',
+      payerObjName: '',
+      roomSubType: '',
+      configId: '',
+      configName: '',
+      ownerName: '',
+      payerObjType: ''
     }
     setSearchParams(initialParams)
     fetchData({ ...initialParams, 'page.num': page.num, 'page.size': page.size })
@@ -89,25 +111,37 @@ const FormSearch: React.FC = () => {
       <Stack direction="row" spacing={3} component="form" sx={{ mt: 2, mb: 1.5 }}>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
+            select
             size="small"
             label="请选择楼栋"
-            type="text"
+            value={searchParams.floorId}
+            onChange={handleInputChange('floorId')}
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.ownerName}
-            onChange={handleInputChange('ownerName')}
-          />
+          >
+            {floorList.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.floorNum}
+              </MenuItem>
+            ))}
+          </TextField>
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
+            select
             size="small"
             label="请选择单元"
-            type="text"
+            value={searchParams.unitId}
+            onChange={handleInputChange('unitId')}
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.ownerName}
-            onChange={handleInputChange('ownerName')}
-          />
+          >
+            {unitList.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.unitNum}
+              </MenuItem>
+            ))}
+          </TextField>
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
@@ -116,8 +150,8 @@ const FormSearch: React.FC = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.payerObjId}
-            onChange={handleInputChange('payerObjId')}
+            value={searchParams.payerObjName}
+            onChange={handleInputChange('payerObjName')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -125,8 +159,8 @@ const FormSearch: React.FC = () => {
             select
             size="small"
             label="请选择房屋类型"
-            value={searchParams.ownerName}
-            onChange={handleSelectChange('ownerName')}
+            value={searchParams.roomSubType}
+            onChange={handleSelectChange('roomSubType')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -147,12 +181,12 @@ const FormSearch: React.FC = () => {
             select
             size="small"
             label="请选择选择费用项"
-            value={searchParams.ownerName}
-            onChange={handleSelectChange('ownerName')}
+            value={searchParams.configId}
+            onChange={handleSelectChange('configId')}
             variant="outlined"
             sx={textFieldStyles}
           >
-            {list.map(option => (
+            {feeConfigList.map(option => (
               <MenuItem key={option.id} value={option.id}>
                 {option.name}
               </MenuItem>
@@ -168,8 +202,8 @@ const FormSearch: React.FC = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.payerObjId}
-            onChange={handleInputChange('payerObjId')}
+            value={searchParams.ownerName}
+            onChange={handleInputChange('ownerName')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">

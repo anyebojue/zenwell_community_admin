@@ -1,6 +1,9 @@
 import { memo, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { find } from 'modules/property/feeConfig/reportOweFee'
+import { find as findFloor } from 'modules/property/houses/floor'
+import { find as findUnit } from 'modules/property/houses/unit'
+import { find as findFeeConfig } from 'modules/property/feeConfig/feeConfig'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
@@ -35,6 +38,21 @@ const TableData: React.FC<TableDataProps> = () => {
       { 'page.num': page.num, 'page.size': page.size, is_export: true },
       '正在加载列表中，请稍后...'
     )
+    fetchData(
+      findFloor,
+      { 'page.num': page.num, 'page.size': page.size },
+      '正在加载列表中，请稍后...'
+    )
+    fetchData(
+      findUnit,
+      { 'page.num': page.num, 'page.size': page.size },
+      '正在加载列表中，请稍后...'
+    )
+    fetchData(
+      findFeeConfig,
+      { 'page.num': page.num, 'page.size': page.size },
+      '正在加载列表中，请稍后...'
+    )
   }, [fetchData, page.num, page.size])
 
   return (
@@ -47,7 +65,7 @@ const TableData: React.FC<TableDataProps> = () => {
         rows={list}
         columns={[
           {
-            field: 'payerObjId',
+            field: 'payerObjName',
             headerName: '收费对象',
             headerAlign: 'center',
             align: 'center',
