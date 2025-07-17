@@ -8,8 +8,9 @@ import React, {
   memo
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { MeterWaterParams, MeterWaterReply } from 'api/model/property/feeConfig/meterWaterModel'
-import { create, find, update } from 'modules/property/feeConfig/meterWater'
+import { FeeCollectionDetailParams } from 'api/model/property/feeConfig/feeCollectionDetailModel'
+import { FeeCollectionOrderReply } from 'api/model/property/feeConfig/feeCollectionOrderModel'
+import { create, find, update } from 'modules/property/feeConfig/feeCollectionOrder'
 import { find as findFeeConfig } from 'modules/property/feeConfig/feeConfig'
 import { find as findFeeConfigType } from 'modules/property/feeConfig/feeConfigType'
 import {
@@ -31,7 +32,7 @@ import { RoomReply } from 'api/model/property/houses/roomModel'
 
 interface FormDialogProps {
   dialogValue?: { id?: string; label?: string; roomData?: RoomReply }
-  dialogMeterWaterValue: MeterWaterReply
+  dialogMeterWaterValue: FeeCollectionOrderReply
   openDialog: boolean
   dialogType: string
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -50,13 +51,13 @@ const FormDialog: React.FC<FormDialogProps> = ({
 
   const initialFormData = useMemo(
     () => ({
-      preDegrees: dialogMeterWaterValue?.preDegrees || 0,
-      curDegrees: dialogMeterWaterValue?.curDegrees || 0,
-      remark: dialogMeterWaterValue?.remark || ''
+      PayerObjName: '',
+      collectionWay: '',
+      remarks: ''
     }),
-    [dialogMeterWaterValue]
+    []
   )
-  const [formData, setFormData] = useState<MeterWaterParams>(initialFormData)
+  const [formData, setFormData] = useState<FeeCollectionDetailParams>(initialFormData)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -150,8 +151,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
                 sx={{ width: '80%' }}
                 select
                 size="small"
-                value={formData.feeId}
-                onChange={e => setFormData({ ...formData, feeId: e.target.value })}
+                value={formData.collectionWay}
+                onChange={e => setFormData({ ...formData, collectionWay: e.target.value })}
                 variant="outlined"
               >
                 {[
@@ -213,8 +214,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
                   sx={{ width: '80%' }}
                   select
                   size="small"
-                  value={formData.feeId}
-                  onChange={e => setFormData({ ...formData, feeId: e.target.value })}
+                  value={formData.payerObjName}
+                  onChange={e => setFormData({ ...formData, payerObjName: e.target.value })}
                   variant="outlined"
                 >
                   {[
@@ -240,8 +241,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
                 multiline
                 rows={2}
                 size="small"
-                value={formData.remark}
-                onChange={e => setFormData({ ...formData, remark: e.target.value })}
+                value={formData.remarks}
+                onChange={e => setFormData({ ...formData, remarks: e.target.value })}
                 variant="outlined"
               />
             </Box>

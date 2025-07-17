@@ -1,7 +1,7 @@
 import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { MeterWaterReply } from 'api/model/property/feeConfig/meterWaterModel'
-import { find } from 'modules/property/feeConfig/meterWater'
+import { FeeCollectionOrderReply } from 'api/model/property/feeConfig/feeCollectionOrderModel'
+import { find } from 'modules/property/feeConfig/feeCollectionOrder'
 import { find as findMeterType } from 'modules/property/feeConfig/meterType'
 import { Chip } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
@@ -11,7 +11,7 @@ import { RoomReply } from 'api/model/property/houses/roomModel'
 
 interface TableDataProps {
   dialogValue: { id?: string; label?: string; roomData?: RoomReply }
-  setDialogMeterWaterValue: Dispatch<SetStateAction<MeterWaterReply>>
+  setDialogMeterWaterValue: Dispatch<SetStateAction<FeeCollectionOrderReply>>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
@@ -22,7 +22,7 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.MeterWaterSlice)
+  const { page, list } = useSelector((state: RootState) => state.FeeCollectionOrderSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -54,7 +54,7 @@ const TableData: React.FC<TableDataProps> = ({
   )
 
   const handleActionClick = useCallback(
-    (actionType: string, row: MeterWaterReply) => {
+    (actionType: string, row: FeeCollectionOrderReply) => {
       switch (actionType) {
         case 'delete':
           setDialogMeterWaterValue(row)
@@ -66,7 +66,7 @@ const TableData: React.FC<TableDataProps> = ({
     [setDelOpen, setDialogMeterWaterValue, setSelectedRows]
   )
 
-  const renderActionButtons = (row: MeterWaterReply) =>
+  const renderActionButtons = (row: FeeCollectionOrderReply) =>
     [{ title: '删除', action: 'delete' }].map(({ title, action }) => (
       <Chip
         key={title}
@@ -93,16 +93,16 @@ const TableData: React.FC<TableDataProps> = ({
       checkboxSelection
       rows={list}
       columns={[
-        { field: '', headerName: '业主名称', flex: 1 },
-        { field: '', headerName: '付费对象', flex: 1 },
-        { field: '', headerName: '费用名称', flex: 1 },
-        { field: '', headerName: '催缴金额', flex: 1 },
-        { field: '', headerName: '欠费时间段', flex: 1 },
-        { field: '', headerName: '催缴方式', flex: 1 },
-        { field: '', headerName: '催缴人', flex: 1 },
-        { field: '', headerName: '状态', flex: 1 },
-        { field: '', headerName: '说明', flex: 1 },
-        { field: '', headerName: '创建时间', flex: 1 },
+        { field: 'feeCollectionDetail.OwnerName', headerName: '业主名称', flex: 1 },
+        { field: 'feeCollectionDetail.PayerObjName', headerName: '付费对象', flex: 1 },
+        { field: 'feeCollectionDetail.FeeName', headerName: '费用名称', flex: 1 },
+        { field: 'feeCollectionDetail.OweAmount', headerName: '催缴金额', flex: 1 },
+        { field: 'feeCollectionDetail.createdAt', headerName: '欠费时间段', flex: 1 },
+        { field: 'feeCollectionDetail.CollectionWay', headerName: '催缴方式', flex: 1 },
+        { field: 'StaffName', headerName: '催缴人', flex: 1 },
+        { field: 'feeCollectionDetail.StateCd', headerName: '状态', flex: 1 },
+        { field: 'feeCollectionDetail.remark', headerName: '说明', flex: 1 },
+        { field: 'createdAt', headerName: '创建时间', flex: 1 },
         {
           field: 'actions',
           headerName: '操作',

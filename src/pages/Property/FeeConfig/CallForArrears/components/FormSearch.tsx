@@ -1,7 +1,7 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { MeterWaterParams } from 'api/model/property/feeConfig/meterWaterModel'
-import { find } from 'modules/property/feeConfig/meterWater'
+import { FeeCollectionDetailParams } from 'api/model/property/feeConfig/feeCollectionDetailModel'
+import { find } from 'modules/property/feeConfig/feeCollectionOrder'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -27,12 +27,17 @@ const textFieldStyles = {
 const FormSearch: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.MeterTypeSlice)
-  const [searchParams, setSearchParams] = useState<MeterWaterParams>({
-    meterType: ''
+  const [searchParams, setSearchParams] = useState<FeeCollectionDetailParams>({
+    ownerName: '',
+    feeName: '',
+    StaffName: '',
+    collectionWay: '',
+    stateCd: '',
+    payerObjName: ''
   })
 
   const fetchData = useCallback(
-    async (params: MeterWaterParams & PaginationParams) => {
+    async (params: FeeCollectionDetailParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
@@ -60,14 +65,14 @@ const FormSearch: React.FC = () => {
   }
 
   const handleInputChange = useCallback(
-    (field: keyof MeterWaterParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof FeeCollectionDetailParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prev => ({ ...prev, [field]: event.target.value }))
     },
     []
   )
 
   const handleSelectChange =
-    (field: keyof MeterWaterParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof FeeCollectionDetailParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -84,8 +89,8 @@ const FormSearch: React.FC = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.meterType}
-            onChange={handleInputChange('meterType')}
+            value={searchParams.ownerName}
+            onChange={handleInputChange('ownerName')}
           />
         </FormControl>
         <FormControl>
@@ -95,8 +100,8 @@ const FormSearch: React.FC = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.meterType}
-            onChange={handleInputChange('meterType')}
+            value={searchParams.feeName}
+            onChange={handleInputChange('feeName')}
           />
         </FormControl>
         <FormControl>
@@ -106,8 +111,8 @@ const FormSearch: React.FC = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.meterType}
-            onChange={handleInputChange('meterType')}
+            value={searchParams.StaffName}
+            onChange={handleInputChange('StaffName')}
           />
         </FormControl>
         <FormControl variant="outlined">
@@ -115,8 +120,8 @@ const FormSearch: React.FC = () => {
             select
             size="small"
             label="请选择催缴方式"
-            value={searchParams.meterType}
-            onChange={handleSelectChange('meterType')}
+            value={searchParams.collectionWay}
+            onChange={handleSelectChange('collectionWay')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -138,8 +143,8 @@ const FormSearch: React.FC = () => {
             select
             size="small"
             label="请选择状态"
-            value={searchParams.meterType}
-            onChange={handleSelectChange('meterType')}
+            value={searchParams.stateCd}
+            onChange={handleSelectChange('stateCd')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -174,9 +179,21 @@ const FormSearch: React.FC = () => {
           startIcon={<History />}
           sx={buttonStyles('darkgray', '#696969')}
           onClick={() => {
-            setSearchParams({ meterType: '' })
+            setSearchParams({
+              ownerName: '',
+              feeName: '',
+              StaffName: '',
+              collectionWay: '',
+              stateCd: '',
+              payerObjName: ''
+            })
             fetchData({
-              meterType: '',
+              ownerName: '',
+              feeName: '',
+              StaffName: '',
+              collectionWay: '',
+              stateCd: '',
+              payerObjName: '',
               'page.num': page.num,
               'page.size': page.size
             })

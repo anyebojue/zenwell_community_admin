@@ -10,8 +10,8 @@ import message from 'components/Message'
 import { RoomReply } from 'api/model/property/houses/roomModel'
 import { TreeViewBaseItem } from '@mui/x-tree-view'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
-import { deleteByIds } from 'modules/property/feeConfig/meterWater'
-import { MeterWaterReply } from 'api/model/property/feeConfig/meterWaterModel'
+import { deleteByIds } from 'modules/property/feeConfig/feeCollectionOrder'
+import { FeeCollectionOrderReply } from 'api/model/property/feeConfig/feeCollectionOrderModel'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
 import FormDialog from './components/FormDialog'
@@ -41,7 +41,7 @@ const HousingManagementIndex = () => {
     label?: string
     roomData?: RoomReply
   }>({})
-  const [dialogMeterWaterValue, setDialogMeterWaterValue] = useState<MeterWaterReply>({})
+  const [dialogMeterWaterValue, setDialogMeterWaterValue] = useState<FeeCollectionOrderReply>({})
   const [dialogType, setDialogType] = useState('sign')
   const [openDialog, setOpenDialog] = useState(false)
   const [delOpen, setDelOpen] = useState(false)

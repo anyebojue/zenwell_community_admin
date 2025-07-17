@@ -52,6 +52,8 @@ import ImportFeeSlice from './property/feeConfig/importFee'
 import FeeImportDetailSlice from './property/feeConfig/feeImportDetail'
 import PayFeeBatchSlice from './property/feeConfig/payFeeBatch'
 import ReportOweFeeSlice from './property/feeConfig/reportOweFee'
+import FeeCollectionDetailSlice from './property/feeConfig/feeCollectionDetail'
+import FeeCollectionOrderSlice from './property/feeConfig/feeCollectionOrder'
 import OwnerInvoiceSlice from './property/houses/ownerInvoice'
 import OwnerInvoiceApplySlice from './property/houses/ownerInvoiceApply'
 import OwnerInvoiceApplyItemSlice from './property/houses/ownerInvoiceApplyItem'
@@ -179,6 +181,8 @@ const store = configureStore({
     FeeImportDetailSlice,
     PayFeeBatchSlice,
     ReportOweFeeSlice,
+    FeeCollectionDetailSlice,
+    FeeCollectionOrderSlice,
     RepairSettingSlice,
     RepairPoolSlice,
     RepairStaffSlice,
