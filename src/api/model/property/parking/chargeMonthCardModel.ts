@@ -11,6 +11,7 @@ export interface ChargeMonthCardReply {
   communityId?: string
   statusCd?: string
   remark?: string
+  paId?: string
 }
 
 export interface ChargeMonthCardParams {
@@ -24,6 +25,7 @@ export interface ChargeMonthCardParams {
   remark?: string
   startTime?: string
   endTime?: string
+  paId?: string
 }
 
 export interface FindChargeMonthCardReply {

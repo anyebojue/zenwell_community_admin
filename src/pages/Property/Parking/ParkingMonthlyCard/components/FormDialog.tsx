@@ -23,7 +23,8 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle
+  DialogTitle,
+  MenuItem
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
@@ -43,11 +44,13 @@ const FormDialog: React.FC<FormDialogProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.ChargeMonthCardSlice)
+  const { list } = useSelector((state: RootState) => state.ParkingAreaSlice)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(
     () => ({
       cardName: dialogType === 'edit' ? dialogValue?.cardName || '' : '',
+      paId: dialogType === 'edit' ? dialogValue?.paId || '' : '',
       cardMonth: dialogType === 'edit' ? dialogValue?.cardMonth || 0 : 0,
       cardPrice: dialogType === 'edit' ? dialogValue?.cardPrice || 0 : 0,
       remark: dialogType === 'edit' ? dialogValue?.remark || '' : ''
@@ -110,6 +113,24 @@ const FormDialog: React.FC<FormDialogProps> = ({
               onChange={e => setFormData({ ...formData, cardName: e.target.value })}
               variant="outlined"
             />
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>停车场：</FormLabel>
+            <TextField
+              placeholder="请选择停车场"
+              sx={{ width: '80%' }}
+              select
+              size="small"
+              value={formData.paId || ''}
+              onChange={e => setFormData({ ...formData, paId: e.target.value })}
+              variant="outlined"
+            >
+              {list.map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
+                </MenuItem>
+              ))}
+            </TextField>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>月：</FormLabel>

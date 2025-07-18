@@ -1,6 +1,6 @@
 import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { find } from 'modules/property/report/queryReportFeeSummary'
+import { find } from 'modules/property/parking/chargeMonthCard'
 import { find as findParking } from 'modules/property/parking/parkingArea'
 import { ChargeMonthCardReply } from 'api/model/property/parking/chargeMonthCardModel'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
@@ -50,7 +50,7 @@ const TableData: React.FC<TableDataProps> = ({
       {
         'page.num': page.num,
         'page.size': page.size,
-        ...(selectedButton && { feeTypeCd: selectedButton })
+        ...(selectedButton && { paId: selectedButton })
       },
       '正在加载列表中，请稍后...'
     )
@@ -123,12 +123,18 @@ const TableData: React.FC<TableDataProps> = ({
       disableVirtualization={false}
       rows={list}
       columns={[
-        { field: 'cardName', headerName: '名称', flex: 1 },
-        { field: '', headerName: '停车场', flex: 1 },
-        { field: 'cardMonth', headerName: '月', flex: 1 },
-        { field: 'cardPrice', headerName: '月价', flex: 1 },
-        { field: 'createdAt', headerName: '创建时间', flex: 1 },
-        { field: 'remark', headerName: '备注', flex: 1 },
+        { field: 'cardName', headerName: '名称', headerAlign: 'center', align: 'center', flex: 1 },
+        { field: 'paId', headerName: '停车场', headerAlign: 'center', align: 'center', flex: 1 },
+        { field: 'cardMonth', headerName: '月', headerAlign: 'center', align: 'center', flex: 1 },
+        { field: 'cardPrice', headerName: '月价', headerAlign: 'center', align: 'center', flex: 1 },
+        {
+          field: 'createdAt',
+          headerName: '创建时间',
+          headerAlign: 'center',
+          align: 'center',
+          flex: 1
+        },
+        { field: 'remark', headerName: '备注', headerAlign: 'center', align: 'center', flex: 1 },
         {
           field: 'actions',
           headerName: '操作',
