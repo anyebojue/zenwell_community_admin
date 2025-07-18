@@ -27,13 +27,17 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.ChargeMonthOrderSlice)
   const { list } = useSelector((state: RootState) => state.ChargeMonthCardSlice)
+  const { list: areaList } = useSelector((state: RootState) => state.ParkingAreaSlice)
   const [loading, setLoading] = useState(false)
 
   const [formData, setFormData] = useState<ChargeMonthOrderParams>({
     cardId: '',
+    carNum: '',
+    psId: '',
     primeRate: '',
     receivableAmount: '',
     receivedAmount: '',
+    statusCd: '',
     remark: ''
   })
 
@@ -44,7 +48,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
       try {
         const current_community = localStorage.getItem('current_community')
         const community = JSON.parse(current_community || '')
-        const params = { ...formData, communityId: community?.id }
+        const params = { ...formData, communityId: community?.id, statusCd: '1' }
         const action = create(params)
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
@@ -77,7 +81,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>月卡：</FormLabel>
             <TextField
-              placeholder="请选择停车场"
+              placeholder="请选择月卡"
               sx={{ width: '80%' }}
               select
               size="small"
@@ -88,6 +92,36 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
               {list.map(option => (
                 <MenuItem key={option.id} value={option.id}>
                   {option.cardName}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>车牌号：</FormLabel>
+            <TextField
+              placeholder="必填，请填写车牌号"
+              sx={{ width: '80%' }}
+              type="text"
+              size="small"
+              value={formData.carNum}
+              onChange={e => setFormData({ ...formData, carNum: e.target.value })}
+              variant="outlined"
+            />
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>车位：</FormLabel>
+            <TextField
+              placeholder="请选择车位"
+              sx={{ width: '80%' }}
+              select
+              size="small"
+              value={formData.psId || ''}
+              onChange={e => setFormData({ ...formData, psId: e.target.value })}
+              variant="outlined"
+            >
+              {areaList.map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
                 </MenuItem>
               ))}
             </TextField>

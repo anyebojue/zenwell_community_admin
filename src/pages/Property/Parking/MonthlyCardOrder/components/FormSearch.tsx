@@ -32,8 +32,9 @@ const FormSearch: React.FC<SearchFormProps> = () => {
 
   const [searchParams, setSearchParams] = useState<ChargeMonthOrderParams>({
     cardId: '',
+    carNum: '',
     primeRate: '',
-    id: '',
+    statusCd: '',
     startTime: '',
     endTime: ''
   })
@@ -71,8 +72,9 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   const handleReset = useCallback(() => {
     const initialParams = {
       cardId: '',
+      carNum: '',
       primeRate: '',
-      id: '',
+      statusCd: '',
       startTime: '',
       endTime: ''
     }
@@ -109,20 +111,31 @@ const FormSearch: React.FC<SearchFormProps> = () => {
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
+            size="small"
+            label="请输入车牌号"
+            type="text"
+            variant="outlined"
+            sx={textFieldStyles}
+            value={searchParams.carNum}
+            onChange={handleInputChange('carNum')}
+          />
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
             select
             size="small"
-            label="请选择车位状态"
+            label="请选择支付方式"
             value={searchParams.primeRate}
-            onChange={handleSelectChange('primeRate')}
+            onChange={handleInputChange('primeRate')}
             variant="outlined"
             sx={textFieldStyles}
           >
             {[
-              { value: '1', label: '现金' },
-              { value: '2', label: 'POS刷卡' },
-              { value: '3', label: '微信二维码' },
-              { value: '4', label: '支付宝二维码' },
-              { value: '7', label: '转账' }
+              { label: '现金', value: '1' },
+              { label: 'POS刷卡', value: '2' },
+              { label: '微信二维码', value: '3' },
+              { label: '支付宝二维码', value: '4' },
+              { label: '转账', value: '7' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -132,14 +145,24 @@ const FormSearch: React.FC<SearchFormProps> = () => {
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
+            select
             size="small"
-            label="请输入订单编号"
-            type="text"
+            label="请选择车位状态"
+            value={searchParams.statusCd}
+            onChange={handleInputChange('statusCd')}
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.id}
-            onChange={handleInputChange('id')}
-          />
+          >
+            {[
+              { value: '1', label: '正常' },
+              { value: '3', label: '到期' },
+              { value: '2', label: '无车位' }
+            ].map(option => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField

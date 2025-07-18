@@ -27,7 +27,7 @@ const ParkingLotManagementIndex = () => {
       <FormSearch />
       <Box sx={contentBoxStyle}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h6">停车位信息</Typography>
+          <Typography variant="h6">月卡订单</Typography>
           <Box>
             <Button
               size="small"

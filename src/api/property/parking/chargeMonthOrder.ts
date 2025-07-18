@@ -5,10 +5,10 @@ import {
 } from '../../model/property/parking/chargeMonthOrderModel'
 
 const ApiPrefix = {
-  FindChargeMonthOrder: '/car/owner_car',
-  CreateChargeMonthOrder: '/car/owner_car',
-  UpdateChargeMonthOrder: '/car/owner_car',
-  DeleteChargeMonthOrder: '/car/owner_car'
+  FindChargeMonthOrder: '/car/charge_month_order',
+  CreateChargeMonthOrder: '/car/charge_month_order',
+  UpdateChargeMonthOrder: '/car/charge_month_order',
+  DeleteChargeMonthOrder: '/car/charge_month_order'
 }
 
 /**

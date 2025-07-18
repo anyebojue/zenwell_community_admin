@@ -1,4 +1,6 @@
 import { Page } from '../../pageModel'
+import { ChargeMonthCardReply } from './chargeMonthCardModel'
+import { ParkingSpaceInfoReply } from './parkingSpaceInfoModel'
 
 export interface ChargeMonthOrderReply {
   id?: string
@@ -15,6 +17,12 @@ export interface ChargeMonthOrderReply {
   endTime?: string
   statusCd?: string
   remark?: string
+  carNum?: string
+  psId?: string
+  cashierId?: string
+  cashierName?: string
+  chargeMonthCard?: ChargeMonthCardReply
+  parkingSpaceInfo?: ParkingSpaceInfoReply
 }
 
 export interface ChargeMonthOrderParams {
@@ -30,6 +38,10 @@ export interface ChargeMonthOrderParams {
   endTime?: string
   statusCd?: string
   remark?: string
+  carNum?: string
+  psId?: string
+  cashierId?: string
+  cashierName?: string
 }
 
 export interface FindChargeMonthOrderReply {

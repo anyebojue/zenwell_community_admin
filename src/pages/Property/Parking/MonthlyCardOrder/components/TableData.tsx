@@ -2,6 +2,7 @@ import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ChargeMonthOrderReply } from 'api/model/property/parking/chargeMonthOrderModel'
 import { find } from 'modules/property/parking/chargeMonthOrder'
+import { find as findCard } from 'modules/property/parking/chargeMonthCard'
 import { find as findArea } from 'modules/property/parking/parkingArea'
 import { Box, Chip, Typography } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
@@ -43,6 +44,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
 
   useEffect(() => {
     fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+    fetchData(findCard, { 'page.disable': true }, '正在加载列表中，请稍后...')
     fetchData(findArea, { 'page.disable': true }, '正在加载列表中，请稍后...')
   }, [fetchData, page.num, page.size])
 
@@ -90,9 +92,23 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
       rows={list}
       columns={[
         { field: 'id', headerName: '订单编号', width: 180, headerAlign: 'center', align: 'center' },
-        { field: '', headerName: '月卡', flex: 1, headerAlign: 'center', align: 'center' },
-        { field: '', headerName: '车牌号', flex: 1, headerAlign: 'center', align: 'center' },
-        { field: '', headerName: '车位', flex: 1, headerAlign: 'center', align: 'center' },
+        {
+          field: 'cardId',
+          headerName: '月卡',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.chargeMonthCard?.cardName
+        },
+        { field: 'carNum', headerName: '车牌号', flex: 1, headerAlign: 'center', align: 'center' },
+        {
+          field: 'psId',
+          headerName: '车位',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.parkingSpaceInfo?.num
+        },
         {
           field: 'primeRate',
           headerName: '支付方式',
@@ -141,8 +157,14 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
             </Box>
           )
         },
-        { field: '', headerName: '状态', flex: 1, headerAlign: 'center', align: 'center' },
-        { field: '', headerName: '收银员', flex: 1, headerAlign: 'center', align: 'center' },
+        { field: 'statusCd', headerName: '状态', flex: 1, headerAlign: 'center', align: 'center' },
+        {
+          field: 'cashierName',
+          headerName: '收银员',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
         {
           field: 'createdAt',
           headerName: '购买时间',
