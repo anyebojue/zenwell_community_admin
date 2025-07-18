@@ -124,7 +124,14 @@ const TableData: React.FC<TableDataProps> = ({
       rows={list}
       columns={[
         { field: 'cardName', headerName: '名称', headerAlign: 'center', align: 'center', flex: 1 },
-        { field: 'paId', headerName: '停车场', headerAlign: 'center', align: 'center', flex: 1 },
+        {
+          field: 'paId',
+          headerName: '停车场',
+          headerAlign: 'center',
+          align: 'center',
+          flex: 1,
+          renderCell: ({ row }) => row.parkingArea?.name
+        },
         { field: 'cardMonth', headerName: '月', headerAlign: 'center', align: 'center', flex: 1 },
         { field: 'cardPrice', headerName: '月价', headerAlign: 'center', align: 'center', flex: 1 },
         {

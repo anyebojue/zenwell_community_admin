@@ -1,4 +1,5 @@
 import { Page } from '../../pageModel'
+import { ParkingAreaReply } from './parkingAreaModel'
 
 export interface ChargeMonthCardReply {
   id?: string
@@ -12,6 +13,7 @@ export interface ChargeMonthCardReply {
   statusCd?: string
   remark?: string
   paId?: string
+  parkingArea?: ParkingAreaReply
 }
 
 export interface ChargeMonthCardParams {
