@@ -25,7 +25,9 @@ export interface OwnerCarReply {
   ownerName?: string
   parkingBox?: string
   memberCount?: string
-  parkingSpace: ParkingSpaceInfoReply
+  parkingSpace?: ParkingSpaceInfoReply
+  iotRemark?: string
+  iotStateName?: string
 }
 
 export interface OwnerCarParams {
@@ -46,7 +48,10 @@ export interface OwnerCarParams {
   carTypeCd?: string
   memberId?: string
   leaseType?: string
+  ownerName?: string
   carId?: string
+  iotRemark?: string
+  iotStateName?: string
   isExport?: boolean
 }
 

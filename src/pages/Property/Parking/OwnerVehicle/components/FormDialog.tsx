@@ -74,6 +74,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
           ? dialogValue?.endTime || formatDateTime(new Date())
           : formatDateTime(new Date()),
       ownerId: dialogType === 'edit' ? dialogValue?.ownerId || '' : '',
+      ownerName: dialogType === 'edit' ? dialogValue?.ownerName || '' : '',
       psId: dialogType === 'edit' ? dialogValue?.psId || '' : '',
       carTypeCd: dialogType === 'edit' ? dialogValue?.carTypeCd || '' : '',
       remark: dialogType === 'edit' ? dialogValue?.remark || '' : ''
@@ -96,7 +97,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
         const params = {
           ...formData,
           communityId: community?.id,
-          stateCd: '1001'
+          stateCd: '1001',
+          ownerName: ownerList.filter(item => item.id === formData.ownerId)[0]?.name
         }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })

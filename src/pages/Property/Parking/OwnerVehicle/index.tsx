@@ -85,9 +85,9 @@ const OwnerCarIndex = () => {
   )
 
   return (
-    <Box sx={{ mt: 3.5, width: '100%' }}>
+    <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
-      <Stack sx={{ mt: 2, mb: 1.5, width: '100%' }} direction="row" spacing={1.5}>
+      <Stack sx={{ mt: 2, mb: 1.5, width: '100%' }} direction="row" spacing={3}>
         <ButtonGroup
           sx={{ width: '150px' }}
           orientation="vertical"

@@ -67,9 +67,7 @@ const CommunityAnnouncementIndex = () => {
       <NavbarBreadcrumbs />
       <Stack sx={{ mt: 2, mb: 1.5, width: '100%' }} direction="row" spacing={3}>
         <ButtonGroup
-          sx={{
-            width: '150px'
-          }}
+          sx={{ width: '150px' }}
           orientation="vertical"
           aria-label="Vertical button group"
         >

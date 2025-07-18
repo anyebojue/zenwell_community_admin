@@ -47,6 +47,7 @@ const FormSearch: React.FC<FormSearchProps> = ({
   const { page } = useSelector((state: RootState) => state.OwnerCarSlice)
   const [searchParams, setSearchParams] = useState<OwnerCarParams>({
     carNum: '',
+    ownerName: '',
     stateCd: ''
   })
 
@@ -104,6 +105,17 @@ const FormSearch: React.FC<FormSearchProps> = ({
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
+            size="small"
+            label="请输入业主"
+            type="text"
+            variant="outlined"
+            sx={textFieldStyles}
+            value={searchParams.ownerName}
+            onChange={handleInputChange('ownerName')}
+          />
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
             select
             size="small"
             label="请选择车位状态"
@@ -141,10 +153,10 @@ const FormSearch: React.FC<FormSearchProps> = ({
             startIcon={<History />}
             sx={buttonStyles('darkgray', '#696969')}
             onClick={() => {
-              setSearchParams({ carNum: '', carId: '', stateCd: '' })
+              setSearchParams({ carNum: '', ownerName: '', stateCd: '' })
               fetchData({
                 carNum: '',
-                carId: '',
+                ownerName: '',
                 stateCd: '',
                 'page.num': page.num,
                 'page.size': page.size

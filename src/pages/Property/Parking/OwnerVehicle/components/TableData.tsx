@@ -4,7 +4,16 @@ import { OwnerCarReply } from 'api/model/property/parking/ownerCarModel'
 import { find } from 'modules/property/parking/ownerCar'
 import { find as findOwner } from 'modules/property/houses/owner'
 import { find as findParkingSpace } from 'modules/property/parking/parkingSpaceInfo'
-import { Box, Button, Chip, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Typography
+} from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
@@ -62,6 +71,9 @@ const TableData: React.FC<TableDataProps> = ({
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.OwnerCarSlice)
   const [openRelease, setOpenRelease] = useState(false)
+  const [openIotDialog, setOpenIotDialog] = useState(false)
+  const [iotDialogContent, setIotDialogContent] = useState('')
+  const [iotDialogTitle, setIotDialogTitle] = useState('')
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -162,14 +174,7 @@ const TableData: React.FC<TableDataProps> = ({
   return (
     <>
       <DataGrid
-        sx={{
-          mt: 1,
-          '& .MuiDataGrid-columnHeaderTitle': {
-            whiteSpace: 'normal',
-            wordWrap: 'break-word',
-            lineHeight: '1.2'
-          }
-        }}
+        sx={{ mt: 1 }}
         localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
         disableColumnResize
         disableVirtualization={false}
@@ -179,14 +184,7 @@ const TableData: React.FC<TableDataProps> = ({
           {
             field: 'carNum',
             headerName: '车牌号',
-            width: 100,
-            headerAlign: 'center',
-            align: 'center'
-          },
-          {
-            field: 'memberCount',
-            headerName: '成员车辆',
-            flex: 1,
+            width: 90,
             headerAlign: 'center',
             align: 'center'
           },
@@ -200,7 +198,7 @@ const TableData: React.FC<TableDataProps> = ({
           {
             field: 'leaseType',
             headerName: '车牌类型',
-            width: 100,
+            width: 80,
             headerAlign: 'center',
             align: 'center',
             renderCell: ({ row }) => <Chip label={statusValue[row.leaseType!] || '未知状态'} />
@@ -223,7 +221,7 @@ const TableData: React.FC<TableDataProps> = ({
           {
             field: 'ownerName',
             headerName: '业主',
-            width: 100,
+            flex: 1,
             headerAlign: 'center',
             align: 'center'
           },
@@ -233,12 +231,12 @@ const TableData: React.FC<TableDataProps> = ({
             flex: 1,
             headerAlign: 'center',
             align: 'center',
-            renderCell: ({ row }) => row.parkingSpace.num
+            renderCell: ({ row }) => row.parkingSpace?.num
           },
           {
             field: 'startTime',
             headerName: '有效期',
-            minWidth: 190,
+            width: 180,
             headerAlign: 'center',
             align: 'center',
             renderCell: ({ row }) => (
@@ -264,12 +262,20 @@ const TableData: React.FC<TableDataProps> = ({
           {
             field: 'stateCd',
             headerName: '状态',
-            width: 150,
+            width: 110,
             headerAlign: 'center',
             align: 'center',
             renderCell: ({ row }) => (
-              <Button variant="text" color="secondary">
-                <Box color="black">{statusCd[row.stateCd!]}</Box>(同步失败)
+              <Button
+                variant="text"
+                color="secondary"
+                onClick={() => {
+                  setIotDialogTitle(`${row.carNum} 同步物联网详情`)
+                  setIotDialogContent(row.iotRemark || '暂无物联网详情')
+                  setOpenIotDialog(true) // 打开弹窗
+                }}
+              >
+                <Box color="black">{statusCd[row.stateCd!]}</Box>({row.iotStateName})
               </Button>
             )
           },
@@ -278,7 +284,7 @@ const TableData: React.FC<TableDataProps> = ({
             field: 'actions',
             headerName: '操作',
             type: 'actions',
-            width: 240,
+            width: 220,
             getActions: ({ row }) => renderActionButtons(row)
           }
         ]}
@@ -300,6 +306,17 @@ const TableData: React.FC<TableDataProps> = ({
         openRelease={openRelease}
         setOpenRelease={setOpenRelease}
       />
+      <Dialog open={openIotDialog} onClose={() => setOpenIotDialog(false)}>
+        <DialogTitle>{iotDialogTitle}</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1">{iotDialogContent}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenIotDialog(false)} color="primary">
+            关闭
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   )
 }
