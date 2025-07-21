@@ -55,7 +55,7 @@ const TableData: React.FC<TableDataProps> = ({
       {
         'page.num': page.num,
         'page.size': page.size,
-        ...(selectedButton && { feeTypeCd: selectedButton })
+        ...(selectedButton && { blackWhite: selectedButton })
       },
       '正在加载列表中，请稍后...'
     )

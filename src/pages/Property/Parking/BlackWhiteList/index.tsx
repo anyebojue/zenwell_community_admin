@@ -130,6 +130,7 @@ const FeeConfigIndex = () => {
       </Stack>
       <Copyright />
       <FormDialog
+        selectedButton={selectedButton}
         dialogValue={dialogValue}
         openDialog={openDialog}
         dialogType={dialogType}

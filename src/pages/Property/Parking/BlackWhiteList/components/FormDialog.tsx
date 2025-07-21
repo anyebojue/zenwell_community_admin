@@ -41,6 +41,7 @@ const formatDateTime = (date: Date | string | undefined): string => {
 }
 
 interface FormDialogProps {
+  selectedButton: string
   dialogValue?: CarBlackWhiteReply
   openDialog: boolean
   dialogType: string
@@ -48,6 +49,7 @@ interface FormDialogProps {
 }
 
 const FormDialog: React.FC<FormDialogProps> = ({
+  selectedButton,
   dialogValue,
   openDialog,
   dialogType,
@@ -94,7 +96,13 @@ const FormDialog: React.FC<FormDialogProps> = ({
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-        await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))
+        await dispatch(
+          find({
+            'page.num': page.num || '1',
+            'page.size': page.size,
+            ...(selectedButton && { blackWhite: selectedButton })
+          })
+        )
         message.success(dialogType === 'add' ? '新建成功' : '编辑成功')
         setOpenDialog(false)
         setFormData(initialFormData)
@@ -105,7 +113,17 @@ const FormDialog: React.FC<FormDialogProps> = ({
         setLoading(false)
       }
     },
-    [dispatch, dialogType, dialogValue, formData, page, setOpenDialog, initialFormData]
+    [
+      formData,
+      dialogType,
+      dialogValue?.id,
+      dispatch,
+      page.num,
+      page.size,
+      selectedButton,
+      setOpenDialog,
+      initialFormData
+    ]
   )
 
   return (

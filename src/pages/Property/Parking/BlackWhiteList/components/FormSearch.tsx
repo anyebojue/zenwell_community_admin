@@ -43,7 +43,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton }) => {
           find({
             'page.num': page.num,
             'page.size': page.size,
-            ...(selectedButton && { feeTypeCd: selectedButton }),
+            ...(selectedButton && { blackWhite: selectedButton }),
             ...params
           })
         )
