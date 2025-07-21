@@ -32,16 +32,19 @@ const TableData: React.FC<TableDataProps> = ({ selectedButton }) => {
   )
 
   useEffect(() => {
-    fetchData(
-      find,
-      {
-        'page.num': page.num,
-        'page.size': page.size,
-        ...(selectedButton && { paId: selectedButton })
-      },
-      '正在加载列表中，请稍后...'
-    )
-    fetchData(findArea, { 'page.disable': true }, '正在加载列表中，请稍后...')
+    if (selectedButton) {
+      fetchData(
+        find,
+        {
+          'page.num': page.num,
+          'page.size': page.size,
+          ...(selectedButton && { paId: selectedButton })
+        },
+        '正在加载列表中，请稍后...'
+      )
+    } else {
+      fetchData(findArea, { 'page.disable': true }, '正在加载列表中，请稍后...')
+    }
   }, [fetchData, page.num, page.size, selectedButton])
 
   return (
@@ -58,18 +61,88 @@ const TableData: React.FC<TableDataProps> = ({ selectedButton }) => {
       disableVirtualization={false}
       rows={list}
       columns={[
-        { field: '', headerName: '进场图', flex: 1 },
-        { field: 'id', headerName: '进出场编号', flex: 1 },
-        { field: '', headerName: '车辆状态', flex: 1 },
-        { field: '', headerName: '车牌号', flex: 1 },
-        { field: '', headerName: '停车场', flex: 1 },
-        { field: '', headerName: '计费规则', flex: 1 },
-        { field: '', headerName: '车牌类型', flex: 1 },
-        { field: 'inTime', headerName: '进场时间', flex: 1 },
-        { field: 'outTime', headerName: '出场时间', flex: 1 },
-        { field: '', headerName: '停车时间', flex: 1 },
-        { field: '', headerName: '收费金额', flex: 1 },
-        { field: 'remark', headerName: '说明', flex: 1 }
+        {
+          field: 'inputImg',
+          headerName: '进场图',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        { field: 'id', headerName: '进出场编号', flex: 1, headerAlign: 'center', align: 'center' },
+        {
+          field: 'stateCd',
+          headerName: '车辆状态',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        { field: 'carNum', headerName: '车牌号', flex: 1, headerAlign: 'center', align: 'center' },
+        {
+          field: 'parkingArea.name',
+          headerName: '停车场',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.parkingArea?.name
+        },
+        {
+          field: 'billingRules',
+          headerName: '计费规则',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'carInoutDetail.carType',
+          headerName: '车牌类型',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.carInoutDetail?.carType
+        },
+        {
+          field: 'inTime',
+          headerName: '进场时间',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'outTime',
+          headerName: '出场时间',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'duration',
+          headerName: '停车时间（小时）',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => {
+            const inTime = row.inTime?.replace(' ', 'T')
+            const outTime = row.outTime?.replace(' ', 'T')
+            if (!inTime || !outTime) return '-'
+            const durationMs = new Date(outTime).getTime() - new Date(inTime).getTime()
+            const durationHours = durationMs / 3600000
+            return durationHours.toFixed(2) // 返回字符串，更易读
+          }
+        },
+        {
+          field: 'carInoutPayment.realCharge',
+          headerName: '收费金额',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'carInoutDetail.remark',
+          headerName: '说明',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        }
       ]}
       pageSizeOptions={[10, 20, 50, 100]}
       paginationMode="server"

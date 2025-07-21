@@ -1,4 +1,7 @@
 import { Page } from '../../pageModel'
+import { CarInoutDetailReply } from './carInoutDetailModel'
+import { CarInoutPaymentReply } from './carInoutPaymentModel'
+import { ParkingAreaReply } from './parkingAreaModel'
 
 export interface CarInoutReply {
   id?: string
@@ -11,6 +14,14 @@ export interface CarInoutReply {
   outTime?: string
   statusCd?: string
   paId?: string
+  carType?: string
+  startTime?: string
+  endTime?: string
+  inputImg?: string
+  billingRules?: string
+  carInoutDetail?: CarInoutDetailReply
+  carInoutPayment?: CarInoutPaymentReply
+  parkingArea?: ParkingAreaReply
 }
 
 export interface CarInoutParams {
@@ -18,12 +29,15 @@ export interface CarInoutParams {
   communityId?: string
   carNum?: string
   stateCd?: string
-  paId?: string
   inTime?: string
-  isIn?: string
+  outTime?: string
+  statusCd?: string
+  paId?: string
   carType?: string
   startTime?: string
   endTime?: string
+  inputImg?: string
+  billingRules?: string
 }
 
 export interface FindCarInoutReply {
