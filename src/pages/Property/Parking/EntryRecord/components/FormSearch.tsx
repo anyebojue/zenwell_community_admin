@@ -125,7 +125,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton }) => {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateTimePicker
               ampm={false}
-              label="申请开始时间"
+              label="开始时间"
               value={searchParams.startTime ? dayjs(searchParams.startTime) : null}
               onChange={newValue => {
                 if (newValue) {
@@ -150,7 +150,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton }) => {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateTimePicker
               ampm={false}
-              label="申请结束时间"
+              label="结束时间"
               value={searchParams.endTime ? dayjs(searchParams.endTime) : null}
               onChange={newValue => {
                 if (newValue) {
