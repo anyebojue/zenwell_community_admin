@@ -1,4 +1,5 @@
 import { Page } from '../../pageModel'
+import { ParkingAreaReply } from './parkingAreaModel'
 
 export interface CarBlackWhiteReply {
   id?: string
@@ -11,6 +12,7 @@ export interface CarBlackWhiteReply {
   endTime?: string
   statusCd?: string
   paId?: string
+  parkingArea?: ParkingAreaReply
 }
 
 export interface CarBlackWhiteParams {

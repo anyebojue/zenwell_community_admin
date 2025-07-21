@@ -136,7 +136,14 @@ const TableData: React.FC<TableDataProps> = ({
           align: 'center',
           renderCell: ({ row }) => <Chip label={statusValue[row.blackWhite!] || '未知'} />
         },
-        { field: '', headerName: '停车场', flex: 1, headerAlign: 'center', align: 'center' },
+        {
+          field: 'parkingArea.name',
+          headerName: '停车场',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.parkingArea?.name
+        },
         { field: 'carNum', headerName: '车牌号', flex: 1, headerAlign: 'center', align: 'center' },
         {
           field: 'startTime',
