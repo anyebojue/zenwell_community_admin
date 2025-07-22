@@ -28,6 +28,7 @@ export interface ParkingSpaceApplyReply {
 export interface ParkingSpaceApplyParams {
   id?: string
   communityId?: string
+  psId?: string
   carNum?: string
   carBrand?: string
   carType?: string

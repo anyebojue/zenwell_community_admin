@@ -56,11 +56,13 @@ const FormDialog: React.FC<FormDialogProps> = ({
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.ParkingSpaceApplySlice)
   const { list } = useSelector((state: RootState) => state.OwnerSlice)
+  const { list: parkingSpaceList } = useSelector((state: RootState) => state.ParkingSpaceInfoSlice)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(
     () => ({
       carNum: dialogType === 'edit' ? dialogValue?.carNum || '' : '',
+      psId: dialogType === 'edit' ? dialogValue?.psId || '' : '',
       carBrand: dialogType === 'edit' ? dialogValue?.carBrand || '' : '',
       carType: dialogType === 'edit' ? dialogValue?.carType || '' : '',
       carColor: dialogType === 'edit' ? dialogValue?.carColor || '' : '',
@@ -149,6 +151,23 @@ const FormDialog: React.FC<FormDialogProps> = ({
               onChange={e => setFormData({ ...formData, carNum: e.target.value })}
               variant="outlined"
             />
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>停车位：</FormLabel>
+            <TextField
+              sx={{ width: '80%' }}
+              select
+              size="small"
+              value={formData.psId}
+              onChange={e => setFormData({ ...formData, psId: e.target.value })}
+              variant="outlined"
+            >
+              {parkingSpaceList.map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.num}
+                </MenuItem>
+              ))}
+            </TextField>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>汽车品牌：</FormLabel>
