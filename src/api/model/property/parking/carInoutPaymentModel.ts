@@ -13,6 +13,7 @@ export interface CarInoutPaymentReply {
   realCharge?: string
   statusCd?: string
   carInout?: CarInoutReply
+  stateCd?: string
 }
 
 export interface CarInoutPaymentParams {
@@ -24,6 +25,10 @@ export interface CarInoutPaymentParams {
   payCharge?: string
   realCharge?: string
   statusCd?: string
+  carNum?: string
+  stateCd?: string
+  startTime?: string
+  endTime?: string
 }
 
 export interface FindCarInoutPaymentReply {

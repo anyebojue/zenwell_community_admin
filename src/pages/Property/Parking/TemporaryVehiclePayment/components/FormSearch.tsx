@@ -2,7 +2,7 @@ import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CarInoutPaymentParams } from 'api/model/property/parking/carInoutPaymentModel'
 import { find } from 'modules/property/parking/carInoutPayment'
-import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
+import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
@@ -31,7 +31,10 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.CarInoutPaymentSlice)
   const [searchParams, setSearchParams] = useState<CarInoutPaymentParams>({
-    statusCd: ''
+    carNum: '',
+    stateCd: '',
+    startTime: '',
+    endTime: ''
   })
 
   const handleInputChange =
@@ -71,6 +74,14 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton }) => {
     fetchData(searchParams)
   }
 
+  const handleSelectChange =
+    (field: keyof CarInoutPaymentParams) => (event: ChangeEvent<HTMLInputElement>) => {
+      setSearchParams(prevData => ({
+        ...prevData,
+        [field]: event.target.value
+      }))
+    }
+
   return (
     <Box>
       <Stack direction="row" spacing={3} component="form" sx={{ mb: 1.5 }}>
@@ -83,6 +94,60 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton }) => {
             sx={textFieldStyles}
             value={searchParams.statusCd}
             onChange={handleInputChange('statusCd')}
+          />
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            select
+            size="small"
+            label="请选择状态"
+            value={searchParams.stateCd}
+            onChange={handleSelectChange('stateCd')}
+            variant="outlined"
+            sx={textFieldStyles}
+          >
+            {[
+              { value: '100300', label: '进场状态' },
+              { value: '100400', label: '支付完成' },
+              { value: '100500', label: '离场状态' },
+              { value: '100600', label: '超时重新支付' }
+            ].map(option => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            size="small"
+            label="请输入开始时间"
+            type="date"
+            variant="outlined"
+            sx={textFieldStyles}
+            value={searchParams.startTime}
+            onChange={handleInputChange('startTime')}
+            slotProps={{
+              inputLabel: {
+                shrink: true
+              }
+            }}
+          />
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            size="small"
+            label="请输入结束时间"
+            type="date"
+            variant="outlined"
+            sx={textFieldStyles}
+            value={searchParams.endTime}
+            onChange={handleInputChange('endTime')}
+            slotProps={{
+              inputLabel: {
+                shrink: true
+              }
+            }}
           />
         </FormControl>
         <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
@@ -103,9 +168,12 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton }) => {
             startIcon={<History />}
             sx={buttonStyles('darkgray', '#696969')}
             onClick={() => {
-              setSearchParams({ statusCd: '' })
+              setSearchParams({ carNum: '', stateCd: '', startTime: '', endTime: '' })
               fetchData({
-                statusCd: '',
+                carNum: '',
+                stateCd: '',
+                startTime: '',
+                endTime: '',
                 'page.num': page.num,
                 'page.size': page.size
               })

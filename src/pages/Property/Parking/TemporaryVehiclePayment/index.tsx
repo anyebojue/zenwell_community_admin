@@ -1,10 +1,17 @@
 import { memo, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Box, Button, ButtonGroup, Stack } from '@mui/material'
+import { Box, Button, ButtonGroup, Stack, Theme, Typography } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
+
+const contentBoxStyle = (theme: Theme) => ({
+  background: theme.palette.background.default,
+  borderRadius: '15px',
+  padding: '15px 15px',
+  width: '100%'
+})
 
 const TemporaryVehiclePaymentIndex = () => {
   const { list: paList } = useSelector((state: RootState) => state.ParkingAreaSlice)
@@ -17,7 +24,7 @@ const TemporaryVehiclePaymentIndex = () => {
   }, [paList])
 
   return (
-    <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
+    <Box sx={{ mt: 3.5, width: '100%' }}>
       <NavbarBreadcrumbs />
       <Stack sx={{ mt: 2, mb: 1.5, width: '100%' }} direction="row" spacing={3}>
         <ButtonGroup
@@ -47,7 +54,12 @@ const TemporaryVehiclePaymentIndex = () => {
         </ButtonGroup>
         <Box sx={{ width: '100%' }}>
           <FormSearch selectedButton={selectedButton} />
-          <TableData selectedButton={selectedButton} />
+          <Box sx={contentBoxStyle}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography variant="h6">临时车缴费</Typography>
+            </Box>
+            <TableData selectedButton={selectedButton} />
+          </Box>
         </Box>
       </Stack>
       <Copyright />

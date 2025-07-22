@@ -5,6 +5,14 @@ import { find as findArea } from 'modules/property/parking/parkingArea'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
+import { Chip } from '@mui/material'
+
+const stateCd: Record<string, string> = {
+  '100300': '进场状态',
+  '100400': '支付完成',
+  '100500': '离场状态',
+  '100600': '超时重新支付'
+}
 
 interface TableDataProps {
   selectedButton: string
@@ -74,7 +82,8 @@ const TableData: React.FC<TableDataProps> = ({ selectedButton }) => {
           headerName: '车辆状态',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          renderCell: ({ row }) => <Chip label={stateCd[row.stateCd!] || '未知'} />
         },
         { field: 'carNum', headerName: '车牌号', flex: 1, headerAlign: 'center', align: 'center' },
         {
