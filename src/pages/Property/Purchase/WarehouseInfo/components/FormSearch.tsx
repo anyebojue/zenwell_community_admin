@@ -71,7 +71,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
   }, [fetchData, searchParams])
 
   const handleReset = useCallback(() => {
-    const initialParams = { shName: '', shType: '', isShow: '' }
+    const initialParams = { id: '', shName: '', shType: '' }
     setSearchParams(initialParams)
     fetchData({ ...initialParams, 'page.num': page.num, 'page.size': page.size })
   }, [fetchData, page.num, page.size])
