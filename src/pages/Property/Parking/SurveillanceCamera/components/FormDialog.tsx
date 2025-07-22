@@ -26,6 +26,17 @@ import {
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
+const formatDateTime = (date: Date | string | undefined): string => {
+  const validDate = date ? new Date(date) : new Date()
+  const year = validDate.getFullYear()
+  const month = String(validDate.getMonth() + 1).padStart(2, '0')
+  const day = String(validDate.getDate()).padStart(2, '0')
+  const hours = String(validDate.getHours()).padStart(2, '0')
+  const minutes = String(validDate.getMinutes()).padStart(2, '0')
+  const seconds = String(validDate.getSeconds()).padStart(2, '0')
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
+
 interface FormDialogProps {
   dialogValue?: MachineReply
   openDialog: boolean
@@ -41,7 +52,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.MachineSlice)
-  const { list } = useSelector((state: RootState) => state.ParkingAreaSlice)
+  const { list } = useSelector((state: RootState) => state.ParkingBoxSlice)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(
@@ -49,7 +60,14 @@ const FormDialog: React.FC<FormDialogProps> = ({
       machineCode: dialogType === 'edit' ? dialogValue?.machineCode || '' : '',
       machineName: dialogType === 'edit' ? dialogValue?.machineName || '' : '',
       machineIp: dialogType === 'edit' ? dialogValue?.machineIp || '' : '',
-      direction: dialogType === 'edit' ? dialogValue?.direction || '' : ''
+      direction: dialogType === 'edit' ? dialogValue?.direction || '' : '',
+      manufacturer: dialogType === 'edit' ? dialogValue?.manufacturer || '' : '',
+      video: dialogType === 'edit' ? dialogValue?.video || '' : '',
+      pbId: dialogType === 'edit' ? dialogValue?.pbId || '' : '',
+      heartbeatTime:
+        dialogType === 'edit'
+          ? dialogValue?.heartbeatTime || formatDateTime(new Date())
+          : formatDateTime(new Date())
     }),
     [dialogType, dialogValue]
   )
@@ -158,20 +176,14 @@ const FormDialog: React.FC<FormDialogProps> = ({
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>道闸厂家：</FormLabel>
             <TextField
-              label="请选择道闸厂家"
+              placeholder="请填写道闸厂家"
               sx={{ width: '80%' }}
-              select
+              type="text"
               size="small"
-              value={formData.direction || ''}
-              onChange={e => setFormData({ ...formData, direction: e.target.value })}
+              value={formData.manufacturer}
+              onChange={e => setFormData({ ...formData, manufacturer: e.target.value })}
               variant="outlined"
-            >
-              {list.map(option => (
-                <MenuItem key={option.id} value={option.id}>
-                  {option.name}
-                </MenuItem>
-              ))}
-            </TextField>
+            />
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>岗亭：</FormLabel>
@@ -180,13 +192,13 @@ const FormDialog: React.FC<FormDialogProps> = ({
               sx={{ width: '80%' }}
               select
               size="small"
-              value={formData.direction || ''}
-              onChange={e => setFormData({ ...formData, direction: e.target.value })}
+              value={formData.pbId || ''}
+              onChange={e => setFormData({ ...formData, pbId: e.target.value })}
               variant="outlined"
             >
               {list.map(option => (
                 <MenuItem key={option.id} value={option.id}>
-                  {option.name}
+                  {option.boxName}
                 </MenuItem>
               ))}
             </TextField>
@@ -194,20 +206,27 @@ const FormDialog: React.FC<FormDialogProps> = ({
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>监控视频：</FormLabel>
             <TextField
-              label="请选择监控视频"
+              placeholder="请填写监控视频"
               sx={{ width: '80%' }}
-              select
+              type="text"
               size="small"
-              value={formData.direction || ''}
-              onChange={e => setFormData({ ...formData, direction: e.target.value })}
+              value={formData.video}
+              onChange={e => setFormData({ ...formData, video: e.target.value })}
               variant="outlined"
-            >
-              {list.map(option => (
-                <MenuItem key={option.id} value={option.id}>
-                  {option.name}
-                </MenuItem>
-              ))}
-            </TextField>
+            />
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <FormLabel>设备心跳时间：</FormLabel>
+            <TextField
+              sx={{ width: '80%' }}
+              size="small"
+              type="datetime-local"
+              value={formatDateTime(formData.heartbeatTime)}
+              onChange={e =>
+                setFormData({ ...formData, heartbeatTime: formatDateTime(e.target.value) })
+              }
+              variant="outlined"
+            />
           </Box>
         </Stack>
       </DialogContent>

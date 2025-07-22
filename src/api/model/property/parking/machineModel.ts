@@ -1,4 +1,5 @@
 import { Page } from '../../pageModel'
+import { ParkingBoxReply } from './parkingBoxModel'
 
 export interface MachineReply {
   id?: string
@@ -19,6 +20,10 @@ export interface MachineReply {
   direction?: string
   heartbeatTime?: string
   typeId?: string
+  manufacturer?: string
+  video?: string
+  pbId?: string
+  parkingBox?: ParkingBoxReply
 }
 
 export interface MachineParams {
@@ -40,6 +45,9 @@ export interface MachineParams {
   typeId?: string
   startTime?: string
   endTime?: string
+  manufacturer?: string
+  video?: string
+  pbId?: string
 }
 
 export interface FindMachineReply {

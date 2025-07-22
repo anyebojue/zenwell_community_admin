@@ -1,7 +1,7 @@
 import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { find } from 'modules/property/parking/machine'
-import { find as findParking } from 'modules/property/parking/parkingArea'
+import { find as findBox } from 'modules/property/parking/parkingBox'
 import { MachineReply } from 'api/model/property/parking/machineModel'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
@@ -66,7 +66,7 @@ const TableData: React.FC<TableDataProps> = ({
     )
     if (selectedButton === '') {
       fetchData(
-        findParking,
+        findBox,
         { 'page.num': page.num, 'page.size': page.size },
         '正在加载列表中，请稍后...'
       )
@@ -162,8 +162,21 @@ const TableData: React.FC<TableDataProps> = ({
           align: 'center',
           renderCell: ({ row }) => <Chip label={statusValue[row.direction!] || '未知'} />
         },
-        { field: '', headerName: '道闸厂家', flex: 1, headerAlign: 'center', align: 'center' },
-        { field: '', headerName: '岗亭', flex: 1, headerAlign: 'center', align: 'center' },
+        {
+          field: 'manufacturer',
+          headerName: '道闸厂家',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'pbId',
+          headerName: '岗亭',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.parkingBox?.boxName
+        },
         {
           field: 'stateCd',
           headerName: '状态',
@@ -172,7 +185,7 @@ const TableData: React.FC<TableDataProps> = ({
           align: 'center',
           renderCell: ({ row }) => <Chip label={statusCd[row.stateCd!] || '未知'} />
         },
-        { field: '', headerName: '监控视频', flex: 1, headerAlign: 'center', align: 'center' },
+        { field: 'video', headerName: '监控视频', flex: 1, headerAlign: 'center', align: 'center' },
         {
           field: 'heartbeatTime',
           headerName: '心跳时间',
