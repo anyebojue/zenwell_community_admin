@@ -49,7 +49,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
       unitNum: dialogType === 'edit' ? dialogValue?.unitNum || '' : '',
       layerCount: dialogType === 'edit' ? dialogValue?.layerCount || 0 : 0,
       unitArea: dialogType === 'edit' ? dialogValue?.unitArea || '' : '',
-      lift: dialogType === 'edit' ? dialogValue?.lift || '' : '',
+      lift: dialogType === 'edit' ? dialogValue?.lift || 0 : 0,
       remark: dialogType === 'edit' ? dialogValue?.remark || '' : ''
     }
     return defaultValues
@@ -145,7 +145,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
               select
               size="small"
               value={formData.lift}
-              onChange={e => setFormData({ ...formData, lift: e.target.value })}
+              onChange={e => setFormData({ ...formData, lift: Number(e.target.value) })}
               variant="outlined"
             >
               {[
