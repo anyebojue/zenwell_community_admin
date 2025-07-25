@@ -169,6 +169,55 @@ const TableData: React.FC<TableDataProps> = ({
           align: 'center'
         },
         {
+          field: 'numHouses',
+          headerName: '房屋数',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'ownerMembers',
+          headerName: '业主成员',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'numVehicles',
+          headerName: '车辆数',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'complaints',
+          headerName: '投诉',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'maintenanceRequests',
+          headerName: '报修',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'outstandingFees',
+          headerName: '欠费',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'ownerContract',
+          headerName: '业主合同',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
           field: 'actions',
           headerName: '操作',
           type: 'actions',
