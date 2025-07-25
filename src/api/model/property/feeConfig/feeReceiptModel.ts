@@ -32,6 +32,7 @@ export interface FeeReceiptParams {
   payObjName?: string
   startTime?: string
   endTime?: string
+  payerObjName?: string
 }
 
 export interface FindFeeReceiptReply {

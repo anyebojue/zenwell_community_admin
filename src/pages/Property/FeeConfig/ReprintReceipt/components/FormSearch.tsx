@@ -30,7 +30,7 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   const { page } = useSelector((state: RootState) => state.FeeReceiptSlice)
 
   const [searchParams, setSearchParams] = useState<FeeReceiptParams>({
-    objName: '',
+    payerObjName: '',
     objType: '',
     startTime: '',
     endTime: ''
@@ -67,7 +67,7 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   }, [fetchData, searchParams])
 
   const handleReset = useCallback(() => {
-    const initialParams = { objName: '', objType: '', startTime: '', endTime: '' }
+    const initialParams = { payerObjName: '', objType: '', startTime: '', endTime: '' }
     setSearchParams(initialParams)
     fetchData({ ...initialParams, 'page.num': page.num, 'page.size': page.size })
   }, [fetchData, page.num, page.size])
@@ -90,8 +90,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.objName}
-            onChange={handleInputChange('objName')}
+            value={searchParams.payerObjName}
+            onChange={handleInputChange('payerObjName')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
