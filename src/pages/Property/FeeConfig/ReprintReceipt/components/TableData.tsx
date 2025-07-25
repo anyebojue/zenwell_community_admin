@@ -98,14 +98,14 @@ const TableData: React.FC<TableDataProps> = () => {
         },
         {
           field: 'feeReceiptDetail.payFee.payerObjName',
-          headerName: '房屋',
+          headerName: '房屋/车位',
           flex: 1,
           headerAlign: 'center',
           align: 'center',
           renderCell: ({ row }) =>
             row.feeReceiptDetail?.payFee?.payerObjType === '3333'
               ? row.feeReceiptDetail?.payFee?.payerObjName
-              : '-'
+              : row.feeReceiptDetail?.payFee?.incomeObjName
         },
         {
           field: 'feeReceiptDetail.payFee.incomeObjName',
@@ -114,17 +114,6 @@ const TableData: React.FC<TableDataProps> = () => {
           headerAlign: 'center',
           align: 'center',
           renderCell: ({ row }) => row.feeReceiptDetail?.payFee?.incomeObjName
-        },
-        {
-          field: 'feeReceiptDetail.payFee.payerObjType',
-          headerName: '车位',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) =>
-            row.feeReceiptDetail?.payFee?.payerObjType === '6666'
-              ? row.feeReceiptDetail?.payFee?.incomeObjName
-              : '-'
         },
         {
           field: 'feeReceiptDetail.payFee.payFeeDetail.receivedAmount',
