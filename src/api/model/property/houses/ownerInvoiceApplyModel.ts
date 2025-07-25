@@ -9,7 +9,7 @@ export interface OwnerInvoiceApplyReply {
   invoiceType?: string // 发票类型 1001 个人 2002 企业
   ownerName?: string // 业主名称
   applyTel?: string // 申请人电话
-  invoiceAmount?: number // 申请金额
+  invoiceAmount?: string // 申请金额
   communityId?: string // 小区ID
   createUserId?: string // 用户ID
   createUserName?: string // 申请人
@@ -34,7 +34,7 @@ export interface OwnerInvoiceApplyParams {
   invoiceType?: string // 发票类型 1001 个人 2002 企业
   ownerName?: string // 业主名称
   applyTel?: string // 申请人电话
-  invoiceAmount?: number // 申请金额
+  invoiceAmount?: string // 申请金额
   communityId?: string // 小区ID
   createUserName?: string // 申请人
   stateCd?: string // 审核状态 W 待审核 U 待上传 F 审核失败 G 带领用 C 已领用

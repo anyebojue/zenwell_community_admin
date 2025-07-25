@@ -83,7 +83,7 @@ const PlanIndex: React.FC<PlanIndexProps> = ({ dialogValue }) => {
           align: 'center'
         },
         {
-          field: 'itemObjId',
+          field: 'id',
           headerName: '缴费ID',
           flex: 1,
           headerAlign: 'center',

@@ -31,7 +31,7 @@ const RolesIndex = () => {
       <NavbarBreadcrumbs />
       <Box sx={{ width: '100%' }}>
         <Box sx={contentBoxStyle}>
-          <Typography variant="h6">巡检计划</Typography>
+          <Typography variant="h6">发票详情</Typography>
           <Divider sx={{ p: 0.5, mb: 2 }} />
           <Box sx={{ pb: 0.2 }}>
             <Grid container spacing={2}>
@@ -46,21 +46,21 @@ const RolesIndex = () => {
                 { label: '申请人', value: row?.createUserName },
                 { label: '发票名头', value: row?.ownerInvoice.invoiceName },
                 { label: '纳税人识别号', value: row?.ownerInvoice.invoiceNum },
-                { label: '地址', value: row?.invoiceAddress },
+                { label: '地址', value: row?.ownerInvoice.invoiceAddress },
                 { label: '电话', value: row?.invoiceLink },
                 { label: '申请金额', value: row?.invoiceAmount },
                 {
                   label: '审核状态',
                   value:
-                    row?.status === 'W'
+                    row?.stateCd === 'W'
                       ? '待审核'
-                      : row?.status === 'U'
+                      : row?.stateCd === 'U'
                         ? '待上传'
-                        : row?.status === 'F'
+                        : row?.stateCd === 'F'
                           ? '审核失败'
-                          : row?.status === 'G'
+                          : row?.stateCd === 'G'
                             ? '待领用'
-                            : row?.status === 'C'
+                            : row?.stateCd === 'C'
                               ? '已领用'
                               : ''
                 },

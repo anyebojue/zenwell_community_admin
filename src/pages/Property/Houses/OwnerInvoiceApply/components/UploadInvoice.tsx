@@ -5,6 +5,7 @@ import {
   OwnerInvoiceApplyReply
 } from 'api/model/property/houses/ownerInvoiceApplyModel'
 import { find, update } from 'modules/property/houses/ownerInvoiceApply'
+import { create as createItem } from 'modules/property/houses/ownerInvoiceApplyItem'
 import {
   Box,
   CircularProgress,
@@ -53,6 +54,17 @@ const FormDialog: React.FC<FormDialogProps> = ({
       try {
         const current_community = localStorage.getItem('current_community')
         const community = JSON.parse(current_community || '')
+        await dispatch(
+          createItem({
+            applyId: dialogValue?.id,
+            itemType: dialogValue?.invoiceType,
+            itemName: dialogValue?.ownerName,
+            itemAmount: dialogValue?.invoiceAmount,
+            communityId: community.id,
+            payTime: dialogValue?.createdAt,
+            remark: dialogValue?.remark
+          })
+        )
         const action = update({
           id: dialogValue?.id,
           ...formData,
@@ -81,10 +93,15 @@ const FormDialog: React.FC<FormDialogProps> = ({
       }
     },
     [
+      dispatch,
       dialogValue?.id,
+      dialogValue?.invoiceType,
+      dialogValue?.ownerName,
+      dialogValue?.invoiceAmount,
+      dialogValue?.createdAt,
+      dialogValue?.remark,
       formData,
       images,
-      dispatch,
       page.num,
       page.size,
       selectedButton,

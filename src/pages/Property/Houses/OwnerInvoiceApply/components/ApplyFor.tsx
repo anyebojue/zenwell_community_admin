@@ -64,11 +64,15 @@ const FormDialog: React.FC<FormDialogProps> = ({ selectedButton, openDialog, set
       try {
         const current_community = localStorage.getItem('current_community')
         const community = JSON.parse(current_community || '')
+        const userInfo = localStorage.getItem('user_info')
+        const user = JSON.parse(userInfo || '')
         const params = {
           ...formData,
           ownerId: ownerInvoice?.ownerId,
           ownerName: ownerInvoice?.ownerName,
-          communityId: community?.id
+          communityId: community?.id,
+          createUserId: user?.id,
+          createUserName: user?.username
         }
         const action = create(params)
         const res = await dispatch(action)
