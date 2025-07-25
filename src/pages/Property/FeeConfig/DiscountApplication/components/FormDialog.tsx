@@ -120,7 +120,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
         const params = { ...formData, communityId: community?.id }
         const action =
           dialogType === 'add'
-            ? create({ stateCd: '1', ...params })
+            ? create({ stateCd: '1', ...params, inUse: '1' })
             : update({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
