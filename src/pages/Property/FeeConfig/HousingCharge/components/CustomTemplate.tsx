@@ -20,13 +20,13 @@ import { RoomReply } from 'api/model/property/houses/roomModel'
 import { find as findFeeConfig } from 'modules/property/feeConfig/feeConfig'
 import { getImportTemplate } from 'modules/property/feeConfig/payFee'
 
-interface FormMeterReadingProps {
+interface CustomTemplateProps {
   dialogValue: { id?: string; label?: string; roomData?: RoomReply }
   openDialog: boolean
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
-const FormMeterReading: React.FC<FormMeterReadingProps> = ({ openDialog, setOpenDialog }) => {
+const CustomTemplate: React.FC<CustomTemplateProps> = ({ openDialog, setOpenDialog }) => {
   const dispatch = useDispatch<AppDispatch>()
   const feeConfigList = useSelector((state: RootState) => state.FeeConfigSlice.list)
   const floorList = useSelector((state: RootState) => state.FloorSlice.list)
@@ -179,4 +179,4 @@ const FormMeterReading: React.FC<FormMeterReadingProps> = ({ openDialog, setOpen
   )
 }
 
-export default memo(FormMeterReading)
+export default memo(CustomTemplate)

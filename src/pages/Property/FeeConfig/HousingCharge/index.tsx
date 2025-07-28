@@ -14,6 +14,7 @@ import { TreeViewBaseItem } from '@mui/x-tree-view'
 import FormSearch from './components/FormSearch'
 import HousingExpenses from './components/HousingExpenses'
 import CustomTemplate from './components/CustomTemplate'
+import ImportCustomFee from './components/ImportCustomFee'
 
 const contentBoxStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -42,6 +43,7 @@ const HousingManagementIndex = () => {
   const { list } = useSelector((state: RootState) => state.FloorSlice)
   const { list: roomList } = useSelector((state: RootState) => state.RoomSlice)
   const [openTemplate, setOpenTemplate] = useState(false)
+  const [openImport, setOpenImport] = useState(false)
   const [dialogValue, setDialogValue] = useState<{
     id?: string
     label?: string
@@ -177,7 +179,7 @@ const HousingManagementIndex = () => {
                 color="error"
                 startIcon={<Add />}
                 sx={buttonCommonStyle()}
-                onClick={() => {}}
+                onClick={() => setOpenImport(true)}
               >
                 自定义导入
               </Button>
@@ -216,6 +218,7 @@ const HousingManagementIndex = () => {
         openDialog={openTemplate}
         setOpenDialog={setOpenTemplate}
       />
+      <ImportCustomFee openDialog={openImport} setOpenDialog={setOpenImport} />
     </Box>
   )
 }

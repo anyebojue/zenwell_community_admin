@@ -6,7 +6,8 @@ const ApiPrefix = {
   CreatePayFee: '/fee/pay_fee',
   UpdatePayFee: '/fee/pay_fee',
   DeletePayFee: '/fee/pay_fee',
-  GetImportTemplate: '/fee/pay_fee_custom_template'
+  GetImportTemplate: '/fee/pay_fee_custom_template',
+  ImportCustomFee: '/fee/import/import_custom_fee'
 }
 
 /**
@@ -65,7 +66,7 @@ export const DeletePayFee = (ids: string[]) => {
 }
 
 /**
- * 模板导出
+ * 自定义模板
  * @param params
  * @returns
  */
@@ -78,6 +79,23 @@ export const GetImportTemplate = (params: {
     .get<FindPayFeeReply>({
       url: ApiPrefix.GetImportTemplate,
       params
+    })
+    .then(res => res.data)
+}
+
+/**
+ * 自定义导入
+ * @param data
+ * @returns
+ */
+export const ImportCustomFee = (data: FormData) => {
+  return request
+    .post({
+      url: ApiPrefix.ImportCustomFee,
+      data,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
     })
     .then(res => res.data)
 }
