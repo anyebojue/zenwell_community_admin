@@ -13,6 +13,7 @@ import { RoomReply } from 'api/model/property/houses/roomModel'
 import { TreeViewBaseItem } from '@mui/x-tree-view'
 import FormSearch from './components/FormSearch'
 import HousingExpenses from './components/HousingExpenses'
+import CustomTemplate from './components/CustomTemplate'
 
 const contentBoxStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -40,6 +41,7 @@ const HousingManagementIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { list } = useSelector((state: RootState) => state.FloorSlice)
   const { list: roomList } = useSelector((state: RootState) => state.RoomSlice)
+  const [openTemplate, setOpenTemplate] = useState(false)
   const [dialogValue, setDialogValue] = useState<{
     id?: string
     label?: string
@@ -165,7 +167,7 @@ const HousingManagementIndex = () => {
                 color="error"
                 startIcon={<Download />}
                 sx={buttonCommonStyle()}
-                onClick={() => {}}
+                onClick={() => setOpenTemplate(true)}
               >
                 自定义模板
               </Button>
@@ -208,6 +210,12 @@ const HousingManagementIndex = () => {
         </Box>
       </Stack>
       <Copyright />
+
+      <CustomTemplate
+        dialogValue={dialogValue}
+        openDialog={openTemplate}
+        setOpenDialog={setOpenTemplate}
+      />
     </Box>
   )
 }

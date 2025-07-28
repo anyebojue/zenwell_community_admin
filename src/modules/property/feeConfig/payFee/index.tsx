@@ -1,7 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
 import { PayFeeParams, PayFeeReply } from 'api/model/property/feeConfig/payFeeModel'
-import { FindPayFee, CreatePayFee, UpdatePayFee, DeletePayFee } from 'api/property/feeConfig/payFee'
+import {
+  FindPayFee,
+  CreatePayFee,
+  UpdatePayFee,
+  DeletePayFee,
+  GetImportTemplate
+} from 'api/property/feeConfig/payFee'
 
 const namespace = 'PayFee'
 
@@ -47,6 +53,14 @@ export const deleteByIds = createAsyncThunk(`${namespace}/deleteByIds`, async (i
   const res = await DeletePayFee(ids)
   return res
 })
+
+export const getImportTemplate = createAsyncThunk(
+  `${namespace}/get`,
+  async (params: { configIds: string; floorIds: string; type: string }) => {
+    const res = await GetImportTemplate(params)
+    return res
+  }
+)
 
 export const PayFeeSlice = createSlice({
   name: namespace,

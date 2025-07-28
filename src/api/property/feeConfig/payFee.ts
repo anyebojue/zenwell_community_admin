@@ -5,7 +5,8 @@ const ApiPrefix = {
   FindPayFee: '/fee/pay_fee',
   CreatePayFee: '/fee/pay_fee',
   UpdatePayFee: '/fee/pay_fee',
-  DeletePayFee: '/fee/pay_fee'
+  DeletePayFee: '/fee/pay_fee',
+  GetImportTemplate: '/fee/pay_fee_custom_template'
 }
 
 /**
@@ -59,6 +60,24 @@ export const DeletePayFee = (ids: string[]) => {
   return request
     .delete({
       url: `${ApiPrefix.DeletePayFee}/${ids.join(',')}`
+    })
+    .then(res => res.data)
+}
+
+/**
+ * 模板导出
+ * @param params
+ * @returns
+ */
+export const GetImportTemplate = (params: {
+  configIds: string
+  floorIds: string
+  type: string
+}) => {
+  return request
+    .get<FindPayFeeReply>({
+      url: ApiPrefix.GetImportTemplate,
+      params
     })
     .then(res => res.data)
 }
