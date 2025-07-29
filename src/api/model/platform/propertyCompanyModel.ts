@@ -10,6 +10,7 @@ export interface CompanyReply {
   communityId?: string
   community?: CommunityReply
   store?: PropertyCompanyReply
+  menus?: string
 }
 
 export interface PropertyCompanyReply {

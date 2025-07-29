@@ -9,6 +9,7 @@ import {
 const ApiPrefix = {
   FindCompany: '/auth/store_community_relation',
   CreateCompany: '/auth/store_community_relation',
+  UpdateCompany: '/auth/store_community_relation',
   DeleteCompany: '/auth/store_community_relation',
   FindPropertyCompany: '/auth/store',
   CreatePropertyCompany: '/auth/store',
@@ -39,6 +40,20 @@ export const CreateCompany = (data: { storeId: string; communityId: string }) =>
   return request
     .post({
       url: ApiPrefix.CreateCompany,
+      data
+    })
+    .then(res => res.data)
+}
+
+/**
+ * 修改接口
+ * @param data AcivityParams
+ * @returns
+ */
+export const UpdateCompany = (data: CompanyReply) => {
+  return request
+    .patch({
+      url: `${ApiPrefix.UpdateCompany}/${data.id}`,
       data
     })
     .then(res => res.data)

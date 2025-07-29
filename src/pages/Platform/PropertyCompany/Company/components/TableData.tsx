@@ -8,6 +8,7 @@ import { Chip } from '@mui/material'
 import message from 'components/Message'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
+import FormDialog from '../components/FormDialog'
 import ExitCell from './ExitCell'
 
 const statusValue: Record<string, string> = {
@@ -22,6 +23,7 @@ const TableData: React.FC<TableDataProps> = () => {
   const location = useLocation()
   const { page, companyList } = useSelector((state: RootState) => state.PropertyCompanySlice)
   const [exitOpen, setExitOpen] = useState(false)
+  const [openDialog, setOpenDialog] = useState(false)
   const [dialogValue, setDialogValue] = useState<CompanyReply>()
 
   const fetchData = useCallback(
@@ -58,7 +60,8 @@ const TableData: React.FC<TableDataProps> = () => {
           setExitOpen(true)
           break
         case 'edit':
-          message.info('同步操作未实现')
+          setDialogValue(row)
+          setOpenDialog(true)
           break
       }
     },
@@ -143,6 +146,7 @@ const TableData: React.FC<TableDataProps> = () => {
         }}
       />
       <ExitCell dialogValue={dialogValue} exitOpen={exitOpen} setExitOpen={setExitOpen} />
+      <FormDialog dialogValue={dialogValue} openDialog={openDialog} setOpenDialog={setOpenDialog} />
     </>
   )
 }

@@ -8,6 +8,7 @@ import {
 import {
   FindCompany,
   CreateCompany,
+  UpdateCompany,
   DeleteCompany,
   FindPropertyCompany,
   CreatePropertyCompany,
@@ -54,6 +55,11 @@ export const companycreate = createAsyncThunk(
     return res
   }
 )
+
+export const companyupdate = createAsyncThunk(`company/update`, async (data: CompanyReply) => {
+  const res = await UpdateCompany(data)
+  return res
+})
 
 export const companydeleteById = createAsyncThunk(`company/deleteByIds`, async (id: string) => {
   const res = await DeleteCompany(id)
