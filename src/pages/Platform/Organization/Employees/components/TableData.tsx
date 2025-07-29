@@ -1,4 +1,4 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { EmployeesReply } from 'api/model/platform/organization/employeesModel'
 import { find } from 'modules/platform/organization/employees'
@@ -6,6 +6,7 @@ import { Chip } from '@mui/material'
 import message from 'components/Message'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
+import ResetPassword from './ResetPassword'
 
 export interface Column<T> {
   headerName: string
@@ -15,6 +16,7 @@ export interface Column<T> {
 }
 
 interface TableDataProps {
+  dialogValue: EmployeesReply | undefined
   setDialogType: Dispatch<SetStateAction<string>>
   setDialogValue: Dispatch<SetStateAction<EmployeesReply | undefined>>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
@@ -23,6 +25,7 @@ interface TableDataProps {
 }
 
 const TableData: React.FC<TableDataProps> = ({
+  dialogValue,
   setDialogType,
   setDialogValue,
   setSelectedRows,
@@ -31,6 +34,7 @@ const TableData: React.FC<TableDataProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.EmployeesSlice)
+  const [passwordOpen, setPasswordOpen] = useState(false)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -64,7 +68,9 @@ const TableData: React.FC<TableDataProps> = ({
     (actionType: string, row: EmployeesReply) => {
       switch (actionType) {
         case 'restartAlt':
-          message.info('同步操作未实现')
+          console.log(row)
+          setDialogValue(row)
+          setPasswordOpen(true)
           break
         case 'details':
           message.info('同步操作未实现')
@@ -107,74 +113,93 @@ const TableData: React.FC<TableDataProps> = ({
     ))
 
   return (
-    <DataGrid
-      sx={{ mt: 1 }}
-      localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
-      disableColumnResize
-      disableVirtualization={false}
-      checkboxSelection
-      rows={list}
-      columns={[
-        { field: 'id', headerName: '员工编号', headerAlign: 'center', align: 'center', width: 200 },
-        {
-          field: 'username',
-          headerName: '名称',
-          headerAlign: 'center',
-          align: 'center',
-          width: 150
-        },
-        {
-          field: 'mobile',
-          headerName: '手机号',
-          headerAlign: 'center',
-          align: 'center',
-          width: 150
-        },
-        {
-          field: 'org',
-          headerName: '关联组织',
-          headerAlign: 'center',
-          align: 'center',
-          flex: 1,
-          renderCell: ({ row }) =>
-            Array.isArray(row.org) && row.org.length > 0 ? row.org[0].name : '-'
-        },
-        { field: 'position', headerName: '岗位', headerAlign: 'center', align: 'center', flex: 1 },
-        {
-          field: 'idcard',
-          headerName: '身份证',
-          headerAlign: 'center',
-          align: 'center',
-          width: 200
-        },
-        { field: 'address', headerName: '地址', headerAlign: 'center', align: 'center', flex: 1 },
-        {
-          field: 'sex',
-          headerName: '性别',
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => (row.sex === 0 ? '女' : '男')
-        },
-        {
-          field: 'actions',
-          headerName: '操作',
-          type: 'actions',
-          width: 250,
-          getActions: ({ row }) => renderActionButtons(row)
-        }
-      ]}
-      onRowSelectionModelChange={handleRowSelection}
-      pageSizeOptions={[10, 20, 50, 100]}
-      paginationMode="server"
-      rowCount={Number(page.total)}
-      initialState={{
-        pagination: {
-          paginationModel: {
-            pageSize: Number(page.size)
+    <>
+      <DataGrid
+        sx={{ mt: 1 }}
+        localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
+        disableColumnResize
+        disableVirtualization={false}
+        checkboxSelection
+        rows={list}
+        columns={[
+          {
+            field: 'id',
+            headerName: '员工编号',
+            headerAlign: 'center',
+            align: 'center',
+            width: 200
+          },
+          {
+            field: 'username',
+            headerName: '名称',
+            headerAlign: 'center',
+            align: 'center',
+            width: 150
+          },
+          {
+            field: 'mobile',
+            headerName: '手机号',
+            headerAlign: 'center',
+            align: 'center',
+            width: 150
+          },
+          {
+            field: 'org',
+            headerName: '关联组织',
+            headerAlign: 'center',
+            align: 'center',
+            flex: 1,
+            renderCell: ({ row }) =>
+              Array.isArray(row.org) && row.org.length > 0 ? row.org[0].name : '-'
+          },
+          {
+            field: 'position',
+            headerName: '岗位',
+            headerAlign: 'center',
+            align: 'center',
+            flex: 1
+          },
+          {
+            field: 'idcard',
+            headerName: '身份证',
+            headerAlign: 'center',
+            align: 'center',
+            width: 200
+          },
+          { field: 'address', headerName: '地址', headerAlign: 'center', align: 'center', flex: 1 },
+          {
+            field: 'sex',
+            headerName: '性别',
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) => (row.sex === 0 ? '女' : '男')
+          },
+          {
+            field: 'actions',
+            headerName: '操作',
+            type: 'actions',
+            width: 250,
+            getActions: ({ row }) => renderActionButtons(row)
           }
-        }
-      }}
-    />
+        ]}
+        onRowSelectionModelChange={handleRowSelection}
+        pageSizeOptions={[10, 20, 50, 100]}
+        paginationMode="server"
+        rowCount={Number(page.total)}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: Number(page.size)
+            }
+          }
+        }}
+      />
+      <ResetPassword
+        dialogValue={dialogValue}
+        passwordOpen={passwordOpen}
+        setPasswordOpen={setPasswordOpen}
+      />
+    </>
   )
 }
 

@@ -93,6 +93,7 @@ const EmployeesIndex = () => {
             </Button>
           </Box>
           <TableData
+            dialogValue={dialogValue}
             setDialogType={setDialogType}
             setDialogValue={setDialogValue}
             setSelectedRows={setSelectedRows}
