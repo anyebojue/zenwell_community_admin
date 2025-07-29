@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { MenuReply } from 'api/model/develop/menuModel'
+import { MenusReply } from 'api/model/develop/menuModel'
 import { RolesReply } from 'api/model/platform/organization/rolesModel'
 import { findMenus } from 'modules/develop/menu'
 import { Box } from '@mui/material'
@@ -31,7 +31,7 @@ const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
   const apiRef = useTreeViewApiRef()
   console.log(dialogValue)
 
-  const renameNameToLabel = (obj: MenuReply[]): MenuReply[] => {
+  const renameNameToLabel = (obj: MenusReply[]): MenusReply[] => {
     return obj.map(({ name, children, ...rest }) => ({
       label: name,
       children: children ? renameNameToLabel(children) : undefined,
@@ -58,7 +58,7 @@ const Feature: React.FC<FeatureProps> = ({ dialogValue }) => {
     fetchData()
   }, [fetchData])
 
-  const transformedList: MenuReply[] = Array.isArray(list) ? renameNameToLabel(list) : []
+  const transformedList: MenusReply[] = Array.isArray(list) ? renameNameToLabel(list) : []
 
   const handleItemSelectionToggle = (
     event: React.SyntheticEvent,

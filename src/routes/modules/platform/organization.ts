@@ -27,6 +27,14 @@ const organization: IRouter[] = [
         }
       },
       {
+        path: 'EmployeesDetails',
+        element: load('Platform/Organization/EmployeesDetails'),
+        meta: {
+          title: '员工详情',
+          hidden: true
+        }
+      },
+      {
         path: 'Roles',
         element: load('Platform/Organization/Roles'),
         meta: {

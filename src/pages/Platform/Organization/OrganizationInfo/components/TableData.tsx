@@ -11,6 +11,7 @@ import message from 'components/Message'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
+import { useNavigate } from 'react-router-dom'
 
 const contentBoxStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -42,12 +43,12 @@ interface TableDataProps {
 const TableData: React.FC<TableDataProps> = ({
   dialogValue,
   dialogUserValue,
-  setDialogUserValue,
   selectedRows,
   setSelectedRows,
   setAssociatedOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, orgUserList } = useSelector((state: RootState) => state.OrganizationInfoSlice)
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -140,8 +141,7 @@ const TableData: React.FC<TableDataProps> = ({
     (actionType: string, row: OrgUserReply) => {
       switch (actionType) {
         case 'details':
-          setDialogUserValue(row)
-          message.info('同步操作未实现')
+          navigate('/organization/EmployeesDetails', { state: { value: row.users } })
           break
         case 'delete':
           setDelOpen(true)
@@ -149,7 +149,7 @@ const TableData: React.FC<TableDataProps> = ({
           break
       }
     },
-    [setDialogUserValue, setSelectedRows]
+    [navigate, setSelectedRows]
   )
 
   const renderActionButtons = (row: OrgUserReply) =>

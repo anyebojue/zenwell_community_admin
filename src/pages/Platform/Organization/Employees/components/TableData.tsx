@@ -6,6 +6,7 @@ import { Chip } from '@mui/material'
 import message from 'components/Message'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
+import { useNavigate } from 'react-router-dom'
 import ResetPassword from './ResetPassword'
 
 export interface Column<T> {
@@ -33,6 +34,7 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.EmployeesSlice)
   const [passwordOpen, setPasswordOpen] = useState(false)
 
@@ -73,7 +75,7 @@ const TableData: React.FC<TableDataProps> = ({
           setPasswordOpen(true)
           break
         case 'details':
-          message.info('同步操作未实现')
+          navigate('/organization/EmployeesDetails', { state: { value: row } })
           break
         case 'edit':
           setDialogType('edit')
@@ -86,7 +88,7 @@ const TableData: React.FC<TableDataProps> = ({
           break
       }
     },
-    [setDialogType, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
+    [setDialogValue, navigate, setDialogType, setOpenDialog, setDelOpen, setSelectedRows]
   )
 
   const renderActionButtons = (row: EmployeesReply) =>
