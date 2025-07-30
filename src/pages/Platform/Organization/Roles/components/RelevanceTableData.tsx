@@ -6,6 +6,7 @@ import message from 'components/Message'
 import { RolesReply } from 'api/model/platform/organization/rolesModel'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
+import { useNavigate } from 'react-router-dom'
 
 interface RelevanceTableDataProps {
   dialogValue: RolesReply
@@ -19,6 +20,7 @@ const RelevanceTableData: React.FC<RelevanceTableDataProps> = ({
   setSelectedRows
 }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.RolesSlice)
 
   const fetchData = useCallback(
@@ -53,7 +55,8 @@ const RelevanceTableData: React.FC<RelevanceTableDataProps> = ({
     (actionType: string, row: RolesReply) => {
       switch (actionType) {
         case 'details':
-          message.info('同步操作未实现')
+          console.log(row)
+          navigate('/organization/EmployeesDetails', { state: { value: row } })
           break
         case 'delete':
           setDelOpen(true)
@@ -61,7 +64,7 @@ const RelevanceTableData: React.FC<RelevanceTableDataProps> = ({
           break
       }
     },
-    [setDelOpen, setSelectedRows]
+    [navigate, setDelOpen, setSelectedRows]
   )
 
   const renderActionButtons = (row: RolesReply) =>
