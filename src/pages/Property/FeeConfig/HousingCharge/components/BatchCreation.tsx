@@ -19,7 +19,18 @@ import {
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 import { PayFeesBatchParams } from 'api/model/property/feeConfig/payFeeModel'
-import { find } from 'modules/property/feeConfig/payFee'
+import { find, payFeesBatch } from 'modules/property/feeConfig/payFee'
+
+const formatDateTime = (date: Date | string | undefined): string => {
+  const validDate = date ? new Date(date) : new Date()
+  const year = validDate.getFullYear()
+  const month = String(validDate.getMonth() + 1).padStart(2, '0')
+  const day = String(validDate.getDate()).padStart(2, '0')
+  const hours = String(validDate.getHours()).padStart(2, '0')
+  const minutes = String(validDate.getMinutes()).padStart(2, '0')
+  const seconds = String(validDate.getSeconds()).padStart(2, '0')
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
 
 interface FormDialogProps {
   openDialog: boolean
@@ -66,8 +77,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
     feeTypeCd: '',
     configId: '',
     statusCd: '',
-    startTime: new Date().toISOString().slice(0, 16),
-    endTime: new Date().toISOString().slice(0, 16)
+    startTime: formatDateTime(new Date()),
+    endTime: formatDateTime(new Date())
   })
 
   const [statusCds, setStatusCds] = useState<string[]>([])
@@ -118,11 +129,11 @@ const FormDialog: React.FC<FormDialogProps> = ({
           endTime: formData.endTime
         }
         console.log(params)
-        // const res = await dispatch(create(params))
-        // if ('error' in res && res.error?.message) throw new Error(res.error.message)
-        // await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))
-        // message.success('批量创建成功')
-        // setOpenDialog(false)
+        const res = await dispatch(payFeesBatch(params))
+        if ('error' in res && res.error?.message) throw new Error(res.error.message)
+        await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))
+        message.success('批量创建成功')
+        setOpenDialog(false)
       } catch (err: unknown) {
         if (err instanceof Error) message.error(err.message)
       } finally {
@@ -315,7 +326,9 @@ const FormDialog: React.FC<FormDialogProps> = ({
               size="small"
               type="datetime-local"
               value={formData.startTime}
-              onChange={e => setFormData({ ...formData, startTime: e.target.value })}
+              onChange={e =>
+                setFormData({ ...formData, startTime: formatDateTime(e.target.value) })
+              }
             />
           </Box>
 
@@ -326,7 +339,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
               size="small"
               type="datetime-local"
               value={formData.endTime}
-              onChange={e => setFormData({ ...formData, endTime: e.target.value })}
+              onChange={e => setFormData({ ...formData, endTime: formatDateTime(e.target.value) })}
             />
           </Box>
         </Stack>

@@ -1,12 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Page } from 'api/model/pageModel'
+import { PayFeeBatchParams } from 'api/model/property/feeConfig/payFeeBatchModel'
 import { PayFeeParams, PayFeeReply } from 'api/model/property/feeConfig/payFeeModel'
 import {
   FindPayFee,
   CreatePayFee,
   UpdatePayFee,
   DeletePayFee,
-  GetImportTemplate
+  GetImportTemplate,
+  PayFeesBatch
 } from 'api/property/feeConfig/payFee'
 
 const namespace = 'PayFee'
@@ -58,6 +60,14 @@ export const getImportTemplate = createAsyncThunk(
   `${namespace}/get`,
   async (params: { configIds: string; floorIds: string; type: string }) => {
     const res = await GetImportTemplate(params)
+    return res
+  }
+)
+
+export const payFeesBatch = createAsyncThunk(
+  `${namespace}/payFeesBatch`,
+  async (data: PayFeeBatchParams) => {
+    const res = await PayFeesBatch(data)
     return res
   }
 )

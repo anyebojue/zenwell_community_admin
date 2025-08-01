@@ -1,4 +1,5 @@
 import { request } from 'utils/request/axios'
+import { PayFeeBatchParams } from 'api/model/property/feeConfig/payFeeBatchModel'
 import { FindPayFeeReply, PayFeeParams } from '../../model/property/feeConfig/payFeeModel'
 
 const ApiPrefix = {
@@ -7,7 +8,8 @@ const ApiPrefix = {
   UpdatePayFee: '/fee/pay_fee',
   DeletePayFee: '/fee/pay_fee',
   GetImportTemplate: '/fee/pay_fee_custom_template',
-  ImportCustomFee: '/fee/import/import_custom_fee'
+  ImportCustomFee: '/fee/import/import_custom_fee',
+  PayFeesBatch: '/fee/pay_fees_batch'
 }
 
 /**
@@ -96,6 +98,20 @@ export const ImportCustomFee = (data: FormData) => {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
+    })
+    .then(res => res.data)
+}
+
+/**
+ * 批量创建
+ * @param data
+ * @returns
+ */
+export const PayFeesBatch = (data: PayFeeBatchParams) => {
+  return request
+    .post({
+      url: ApiPrefix.PayFeesBatch,
+      data
     })
     .then(res => res.data)
 }
