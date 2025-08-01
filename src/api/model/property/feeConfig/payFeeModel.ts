@@ -3,6 +3,18 @@ import { FeeConfigReply } from './feeConfigModel'
 import { MeterWaterReply } from './meterWaterModel'
 import { PayFeeDetailReply } from './payFeeDetailModel'
 
+export interface PayFeesBatchParams {
+  communityId?: string
+  payerObjType?: string // 房屋类型
+  payerObjId?: string // 收费对象
+  payerObjName?: string // 收费对象
+  feeTypeCd?: string // 费用类型
+  configId?: string // 收费项目
+  statusCd?: string
+  startTime?: string
+  endTime?: string
+}
+
 export interface PayFeeReply {
   id?: string
   createdAt?: string

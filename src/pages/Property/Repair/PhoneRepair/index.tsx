@@ -5,7 +5,7 @@ import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { find as findFloor } from 'modules/property/houses/floor'
 import { find as findUnit } from 'modules/property/houses/unit'
 import { find as findRoom } from 'modules/property/houses/room'
@@ -22,7 +22,6 @@ const contentBoxStyle = (theme: Theme) => ({
 
 const RepairPoolsIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.FloorSlice)
   const [openDialog, setOpenDialog] = useState(false)
   const [repairObjType, setRepairObjType] = useState(1)
   const [floorValue, setFloorValue] = useState('')
@@ -32,7 +31,7 @@ const RepairPoolsIndex = () => {
   const fetchFloorData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      const res = await dispatch(findFloor({ 'page.num': page.num, 'page.size': page.size }))
+      const res = await dispatch(findFloor({ 'page.disable': true }))
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
@@ -42,12 +41,12 @@ const RepairPoolsIndex = () => {
     } finally {
       closeLoading()
     }
-  }, [dispatch, page.num, page.size])
+  }, [dispatch])
 
   const fetchUnitData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      const res = await dispatch(findUnit({ 'page.num': page.num, 'page.size': page.size }))
+      const res = await dispatch(findUnit({ 'page.disable': true }))
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
@@ -57,12 +56,12 @@ const RepairPoolsIndex = () => {
     } finally {
       closeLoading()
     }
-  }, [dispatch, page.num, page.size])
+  }, [dispatch])
 
   const fetchRoomData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      const res = await dispatch(findRoom({ 'page.num': page.num, 'page.size': page.size }))
+      const res = await dispatch(findRoom({ 'page.disable': true }))
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
@@ -72,7 +71,7 @@ const RepairPoolsIndex = () => {
     } finally {
       closeLoading()
     }
-  }, [dispatch, page.num, page.size])
+  }, [dispatch])
 
   useEffect(() => {
     if (repairObjType === 2) {

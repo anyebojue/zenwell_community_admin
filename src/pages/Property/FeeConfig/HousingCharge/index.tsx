@@ -1,7 +1,6 @@
 import { memo, useCallback, useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { find } from 'modules/property/houses/floor'
-import { find as findRoom } from 'modules/property/houses/room'
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
 import { Box, Button, Stack, Theme, Typography } from '@mui/material'
 import { Add, Download } from '@mui/icons-material'
@@ -11,10 +10,16 @@ import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 import { RoomReply } from 'api/model/property/houses/roomModel'
 import { TreeViewBaseItem } from '@mui/x-tree-view'
+import { find as findFloor } from 'modules/property/houses/floor'
+import { find as findUnit } from 'modules/property/houses/unit'
+import { find as findRoom } from 'modules/property/houses/room'
+import { find as findFeeConfigType } from 'modules/property/feeConfig/feeConfigType'
+import { find as findFeeConfig } from 'modules/property/feeConfig/feeConfig'
 import FormSearch from './components/FormSearch'
 import HousingExpenses from './components/HousingExpenses'
 import CustomTemplate from './components/CustomTemplate'
 import ImportCustomFee from './components/ImportCustomFee'
+import BatchCreation from './components/BatchCreation'
 
 const contentBoxStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
@@ -49,6 +54,74 @@ const HousingManagementIndex = () => {
     label?: string
     roomData?: RoomReply
   }>({})
+
+  const [openDialog, setOpenDialog] = useState(false)
+  const [payerObjType, setPayerObjType] = useState(1)
+  const [floorValue, setFloorValue] = useState('')
+  const [unitValue, setUnitValue] = useState('')
+  const [roomValue, setRommValue] = useState('')
+  const [feeTypeCd, setFeeTypeCd] = useState('')
+
+  const fetchFloorData = useCallback(async () => {
+    const closeLoading = message.loading('正在加载列表中，请稍后...')
+    try {
+      const res = await dispatch(findFloor({ 'page.disable': true }))
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      closeLoading()
+    }
+  }, [dispatch])
+
+  const fetchUnitData = useCallback(async () => {
+    const closeLoading = message.loading('正在加载列表中，请稍后...')
+    try {
+      const res = await dispatch(findUnit({ 'page.disable': true }))
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      closeLoading()
+    }
+  }, [dispatch])
+
+  const fetchRoomData = useCallback(async () => {
+    const closeLoading = message.loading('正在加载列表中，请稍后...')
+    try {
+      const res = await dispatch(findRoom({ 'page.disable': true }))
+      if ('error' in res && res.error?.message) {
+        throw new Error(res.error.message)
+      }
+    } catch (err: unknown) {
+      closeLoading()
+      if (err instanceof Error) message.error(err.message)
+    } finally {
+      closeLoading()
+    }
+  }, [dispatch])
+
+  useEffect(() => {
+    if (payerObjType === 2) {
+      fetchFloorData()
+    } else if (payerObjType === 3) {
+      fetchFloorData()
+      if (floorValue) {
+        fetchUnitData()
+      }
+    } else if (payerObjType === 4) {
+      fetchFloorData()
+      if (unitValue) {
+        fetchRoomData()
+      }
+    }
+  }, [fetchFloorData, fetchRoomData, fetchUnitData, floorValue, payerObjType, unitValue])
 
   const MUI_X_PRODUCTS: TreeViewBaseItem[] = useMemo(() => {
     return list.map(item => ({
@@ -90,7 +163,18 @@ const HousingManagementIndex = () => {
   useEffect(() => {
     fetchData(find, { 'page.disable': true }, '正在加载列表中，请稍后...')
     fetchData(findRoom, { 'page.disable': true }, '正在加载列表中，请稍后...')
+    fetchData(findFeeConfigType, { 'page.disable': true }, '正在加载列表中，请稍后...')
   }, [fetchData])
+
+  useEffect(() => {
+    if (feeTypeCd) {
+      fetchData(
+        findFeeConfig,
+        { feeTypeCd: feeTypeCd, 'page.disable': true },
+        '正在加载列表中，请稍后...'
+      )
+    }
+  }, [feeTypeCd, fetchData])
 
   useEffect(() => {
     if (!MUI_X_PRODUCTS || MUI_X_PRODUCTS.length === 0) {
@@ -189,7 +273,7 @@ const HousingManagementIndex = () => {
                 color="error"
                 startIcon={<Add />}
                 sx={buttonCommonStyle()}
-                onClick={() => {}}
+                onClick={() => setOpenDialog(true)}
               >
                 批量创建
               </Button>
@@ -219,6 +303,20 @@ const HousingManagementIndex = () => {
         setOpenDialog={setOpenTemplate}
       />
       <ImportCustomFee openDialog={openImport} setOpenDialog={setOpenImport} />
+      <BatchCreation
+        openDialog={openDialog}
+        setOpenDialog={setOpenDialog}
+        payerObjType={payerObjType}
+        setPayerObjType={setPayerObjType}
+        feeTypeCd={feeTypeCd}
+        setFeeTypeCd={setFeeTypeCd}
+        floorValue={floorValue}
+        setFloorValue={setFloorValue}
+        unitValue={unitValue}
+        setUnitValue={setUnitValue}
+        roomValue={roomValue}
+        setRommValue={setRommValue}
+      />
     </Box>
   )
 }
