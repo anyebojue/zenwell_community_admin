@@ -4,7 +4,7 @@ import {
   OrganizationInfoReply,
   OrgUserReply
 } from 'api/model/platform/organization/organizationInfoModel'
-import { findOrgUser } from 'modules/platform/organization/organizationInfo'
+import { find } from 'modules/platform/organization/employees'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -30,7 +30,7 @@ interface FormSearchProps {
   dialogValue: OrganizationInfoReply
 }
 
-const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
+const FormSearch: React.FC<FormSearchProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.OrganizationInfoSlice)
   const [searchParams, setSearchParams] = useState<OrgUserReply>({
@@ -50,11 +50,10 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
-          findOrgUser({
+          find({
             'page.num': page.num,
             'page.size': page.size,
-            ...params,
-            orgId: dialogValue.id || '9027438861059358721'
+            ...params
           })
         )
         if ('error' in res && res.error?.message) {
@@ -67,7 +66,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ dialogValue }) => {
         closeLoading()
       }
     },
-    [dispatch, page.num, page.size, dialogValue.id]
+    [dispatch, page.num, page.size]
   )
 
   const handleSearch = () => {

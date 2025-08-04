@@ -1,9 +1,9 @@
-import { ChangeEvent, memo, useState, useCallback, Dispatch, SetStateAction } from 'react'
+import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CommunityParams } from 'api/model/platform/communityModel'
-import { find } from 'modules/platform/community'
+import { find } from 'modules/platform/organization/employees'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
-import { Add, Delete, Search } from '@mui/icons-material'
+import { Add, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 import { RolesReply } from 'api/model/platform/organization/rolesModel'
@@ -28,15 +28,9 @@ const textFieldStyles = {
 
 interface RelevanceTableFormSearchProps {
   dialogValue: RolesReply
-  selectedRows: Set<string | undefined>
-  setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const RelevanceTableFormSearch: React.FC<RelevanceTableFormSearchProps> = ({
-  dialogValue,
-  selectedRows,
-  setDelOpen
-}) => {
+const RelevanceTableFormSearch: React.FC<RelevanceTableFormSearchProps> = ({ dialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.RolesSlice)
   const [open, setOpen] = useState(false)
@@ -112,21 +106,6 @@ const RelevanceTableFormSearch: React.FC<RelevanceTableFormSearchProps> = ({
             onClick={() => setOpen(true)}
           >
             关联员工
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Delete />}
-            sx={buttonStyles('#B22222', '#8B0000')}
-            onClick={() => {
-              if (![...selectedRows].length) {
-                return message.warning('请选择至少一项')
-              }
-              setDelOpen(true)
-            }}
-          >
-            批量删除
           </Button>
         </Stack>
       </Stack>

@@ -68,7 +68,7 @@ const Relevance: React.FC<RelevanceProps> = ({ dialogValue }) => {
 
   return (
     <Box sx={contentBoxStyle}>
-      <FormSearch selectedRows={selectedRows} setDelOpen={setDelOpen} dialogValue={dialogValue} />
+      <FormSearch dialogValue={dialogValue} />
       <RelevanceTableData
         setDelOpen={setDelOpen}
         setSelectedRows={setSelectedRows}

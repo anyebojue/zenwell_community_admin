@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RolesReply } from 'api/model/platform/organization/rolesModel'
 import { deleteRolesGroupByIds, findRolesGroup } from 'modules/platform/organization/roles'
 import { Box, Button, Stack, Theme } from '@mui/material'
-import { Add, Delete } from '@mui/icons-material'
+import { Add } from '@mui/icons-material'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 import AccreditTableData from './AccreditTableData'
@@ -81,21 +81,6 @@ const Accredit: React.FC<AccreditProps> = ({ dialogValue }) => {
           onClick={() => setAssociatedOpen(true)}
         >
           关联小区
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          startIcon={<Delete />}
-          sx={buttonStyles('#B22222', '#8B0000')}
-          onClick={() => {
-            if (![...selectedRows].length) {
-              return message.warning('请选择至少一项')
-            }
-            setDelOpen(true)
-          }}
-        >
-          批量删除
         </Button>
       </Stack>
       <AccreditTableData

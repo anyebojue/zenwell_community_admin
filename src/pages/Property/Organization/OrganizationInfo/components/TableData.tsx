@@ -6,7 +6,7 @@ import {
 } from 'api/model/platform/organization/organizationInfoModel'
 import { deleteOrgUserByIds, findOrgUser } from 'modules/platform/organization/organizationInfo'
 import { Box, Theme, Typography, Stack, Button, Chip } from '@mui/material'
-import { Add, Delete, FileCopy } from '@mui/icons-material'
+import { Add, FileCopy } from '@mui/icons-material'
 import message from 'components/Message'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
@@ -197,21 +197,6 @@ const TableData: React.FC<TableDataProps> = ({
               onClick={() => setAssociatedOpen(true)}
             >
               关联员工
-            </Button>
-            <Button
-              size="small"
-              variant="contained"
-              color="error"
-              startIcon={<Delete />}
-              sx={buttonCommonStyle('#B22222', '#8B0000')}
-              onClick={() => {
-                if (![...selectedRows].length) {
-                  return message.warning('请选择至少一项')
-                }
-                setDelOpen(true)
-              }}
-            >
-              批量删除
             </Button>
           </Stack>
         </Box>
