@@ -75,7 +75,7 @@ const TableData: React.FC<TableDataProps> = ({
           setPasswordOpen(true)
           break
         case 'details':
-          navigate('/organization/EmployeesDetails', { state: { value: row } })
+          navigate('/organizations/EmployeesDetails', { state: { value: row } })
           break
         case 'edit':
           setDialogType('edit')

@@ -141,7 +141,7 @@ const TableData: React.FC<TableDataProps> = ({
     (actionType: string, row: OrgUserReply) => {
       switch (actionType) {
         case 'details':
-          navigate('/organization/EmployeesDetails', { state: { value: row.users } })
+          navigate('/organizations/EmployeesDetails', { state: { value: row.users } })
           break
         case 'delete':
           setDelOpen(true)
