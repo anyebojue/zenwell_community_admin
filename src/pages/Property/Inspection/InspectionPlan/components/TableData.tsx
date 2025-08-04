@@ -1,37 +1,28 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useState } from 'react'
+import { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { SpectionPlanReply } from 'api/model/property/inspection/spectionPlanModel'
 import { find, update } from 'modules/property/inspection/spectionPlan'
 import {
-  Box,
-  Tooltip,
-  IconButton,
+  Button,
+  Chip,
+  CircularProgress,
   Dialog,
-  DialogTitle,
+  DialogActions,
   DialogContent,
   DialogContentText,
-  DialogActions,
-  Button,
-  CircularProgress
+  DialogTitle
 } from '@mui/material'
-import { Delete, Block, Edit, FileCopy, WarningRounded, PlayArrow } from '@mui/icons-material'
+import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
+import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
 import { useNavigate } from 'react-router-dom'
+import { WarningRounded } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
-import TableList from './TableList'
-
-export interface Column<T> {
-  headerName: string
-  key: keyof T | 'operate'
-  align?: 'left' | 'center' | 'right'
-  renderCell?: (row: T) => ReactNode
-}
 
 interface TableDataProps {
   dialogValue: SpectionPlanReply | undefined
   setDialogType: Dispatch<SetStateAction<string>>
   setDialogValue: Dispatch<SetStateAction<SpectionPlanReply | undefined>>
-  selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
@@ -41,7 +32,6 @@ const TableData: React.FC<TableDataProps> = ({
   dialogValue,
   setDialogType,
   setDialogValue,
-  selectedRows,
   setSelectedRows,
   setOpenDialog,
   setDelOpen
@@ -52,114 +42,81 @@ const TableData: React.FC<TableDataProps> = ({
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const columns: Column<SpectionPlanReply>[] = [
-    { key: 'inspectionPlanName', headerName: '计划名称', align: 'center' },
-    {
-      key: 'spectionRoute',
-      headerName: '计划路线',
-      align: 'center',
-      renderCell: row => row.spectionRoute?.name
-    },
-    {
-      key: 'inspectionPlanPeriod',
-      headerName: '计划周期',
-      align: 'center',
-      renderCell: row => (row.status === 1 ? '月/日' : row.status === 2 ? '按周' : '')
-    },
-    {
-      key: 'signType',
-      headerName: '签到方式',
-      align: 'center',
-      renderCell: row =>
-        row.status === 0 ? '现场定位' : row.status === 1 ? '现场拍照(默认定位)' : ''
-    },
-    {
-      key: 'startDate',
-      headerName: '日期范围',
-      align: 'center',
-      renderCell: row => `${row.startDate} - ${row.endDate}`
-    },
-    {
-      key: 'startTime',
-      headerName: '时间范围',
-      align: 'center',
-      renderCell: row => `${row.startTime} - ${row.endTime}`
-    },
-    { key: 'beforeTime', headerName: '任务提前（分钟）', align: 'center' },
-    { key: 'communityId', headerName: '制定人', align: 'center' },
-    { key: 'createdAt', headerName: '制定时间', align: 'center' },
-    {
-      key: 'status',
-      headerName: '状态',
-      align: 'center',
-      renderCell: row => (row.status === 0 ? '禁用' : row.status === 1 ? '启用' : '')
-    },
-    { key: 'createUserName', headerName: '巡检人员', align: 'center' },
-    {
-      key: 'operate',
-      headerName: '操作',
-      align: 'center',
-      renderCell: row => (
-        <Box>
-          {[
-            {
-              title: '修改',
-              color: 'secondary' as const,
-              icon: <Edit fontSize="small" />,
-              onClick: () => {
-                setOpenDialog(true)
-                setDialogType('edit')
-              }
-            },
-            {
-              title: '删除',
-              color: 'error' as const,
-              icon: <Delete fontSize="small" />,
-              onClick: () => setDelOpen(true)
-            },
-            {
-              title: row.status === 0 ? '启用' : '停用',
-              color: 'primary' as const,
-              icon: row.status === 0 ? <PlayArrow fontSize="small" /> : <Block fontSize="small" />,
-              onClick: () => setOpen(true)
-            },
-            {
-              title: '详情',
-              color: 'primary' as const,
-              icon: <FileCopy fontSize="small" />,
-              onClick: () =>
-                navigate('/inspection/inspection-plan-detail', { state: { value: row } })
-            }
-          ].map((action, index) => (
-            <Tooltip title={action.title} key={index}>
-              <IconButton size="small" color={action.color} onClick={action.onClick}>
-                {action.icon}
-              </IconButton>
-            </Tooltip>
-          ))}
-        </Box>
-      )
-    }
-  ]
-
-  const fetchData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
+  const fetchData = useCallback(
+    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
+      const closeLoading = message.loading(loadingMessage)
+      try {
+        const res = await dispatch(action(params))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
       }
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch, page.num, page.size])
+    },
+    [dispatch]
+  )
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+  }, [fetchData, page.num, page.size])
+
+  const handleRowSelection = useCallback(
+    (rowSelectionModel: GridRowSelectionModel) => {
+      setSelectedRows(new Set(rowSelectionModel.map(id => String(id))))
+    },
+    [setSelectedRows]
+  )
+
+  const handleActionClick = useCallback(
+    (actionType: string, row: SpectionPlanReply) => {
+      switch (actionType) {
+        case 'edit':
+          setDialogType('edit')
+          setDialogValue(row)
+          setOpenDialog(true)
+          break
+        case 'delete':
+          setDelOpen(true)
+          setSelectedRows(new Set([row.id || '']))
+          break
+        case 'status':
+          setDialogValue(row)
+          setOpen(true)
+          break
+        case 'spection':
+          setDialogValue(row)
+          navigate('/inspection/InspectionPlanDetail', { state: { value: row } })
+          break
+      }
+    },
+    [navigate, setDialogType, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
+  )
+
+  const renderActionButtons = (row: SpectionPlanReply) =>
+    [
+      { title: '修改', action: 'edit' },
+      { title: '删除', action: 'delete' },
+      { title: '状态', action: 'status' },
+      { title: '详情', action: 'spection' }
+    ].map(({ title, action }) => (
+      <Chip
+        key={title}
+        sx={{
+          cursor: 'pointer',
+          marginRight: '-5px',
+          '& .MuiChip-label': {
+            fontSize: '13px'
+          }
+        }}
+        label={title}
+        color="primary"
+        variant="outlined"
+        onClick={() => handleActionClick(action, row)}
+      />
+    ))
 
   const handleSubmit = async () => {
     setLoading(true)
@@ -169,7 +126,7 @@ const TableData: React.FC<TableDataProps> = ({
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
-      fetchData()
+      fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
       message.success(dialogValue?.status === 0 ? '启用成功' : '停用成功')
       setOpen(false)
     } catch (err: unknown) {
@@ -182,12 +139,45 @@ const TableData: React.FC<TableDataProps> = ({
 
   return (
     <>
-      <TableList
+      <DataGrid
+        sx={{ mt: 1 }}
+        localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
+        disableColumnResize
+        disableVirtualization={false}
+        checkboxSelection
         rows={list}
-        columns={columns}
-        setDialogValue={setDialogValue}
-        selectedRows={selectedRows}
-        setSelectedRows={setSelectedRows}
+        columns={[
+          { field: 'id', headerName: '计划ID', flex: 1 },
+          { field: 'inspectionPlanName', headerName: '计划名称', flex: 1 },
+          { field: 'spectionRoute', headerName: '计划路线', flex: 1 },
+          { field: 'inspectionPlanPeriod', headerName: '计划周期', flex: 1 },
+          { field: 'signType', headerName: '签到方式', flex: 1 },
+          { field: 'startDate', headerName: '日期范围', flex: 1 },
+          { field: 'startTime', headerName: '时间范围', flex: 1 },
+          { field: 'beforeTime', headerName: '任务提前（分钟）', flex: 1 },
+          { field: 'communityId', headerName: '制定人', flex: 1 },
+          { field: 'createdAt', headerName: '制定时间', flex: 1 },
+          { field: 'status', headerName: '状态', flex: 1 },
+          { field: 'createUserName', headerName: '巡检人员', flex: 1 },
+          {
+            field: 'actions',
+            headerName: '操作',
+            type: 'actions',
+            width: 200,
+            getActions: ({ row }) => renderActionButtons(row)
+          }
+        ]}
+        onRowSelectionModelChange={handleRowSelection}
+        pageSizeOptions={[10, 20, 50, 100]}
+        paginationMode="server"
+        rowCount={Number(page.total)}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: Number(page.size)
+            }
+          }
+        }}
       />
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
