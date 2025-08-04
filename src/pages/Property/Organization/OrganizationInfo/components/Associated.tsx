@@ -1,7 +1,6 @@
 import { Dispatch, memo, SetStateAction, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { OrganizationInfoReply } from 'api/model/platform/organization/organizationInfoModel'
-import { EmployeesReply } from 'api/model/platform/organization/employeesModel'
 import { findOrgUser, relevanceOrgUser } from 'modules/platform/organization/organizationInfo'
 import {
   Button,
@@ -20,15 +19,12 @@ interface AssociatedProps {
   dialogValue: OrganizationInfoReply
   associatedOpen: boolean
   setAssociatedOpen: Dispatch<SetStateAction<boolean>>
-  dialogEmployessValue: EmployeesReply | undefined
-  setDialogEmployessValue: Dispatch<SetStateAction<EmployeesReply | undefined>>
 }
 
 const Associated: React.FC<AssociatedProps> = ({
   dialogValue,
   associatedOpen,
-  setAssociatedOpen,
-  setDialogEmployessValue
+  setAssociatedOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.OrganizationInfoSlice)
@@ -69,17 +65,12 @@ const Associated: React.FC<AssociatedProps> = ({
   }
 
   return (
-    <Dialog maxWidth="md" open={associatedOpen} onClose={() => setAssociatedOpen(false)}>
+    <Dialog fullWidth maxWidth="sm" open={associatedOpen} onClose={() => setAssociatedOpen(false)}>
       <DialogTitle>
         <FormSearch dialogValue={dialogValue} />
       </DialogTitle>
       <DialogContent>
-        <AssociatedTableData
-          dialogValue={dialogValue}
-          setDialogEmployessValue={setDialogEmployessValue}
-          selectedRows={selectedRows}
-          setSelectedRows={setSelectedRows}
-        />
+        <AssociatedTableData setSelectedRows={setSelectedRows} />
       </DialogContent>
       <DialogActions sx={{ pr: 3, pb: 3 }}>
         <Button

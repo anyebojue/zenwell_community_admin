@@ -6,7 +6,6 @@ import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
 import { Add, Delete, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import { EmployeesReply } from 'api/model/platform/organization/employeesModel'
 import { RolesReply } from 'api/model/platform/organization/rolesModel'
 import RelevanceModel from './RelevanceModel'
 
@@ -29,16 +28,12 @@ const textFieldStyles = {
 
 interface RelevanceTableFormSearchProps {
   dialogValue: RolesReply
-  dialogEmployessValue: EmployeesReply | undefined
-  setDialogEmployessValue: Dispatch<SetStateAction<EmployeesReply | undefined>>
   selectedRows: Set<string | undefined>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const RelevanceTableFormSearch: React.FC<RelevanceTableFormSearchProps> = ({
   dialogValue,
-  dialogEmployessValue,
-  setDialogEmployessValue,
   selectedRows,
   setDelOpen
 }) => {
@@ -135,13 +130,7 @@ const RelevanceTableFormSearch: React.FC<RelevanceTableFormSearchProps> = ({
           </Button>
         </Stack>
       </Stack>
-      <RelevanceModel
-        dialogValue={dialogValue}
-        open={open}
-        setOpen={setOpen}
-        dialogEmployessValue={dialogEmployessValue}
-        setDialogEmployessValue={setDialogEmployessValue}
-      />
+      <RelevanceModel dialogValue={dialogValue} open={open} setOpen={setOpen} />
     </Box>
   )
 }

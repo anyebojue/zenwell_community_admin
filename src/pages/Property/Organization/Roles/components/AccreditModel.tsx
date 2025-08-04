@@ -11,7 +11,6 @@ import {
 } from '@mui/material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import { CommunityReply } from 'api/model/platform/communityModel'
 import { RolesReply } from 'api/model/platform/organization/rolesModel'
 import FormSearch from './AccreditModelFormSearch'
 import AccreditModelTableData from './AccreditModelTableData'
@@ -20,15 +19,12 @@ interface AAccreditModelProps {
   dialogValue: RolesReply
   associatedOpen: boolean
   setAssociatedOpen: Dispatch<SetStateAction<boolean>>
-  dialogCommunityValue: CommunityReply | undefined
-  setDialogCommunityValue: Dispatch<SetStateAction<CommunityReply | undefined>>
 }
 
 const AccreditModel: React.FC<AAccreditModelProps> = ({
   dialogValue,
   associatedOpen,
-  setAssociatedOpen,
-  setDialogCommunityValue
+  setAssociatedOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.RolesSlice)
@@ -72,17 +68,12 @@ const AccreditModel: React.FC<AAccreditModelProps> = ({
   }
 
   return (
-    <Dialog maxWidth="md" open={associatedOpen} onClose={() => setAssociatedOpen(false)}>
+    <Dialog fullWidth maxWidth="sm" open={associatedOpen} onClose={() => setAssociatedOpen(false)}>
       <DialogTitle>
         <FormSearch dialogValue={dialogValue} />
       </DialogTitle>
       <DialogContent>
-        <AccreditModelTableData
-          dialogValue={dialogValue}
-          setDialogCommunityValue={setDialogCommunityValue}
-          selectedRows={selectedRows}
-          setSelectedRows={setSelectedRows}
-        />
+        <AccreditModelTableData setSelectedRows={setSelectedRows} />
       </DialogContent>
       <DialogActions sx={{ pr: 3, pb: 3 }}>
         <Button

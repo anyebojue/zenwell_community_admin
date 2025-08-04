@@ -1,7 +1,6 @@
 import { Dispatch, memo, SetStateAction, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RolesReply } from 'api/model/platform/organization/rolesModel'
-import { EmployeesReply } from 'api/model/platform/organization/employeesModel'
 import { update } from 'modules/platform/organization/roles'
 import { find } from 'modules/platform/organization/roles'
 import {
@@ -21,24 +20,17 @@ interface AssociatedProps {
   dialogValue: RolesReply
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
-  dialogEmployessValue: EmployeesReply | undefined
-  setDialogEmployessValue: Dispatch<SetStateAction<EmployeesReply | undefined>>
 }
 
-const RelevanceModel: React.FC<AssociatedProps> = ({
-  dialogValue,
-  open,
-  setOpen,
-  dialogEmployessValue,
-  setDialogEmployessValue
-}) => {
+const RelevanceModel: React.FC<AssociatedProps> = ({ dialogValue, open, setOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.OrganizationInfoSlice)
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [loading, setLoading] = useState(false)
+  console.log(selectedRows)
 
   const onSubmit = async () => {
-    if (!dialogValue.id || !dialogEmployessValue?.id) {
+    if (!dialogValue.id || !selectedRows.size) {
       message.error('请选择有效的组织或员工')
       return
     }
@@ -46,7 +38,7 @@ const RelevanceModel: React.FC<AssociatedProps> = ({
       setLoading(true)
       const res = await dispatch(
         update({
-          users: dialogEmployessValue.id,
+          users: [...selectedRows].join(','),
           id: dialogValue.id,
           name: dialogValue.name,
           plate: dialogValue.plate,
@@ -71,17 +63,12 @@ const RelevanceModel: React.FC<AssociatedProps> = ({
   }
 
   return (
-    <Dialog maxWidth="md" open={open} onClose={() => setOpen(false)}>
+    <Dialog fullWidth maxWidth="sm" open={open} onClose={() => setOpen(false)}>
       <DialogTitle>
         <RelevanceFormSearch dialogValue={dialogValue} />
       </DialogTitle>
       <DialogContent>
-        <RelevanceModelTableData
-          dialogValue={dialogValue}
-          setDialogEmployessValue={setDialogEmployessValue}
-          selectedRows={selectedRows}
-          setSelectedRows={setSelectedRows}
-        />
+        <RelevanceModelTableData setSelectedRows={setSelectedRows} />
       </DialogContent>
       <DialogActions sx={{ pr: 3, pb: 3 }}>
         <Button

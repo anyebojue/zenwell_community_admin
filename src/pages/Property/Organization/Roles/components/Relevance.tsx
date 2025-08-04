@@ -1,6 +1,5 @@
 import { memo, useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { EmployeesReply } from 'api/model/platform/organization/employeesModel'
 import { RolesReply } from 'api/model/platform/organization/rolesModel'
 import { find } from 'modules/platform/organization/roles'
 import { Box, Theme } from '@mui/material'
@@ -23,7 +22,6 @@ interface RelevanceProps {
 const Relevance: React.FC<RelevanceProps> = ({ dialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.RolesSlice)
-  const [dialogEmployessValue, setDialogEmployessValue] = useState<EmployeesReply | undefined>()
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -70,18 +68,11 @@ const Relevance: React.FC<RelevanceProps> = ({ dialogValue }) => {
 
   return (
     <Box sx={contentBoxStyle}>
-      <FormSearch
-        selectedRows={selectedRows}
-        setDelOpen={setDelOpen}
-        dialogValue={dialogValue}
-        dialogEmployessValue={dialogEmployessValue}
-        setDialogEmployessValue={setDialogEmployessValue}
-      />
+      <FormSearch selectedRows={selectedRows} setDelOpen={setDelOpen} dialogValue={dialogValue} />
       <RelevanceTableData
-        selectedRows={selectedRows}
+        setDelOpen={setDelOpen}
         setSelectedRows={setSelectedRows}
         dialogValue={dialogValue}
-        setDialogEmployessValue={setDialogEmployessValue}
       />
       <DeleteModal
         loading={loading}

@@ -1,55 +1,13 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { EmployeesReply } from 'api/model/platform/organization/employeesModel'
 import { find } from 'modules/platform/organization/employees'
-import { Box, Tooltip, IconButton } from '@mui/material'
-import { Delete, FileCopy, Edit, RestartAlt } from '@mui/icons-material'
+import { Chip } from '@mui/material'
 import message from 'components/Message'
-import TableList from './TableList'
-
-const renderActionButtons = (
-  setDialogType: Dispatch<SetStateAction<string>>,
-  setOpenDialog: Dispatch<SetStateAction<boolean>>,
-  setDelOpen: Dispatch<SetStateAction<boolean>>
-) => (
-  <Box>
-    {[
-      {
-        title: '重置密码',
-        color: 'info' as const,
-        icon: <RestartAlt fontSize="small" />,
-        onClick: () => message.info('未实现')
-      },
-      {
-        title: '详情',
-        color: 'primary' as const,
-        icon: <FileCopy fontSize="small" />,
-        onClick: () => message.info('未实现')
-      },
-      {
-        title: '修改',
-        color: 'secondary' as const,
-        icon: <Edit fontSize="small" />,
-        onClick: () => {
-          setOpenDialog(true)
-          setDialogType('edit')
-        }
-      },
-      {
-        title: '删除',
-        color: 'error' as const,
-        icon: <Delete fontSize="small" />,
-        onClick: () => setDelOpen(true)
-      }
-    ].map((action, index) => (
-      <Tooltip title={action.title} key={index}>
-        <IconButton size="small" color={action.color} onClick={action.onClick}>
-          {action.icon}
-        </IconButton>
-      </Tooltip>
-    ))}
-  </Box>
-)
+import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
+import { zhCN } from '@mui/x-data-grid/locales'
+import { useNavigate } from 'react-router-dom'
+import ResetPassword from './ResetPassword'
 
 export interface Column<T> {
   headerName: string
@@ -59,83 +17,191 @@ export interface Column<T> {
 }
 
 interface TableDataProps {
+  dialogValue: EmployeesReply | undefined
   setDialogType: Dispatch<SetStateAction<string>>
   setDialogValue: Dispatch<SetStateAction<EmployeesReply | undefined>>
-  selectedRows: Set<string | undefined>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const TableData: React.FC<TableDataProps> = ({
+  dialogValue,
   setDialogType,
   setDialogValue,
-  selectedRows,
   setSelectedRows,
   setOpenDialog,
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.EmployeesSlice)
+  const [passwordOpen, setPasswordOpen] = useState(false)
 
-  const columns: Column<EmployeesReply>[] = [
-    { key: 'id', headerName: '员工编号', align: 'center' },
-    { key: 'username', headerName: '名称', align: 'center' },
-    { key: 'mobile', headerName: '手机号', align: 'center' },
-    {
-      key: 'org',
-      headerName: '关联组织',
-      align: 'center',
-      renderCell: (row: EmployeesReply) => {
-        return Array.isArray(row.org) && row.org.length > 0 ? row.org[0].name : '-'
+  const fetchData = useCallback(
+    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
+      const closeLoading = message.loading(loadingMessage)
+      try {
+        const res = await dispatch(action(params))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
       }
     },
-    { key: 'position', headerName: '岗位', align: 'center' },
-    { key: 'idcard', headerName: '身份证', align: 'center' },
-    { key: 'address', headerName: '地址', align: 'center' },
-    {
-      key: 'sex',
-      headerName: '性别',
-      align: 'center',
-      renderCell: (row: EmployeesReply) => {
-        return row.sex === 0 ? '女' : '男'
-      }
-    },
-    {
-      key: 'operate',
-      headerName: '操作',
-      align: 'center',
-      renderCell: () => renderActionButtons(setDialogType, setOpenDialog, setDelOpen)
-    }
-  ]
-
-  const fetchData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
-      }
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch, page.num, page.size])
+    [dispatch]
+  )
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+  }, [fetchData, page.num, page.size])
+
+  const handleRowSelection = useCallback(
+    (rowSelectionModel: GridRowSelectionModel) => {
+      setSelectedRows(new Set(rowSelectionModel.map(id => String(id))))
+    },
+    [setSelectedRows]
+  )
+
+  const handleActionClick = useCallback(
+    (actionType: string, row: EmployeesReply) => {
+      switch (actionType) {
+        case 'restartAlt':
+          console.log(row)
+          setDialogValue(row)
+          setPasswordOpen(true)
+          break
+        case 'details':
+          navigate('/organization/EmployeesDetails', { state: { value: row } })
+          break
+        case 'edit':
+          setDialogType('edit')
+          setDialogValue(row)
+          setOpenDialog(true)
+          break
+        case 'delete':
+          setDelOpen(true)
+          setSelectedRows(new Set([row.id || '']))
+          break
+      }
+    },
+    [setDialogValue, navigate, setDialogType, setOpenDialog, setDelOpen, setSelectedRows]
+  )
+
+  const renderActionButtons = (row: EmployeesReply) =>
+    [
+      { title: '重置密码', action: 'restartAlt' },
+      { title: '详情', action: 'details' },
+      { title: '修改', action: 'edit' },
+      { title: '删除', action: 'delete' }
+    ].map(({ title, action }) => (
+      <Chip
+        key={title}
+        sx={{
+          cursor: 'pointer',
+          marginRight: '-5px',
+          '& .MuiChip-label': {
+            fontSize: '13px'
+          }
+        }}
+        label={title}
+        color="primary"
+        variant="outlined"
+        onClick={() => handleActionClick(action, row)}
+      />
+    ))
 
   return (
-    <TableList
-      rows={list}
-      columns={columns}
-      setDialogValue={setDialogValue}
-      selectedRows={selectedRows}
-      setSelectedRows={setSelectedRows}
-    />
+    <>
+      <DataGrid
+        sx={{ mt: 1 }}
+        localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
+        disableColumnResize
+        disableVirtualization={false}
+        checkboxSelection
+        rows={list}
+        columns={[
+          {
+            field: 'id',
+            headerName: '员工编号',
+            headerAlign: 'center',
+            align: 'center',
+            width: 200
+          },
+          {
+            field: 'username',
+            headerName: '名称',
+            headerAlign: 'center',
+            align: 'center',
+            width: 150
+          },
+          {
+            field: 'mobile',
+            headerName: '手机号',
+            headerAlign: 'center',
+            align: 'center',
+            width: 150
+          },
+          {
+            field: 'org',
+            headerName: '关联组织',
+            headerAlign: 'center',
+            align: 'center',
+            flex: 1,
+            renderCell: ({ row }) =>
+              Array.isArray(row.org) && row.org.length > 0 ? row.org[0].name : '-'
+          },
+          {
+            field: 'position',
+            headerName: '岗位',
+            headerAlign: 'center',
+            align: 'center',
+            flex: 1
+          },
+          {
+            field: 'idcard',
+            headerName: '身份证',
+            headerAlign: 'center',
+            align: 'center',
+            width: 200
+          },
+          { field: 'address', headerName: '地址', headerAlign: 'center', align: 'center', flex: 1 },
+          {
+            field: 'sex',
+            headerName: '性别',
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) => (row.sex === 0 ? '女' : '男')
+          },
+          {
+            field: 'actions',
+            headerName: '操作',
+            type: 'actions',
+            width: 250,
+            getActions: ({ row }) => renderActionButtons(row)
+          }
+        ]}
+        onRowSelectionModelChange={handleRowSelection}
+        pageSizeOptions={[10, 20, 50, 100]}
+        paginationMode="server"
+        rowCount={Number(page.total)}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: Number(page.size)
+            }
+          }
+        }}
+      />
+      <ResetPassword
+        dialogValue={dialogValue}
+        passwordOpen={passwordOpen}
+        setPasswordOpen={setPasswordOpen}
+      />
+    </>
   )
 }
 

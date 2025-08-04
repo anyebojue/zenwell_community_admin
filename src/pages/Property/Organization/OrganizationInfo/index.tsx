@@ -13,7 +13,6 @@ import {
   OrganizationInfoReply,
   OrgUserReply
 } from 'api/model/platform/organization/organizationInfoModel'
-import { EmployeesReply } from 'api/model/platform/organization/employeesModel'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
 import FormDialog from './components/FormDialog'
@@ -23,7 +22,7 @@ const treeViewStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
   borderRadius: '15px',
   padding: '15px 15px',
-  width: '100%'
+  width: '25%'
 })
 
 const buttonCommonStyle = (color: string = '#2660ad', height: string = '32px') => ({
@@ -40,7 +39,6 @@ const InfoIndex = () => {
   const [dialogType, setDialogType] = useState('')
   const [dialogValue, setDialogValue] = useState<OrganizationInfoReply>({})
   const [dialogUserValue, setDialogUserValue] = useState<OrgUserReply>({})
-  const [dialogEmployessValue, setDialogEmployessValue] = useState<EmployeesReply | undefined>()
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
 
   const [associatedOpen, setAssociatedOpen] = useState(false)
@@ -165,7 +163,7 @@ const InfoIndex = () => {
           </Stack>
           <RichTreeView
             items={transformData}
-            defaultExpandedItems={['9032183211253301249']}
+            defaultExpandedItems={['9027438861059358721']}
             selectedItems={dialogValue?.id || ''}
             onSelectedItemsChange={(_, selectedItemId) => {
               if (!selectedItemId) return
@@ -175,7 +173,7 @@ const InfoIndex = () => {
             expansionTrigger="iconContainer" // 只有点击左边的按钮才展开
           />
         </Box>
-        <Box sx={{ width: '450%' }}>
+        <Box sx={{ width: '100%' }}>
           <FormSearch dialogValue={dialogValue} />
           <TableData
             dialogValue={dialogValue}
@@ -205,8 +203,6 @@ const InfoIndex = () => {
         dialogValue={dialogValue}
         associatedOpen={associatedOpen}
         setAssociatedOpen={setAssociatedOpen}
-        dialogEmployessValue={dialogEmployessValue}
-        setDialogEmployessValue={setDialogEmployessValue}
       />
     </Box>
   )

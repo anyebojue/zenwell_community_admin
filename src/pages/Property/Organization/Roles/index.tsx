@@ -18,7 +18,7 @@ const treeViewStyle = (theme: Theme) => ({
   background: theme.palette.background.default,
   borderRadius: '15px',
   padding: '15px 15px',
-  width: '100%'
+  width: '25%'
 })
 
 const contentBoxStyle = (theme: Theme) => ({
@@ -30,7 +30,7 @@ const contentBoxStyle = (theme: Theme) => ({
 
 const RolesIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.RolesSlice)
+  const { list } = useSelector((state: RootState) => state.RolesSlice)
   const [activeTabIndex, setActiveTabIndex] = useState(0)
   const MUI_X_PRODUCTS = list.map(item => ({ id: item.id, label: item.name }))
   const [openDialog, setOpenDialog] = useState(false)
@@ -42,7 +42,7 @@ const RolesIndex = () => {
   const fetchData = useCallback(async () => {
     const closeLoading = message.loading('正在加载列表中，请稍后...')
     try {
-      const res = await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+      const res = await dispatch(find({ 'page.disable': true }))
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
@@ -53,7 +53,7 @@ const RolesIndex = () => {
     } finally {
       closeLoading()
     }
-  }, [dispatch, page.num, page.size])
+  }, [dispatch])
 
   const handleDelete = useCallback(
     async (ids: string[]) => {
@@ -162,7 +162,7 @@ const RolesIndex = () => {
             }}
           />
         </Box>
-        <Box sx={{ width: '450%' }}>
+        <Box sx={{ width: '100%' }}>
           <Box sx={contentBoxStyle}>
             <Typography variant="h6">管理员角色</Typography>
             <Divider sx={{ p: 0.5, mb: 2 }} />

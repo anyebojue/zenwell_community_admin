@@ -1,7 +1,6 @@
 import { memo, useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RolesGroupReply, RolesReply } from 'api/model/platform/organization/rolesModel'
-import { CommunityReply } from 'api/model/platform/communityModel'
+import { RolesReply } from 'api/model/platform/organization/rolesModel'
 import { deleteRolesGroupByIds, findRolesGroup } from 'modules/platform/organization/roles'
 import { Box, Button, Stack, Theme } from '@mui/material'
 import { Add, Delete } from '@mui/icons-material'
@@ -25,26 +24,19 @@ const Accredit: React.FC<AccreditProps> = ({ dialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, rolesGroupList } = useSelector((state: RootState) => state.RolesSlice)
   const [associatedOpen, setAssociatedOpen] = useState(false)
-  const [dialogGroupValue, setDialogGroupValue] = useState<RolesGroupReply>({})
-  const [dialogCommunityValue, setDialogCommunityValue] = useState<CommunityReply | undefined>({})
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const getDeleteData = useCallback(() => {
-    if (selectedRows.size > 0) {
+    if (selectedRows.size > 0 && rolesGroupList.length > 0) {
       return rolesGroupList
         .filter(item => selectedRows.has(item.id))
         .map(item => ({ id: item.id!, name: item.community?.name! }))
         .filter(item => item.id && item.name)
     }
-    if (dialogCommunityValue) {
-      return dialogCommunityValue.id && dialogCommunityValue?.name
-        ? [{ id: dialogCommunityValue.id, name: dialogCommunityValue?.name }]
-        : []
-    }
     return []
-  }, [selectedRows, rolesGroupList, dialogCommunityValue])
+  }, [selectedRows, rolesGroupList])
 
   const deleteData = useMemo(() => getDeleteData(), [getDeleteData])
   const deleteIds = deleteData.map(item => item.id)
@@ -108,9 +100,6 @@ const Accredit: React.FC<AccreditProps> = ({ dialogValue }) => {
       </Stack>
       <AccreditTableData
         dialogValue={dialogValue}
-        dialogGroupValue={dialogGroupValue}
-        setDialogGroupValue={setDialogGroupValue}
-        selectedRows={selectedRows}
         setSelectedRows={setSelectedRows}
         setDelOpen={setDelOpen}
       />
@@ -118,8 +107,6 @@ const Accredit: React.FC<AccreditProps> = ({ dialogValue }) => {
         dialogValue={dialogValue}
         associatedOpen={associatedOpen}
         setAssociatedOpen={setAssociatedOpen}
-        dialogCommunityValue={dialogCommunityValue}
-        setDialogCommunityValue={setDialogCommunityValue}
       />
       <DeleteModal
         loading={loading}
