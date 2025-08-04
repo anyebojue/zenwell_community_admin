@@ -27,7 +27,6 @@ const RelevanceModel: React.FC<AssociatedProps> = ({ dialogValue, open, setOpen 
   const { page } = useSelector((state: RootState) => state.OrganizationInfoSlice)
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [loading, setLoading] = useState(false)
-  console.log(selectedRows)
 
   const onSubmit = async () => {
     if (!dialogValue.id || !selectedRows.size) {
@@ -68,7 +67,7 @@ const RelevanceModel: React.FC<AssociatedProps> = ({ dialogValue, open, setOpen 
         <RelevanceFormSearch dialogValue={dialogValue} />
       </DialogTitle>
       <DialogContent>
-        <RelevanceModelTableData setSelectedRows={setSelectedRows} />
+        <RelevanceModelTableData dialogValue={dialogValue} setSelectedRows={setSelectedRows} />
       </DialogContent>
       <DialogActions sx={{ pr: 3, pb: 3 }}>
         <Button

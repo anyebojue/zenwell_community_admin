@@ -1,10 +1,9 @@
-import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { find } from 'modules/platform/community'
 import message from 'components/Message'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
-import { Checkbox } from '@mui/material'
 
 interface AccreditTableDataProps {
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
@@ -14,7 +13,16 @@ const AccreditModelTableData: React.FC<AccreditTableDataProps> = ({ setSelectedR
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.CommunitySlice)
   const { rolesGroupList } = useSelector((state: RootState) => state.RolesSlice)
-  const checkboxId = rolesGroupList.map(item => item.communityId)
+  const defaultSelectedIds = rolesGroupList.map(item => String(item.communityId))
+  const [selectionModel, setSelectionModel] = useState<GridRowSelectionModel>(defaultSelectedIds)
+
+  useEffect(() => {
+    setSelectedRows(new Set(selectionModel.map(id => String(id))))
+  }, [selectionModel, setSelectedRows])
+
+  const handleRowSelection = useCallback((newSelection: GridRowSelectionModel) => {
+    setSelectionModel(newSelection)
+  }, [])
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -37,19 +45,11 @@ const AccreditModelTableData: React.FC<AccreditTableDataProps> = ({ setSelectedR
     fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
   }, [fetchData, page.num, page.size])
 
-  const handleRowSelection = useCallback(
-    (rowSelectionModel: GridRowSelectionModel) => {
-      setSelectedRows(new Set(rowSelectionModel.map(id => String(id))))
-    },
-    [setSelectedRows]
-  )
-
   return (
     <DataGrid
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
-      getRowId={row => row.id || ''}
       checkboxSelection
       rows={list}
       columns={[
@@ -57,6 +57,7 @@ const AccreditModelTableData: React.FC<AccreditTableDataProps> = ({ setSelectedR
         { field: 'name', headerName: '小区名称', flex: 1 },
         { field: 'address', headerName: '小区地址', flex: 1 }
       ]}
+      rowSelectionModel={selectionModel}
       onRowSelectionModelChange={handleRowSelection}
       pageSizeOptions={[10, 20, 50, 100]}
       paginationMode="server"
@@ -66,12 +67,6 @@ const AccreditModelTableData: React.FC<AccreditTableDataProps> = ({ setSelectedR
           paginationModel: {
             pageSize: Number(page.size)
           }
-        }
-      }}
-      isRowSelectable={params => !checkboxId.includes(params.row.id)}
-      slots={{
-        baseCheckbox: params => {
-          return <Checkbox checked={params.disabled} disabled={params.disabled} />
         }
       }}
     />
