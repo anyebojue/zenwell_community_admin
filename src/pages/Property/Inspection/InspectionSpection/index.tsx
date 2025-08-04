@@ -8,7 +8,7 @@ import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import DeleteModal, { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import FormSearch from './components/FormSearch'
 import FormDialog from './components/FormDialog'
 import TableData from './components/TableData'
@@ -23,6 +23,8 @@ const contentBoxStyle = (theme: Theme) => ({
 const SpectionItemsIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
+  const location = useLocation()
+  const stateData = location.state.value
   const { page, list } = useSelector((state: RootState) => state.SpectionItemSlice)
   const [dialogValue, setDialogValue] = useState<SpectionItemReply>()
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
@@ -60,7 +62,13 @@ const SpectionItemsIndex = () => {
         }
         setDelOpen(false)
         message.success('删除成功')
-        await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+        await dispatch(
+          find({
+            'page.num': page.num,
+            'page.size': page.size,
+            spectionId: stateData?.spectionId || ''
+          })
+        )
         setLoading(false)
       } catch (err: unknown) {
         setLoading(false)
@@ -69,14 +77,14 @@ const SpectionItemsIndex = () => {
         setLoading(false)
       }
     },
-    [dispatch, page.num, page.size]
+    [stateData?.spectionId, dispatch, page.num, page.size]
   )
 
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
       <Box sx={{ width: '100%' }}>
-        <FormSearch setDelOpen={setDelOpen} selectedRows={selectedRows} />
+        <FormSearch stateData={stateData} setDelOpen={setDelOpen} selectedRows={selectedRows} />
         <Box sx={contentBoxStyle}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Typography variant="h6">巡检题目</Typography>
@@ -106,9 +114,9 @@ const SpectionItemsIndex = () => {
             </Stack>
           </Box>
           <TableData
+            stateData={stateData}
             setDialogType={setDialogType}
             setDialogValue={setDialogValue}
-            selectedRows={selectedRows}
             setSelectedRows={setSelectedRows}
             setOpenDialog={setOpenDialog}
             setDelOpen={setDelOpen}
@@ -118,6 +126,7 @@ const SpectionItemsIndex = () => {
       <Copyright />
 
       <FormDialog
+        stateData={stateData}
         dialogValue={dialogValue}
         openDialog={openDialog}
         dialogType={dialogType}

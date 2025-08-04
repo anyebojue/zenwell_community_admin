@@ -30,8 +30,10 @@ import {
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 import { Add, Delete } from '@mui/icons-material'
+import { SpectionReply } from 'api/model/property/inspection/spectionModel'
 
 interface FormDialogProps {
+  stateData?: SpectionReply
   dialogValue?: SpectionItemReply
   openDialog: boolean
   dialogType: string
@@ -39,6 +41,7 @@ interface FormDialogProps {
 }
 
 const FormDialog: React.FC<FormDialogProps> = ({
+  stateData,
   dialogValue,
   openDialog,
   dialogType,
@@ -79,14 +82,24 @@ const FormDialog: React.FC<FormDialogProps> = ({
       try {
         const current_community = localStorage.getItem('current_community')
         const community = JSON.parse(current_community || '')
-        const params = { ...formData, communityId: community?.id }
+        const params = {
+          ...formData,
+          communityId: community?.id,
+          spectionId: stateData?.id || ''
+        }
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-        await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))
+        await dispatch(
+          find({
+            'page.num': page.num || '1',
+            'page.size': page.size,
+            spectionId: stateData?.id || ''
+          })
+        )
         message.success(dialogType === 'add' ? '新建成功' : '编辑成功')
         setOpenDialog(false)
         setFormData(initialFormData)
@@ -97,7 +110,17 @@ const FormDialog: React.FC<FormDialogProps> = ({
         setLoading(false)
       }
     },
-    [dispatch, dialogType, dialogValue, formData, page, setOpenDialog, initialFormData]
+    [
+      formData,
+      stateData?.id,
+      dialogType,
+      dialogValue?.id,
+      dispatch,
+      page.num,
+      page.size,
+      setOpenDialog,
+      initialFormData
+    ]
   )
 
   const addOption = useCallback(() => {

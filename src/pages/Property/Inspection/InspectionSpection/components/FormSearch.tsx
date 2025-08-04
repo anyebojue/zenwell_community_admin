@@ -6,6 +6,7 @@ import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/mater
 import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
+import { SpectionReply } from 'api/model/property/inspection/spectionModel'
 
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {
@@ -24,18 +25,19 @@ const textFieldStyles = {
 }
 
 interface SearchFormProps {
+  stateData: SpectionReply | undefined
   selectedRows: Set<string | undefined>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => {
+const FormSearch: React.FC<SearchFormProps> = ({ stateData, selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.SpectionItemSlice)
 
   const [searchParams, setSearchParams] = useState<SpectionItemParams>({
     id: '',
     name: '',
-    titleType: 0
+    titleType: ''
   })
 
   const handleInputChange =
@@ -51,7 +53,12 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
-          find({ 'page.num': page.num, 'page.size': page.size, ...params })
+          find({
+            'page.num': page.num,
+            'page.size': page.size,
+            spectionId: stateData?.id || '',
+            ...params
+          })
         )
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
@@ -63,7 +70,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
         closeLoading()
       }
     },
-    [dispatch, page.num, page.size]
+    [stateData?.id, dispatch, page.num, page.size]
   )
 
   const handleSearch = () => {
@@ -142,11 +149,8 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             startIcon={<History />}
             sx={buttonStyles('darkgray', '#696969')}
             onClick={() => {
-              setSearchParams({ id: '', name: '', titleType: 0 })
+              setSearchParams({ id: '', name: '', titleType: '' })
               fetchData({
-                id: '',
-                name: '',
-                titleType: 0,
                 'page.num': page.num,
                 'page.size': page.size
               })

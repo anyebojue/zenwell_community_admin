@@ -27,7 +27,7 @@ export interface SpectionItemParams {
   id?: string
   spectionId?: string // 项目编号
   name?: string // 名称
-  titleType?: number // 题目类型 1001 单选, 2002 多选, 3003 简答题
+  titleType?: string // 题目类型 1001 单选, 2002 多选, 3003 简答题
   communityId?: string // 小区ID
   seq?: number // 显示顺序
   status?: number // 数据状态，0 在用, 1 失效, S 保存

@@ -59,6 +59,7 @@ const TableData: React.FC<TableDataProps> = ({
     (actionType: string, row: SpectionReply) => {
       switch (actionType) {
         case 'spection':
+          setDialogValue(row)
           navigate('/inspection/InspectionSpection', { state: { value: row } })
           break
         case 'edit':
