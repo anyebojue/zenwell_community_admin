@@ -65,31 +65,15 @@ const FormDialog: React.FC<FormDialogProps> = ({
     transferDesc: ''
   })
 
-  const fetchData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(treeFind({ pId: '0' }))
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
-      }
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch])
-
-  const fetchOrgUserData = useCallback(
-    async (id: string) => {
-      const closeLoading = message.loading('正在加载列表中，请稍后...')
+  const fetchData = useCallback(
+    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
+      const closeLoading = message.loading(loadingMessage)
       try {
-        const res = await dispatch(findOrgUser({ 'page.disable': true, orgId: id }))
+        const res = await dispatch(action(params))
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
       } catch (err: unknown) {
-        closeLoading()
         if (err instanceof Error) message.error(err.message)
       } finally {
         closeLoading()
@@ -113,19 +97,29 @@ const FormDialog: React.FC<FormDialogProps> = ({
         if (item.id === targetId) return item
         if (item.children?.length) {
           const foundInChildren = findItemById(item.children, targetId)
-          fetchOrgUserData(foundInChildren?.id || '')
+          fetchData(
+            findOrgUser,
+            { 'page.disable': true, orgId: foundInChildren?.id || '' },
+            '正在加载列表中，请稍后...'
+          )
           if (foundInChildren) return foundInChildren
         }
       }
       return null
     },
-    [fetchOrgUserData]
+    [fetchData]
   )
 
   useEffect(() => {
-    fetchData()
-    fetchOrgUserData('9032183211253301249')
-  }, [fetchData, fetchOrgUserData])
+    if (openDialog) {
+      fetchData(treeFind, { pId: '0' }, '正在加载列表中，请稍后...')
+      fetchData(
+        findOrgUser,
+        { 'page.disable': true, orgId: '9032183211253301249' },
+        '正在加载列表中，请稍后...'
+      )
+    }
+  }, [fetchData, openDialog])
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {

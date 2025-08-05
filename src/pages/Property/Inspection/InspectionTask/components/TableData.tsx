@@ -2,6 +2,7 @@ import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { SpectionTaskReply } from 'api/model/property/inspection/spectionTaskModel'
 import { find } from 'modules/property/inspection/spectionTask'
+import { find as findPlan } from 'modules/property/inspection/spectionPlan'
 import { Chip } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
@@ -49,6 +50,7 @@ const TableData: React.FC<TableDataProps> = ({
       { 'page.num': page.num, 'page.size': page.size, inspectionPlanId: selectedButton },
       '正在加载列表中，请稍后...'
     )
+    fetchData(findPlan, { 'page.disable': true }, '正在加载列表中，请稍后...')
   }, [fetchData, page.num, page.size, selectedButton])
 
   const handleRowSelection = useCallback(
