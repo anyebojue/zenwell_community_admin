@@ -15,8 +15,6 @@ const contentBoxStyle = (theme: Theme) => ({
 })
 
 const RepairSettingsIndex = () => {
-  const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
-
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>
       <NavbarBreadcrumbs />
@@ -35,7 +33,7 @@ const RepairSettingsIndex = () => {
               导出
             </Button>
           </Box>
-          <TableData selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
+          <TableData />
         </Box>
       </Box>
       <Copyright />
