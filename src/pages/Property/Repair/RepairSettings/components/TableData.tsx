@@ -130,25 +130,49 @@ const TableData: React.FC<TableDataProps> = ({
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'repairTypeName', headerName: '类型名称', flex: 1 },
+        {
+          field: 'repairTypeName',
+          headerName: '类型名称',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
         {
           field: 'repairType',
           headerName: '报修设置类型',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => <Chip label={statusValue[row.repairType!] || '未知'} />
         },
         {
           field: 'repairWay',
           headerName: '派单方式',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => <Chip label={repairValue[row.repairWay!] || '未知'} />
         },
-        { field: 'publicArea', headerName: '区域', flex: 1 },
-        { field: 'isShow', headerName: '业主端展示', flex: 1 },
+        {
+          field: 'publicArea',
+          headerName: '区域',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'isShow',
+          headerName: '业主端展示',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
         {
           field: 'repairSettingType',
           headerName: '通知方式',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => (
             <Chip label={repairSettingValue[row.repairSettingType!] || '未知'} />
           )
@@ -157,14 +181,22 @@ const TableData: React.FC<TableDataProps> = ({
           field: 'returnVisitFlag',
           headerName: '是否回访',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => <Chip label={VisitFlagValue[row.returnVisitFlag!] || '未知'} />
         },
-        { field: 'createdAt', headerName: '创建时间', width: 180 },
+        {
+          field: 'createdAt',
+          headerName: '创建时间',
+          width: 180,
+          headerAlign: 'center',
+          align: 'center'
+        },
         {
           field: 'actions',
           headerName: '操作',
           type: 'actions',
-          width: 200,
+          width: 210,
           getActions: ({ row }) => renderActionButtons(row)
         }
       ]}

@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from 'react'
+import { memo, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RepairPoolReply } from 'api/model/property/repair/repairPoolModel'
 import { deleteByIds, find } from 'modules/property/repair/repairPool'
@@ -14,6 +14,7 @@ import FormDialog from './components/FormDialog'
 const RepairPoolIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.RepairPoolSlice)
+
   const [dialogValue, setDialogValue] = useState<RepairPoolReply>()
   const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
   const [openDialog, setOpenDialog] = useState(false)
@@ -22,20 +23,15 @@ const RepairPoolIndex = () => {
   const [loading, setLoading] = useState(false)
 
   const getDeleteData = useCallback(() => {
-    if (selectedRows.size > 0) {
-      return list
-        .filter(item => selectedRows.has(item.id))
-        .map(item => ({ id: item.id! }))
-        .filter(item => item.id)
-    }
-    if (dialogValue) {
-      return dialogValue.id ? [{ id: dialogValue.id }] : []
-    }
-    return []
-  }, [selectedRows, list, dialogValue])
+    return Array.from(selectedRows)
+      .map(id => list.find(item => item.id === id))
+      .filter(item => item)
+      .map(item => ({ id: item!.id!, name: item!.id! }))
+  }, [selectedRows, list])
 
-  const deleteData = useMemo(() => getDeleteData(), [getDeleteData])
+  const deleteData = getDeleteData()
   const deleteIds = deleteData.map(item => item.id)
+  const deleteNames = deleteData.map(item => item.id)
 
   const handleDelete = useCallback(
     async (ids: string[]) => {
@@ -47,18 +43,14 @@ const RepairPoolIndex = () => {
         }
         setDelOpen(false)
         message.success('删除成功')
-        await dispatch(
-          find({ 'page.num': page.num, 'page.size': page.size, statusCd: selectedButton })
-        )
-        setLoading(false)
+        await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
       } catch (err: unknown) {
-        setLoading(false)
         if (err instanceof Error) message.error(err.message)
       } finally {
         setLoading(false)
       }
     },
-    [dispatch, page.num, page.size, selectedButton]
+    [dispatch, page.num, page.size]
   )
 
   return (
@@ -133,7 +125,7 @@ const RepairPoolIndex = () => {
         loading={loading}
         delOpen={delOpen}
         setDelOpen={setDelOpen}
-        userName={deleteIds}
+        userName={deleteNames}
         onDelete={() => handleDelete(deleteIds)}
       />
     </Box>
