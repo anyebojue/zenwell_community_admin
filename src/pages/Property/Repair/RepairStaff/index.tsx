@@ -1,5 +1,5 @@
 import { memo, useCallback, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { RepairStaffReply } from 'api/model/property/repair/repairStaffModel'
 import { deleteByIds, find } from 'modules/property/repair/repairStaff'
@@ -23,7 +23,10 @@ const contentBoxStyle = (theme: Theme) => ({
 const RepairSettingsIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
+  const location = useLocation()
+  const rowData = location.state.value
   const { page } = useSelector((state: RootState) => state.RepairStaffSlice)
+
   const [dialogValue, setDialogValue] = useState<RepairStaffReply>()
   const [openDialog, setOpenDialog] = useState(false)
   const [delOpen, setDelOpen] = useState(false)
@@ -82,6 +85,7 @@ const RepairSettingsIndex = () => {
             </Stack>
           </Box>
           <TableData
+            rowData={rowData}
             setDialogValue={setDialogValue}
             setOpenDialog={setOpenDialog}
             setDelOpen={setDelOpen}
@@ -90,8 +94,13 @@ const RepairSettingsIndex = () => {
       </Box>
       <Copyright />
 
-      <TreeDialog openTree={openTree} setOpenTree={setOpenTree} />
-      <FormDialog dialogValue={dialogValue} openDialog={openDialog} setOpenDialog={setOpenDialog} />
+      <TreeDialog rowData={rowData} openTree={openTree} setOpenTree={setOpenTree} />
+      <FormDialog
+        rowData={rowData}
+        dialogValue={dialogValue}
+        openDialog={openDialog}
+        setOpenDialog={setOpenDialog}
+      />
       <DeleteModal
         loading={loading}
         delOpen={delOpen}

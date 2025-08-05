@@ -17,14 +17,21 @@ import {
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
+import { RepairSettingReply } from 'api/model/property/repair/repairSettingModel'
 
 interface FormDialogProps {
+  rowData: RepairSettingReply
   dialogValue: RepairStaffReply | undefined
   openDialog: boolean
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
-const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpenDialog }) => {
+const FormDialog: React.FC<FormDialogProps> = ({
+  rowData,
+  dialogValue,
+  openDialog,
+  setOpenDialog
+}) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.RepairSettingSlice)
   const [loading, setLoading] = useState(false)
@@ -36,12 +43,18 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
       setLoading(true)
       try {
         const params = { ...formData }
-        const action = update({ id: dialogValue?.id, ...params })
+        const action = update({ id: dialogValue?.id, ...params, repairSettingId: rowData?.id })
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-        await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))
+        await dispatch(
+          find({
+            'page.num': page.num || '1',
+            'page.size': page.size,
+            repairSettingId: rowData?.id || ''
+          })
+        )
         message.success('变更成功')
         setOpenDialog(false)
         setFormData({ statusCd: 99, remark: '' })
@@ -52,7 +65,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
         setLoading(false)
       }
     },
-    [dispatch, dialogValue, formData, page, setOpenDialog]
+    [formData, dialogValue?.id, dispatch, page.num, page.size, rowData?.id, setOpenDialog]
   )
 
   return (

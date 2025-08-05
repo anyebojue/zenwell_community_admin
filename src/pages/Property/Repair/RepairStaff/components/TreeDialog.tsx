@@ -22,13 +22,15 @@ import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
 import { Work } from '@mui/icons-material'
 import message from 'components/Message'
 import { useLocation } from 'react-router-dom'
+import { RepairSettingReply } from 'api/model/property/repair/repairSettingModel'
 
 interface TreeDialogProps {
+  rowData: RepairSettingReply
   openTree: boolean
   setOpenTree: Dispatch<SetStateAction<boolean>>
 }
 
-const TreeDialog: React.FC<TreeDialogProps> = ({ openTree, setOpenTree }) => {
+const TreeDialog: React.FC<TreeDialogProps> = ({ rowData, openTree, setOpenTree }) => {
   const dispatch = useDispatch<AppDispatch>()
   const location = useLocation()
   const { page, list, orgUserList } = useSelector((state: RootState) => state.OrganizationInfoSlice)
@@ -112,7 +114,7 @@ const TreeDialog: React.FC<TreeDialogProps> = ({ openTree, setOpenTree }) => {
       const current_community = localStorage.getItem('current_community')
       const community = JSON.parse(current_community || '')
       const params = {
-        repairSettingId: location.state?.id,
+        repairSettingId: rowData?.id,
         staffId: row.users?.id,
         staffName: row.users?.username,
         communityId: community.id
@@ -122,7 +124,9 @@ const TreeDialog: React.FC<TreeDialogProps> = ({ openTree, setOpenTree }) => {
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
-      await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
+      await dispatch(
+        find({ 'page.num': page.num, 'page.size': page.size, repairSettingId: rowData?.id || '' })
+      )
       message.success('绑定成功')
       setOpenTree(false)
     } catch (err: unknown) {

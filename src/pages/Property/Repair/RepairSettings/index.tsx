@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from 'react'
+import { memo, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RepairSettingReply } from 'api/model/property/repair/repairSettingModel'
 import { deleteByIds, find } from 'modules/property/repair/repairSetting'
@@ -22,29 +22,22 @@ const contentBoxStyle = (theme: Theme) => ({
 const RepairSettingsIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.RepairSettingSlice)
-  const [dialogValue, setDialogValue] = useState<RepairSettingReply>()
-  const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
-  const [dialogType, setDialogType] = useState('add')
+
+  const [dialogValue, setDialogValue] = useState<RepairSettingReply | undefined>()
+  const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
   const [openDialog, setOpenDialog] = useState(false)
+  const [dialogType, setDialogType] = useState('add')
   const [delOpen, setDelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const getDeleteData = useCallback(() => {
-    if (selectedRows.size > 0) {
-      return list
-        .filter(item => selectedRows.has(item.id))
-        .map(item => ({ id: item.id!, repairTypeName: item.repairTypeName! }))
-        .filter(item => item.id && item.repairTypeName)
-    }
-    if (dialogValue) {
-      return dialogValue.id && dialogValue.repairTypeName
-        ? [{ id: dialogValue.id, repairTypeName: dialogValue.repairTypeName }]
-        : []
-    }
-    return []
-  }, [selectedRows, list, dialogValue])
+    return Array.from(selectedRows)
+      .map(id => list.find(item => item.id === id))
+      .filter(item => item)
+      .map(item => ({ id: item!.id!, repairTypeName: item!.repairTypeName! }))
+  }, [selectedRows, list])
 
-  const deleteData = useMemo(() => getDeleteData(), [getDeleteData])
+  const deleteData = getDeleteData()
   const deleteIds = deleteData.map(item => item.id)
   const deleteNames = deleteData.map(item => item.repairTypeName)
 
@@ -59,9 +52,7 @@ const RepairSettingsIndex = () => {
         setDelOpen(false)
         message.success('删除成功')
         await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
-        setLoading(false)
       } catch (err: unknown) {
-        setLoading(false)
         if (err instanceof Error) message.error(err.message)
       } finally {
         setLoading(false)
@@ -95,7 +86,6 @@ const RepairSettingsIndex = () => {
           <TableData
             setDialogType={setDialogType}
             setDialogValue={setDialogValue}
-            selectedRows={selectedRows}
             setSelectedRows={setSelectedRows}
             setOpenDialog={setOpenDialog}
             setDelOpen={setDelOpen}

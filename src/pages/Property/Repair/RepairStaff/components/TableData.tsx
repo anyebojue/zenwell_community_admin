@@ -1,97 +1,140 @@
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RepairStaffReply } from 'api/model/property/repair/repairStaffModel'
 import { find } from 'modules/property/repair/repairStaff'
-import { Box, Tooltip, IconButton } from '@mui/material'
-import { Delete, Edit } from '@mui/icons-material'
+import { Chip } from '@mui/material'
+import { DataGrid } from '@mui/x-data-grid'
+import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
-import TableList from './TableList'
+import { RepairSettingReply } from 'api/model/property/repair/repairSettingModel'
 
-export interface Column<T> {
-  headerName: string
-  key: keyof T | 'operate'
-  align?: 'left' | 'center' | 'right'
-  renderCell?: (row: T) => ReactNode
+const statusValue: Record<string, string> = {
+  99: '在线',
+  88: '离线'
 }
 
 interface TableDataProps {
+  rowData: RepairSettingReply
   setDialogValue: Dispatch<SetStateAction<RepairStaffReply | undefined>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const TableData: React.FC<TableDataProps> = ({ setDialogValue, setOpenDialog, setDelOpen }) => {
+const TableData: React.FC<TableDataProps> = ({
+  rowData,
+  setDialogValue,
+  setOpenDialog,
+  setDelOpen
+}) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.RepairStaffSlice)
 
-  const columns: Column<RepairStaffReply>[] = [
-    { key: 'id', headerName: '维修师傅ID', align: 'center' },
-    { key: 'staffName', headerName: '师傅名称', align: 'center' },
-    {
-      key: 'repairSetting',
-      headerName: '报修类型',
-      align: 'center',
-      renderCell: row => row.repairSetting?.repairTypeName
-    },
-    {
-      key: 'statusCd',
-      headerName: '状态',
-      align: 'center',
-      renderCell: row => (row.statusCd === 99 ? '在线' : row.statusCd === 88 ? '离线' : '')
-    },
-    { key: 'remark', headerName: '说明', align: 'center' },
-    { key: 'createdAt', headerName: '创建时间', align: 'center' },
-    {
-      key: 'operate',
-      headerName: '操作',
-      align: 'center',
-      renderCell: () => (
-        <Box>
-          {[
-            {
-              title: '变更',
-              color: 'secondary' as const,
-              icon: <Edit fontSize="small" />,
-              onClick: () => setOpenDialog(true)
-            },
-            {
-              title: '删除',
-              color: 'error' as const,
-              icon: <Delete fontSize="small" />,
-              onClick: () => setDelOpen(true)
-            }
-          ].map((action, index) => (
-            <Tooltip title={action.title} key={index}>
-              <IconButton size="small" color={action.color} onClick={action.onClick}>
-                {action.icon}
-              </IconButton>
-            </Tooltip>
-          ))}
-        </Box>
-      )
-    }
-  ]
-
-  const fetchData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(find({ 'page.num': page.num, 'page.size': page.size }))
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
+  const fetchData = useCallback(
+    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
+      const closeLoading = message.loading(loadingMessage)
+      try {
+        const res = await dispatch(action(params))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
       }
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch, page.num, page.size])
+    },
+    [dispatch]
+  )
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    fetchData(
+      find,
+      { 'page.num': page.num, 'page.size': page.size, repairSettingId: rowData?.id || '' },
+      '正在加载列表中，请稍后...'
+    )
+  }, [fetchData, page.num, page.size, rowData])
 
-  return <TableList rows={list} columns={columns} setDialogValue={setDialogValue} />
+  const handleActionClick = useCallback(
+    (actionType: string, row: RepairStaffReply) => {
+      switch (actionType) {
+        case 'edit':
+          setDialogValue(row)
+          setOpenDialog(true)
+          break
+        case 'delete':
+          setDialogValue(row)
+          setDelOpen(true)
+          break
+      }
+    },
+    [setDialogValue, setOpenDialog, setDelOpen]
+  )
+
+  const renderActionButtons = (row: RepairStaffReply) =>
+    [
+      { title: '变更', action: 'edit' },
+      { title: '删除', action: 'delete' }
+    ].map(({ title, action }) => (
+      <Chip
+        key={title}
+        sx={{
+          cursor: 'pointer',
+          marginRight: '-5px',
+          '& .MuiChip-label': {
+            fontSize: '13px'
+          }
+        }}
+        label={title}
+        color="primary"
+        variant="outlined"
+        onClick={() => handleActionClick(action, row)}
+      />
+    ))
+
+  return (
+    <DataGrid
+      sx={{ mt: 1 }}
+      localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
+      disableColumnResize
+      disableVirtualization={false}
+      rows={list}
+      columns={[
+        { field: 'id', headerName: '维修师傅ID', flex: 1 },
+        { field: 'staffName', headerName: '师傅名称', flex: 1 },
+        {
+          field: 'repairSetting.repairTypeName',
+          headerName: '报修类型',
+          flex: 1,
+          renderCell: ({ row }) => row.repairSetting?.repairTypeName
+        },
+        {
+          field: 'statusCd',
+          headerName: '状态',
+          flex: 1,
+          renderCell: ({ row }) => <Chip label={statusValue[row.statusCd!] || '未知'} />
+        },
+        { field: 'remark', headerName: '说明', flex: 1 },
+        { field: 'createdAt', headerName: '创建时间', width: 180 },
+        {
+          field: 'actions',
+          headerName: '操作',
+          type: 'actions',
+          width: 200,
+          getActions: ({ row }) => renderActionButtons(row)
+        }
+      ]}
+      pageSizeOptions={[10, 20, 50, 100]}
+      paginationMode="server"
+      rowCount={Number(page.total)}
+      initialState={{
+        pagination: {
+          paginationModel: {
+            pageSize: Number(page.size)
+          }
+        }
+      }}
+    />
+  )
 }
 
 export default memo(TableData)
