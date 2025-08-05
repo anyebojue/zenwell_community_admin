@@ -21,7 +21,6 @@ import { TreeViewBaseItem } from '@mui/x-tree-view/models'
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
 import { Work } from '@mui/icons-material'
 import message from 'components/Message'
-import { useLocation } from 'react-router-dom'
 import { RepairSettingReply } from 'api/model/property/repair/repairSettingModel'
 
 interface TreeDialogProps {
@@ -32,7 +31,6 @@ interface TreeDialogProps {
 
 const TreeDialog: React.FC<TreeDialogProps> = ({ rowData, openTree, setOpenTree }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const location = useLocation()
   const { page, list, orgUserList } = useSelector((state: RootState) => state.OrganizationInfoSlice)
   const [dialogValue, setDialogValue] = useState<OrganizationInfoReply>({})
 
