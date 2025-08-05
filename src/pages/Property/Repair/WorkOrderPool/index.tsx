@@ -16,7 +16,7 @@ const RepairPoolIndex = () => {
   const { page, list } = useSelector((state: RootState) => state.RepairPoolSlice)
 
   const [dialogValue, setDialogValue] = useState<RepairPoolReply>()
-  const [selectedRows, setSelectedRows] = useState<Set<string | undefined>>(new Set())
+  const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedButton, setSelectedButton] = useState<number>(0)
   const [delOpen, setDelOpen] = useState(false)
@@ -105,7 +105,6 @@ const RepairPoolIndex = () => {
             dialogValue={dialogValue}
             selectedButton={selectedButton}
             setDialogValue={setDialogValue}
-            selectedRows={selectedRows}
             setSelectedRows={setSelectedRows}
             setOpenDialog={setOpenDialog}
             setDelOpen={setDelOpen}

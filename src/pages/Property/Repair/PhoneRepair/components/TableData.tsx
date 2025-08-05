@@ -63,27 +63,51 @@ const TableData: React.FC<TableDataProps> = () => {
       disableVirtualization={false}
       rows={list}
       columns={[
-        { field: 'id', headerName: '工单编号', flex: 1 },
+        { field: 'id', headerName: '工单编号', flex: 1, headerAlign: 'center', align: 'center' },
         {
           field: 'communityId',
           headerName: '位置',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: () => community.name
         },
         {
           field: 'repairSetting.repairTypeName',
           headerName: '报修类型',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => row.repairSetting?.repairTypeName
         },
-        { field: 'repairName', headerName: '报修人', flex: 1 },
-        { field: 'tel', headerName: '联系方式', flex: 1 },
-        { field: 'appointmentTime', headerName: '预约时间', flex: 1 },
-        { field: 'createdAt', headerName: '提交时间', flex: 1 },
+        {
+          field: 'repairName',
+          headerName: '报修人',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        { field: 'tel', headerName: '联系方式', flex: 1, headerAlign: 'center', align: 'center' },
+        {
+          field: 'appointmentTime',
+          headerName: '预约时间',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'createdAt',
+          headerName: '提交时间',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
         {
           field: 'statusCd',
           headerName: '状态',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => <Chip label={statusValue[row.statusCd!] || '未知'} />
         }
       ]}
