@@ -70,21 +70,22 @@ const FormDialog: React.FC<FormDialogProps> = ({
   const [dialogUserValue, setDialogUserValue] = useState<OrganizationInfoReply>({})
   const [employeeList, setEmployeeList] = useState<OrgUserReply[]>([])
 
-  const fetchRouteData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(routeFind({ 'page.num': page.num, 'page.size': page.size }))
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
+  const fetchData = useCallback(
+    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
+      const closeLoading = message.loading(loadingMessage)
+      try {
+        const res = await dispatch(action(params))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
       }
-      setLoading(false)
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch, page.num, page.size])
+    },
+    [dispatch]
+  )
 
   const transformData = useMemo(() => {
     const transformNode = (node: OrganizationInfoReply): TreeViewBaseItem => ({
@@ -133,15 +134,17 @@ const FormDialog: React.FC<FormDialogProps> = ({
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
       setLoading(true)
+      const current_community = localStorage.getItem('current_community')
+      const community = JSON.parse(current_community || '')
       try {
         const params = {
           ...formData,
           inspectionMonth: selectedMonths.join(','),
           inspectionDay: selectedDays.join(','),
           inspectionWorkday: selectedWeekdays.join(','),
-          staffId: employeeList.map(item => item.id).join(',')
+          staffId: employeeList.map(item => item.id).join(','),
+          communityId: community.id
         }
-        console.log(params)
         const action =
           dialogType === 'add' ? create(params) : update({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)
@@ -177,44 +180,21 @@ const FormDialog: React.FC<FormDialogProps> = ({
 
   const formFields = [{ label: '计划名称', type: 'text', id: 'inspectionPlanName', required: true }]
 
-  const fetchData = useCallback(async () => {
-    const closeLoading = message.loading('正在加载列表中，请稍后...')
-    try {
-      const res = await dispatch(treeFind({ pId: '0' }))
-      if ('error' in res && res.error?.message) {
-        throw new Error(res.error.message)
-      }
-    } catch (err: unknown) {
-      closeLoading()
-      if (err instanceof Error) message.error(err.message)
-    } finally {
-      closeLoading()
-    }
-  }, [dispatch])
-
-  const fetchOrgUserData = useCallback(
-    async (id: string) => {
-      const closeLoading = message.loading('正在加载列表中，请稍后...')
-      try {
-        const res = await dispatch(findOrgUser({ 'page.disable': true, orgId: id }))
-        if ('error' in res && res.error?.message) {
-          throw new Error(res.error.message)
-        }
-      } catch (err: unknown) {
-        closeLoading()
-        if (err instanceof Error) message.error(err.message)
-      } finally {
-        closeLoading()
-      }
-    },
-    [dispatch]
-  )
-
   useEffect(() => {
-    fetchRouteData()
-    fetchData()
-    fetchOrgUserData('9032183211253301249')
-  }, [fetchRouteData, fetchData, fetchOrgUserData])
+    if (openDialog) {
+      fetchData(
+        routeFind,
+        { 'page.num': page.num, 'page.size': page.size },
+        '正在加载列表中，请稍后...'
+      )
+      fetchData(treeFind, { pId: '0' }, '正在加载列表中，请稍后...')
+      fetchData(
+        findOrgUser,
+        { 'page.disable': true, orgId: '9032183211253301249' },
+        '正在加载列表中，请稍后...'
+      )
+    }
+  }, [fetchData, openDialog, page.num, page.size])
 
   const findItemById = useCallback(
     (items: OrganizationInfoReply[], targetId: string): OrganizationInfoReply | null => {
@@ -222,13 +202,17 @@ const FormDialog: React.FC<FormDialogProps> = ({
         if (item.id === targetId) return item
         if (item.children?.length) {
           const foundInChildren = findItemById(item.children, targetId)
-          fetchOrgUserData(foundInChildren?.id || '')
+          fetchData(
+            findOrgUser,
+            { 'page.disable': true, orgId: foundInChildren?.id || '' },
+            '正在加载列表中，请稍后...'
+          )
           if (foundInChildren) return foundInChildren
         }
       }
       return null
     },
-    [fetchOrgUserData]
+    [fetchData]
   )
 
   const handleListItemClick = async (row: OrgUserReply) => {

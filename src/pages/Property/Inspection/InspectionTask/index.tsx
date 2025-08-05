@@ -2,7 +2,7 @@ import { memo, useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { SpectionTaskReply } from 'api/model/property/inspection/spectionTaskModel'
 import { deleteByIds, find } from 'modules/property/inspection/spectionTask'
-import { Box, Button, ButtonGroup, Stack } from '@mui/material'
+import { Box, Button, ButtonGroup, Stack, Theme, Typography } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import DeleteModal from 'components/DeleteModal'
@@ -10,6 +10,13 @@ import message from 'components/Message'
 import FormSearch from './components/FormSearch'
 import TableData from './components/TableData'
 import FormDialog from './components/FormDialog'
+
+const contentBoxStyle = (theme: Theme) => ({
+  background: theme.palette.background.default,
+  borderRadius: '15px',
+  padding: '15px 15px',
+  width: '100%'
+})
 
 const SpectionTaskIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -102,14 +109,18 @@ const SpectionTaskIndex = () => {
             selectedRows={selectedRows}
             setDelOpen={setDelOpen}
           />
-          <TableData
-            selectedButton={selectedButton}
-            setDialogValue={setDialogValue}
-            selectedRows={selectedRows}
-            setSelectedRows={setSelectedRows}
-            setOpenDialog={setOpenDialog}
-            setDelOpen={setDelOpen}
-          />
+          <Box sx={contentBoxStyle}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography variant="h6">巡检任务</Typography>
+            </Box>
+            <TableData
+              selectedButton={selectedButton}
+              setDialogValue={setDialogValue}
+              setSelectedRows={setSelectedRows}
+              setOpenDialog={setOpenDialog}
+              setDelOpen={setDelOpen}
+            />
+          </Box>
         </Box>
       </Stack>
       <Copyright />
