@@ -39,7 +39,7 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
     actUserName: '',
     startTime: '',
     endTime: '',
-    stateCd: 0
+    stateCd: ''
   })
 
   const handleInputChange =
@@ -135,9 +135,9 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
             sx={textFieldStyles}
           >
             {[
-              { value: 1, label: '未开始' },
-              { value: 2, label: '进行中' },
-              { value: 3, label: '已完成' }
+              { value: '0', label: '未开始' },
+              { value: '1', label: '进行中' },
+              { value: '2', label: '已完成' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -168,16 +168,9 @@ const FormSearch: React.FC<FormSearchProps> = ({ selectedButton, selectedRows, s
               name: '',
               startTime: '',
               endTime: '',
-              stateCd: 0
+              stateCd: ''
             })
-            fetchData({
-              name: '',
-              startTime: '',
-              endTime: '',
-              stateCd: 0,
-              'page.num': page.num,
-              'page.size': page.size
-            })
+            fetchData({ 'page.num': page.num, 'page.size': page.size })
           }}
         >
           重置

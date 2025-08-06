@@ -8,12 +8,19 @@ import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
 import { useNavigate } from 'react-router-dom'
+
 interface TableDataProps {
   selectedButton: string
   setDialogValue: Dispatch<SetStateAction<SpectionTaskReply | undefined>>
   setSelectedRows: Dispatch<SetStateAction<Set<string | undefined>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
+}
+
+const statusValue: Record<string, string> = {
+  0: '未开始',
+  1: '进行中',
+  2: '已完成'
 }
 
 const TableData: React.FC<TableDataProps> = ({
@@ -47,7 +54,13 @@ const TableData: React.FC<TableDataProps> = ({
   useEffect(() => {
     fetchData(
       find,
-      { 'page.num': page.num, 'page.size': page.size, inspectionPlanId: selectedButton },
+      {
+        'page.num': page.num,
+        'page.size': page.size,
+        ...(selectedButton !== '' && {
+          inspectionPlanId: selectedButton
+        })
+      },
       '正在加载列表中，请稍后...'
     )
     fetchData(findPlan, { 'page.disable': true }, '正在加载列表中，请稍后...')
@@ -111,20 +124,74 @@ const TableData: React.FC<TableDataProps> = ({
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'id', headerName: '任务编码', flex: 1 },
-        { field: 'inspectionPlanId', headerName: '巡检计划', flex: 1 },
-        { field: 'planInsTime', headerName: '巡检人 开始/结束时间', flex: 1 },
-        { field: 'actInsTime', headerName: '实际巡检时间', flex: 1 },
-        { field: 'planUserName', headerName: '计划巡检人', flex: 1 },
-        { field: 'actUserName', headerName: '当前巡检人', flex: 1 },
-        { field: 'transferDesc', headerName: '转移描述', flex: 1 },
-        { field: 'signType', headerName: '巡检方式', flex: 1 },
-        { field: 'stateCd', headerName: '巡检状态', flex: 1 },
+        {
+          field: 'id',
+          headerName: '任务编码',
+          width: 150,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'inspectionPlanId',
+          headerName: '巡检计划',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => row.spectionPlan?.inspectionPlanName
+        },
+        {
+          field: 'planInsTime',
+          headerName: '巡检开始/结束时间',
+          width: 150,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'actInsTime',
+          headerName: '实际巡检时间',
+          width: 150,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'planUserName',
+          headerName: '计划巡检人',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'actUserName',
+          headerName: '当前巡检人',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'transferDesc',
+          headerName: '转移描述',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'signType',
+          headerName: '巡检方式',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'stateCd',
+          headerName: '巡检状态',
+          flex: 1,
+          renderCell: ({ row }) => <Chip label={statusValue[row.stateCd!] || '未知'} />
+        },
         {
           field: 'actions',
           headerName: '操作',
           type: 'actions',
-          width: 200,
+          width: 180,
           getActions: ({ row }) => renderActionButtons(row)
         }
       ]}

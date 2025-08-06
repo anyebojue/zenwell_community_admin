@@ -37,7 +37,7 @@ export interface SpectionTaskParams {
   actUserId?: string // 实际巡检人员ID
   actUserName?: string // 实际巡检人员姓名
   signType?: string // 实际巡检方式
-  stateCd?: number // 巡检状态 0 未开始 1 进行中 2 已完成
+  stateCd?: string // 巡检状态 0 未开始 1 进行中 2 已完成
   ipStaffId?: string // 巡检人ID
   originalPlanUserId?: string // 原计划巡检人ID
   originalPlanUserName?: string // 原计划巡检人姓名
