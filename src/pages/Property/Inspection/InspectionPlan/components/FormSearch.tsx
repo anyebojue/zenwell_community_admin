@@ -36,7 +36,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
     id: '',
     inspectionPlanName: '',
     staffName: '',
-    status: 0
+    status: ''
   })
 
   const handleInputChange =
@@ -149,16 +149,9 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
                 id: '',
                 inspectionPlanName: '',
                 createUserName: '',
-                status: 0
+                status: ''
               })
-              fetchData({
-                id: '',
-                inspectionPlanName: '',
-                createUserName: '',
-                status: 0,
-                'page.num': page.num,
-                'page.size': page.size
-              })
+              fetchData({ 'page.num': page.num, 'page.size': page.size })
             }}
           >
             重置

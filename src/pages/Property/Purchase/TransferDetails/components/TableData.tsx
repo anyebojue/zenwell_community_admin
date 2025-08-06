@@ -203,7 +203,7 @@ const TableData: React.FC<TableDataProps> = ({
             width: 100,
             headerAlign: 'center',
             align: 'center',
-            renderCell: ({ row }) => <Chip label={statusValue[row.leaseType!] || '未知状态'} />
+            renderCell: ({ row }) => <Chip label={statusValue[row.leaseType!] || '未知'} />
           },
           {
             field: 'carType',
@@ -211,7 +211,7 @@ const TableData: React.FC<TableDataProps> = ({
             width: 100,
             headerAlign: 'center',
             align: 'center',
-            renderCell: ({ row }) => <Chip label={statusType[row.carType!] || '未知状态'} />
+            renderCell: ({ row }) => <Chip label={statusType[row.carType!] || '未知'} />
           },
           {
             field: 'carColor',
@@ -233,7 +233,7 @@ const TableData: React.FC<TableDataProps> = ({
             flex: 1,
             headerAlign: 'center',
             align: 'center',
-            renderCell: ({ row }) => row.parkingSpace.num
+            renderCell: ({ row }) => row.parkingSpace?.num
           },
           {
             field: 'startTime',

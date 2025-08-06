@@ -28,6 +28,16 @@ interface TableDataProps {
   setDelOpen: Dispatch<SetStateAction<boolean>>
 }
 
+const statusType: Record<string, string> = {
+  0: '现场定位',
+  1: '现场拍照(默认定位)'
+}
+
+const statusValue: Record<string, string> = {
+  0: '禁用',
+  1: '启用'
+}
+
 const TableData: React.FC<TableDataProps> = ({
   dialogValue,
   setDialogType,
@@ -39,6 +49,8 @@ const TableData: React.FC<TableDataProps> = ({
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.SpectionPlanSlice)
+  const current_community = localStorage.getItem('current_community')
+  const community = JSON.parse(current_community || '')
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -121,13 +133,16 @@ const TableData: React.FC<TableDataProps> = ({
   const handleSubmit = async () => {
     setLoading(true)
     try {
-      const action = update({ id: dialogValue?.id, status: dialogValue?.status === 0 ? 1 : 0 })
+      const action = update({
+        id: dialogValue?.id,
+        status: dialogValue?.status === '0' ? '1' : '0'
+      })
       const res = await dispatch(action)
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
       }
       fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
-      message.success(dialogValue?.status === 0 ? '启用成功' : '停用成功')
+      message.success(dialogValue?.status === '0' ? '启用成功' : '停用成功')
       setOpen(false)
     } catch (err: unknown) {
       setLoading(false)
@@ -147,18 +162,88 @@ const TableData: React.FC<TableDataProps> = ({
         checkboxSelection
         rows={list}
         columns={[
-          { field: 'id', headerName: '计划ID', flex: 1 },
-          { field: 'inspectionPlanName', headerName: '计划名称', flex: 1 },
-          { field: 'spectionRoute', headerName: '计划路线', flex: 1 },
-          { field: 'inspectionPlanPeriod', headerName: '计划周期', flex: 1 },
-          { field: 'signType', headerName: '签到方式', flex: 1 },
-          { field: 'startDate', headerName: '日期范围', flex: 1 },
-          { field: 'startTime', headerName: '时间范围', flex: 1 },
-          { field: 'beforeTime', headerName: '任务提前（分钟）', flex: 1 },
-          { field: 'communityId', headerName: '制定人', flex: 1 },
-          { field: 'createdAt', headerName: '制定时间', flex: 1 },
-          { field: 'status', headerName: '状态', flex: 1 },
-          { field: 'createUserName', headerName: '巡检人员', flex: 1 },
+          { field: 'id', headerName: '计划ID', width: 180, headerAlign: 'center', align: 'center' },
+          {
+            field: 'inspectionPlanName',
+            headerName: '计划名称',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center'
+          },
+          {
+            field: 'spectionRoute.name',
+            headerName: '计划路线',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) => row.spectionRoute?.name
+          },
+          {
+            field: 'inspectionPlanPeriod',
+            headerName: '计划周期',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center'
+          },
+          {
+            field: 'signType',
+            headerName: '签到方式',
+            width: 150,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) => <Chip label={statusType[row.signType!] || '未知'} />
+          },
+          {
+            field: 'startDate',
+            headerName: '日期范围',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center'
+          },
+          {
+            field: 'startTime',
+            headerName: '时间范围',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center'
+          },
+          {
+            field: 'beforeTime',
+            headerName: '任务提前（分钟）',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center'
+          },
+          {
+            field: 'communityId',
+            headerName: '制定人',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: () => community.name
+          },
+          {
+            field: 'createdAt',
+            headerName: '制定时间',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center'
+          },
+          {
+            field: 'status',
+            headerName: '状态',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) => <Chip label={statusValue[row.status!] || '未知'} />
+          },
+          {
+            field: 'createUserName',
+            headerName: '巡检人员',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center'
+          },
           {
             field: 'actions',
             headerName: '操作',
@@ -182,11 +267,11 @@ const TableData: React.FC<TableDataProps> = ({
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
           <WarningRounded />
-          <span style={{ margin: '10px' }}>{dialogValue?.status === 1 ? '停用' : '启用'}</span>
+          <span style={{ margin: '10px' }}>{dialogValue?.status === '1' ? '停用' : '启用'}</span>
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            你确定{dialogValue?.status === 1 ? '停用' : '启用'}巡检计划么？
+            你确定{dialogValue?.status === '1' ? '停用' : '启用'}巡检计划么？
           </DialogContentText>
         </DialogContent>
         <DialogActions>
