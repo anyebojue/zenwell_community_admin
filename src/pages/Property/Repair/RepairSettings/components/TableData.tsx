@@ -31,6 +31,11 @@ const VisitFlagValue: Record<string, string> = {
   '3': '回访'
 }
 
+const publicAreaValue: Record<string, string> = {
+  '0': '非房屋',
+  '1': '房屋'
+}
+
 interface TableDataProps {
   setDialogType: Dispatch<SetStateAction<string>>
   setDialogValue: Dispatch<SetStateAction<RepairSettingReply | undefined>>
@@ -158,7 +163,8 @@ const TableData: React.FC<TableDataProps> = ({
           headerName: '区域',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          renderCell: ({ row }) => <Chip label={publicAreaValue[row.publicArea!] || '未知'} />
         },
         {
           field: 'isShow',

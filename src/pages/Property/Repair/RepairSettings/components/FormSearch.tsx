@@ -33,11 +33,10 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
   const { page } = useSelector((state: RootState) => state.RepairSettingSlice)
 
   const [searchParams, setSearchParams] = useState<RepairSettingParams>({
-    repairTypeName: '',
-    repairWay: 0,
+    repairWay: '',
     repairType: '',
-    publicArea: 0,
-    returnVisitFlag: 0
+    publicArea: '',
+    returnVisitFlag: ''
   })
 
   const handleInputChange =
@@ -77,17 +76,6 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
       <Stack direction="row" spacing={3} component="form" sx={{ mb: 1.5 }}>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
-            size="small"
-            label="请输入员工姓名"
-            type="text"
-            variant="outlined"
-            sx={textFieldStyles}
-            value={searchParams.repairTypeName}
-            onChange={handleInputChange('repairTypeName')}
-          />
-        </FormControl>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
             select
             size="small"
             label="请选择派单方式"
@@ -97,9 +85,9 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             sx={textFieldStyles}
           >
             {[
-              { value: 100, label: '抢单' },
-              { value: 200, label: '指派' },
-              { value: 300, label: '轮训' }
+              { value: '100', label: '抢单' },
+              { value: '200', label: '指派' },
+              { value: '300', label: '轮训' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -138,8 +126,8 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             sx={textFieldStyles}
           >
             {[
-              { value: 0, label: '非房屋' },
-              { value: 1, label: '房屋' }
+              { value: '0', label: '非房屋' },
+              { value: '1', label: '房屋' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -158,9 +146,9 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             sx={textFieldStyles}
           >
             {[
-              { value: 1, label: '不回访' },
-              { value: 2, label: '已评价不回访' },
-              { value: 3, label: '回访' }
+              { value: '1', label: '不回访' },
+              { value: '2', label: '已评价不回访' },
+              { value: '3', label: '回访' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -188,18 +176,12 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
           sx={buttonStyles('darkgray', '#696969')}
           onClick={() => {
             setSearchParams({
-              repairTypeName: '',
-              repairWay: 0,
+              repairWay: '',
               repairType: '',
-              publicArea: 0,
-              returnVisitFlag: 0
+              publicArea: '',
+              returnVisitFlag: ''
             })
             fetchData({
-              repairTypeName: '',
-              repairWay: 0,
-              repairType: '',
-              publicArea: 0,
-              returnVisitFlag: 0,
               'page.num': page.num,
               'page.size': page.size
             })

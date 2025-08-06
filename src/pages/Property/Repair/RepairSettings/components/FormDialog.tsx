@@ -49,12 +49,12 @@ const FormDialog: React.FC<FormDialogProps> = ({
   const initialFormData = useMemo(
     () => ({
       repairTypeName: dialogType === 'edit' ? dialogValue?.repairTypeName || '' : '',
-      repairType: dialogType === 'edit' ? dialogValue?.repairType || '1' : '1',
-      repairWay: dialogType === 'edit' ? dialogValue?.repairWay || 100 : 100,
-      publicArea: dialogType === 'edit' ? dialogValue?.publicArea || 0 : 0,
+      repairType: dialogType === 'edit' ? dialogValue?.repairType || '100' : '100',
+      repairWay: dialogType === 'edit' ? dialogValue?.repairWay || '100' : '100',
+      publicArea: dialogType === 'edit' ? dialogValue?.publicArea || '0' : '0',
       isShow: dialogType === 'edit' ? dialogValue?.isShow || 0 : 0,
       repairSettingType: dialogType === 'edit' ? dialogValue?.repairSettingType || '1' : '1',
-      returnVisitFlag: dialogType === 'edit' ? dialogValue?.returnVisitFlag || 1 : 1,
+      returnVisitFlag: dialogType === 'edit' ? dialogValue?.returnVisitFlag || '1' : '1',
       remark: dialogType === 'edit' ? dialogValue?.remark || '' : ''
     }),
     [dialogType, dialogValue]
@@ -136,8 +136,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
               variant="outlined"
             >
               {[
-                { value: '1', label: '维修单' },
-                { value: '2', label: '保洁单' }
+                { value: '100', label: '维修单' },
+                { value: '200', label: '保洁单' }
               ].map(option => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
@@ -152,13 +152,13 @@ const FormDialog: React.FC<FormDialogProps> = ({
               select
               size="small"
               value={formData.repairWay}
-              onChange={e => setFormData({ ...formData, repairWay: Number(e.target.value) })}
+              onChange={e => setFormData({ ...formData, repairWay: e.target.value })}
               variant="outlined"
             >
               {[
-                { value: 100, label: '抢单' },
-                { value: 200, label: '指派' },
-                { value: 300, label: '轮训' }
+                { value: '100', label: '抢单' },
+                { value: '200', label: '指派' },
+                { value: '300', label: '轮训' }
               ].map(option => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
@@ -173,12 +173,12 @@ const FormDialog: React.FC<FormDialogProps> = ({
               select
               size="small"
               value={formData.publicArea}
-              onChange={e => setFormData({ ...formData, publicArea: Number(e.target.value) })}
+              onChange={e => setFormData({ ...formData, publicArea: e.target.value })}
               variant="outlined"
             >
               {[
-                { value: 0, label: '非房屋' },
-                { value: 1, label: '房屋' }
+                { value: '0', label: '非房屋' },
+                { value: '1', label: '房屋' }
               ].map(option => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
@@ -234,13 +234,13 @@ const FormDialog: React.FC<FormDialogProps> = ({
               select
               size="small"
               value={formData.returnVisitFlag}
-              onChange={e => setFormData({ ...formData, returnVisitFlag: Number(e.target.value) })}
+              onChange={e => setFormData({ ...formData, returnVisitFlag: e.target.value })}
               variant="outlined"
             >
               {[
-                { value: 1, label: '不回访' },
-                { value: 2, label: '已评价不回访' },
-                { value: 3, label: '回访' }
+                { value: '1', label: '不回访' },
+                { value: '2', label: '已评价不回访' },
+                { value: '3', label: '回访' }
               ].map(option => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}

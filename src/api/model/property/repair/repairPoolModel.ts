@@ -87,7 +87,7 @@ export interface RepairPoolParams {
   repairName?: string
   tel?: string
   context?: string
-  statusCd?: number
+  statusCd?: string
   repairObjType?: number
   repairObjId?: string
   repairObjName?: string

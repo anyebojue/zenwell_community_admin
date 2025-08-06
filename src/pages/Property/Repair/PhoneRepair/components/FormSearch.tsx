@@ -34,7 +34,7 @@ const FormSearch: React.FC<SearchFormProps> = () => {
     repairName: '',
     tel: '',
     repairSettingId: '',
-    statusCd: 0
+    statusCd: ''
   })
 
   const handleInputChange =
@@ -133,17 +133,17 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             sx={textFieldStyles}
           >
             {[
-              { value: 1000, label: '未派单' },
-              { value: 1100, label: '接单' },
-              { value: 1200, label: '退单' },
-              { value: 1300, label: '转单' },
-              { value: 1400, label: '申请支付' },
-              { value: 1500, label: '支付失败' },
-              { value: 1700, label: '待评价' },
-              { value: 1800, label: '电话回访' },
-              { value: 1900, label: '办理完成' },
-              { value: 2000, label: '未办理结单' },
-              { value: 2001, label: '暂停' }
+              { value: '1000', label: '未派单' },
+              { value: '1100', label: '接单' },
+              { value: '1200', label: '退单' },
+              { value: '1300', label: '转单' },
+              { value: '1400', label: '申请支付' },
+              { value: '1500', label: '支付失败' },
+              { value: '1700', label: '待评价' },
+              { value: '1800', label: '电话回访' },
+              { value: '1900', label: '办理完成' },
+              { value: '2000', label: '未办理结单' },
+              { value: '2001', label: '暂停' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -175,14 +175,14 @@ const FormSearch: React.FC<SearchFormProps> = () => {
               repairName: '',
               tel: '',
               repairSettingId: '',
-              statusCd: 0
+              statusCd: ''
             })
             fetchData({
               id: '',
               repairName: '',
               tel: '',
               repairSettingId: '',
-              statusCd: 0,
+              statusCd: '',
               'page.num': page.num,
               'page.size': page.size
             })
