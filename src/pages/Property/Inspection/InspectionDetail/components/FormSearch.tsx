@@ -1,7 +1,7 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { SpectionTaskDetailParams } from 'api/model/property/inspection/spectionTaskDetailModel'
-import { find } from 'modules/property/repair/repairSetting'
+import { find } from 'modules/property/inspection/spectionTaskDetail'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -50,7 +50,7 @@ const FormSearch: React.FC<SearchFormProps> = () => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
-          find({ 'page.num': page.num, 'page.size': page.size, ...params, statusCd: 1000 })
+          find({ 'page.num': page.num, 'page.size': page.size, ...params })
         )
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
@@ -190,10 +190,10 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             sx={textFieldStyles}
           >
             {[
-              { value: '1001', label: '早到' },
-              { value: '1001', label: '迟到' },
-              { value: '1001', label: '准时' },
-              { value: '1001', label: '未到' }
+              { value: '40000', label: '早到' },
+              { value: '50000', label: '迟到' },
+              { value: '60000', label: '准时' },
+              { value: '70000', label: '未到' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -212,11 +212,11 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             sx={textFieldStyles}
           >
             {[
-              { value: '1001', label: '未开始' },
-              { value: '1001', label: '巡检中' },
-              { value: '1001', label: '巡检完成' },
-              { value: '1001', label: '已超时' },
-              { value: '1001', label: '缺勤' }
+              { value: '20200405', label: '未开始' },
+              { value: '20200406', label: '巡检中' },
+              { value: '20200407', label: '巡检完成' },
+              { value: '20200408', label: '已超时' },
+              { value: '20200409', label: '缺勤' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -235,10 +235,10 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             sx={textFieldStyles}
           >
             {[
-              { value: '1001', label: '未开始' },
-              { value: '1001', label: '巡检中' },
-              { value: '1001', label: '巡检完成' },
-              { value: '1001', label: '巡检未完成' }
+              { value: '20200405', label: '未开始' },
+              { value: '20200406', label: '巡检中' },
+              { value: '20200407', label: '巡检完成' },
+              { value: '20200408', label: '巡检未完成' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -259,8 +259,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             sx={textFieldStyles}
           >
             {[
-              { value: '1001', label: '巡检正常' },
-              { value: '1001', label: '巡检异常' }
+              { value: '10001', label: '巡检正常' },
+              { value: '20002', label: '巡检异常' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
