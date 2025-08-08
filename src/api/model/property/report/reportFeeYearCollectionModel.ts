@@ -27,7 +27,7 @@ export interface ReportFeeYearCollectionParams {
   objName?: string
   isExport?: boolean
   objType?: string
-  feeTypeCd?: string
+  feeId?: string
 }
 
 export interface FindReportFeeYearCollectionReply {

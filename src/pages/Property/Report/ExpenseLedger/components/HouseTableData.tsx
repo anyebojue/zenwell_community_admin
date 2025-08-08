@@ -44,12 +44,36 @@ const TableData: React.FC<TableDataProps> = () => {
       disableVirtualization={false}
       rows={list}
       columns={[
-        { field: 'ownerName', headerName: '姓名', flex: 1 },
-        { field: 'objName', headerName: '房号', flex: 1 },
-        { field: 'ownerLink', headerName: '联系电话', flex: 1 },
-        { field: 'builtUpArea', headerName: '面积', flex: 1 },
-        { field: 'feeTypeCdName', headerName: '收费类型', flex: 1 },
-        { field: 'feeName', headerName: '费用名称', flex: 1 }
+        { field: 'ownerName', headerName: '姓名', flex: 1, headerAlign: 'center', align: 'center' },
+        { field: 'objName', headerName: '房号', flex: 1, headerAlign: 'center', align: 'center' },
+        {
+          field: 'ownerLink',
+          headerName: '联系电话',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'builtUpArea',
+          headerName: '面积',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'feeTypeCdName',
+          headerName: '收费类型',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'feeName',
+          headerName: '费用名称',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        }
       ]}
       pageSizeOptions={[10, 20, 50, 100]}
       paginationMode="server"

@@ -25,16 +25,18 @@ const textFieldStyles = {
   }
 }
 
-interface SearchFormProps {}
+interface SearchFormProps {
+  activeTabIndex: number
+}
 
-const FormSearch: React.FC<SearchFormProps> = () => {
+const FormSearch: React.FC<SearchFormProps> = ({ activeTabIndex }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.ReportFeeYearCollectionSlice)
   const { list: feeConfigTypeList } = useSelector((state: RootState) => state.FeeConfigTypeSlice)
   const { list: feeConfigList } = useSelector((state: RootState) => state.FeeConfigSlice)
 
   const [searchParams, setSearchParams] = useState<ReportFeeYearCollectionParams>({
-    feeTypeCd: '',
+    feeId: '',
     configId: '',
     objName: ''
   })
@@ -78,19 +80,24 @@ const FormSearch: React.FC<SearchFormProps> = () => {
   }, [fetchData, page.num, page.size])
 
   useEffect(() => {
-    if (searchParams.feeTypeCd) {
+    if (searchParams.feeId) {
       fetchData(
         findFeeConfig,
-        { 'page.num': page.num, 'page.size': page.size, feeTypeCd: searchParams.feeTypeCd },
+        { 'page.num': page.num, 'page.size': page.size, feeTypeCd: searchParams.feeId },
         '正在加载费用配置，请稍后...'
       )
     }
-  }, [fetchData, page.num, page.size, searchParams])
+  }, [fetchData, page.num, page.size, searchParams.feeId])
 
   const handleSearch = () => {
     fetchData(
       find,
-      { ...searchParams, 'page.num': page.num, 'page.size': page.size },
+      {
+        ...searchParams,
+        objType: activeTabIndex === 0 ? '3333' : '6666',
+        'page.num': page.num,
+        'page.size': page.size
+      },
       '正在搜索，请稍后...'
     )
   }
@@ -103,8 +110,8 @@ const FormSearch: React.FC<SearchFormProps> = () => {
             select
             size="small"
             label="请选择费用类型"
-            value={searchParams.feeTypeCd}
-            onChange={handleInputChange('feeTypeCd')}
+            value={searchParams.feeId}
+            onChange={handleInputChange('feeId')}
             variant="outlined"
             sx={textFieldStyles}
           >
@@ -163,16 +170,14 @@ const FormSearch: React.FC<SearchFormProps> = () => {
           sx={buttonStyles('darkgray', '#696969')}
           onClick={() => {
             setSearchParams({
-              feeTypeCd: '',
+              feeId: '',
               configId: '',
               objName: ''
             })
             fetchData(
               find,
               {
-                feeTypeCd: '',
-                configId: '',
-                objName: '',
+                objType: activeTabIndex === 0 ? '3333' : '6666',
                 'page.num': page.num,
                 'page.size': page.size
               },
