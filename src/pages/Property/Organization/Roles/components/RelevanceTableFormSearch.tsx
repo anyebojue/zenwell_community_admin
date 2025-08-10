@@ -1,7 +1,7 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CommunityParams } from 'api/model/platform/communityModel'
-import { find } from 'modules/platform/organization/employees'
+import { find } from 'modules/platform/organization/roles'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
 import { Add, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'

@@ -1,14 +1,12 @@
 import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  OrganizationInfoReply,
-  OrgUserReply
-} from 'api/model/platform/organization/organizationInfoModel'
+import { OrganizationInfoReply } from 'api/model/platform/organization/organizationInfoModel'
 import { find } from 'modules/platform/organization/employees'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
 import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
+import { EmployeesParams } from 'api/model/platform/organization/employeesModel'
 
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {
@@ -33,12 +31,12 @@ interface FormSearchProps {
 const FormSearch: React.FC<FormSearchProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.OrganizationInfoSlice)
-  const [searchParams, setSearchParams] = useState<OrgUserReply>({
-    name: ''
+  const [searchParams, setSearchParams] = useState<EmployeesParams>({
+    username: ''
   })
 
   const handleInputChange =
-    (field: keyof OrgUserReply) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof EmployeesParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -46,7 +44,7 @@ const FormSearch: React.FC<FormSearchProps> = () => {
     }
 
   const fetchData = useCallback(
-    async (params: OrgUserReply & PaginationParams) => {
+    async (params: EmployeesParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
@@ -83,8 +81,8 @@ const FormSearch: React.FC<FormSearchProps> = () => {
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.name}
-            onChange={handleInputChange('name')}
+            value={searchParams.username}
+            onChange={handleInputChange('username')}
           />
         </FormControl>
         <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
@@ -105,10 +103,8 @@ const FormSearch: React.FC<FormSearchProps> = () => {
             startIcon={<History />}
             sx={buttonStyles('darkgray', '#696969')}
             onClick={() => {
-              setSearchParams({ name: '', orgId: '9027438861059358721' })
+              setSearchParams({ username: '' })
               fetchData({
-                name: '',
-                orgId: '9027438861059358721',
                 'page.num': page.num,
                 'page.size': page.size
               })
