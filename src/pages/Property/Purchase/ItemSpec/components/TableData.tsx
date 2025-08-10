@@ -24,7 +24,7 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.ParkingAreaSlice)
+  const { page, list } = useSelector((state: RootState) => state.ResourceStoreSpecificationSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
