@@ -1,12 +1,11 @@
-import { ChangeEvent, memo, useState, useCallback, Dispatch, SetStateAction } from 'react'
+import { ChangeEvent, memo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OwnerCarParams } from 'api/model/property/parking/ownerCarModel'
-import { find } from 'modules/property/parking/ownerCar'
+import { BusinessPurchaseApplyParams } from 'api/model/property/purchase/businessPurchaseApplyModel'
+import { find } from 'modules/property/purchase/businessPurchaseApply'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
-import { Add, Delete, History, Search } from '@mui/icons-material'
+import { History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
-import FormDialog from './FormDialog'
 
 const textFieldStyles = {
   '& .MuiOutlinedInput-root': {
@@ -24,34 +23,19 @@ const textFieldStyles = {
   }
 }
 
-interface FormSearchProps {
-  dialogType: string
-  setDialogType: Dispatch<SetStateAction<string>>
-  openDialog: boolean
-  setOpenDialog: Dispatch<SetStateAction<boolean>>
-  selectedButton: string
-  selectedRows: Set<string | undefined>
-  setDelOpen: Dispatch<SetStateAction<boolean>>
-}
+interface FormSearchProps {}
 
-const FormSearch: React.FC<FormSearchProps> = ({
-  dialogType,
-  setDialogType,
-  openDialog,
-  setOpenDialog,
-  selectedButton,
-  selectedRows,
-  setDelOpen
-}) => {
+const FormSearch: React.FC<FormSearchProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.OwnerCarSlice)
-  const [searchParams, setSearchParams] = useState<OwnerCarParams>({
-    carNum: '',
+  const [searchParams, setSearchParams] = useState<BusinessPurchaseApplyParams>({
+    id: '',
+    userName: '',
     stateCd: ''
   })
 
   const handleInputChange =
-    (field: keyof OwnerCarParams) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: keyof BusinessPurchaseApplyParams) => (event: ChangeEvent<HTMLInputElement>) => {
       setSearchParams(prevData => ({
         ...prevData,
         [field]: event.target.value
@@ -59,14 +43,13 @@ const FormSearch: React.FC<FormSearchProps> = ({
     }
 
   const fetchData = useCallback(
-    async (params: OwnerCarParams & PaginationParams) => {
+    async (params: BusinessPurchaseApplyParams & PaginationParams) => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
         const res = await dispatch(
           find({
             'page.num': page.num,
             'page.size': page.size,
-            ...(selectedButton && { leaseType: selectedButton }),
             ...params,
             isExport: true
           })
@@ -81,7 +64,7 @@ const FormSearch: React.FC<FormSearchProps> = ({
         closeLoading()
       }
     },
-    [dispatch, page.num, page.size, selectedButton]
+    [dispatch, page.num, page.size]
   )
 
   const handleSearch = () => {
@@ -94,34 +77,46 @@ const FormSearch: React.FC<FormSearchProps> = ({
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
-            label="请输入车牌号"
+            label="请输入订单号"
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.carNum}
-            onChange={handleInputChange('carNum')}
+            value={searchParams.id}
+            onChange={handleInputChange('id')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             select
             size="small"
-            label="请选择车位状态"
+            label="请选择审批状态"
             value={searchParams.stateCd}
             onChange={handleInputChange('stateCd')}
             variant="outlined"
             sx={textFieldStyles}
           >
             {[
-              { value: '1', label: '正常' },
-              { value: '3', label: '到期' },
-              { value: '2', label: '无车位' }
+              { value: '1000', label: '未审核' },
+              { value: '1001', label: '审核中' },
+              { value: '1003', label: '完结' },
+              { value: '1004', label: '未通过' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
               </MenuItem>
             ))}
           </TextField>
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            size="small"
+            label="请输入申请人姓名"
+            type="text"
+            variant="outlined"
+            sx={textFieldStyles}
+            value={searchParams.userName}
+            onChange={handleInputChange('userName')}
+          />
         </FormControl>
         <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
           <Button
@@ -141,11 +136,8 @@ const FormSearch: React.FC<FormSearchProps> = ({
             startIcon={<History />}
             sx={buttonStyles('darkgray', '#696969')}
             onClick={() => {
-              setSearchParams({ carNum: '', carId: '', stateCd: '' })
+              setSearchParams({ id: '', userName: '', stateCd: '' })
               fetchData({
-                carNum: '',
-                carId: '',
-                stateCd: '',
                 'page.num': page.num,
                 'page.size': page.size
               })
@@ -153,42 +145,8 @@ const FormSearch: React.FC<FormSearchProps> = ({
           >
             重置
           </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Add />}
-            sx={buttonStyles('#2660ad', '#1d428a')}
-            onClick={() => {
-              setOpenDialog(true)
-              setDialogType('add')
-            }}
-          >
-            新增
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Delete />}
-            sx={buttonStyles('#B22222', '#8B0000')}
-            onClick={() => {
-              if (![...selectedRows].length) {
-                return message.warning('请选择至少一项')
-              }
-              setDelOpen(true)
-            }}
-          >
-            批量删除
-          </Button>
         </Stack>
       </Stack>
-      <FormDialog
-        selectedButton={selectedButton}
-        openDialog={openDialog}
-        dialogType={dialogType}
-        setOpenDialog={setOpenDialog}
-      />
     </Box>
   )
 }

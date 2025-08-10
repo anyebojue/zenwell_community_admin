@@ -121,6 +121,7 @@ import StoreTypeSlice from './property/purchase/storeType'
 import ResourceStoreSpecificationSlice from './property/purchase/resourceStoreSpecification'
 import ResourceStoreSlice from './property/purchase/resourceStore'
 import ResourceStoreTypeSlice from './property/purchase/resourceStoreType'
+import BusinessPurchaseApplySlice from './property/purchase/businessPurchaseApply'
 
 const store = configureStore({
   reducer: {
@@ -245,7 +246,8 @@ const store = configureStore({
     StoreTypeSlice,
     ResourceStoreSpecificationSlice,
     ResourceStoreSlice,
-    ResourceStoreTypeSlice
+    ResourceStoreTypeSlice,
+    BusinessPurchaseApplySlice
   },
   // 关闭序列化检测
   middleware: getDefaultMiddleware =>
