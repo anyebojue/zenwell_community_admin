@@ -13,6 +13,7 @@ import {
   ResourceStoreSpecificationReply
 } from 'api/model/property/purchase/resourceStoreSpecificationModel'
 import { create, find, update } from 'modules/property/purchase/resourceStoreSpecification'
+import { find as findStoreType } from 'modules/property/purchase/resourceStoreType'
 import {
   Box,
   CircularProgress,
@@ -44,13 +45,14 @@ const FormDialog: React.FC<FormDialogProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.ResourceStoreSpecificationSlice)
-  const { list } = useSelector((state: RootState) => state.StoreTypeSlice)
+  const { list: storeList } = useSelector((state: RootState) => state.StoreTypeSlice)
+  const { list: storeTypeList } = useSelector((state: RootState) => state.ResourceStoreTypeSlice)
   const [loading, setLoading] = useState(false)
 
   const initialFormData = useMemo(
     () => ({
       specName: dialogType === 'edit' ? dialogValue?.specName || '' : '',
-      parentRstId: dialogType === 'edit' ? dialogValue?.parentRstId || '' : '',
+      storeId: dialogType === 'edit' ? dialogValue?.storeId || '' : '',
       rstId: dialogType === 'edit' ? dialogValue?.rstId || '' : '',
       description: dialogType === 'edit' ? dialogValue?.description || '' : ''
     }),
@@ -90,6 +92,33 @@ const FormDialog: React.FC<FormDialogProps> = ({
     [dispatch, dialogType, dialogValue, formData, page, setOpenDialog, initialFormData]
   )
 
+  const fetchData = useCallback(
+    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
+      const closeLoading = message.loading(loadingMessage)
+      try {
+        const res = await dispatch(action(params))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
+      }
+    },
+    [dispatch]
+  )
+
+  useEffect(() => {
+    if (formData.storeId) {
+      fetchData(
+        findStoreType,
+        { 'page.num': page.num, 'page.size': page.size, storeId: formData.storeId },
+        '正在加载列表中，请稍后...'
+      )
+    }
+  }, [fetchData, page.num, page.size, formData.storeId])
+
   return (
     <Dialog
       fullWidth
@@ -116,30 +145,30 @@ const FormDialog: React.FC<FormDialogProps> = ({
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <FormLabel>商品类型：</FormLabel>
             <TextField
-              placeholder="请选择停车场类型"
+              placeholder="请选择商品类型"
               sx={{ width: '36%' }}
               select
               size="small"
-              value={formData.parentRstId || ''}
-              onChange={e => setFormData({ ...formData, parentRstId: e.target.value })}
+              value={formData.storeId || ''}
+              onChange={e => setFormData({ ...formData, storeId: e.target.value })}
               variant="outlined"
             >
-              {list.map(option => (
+              {storeList.map(option => (
                 <MenuItem key={option.id} value={option.id}>
                   {option.name}
                 </MenuItem>
               ))}
             </TextField>
             <TextField
-              placeholder="请选择停车场类型"
+              placeholder="请选择商品类型"
               sx={{ width: '37%' }}
               select
               size="small"
-              value={formData.parentRstId || ''}
-              onChange={e => setFormData({ ...formData, parentRstId: e.target.value })}
+              value={formData.rstId || ''}
+              onChange={e => setFormData({ ...formData, rstId: e.target.value })}
               variant="outlined"
             >
-              {list.map(option => (
+              {storeTypeList.map(option => (
                 <MenuItem key={option.id} value={option.id}>
                   {option.name}
                 </MenuItem>

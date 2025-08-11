@@ -1,7 +1,16 @@
-import { ChangeEvent, Dispatch, memo, SetStateAction, useState, useCallback } from 'react'
+import {
+  ChangeEvent,
+  Dispatch,
+  memo,
+  SetStateAction,
+  useState,
+  useCallback,
+  useEffect
+} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ResourceStoreSpecificationParams } from 'api/model/property/purchase/resourceStoreSpecificationModel'
 import { find } from 'modules/property/purchase/resourceStoreSpecification'
+import { find as findStoreType } from 'modules/property/purchase/resourceStoreType'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { Add, Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -32,11 +41,12 @@ interface SearchFormProps {
 const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.ResourceStoreSpecificationSlice)
-  const { list } = useSelector((state: RootState) => state.StoreTypeSlice)
+  const { list: storeList } = useSelector((state: RootState) => state.StoreTypeSlice)
+  const { list: storeTypeList } = useSelector((state: RootState) => state.ResourceStoreTypeSlice)
 
   const [openDialog, setOpenDialog] = useState(false)
   const [searchParams, setSearchParams] = useState<ResourceStoreSpecificationParams>({
-    parentRstId: '',
+    storeId: '',
     rstId: '',
     specName: '',
     id: ''
@@ -50,32 +60,38 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
   )
 
   const fetchData = useCallback(
-    async (params: ResourceStoreSpecificationParams & PaginationParams) => {
-      const closeLoading = message.loading('正在加载列表中，请稍后...')
+    async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
+      const closeLoading = message.loading(loadingMessage)
       try {
-        const res = await dispatch(
-          find({ 'page.num': page.num, 'page.size': page.size, ...params })
-        )
+        const res = await dispatch(action(params))
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-      } catch (err) {
+      } catch (err: unknown) {
         if (err instanceof Error) message.error(err.message)
       } finally {
         closeLoading()
       }
     },
-    [dispatch, page.num, page.size]
+    [dispatch]
   )
 
   const handleSearch = useCallback(() => {
-    fetchData({ ...searchParams })
-  }, [fetchData, searchParams])
+    fetchData(
+      find,
+      { 'page.num': page.num, 'page.size': page.size, ...searchParams },
+      '正在加载列表中，请稍后...'
+    )
+  }, [fetchData, page.num, page.size, searchParams])
 
   const handleReset = useCallback(() => {
-    const initialParams = { parentRstId: '', rstId: '', specName: '', id: '' }
+    const initialParams = { storeId: '', rstId: '', specName: '', id: '' }
     setSearchParams(initialParams)
-    fetchData({ ...initialParams, 'page.num': page.num, 'page.size': page.size })
+    fetchData(
+      find,
+      { 'page.num': page.num, 'page.size': page.size, ...initialParams },
+      '正在加载列表中，请稍后...'
+    )
   }, [fetchData, page.num, page.size])
 
   const handleBatchDelete = useCallback(() => {
@@ -94,6 +110,16 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
       }))
     }
 
+  useEffect(() => {
+    if (searchParams.storeId) {
+      fetchData(
+        findStoreType,
+        { 'page.num': page.num, 'page.size': page.size, storeId: searchParams.storeId },
+        '正在加载列表中，请稍后...'
+      )
+    }
+  }, [fetchData, page.num, page.size, searchParams.storeId])
+
   return (
     <Box>
       <Stack direction="row" spacing={3} component="form" sx={{ mt: 2, mb: 1.5 }}>
@@ -102,12 +128,12 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             select
             size="small"
             label="请选择物品类型"
-            value={searchParams.parentRstId}
-            onChange={handleSelectChange('parentRstId')}
+            value={searchParams.storeId}
+            onChange={handleSelectChange('storeId')}
             variant="outlined"
             sx={textFieldStyles}
           >
-            {list.map(option => (
+            {storeList.map(option => (
               <MenuItem key={option.id} value={option.id}>
                 {option.name}
               </MenuItem>
@@ -124,7 +150,7 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             variant="outlined"
             sx={textFieldStyles}
           >
-            {list.map(option => (
+            {storeTypeList.map(option => (
               <MenuItem key={option.id} value={option.id}>
                 {option.name}
               </MenuItem>

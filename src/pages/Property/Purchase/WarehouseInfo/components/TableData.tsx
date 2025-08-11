@@ -110,22 +110,38 @@ const TableData: React.FC<TableDataProps> = ({
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'id', headerName: '仓库编号', flex: 1 },
-        { field: 'shName', headerName: '仓库名称', flex: 1 },
+        { field: 'id', headerName: '仓库编号', flex: 1, headerAlign: 'center', align: 'center' },
+        {
+          field: 'shName',
+          headerName: '仓库名称',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
         {
           field: 'shType',
           headerName: '仓库类型',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => <Chip label={statusType[row.shType!] || '未知'} />
         },
         {
           field: 'isShow',
           headerName: '对外开放',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => <Chip label={statusValue[row.isShow!] || '未知'} />
         },
-        { field: 'createdAt', headerName: '创建时间', width: 180 },
-        { field: 'shDesc', headerName: '描述', width: 180 },
+        {
+          field: 'createdAt',
+          headerName: '创建时间',
+          width: 180,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        { field: 'shDesc', headerName: '描述', width: 180, headerAlign: 'center', align: 'center' },
         {
           field: 'actions',
           headerName: '操作',

@@ -1,4 +1,5 @@
 import { Page } from '../../pageModel'
+import { ResourceStoreTypeReply } from './resourceStoreTypeModel'
 
 export interface ResourceStoreSpecificationReply {
   id?: string
@@ -11,6 +12,7 @@ export interface ResourceStoreSpecificationReply {
   description?: string
   statusCd?: string
   parentRstId?: string
+  resourceStoreType?: ResourceStoreTypeReply
 }
 
 export interface ResourceStoreSpecificationParams {

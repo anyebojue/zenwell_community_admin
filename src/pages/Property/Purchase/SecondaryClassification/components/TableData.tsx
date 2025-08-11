@@ -107,9 +107,21 @@ const TableData: React.FC<TableDataProps> = ({
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'name', headerName: '类型名称', flex: 1 },
-        { field: 'description', headerName: '描述', flex: 1 },
-        { field: 'createdAt', headerName: '创建时间', width: 180 },
+        { field: 'name', headerName: '类型名称', flex: 1, headerAlign: 'center', align: 'center' },
+        {
+          field: 'description',
+          headerName: '描述',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'createdAt',
+          headerName: '创建时间',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
         {
           field: 'actions',
           headerName: '操作',

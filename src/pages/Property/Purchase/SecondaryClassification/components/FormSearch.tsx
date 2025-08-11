@@ -90,17 +90,6 @@ const FormSearch: React.FC<SearchFormProps> = ({ value, selectedRows, setDelOpen
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             size="small"
-            label="请输入物品类型ID"
-            type="text"
-            variant="outlined"
-            sx={textFieldStyles}
-            value={searchParams.id}
-            onChange={handleInputChange('id')}
-          />
-        </FormControl>
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
-          <TextField
-            size="small"
             label="请输入物品类型名称"
             type="text"
             variant="outlined"

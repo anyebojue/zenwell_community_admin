@@ -2,7 +2,7 @@ import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ResourceStoreSpecificationReply } from 'api/model/property/purchase/resourceStoreSpecificationModel'
 import { find } from 'modules/property/purchase/resourceStoreSpecification'
-import { find as findStoreType } from 'modules/property/purchase/storeType'
+import { find as findStore } from 'modules/property/purchase/storeType'
 import { Chip } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
@@ -45,7 +45,7 @@ const TableData: React.FC<TableDataProps> = ({
 
   useEffect(() => {
     fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
-    fetchData(findStoreType, { 'page.disable': true }, '正在加载列表中，请稍后...')
+    fetchData(findStore, { 'page.disable': true }, '正在加载列表中，请稍后...')
   }, [fetchData, page.num, page.size])
 
   const handleRowSelection = useCallback(
@@ -102,10 +102,30 @@ const TableData: React.FC<TableDataProps> = ({
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'id', headerName: '规格编号', flex: 1 },
-        { field: 'resourceStoreType.name', headerName: '类型名称', flex: 1 },
-        { field: 'specName', headerName: '规格名称', flex: 1 },
-        { field: 'description', headerName: '描述', flex: 1 },
+        { field: 'id', headerName: '规格编号', flex: 1, headerAlign: 'center', align: 'center' },
+        {
+          field: 'resourceStoreType.name',
+          headerName: '类型名称',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) =>
+            `${row.resourceStoreType?.storeType?.name} > ${row.resourceStoreType?.name}`
+        },
+        {
+          field: 'specName',
+          headerName: '规格名称',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'description',
+          headerName: '描述',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
         {
           field: 'actions',
           headerName: '操作',

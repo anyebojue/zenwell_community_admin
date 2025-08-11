@@ -138,16 +138,26 @@ const TableData: React.FC<TableDataProps> = ({
           field: 'flowType',
           headerName: '流程类型',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => <Chip label={statusValue[row.flowType!] || '未知类型'} />
         },
         {
           field: 'statusCd',
           headerName: '流程状态',
           flex: 1,
+          headerAlign: 'center',
+          align: 'center',
           renderCell: ({ row }) => <Chip label={statusCd[row.statusCd!] || '未知类型'} />
         },
-        { field: 'createdAt', headerName: '创建时间', width: 180 },
-        { field: 'describle', headerName: '备注', flex: 1 },
+        {
+          field: 'createdAt',
+          headerName: '创建时间',
+          width: 180,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        { field: 'describle', headerName: '备注', flex: 1, headerAlign: 'center', align: 'center' },
         {
           field: 'actions',
           headerName: '操作',
