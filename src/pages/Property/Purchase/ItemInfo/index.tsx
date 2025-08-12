@@ -21,7 +21,9 @@ const contentBoxStyle = (theme: Theme) => ({
 
 const ParkingLotManagementIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.ResourceStoreSlice)
+  const { page, list, exportUrl, sum, allSum } = useSelector(
+    (state: RootState) => state.ResourceStoreSlice
+  )
 
   const [dialogValue, setDialogValue] = useState<ResourceStoreReply | undefined>()
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
@@ -105,7 +107,13 @@ const ParkingLotManagementIndex = () => {
               variant="contained"
               color="error"
               sx={buttonStyles('#2660ad', '#1d428a')}
-              onClick={() => {}}
+              onClick={() => {
+                if (exportUrl) {
+                  window.open(exportUrl, '_blank')
+                } else {
+                  alert('暂无导出链接')
+                }
+              }}
             >
               导出
             </Button>
@@ -118,6 +126,10 @@ const ParkingLotManagementIndex = () => {
           setOpenDialog={setOpenDialog}
           setDelOpen={setDelOpen}
         />
+        <Box sx={{ display: 'flex', flexDirection: 'column', mt: 1, ml: 1 }}>
+          <Typography variant="body1">小计 {sum} 元</Typography>
+          <Typography variant="body1">大计 {allSum} 元</Typography>
+        </Box>
       </Box>
       <Copyright />
       <FormDialog

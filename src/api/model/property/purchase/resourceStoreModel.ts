@@ -60,4 +60,7 @@ export interface ResourceStoreParams {
 export interface FindResourceStoreReply {
   page: Page
   list: Array<ResourceStoreReply>
+  exportUrl: string
+  sum: string
+  allSum: string
 }
