@@ -8,8 +8,11 @@ import React, {
   memo
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ParkingAreaParams, ParkingAreaReply } from 'api/model/property/parking/parkingAreaModel'
-import { create, find, update } from 'modules/property/parking/parkingArea'
+import {
+  ResourceSupplierParams,
+  ResourceSupplierReply
+} from 'api/model/property/purchase/resourceSupplierModel'
+import { create, find, update } from 'modules/property/purchase/resourceSupplier'
 import {
   Box,
   CircularProgress,
@@ -20,14 +23,13 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
-  MenuItem
+  DialogTitle
 } from '@mui/material'
 import message from 'components/Message'
 import { buttonStyles } from 'components/DeleteModal'
 
 interface FormDialogProps {
-  dialogValue?: ParkingAreaReply
+  dialogValue?: ResourceSupplierReply
   openDialog: boolean
   dialogType: string
   setOpenDialog: Dispatch<SetStateAction<boolean>>
@@ -45,18 +47,25 @@ const FormDialog: React.FC<FormDialogProps> = ({
 
   const initialFormData = useMemo(
     () => ({
-      name: dialogType === 'edit' ? dialogValue?.name || '' : '',
-      typeCd: dialogType === 'edit' ? dialogValue?.typeCd || '' : '',
-      num: dialogType === 'edit' ? dialogValue?.num || '' : '',
+      supplierName: dialogType === 'edit' ? dialogValue?.supplierName || '' : '',
+      address: dialogType === 'edit' ? dialogValue?.address || '' : '',
+      tel: dialogType === 'edit' ? dialogValue?.tel || '' : '',
+      contactName: dialogType === 'edit' ? dialogValue?.contactName || '' : '',
+      accountBank: dialogType === 'edit' ? dialogValue?.accountBank || '' : '',
+      bankAccountNumber: dialogType === 'edit' ? dialogValue?.bankAccountNumber || '' : '',
       remark: dialogType === 'edit' ? dialogValue?.remark || '' : ''
     }),
     [dialogType, dialogValue]
   )
-  const [formData, setFormData] = useState<ParkingAreaParams>(initialFormData)
+  const [formData, setFormData] = useState<ResourceSupplierParams>(initialFormData)
 
   useEffect(() => {
     setFormData(initialFormData)
   }, [initialFormData])
+
+  const handleFormChange = (id: string, value: string | number) => {
+    setFormData(prev => ({ ...prev, [id]: value }))
+  }
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
@@ -86,6 +95,16 @@ const FormDialog: React.FC<FormDialogProps> = ({
     [dispatch, dialogType, dialogValue, formData, page, setOpenDialog, initialFormData]
   )
 
+  const formFields = [
+    { label: '供应商名称', type: 'text', id: 'supplierName', required: true },
+    { label: '供应商地址', type: 'text', id: 'address', required: true },
+    { label: '供应商联系方式', type: 'text', id: 'tel', required: true },
+    { label: '联系人姓名', type: 'text', id: 'contactName', required: true },
+    { label: '开户行', type: 'text', id: 'accountBank', required: false },
+    { label: '开户行账号', type: 'text', id: 'bankAccountNumber', required: false },
+    { label: '备注', type: 'text', id: 'remark', required: false }
+  ]
+
   return (
     <Dialog
       fullWidth
@@ -97,64 +116,24 @@ const FormDialog: React.FC<FormDialogProps> = ({
       <DialogTitle>{dialogType === 'add' ? '新增' : '编辑'}</DialogTitle>
       <DialogContent dividers sx={{ margin: '0 10px 0' }}>
         <Stack spacing={3}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>停车场编号：</FormLabel>
-            <TextField
-              placeholder="必填，请填写停车场编号"
-              sx={{ width: '80%' }}
-              type="text"
-              size="small"
-              value={formData.name}
-              onChange={e => setFormData({ ...formData, name: e.target.value })}
-              variant="outlined"
-            />
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>停车场类型：</FormLabel>
-            <TextField
-              placeholder="请选择停车场类型"
-              sx={{ width: '80%' }}
-              select
-              size="small"
-              value={formData.typeCd || ''}
-              onChange={e => setFormData({ ...formData, typeCd: e.target.value })}
-              variant="outlined"
+          {formFields.map(({ label, type, id, required }) => (
+            <Box
+              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+              key={id}
             >
-              {[
-                { value: '1001', label: '地上停车场' },
-                { value: '2001', label: '地下停车场' }
-              ].map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>外部编码：</FormLabel>
-            <TextField
-              placeholder="选填，请填写外部编码 一般为第三方停车场系统ID"
-              sx={{ width: '80%' }}
-              type="text"
-              size="small"
-              value={formData.num}
-              onChange={e => setFormData({ ...formData, num: e.target.value })}
-              variant="outlined"
-            />
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <FormLabel>备注：</FormLabel>
-            <TextField
-              placeholder="请输入"
-              sx={{ width: '80%' }}
-              size="small"
-              value={formData.remark}
-              onChange={e => setFormData({ ...formData, remark: e.target.value })}
-              variant="outlined"
-              multiline
-              rows={2}
-            />
-          </Box>
+              <FormLabel>{label}：</FormLabel>
+              <TextField
+                placeholder={`请输入${label}`}
+                type={type}
+                sx={{ width: '80%' }}
+                size="small"
+                required={required}
+                id={id}
+                value={formData[id as keyof ResourceSupplierParams]}
+                onChange={e => handleFormChange(id, e.target.value)}
+              />
+            </Box>
+          ))}
         </Stack>
       </DialogContent>
       <DialogActions>

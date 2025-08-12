@@ -1,20 +1,15 @@
 import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ParkingAreaReply } from 'api/model/property/parking/parkingAreaModel'
-import { find } from 'modules/property/parking/parkingArea'
+import { ResourceSupplierReply } from 'api/model/property/purchase/resourceSupplierModel'
+import { find } from 'modules/property/purchase/resourceSupplier'
 import { Chip } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
 
-const statusValue: Record<string, string> = {
-  '1001': '地上停车场',
-  '2001': '地下停车场'
-}
-
 interface TableDataProps {
   setDialogType: Dispatch<SetStateAction<string>>
-  setDialogValue: Dispatch<SetStateAction<ParkingAreaReply | undefined>>
+  setDialogValue: Dispatch<SetStateAction<ResourceSupplierReply | undefined>>
   setSelectedRows: Dispatch<SetStateAction<Set<string>>>
   setOpenDialog: Dispatch<SetStateAction<boolean>>
   setDelOpen: Dispatch<SetStateAction<boolean>>
@@ -28,7 +23,7 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.ParkingAreaSlice)
+  const { page, list } = useSelector((state: RootState) => state.ResourceSupplierSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -59,7 +54,7 @@ const TableData: React.FC<TableDataProps> = ({
   )
 
   const handleActionClick = useCallback(
-    (actionType: string, row: ParkingAreaReply) => {
+    (actionType: string, row: ResourceSupplierReply) => {
       switch (actionType) {
         case 'edit':
           setDialogType('edit')
@@ -75,7 +70,7 @@ const TableData: React.FC<TableDataProps> = ({
     [setDialogType, setDialogValue, setOpenDialog, setDelOpen, setSelectedRows]
   )
 
-  const renderActionButtons = (row: ParkingAreaReply) =>
+  const renderActionButtons = (row: ResourceSupplierReply) =>
     [
       { title: '修改', action: 'edit' },
       { title: '删除', action: 'delete' }
@@ -98,24 +93,63 @@ const TableData: React.FC<TableDataProps> = ({
 
   return (
     <DataGrid
-      sx={{ mt: 2 }}
+      sx={{ mt: 1 }}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'id', headerName: '停车场ID', flex: 1 },
-        { field: 'name', headerName: '停车场编号', flex: 1 },
         {
-          field: 'typeCd',
-          headerName: '停车场类型',
-          flex: 1,
-          renderCell: ({ row }) => <Chip label={statusValue[row.typeCd!] || '未知类型'} />
+          field: 'id',
+          headerName: '供应商编号',
+          width: 200,
+          headerAlign: 'center',
+          align: 'center'
         },
-        { field: 'num', headerName: '外部编码', flex: 1 },
-        { field: 'remark', headerName: '备注', flex: 1 },
-        { field: 'createdAt', headerName: '创建时间', width: 180 },
+        {
+          field: 'supplierName',
+          headerName: '供应商名称',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'address',
+          headerName: '供应商地址',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'tel',
+          headerName: '供应商联系方式',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'contactName',
+          headerName: '联系人姓名',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'accountBank',
+          headerName: '开户行',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'bankAccountNumber',
+          headerName: '开户行账号',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        { field: 'remark', headerName: '备注	', flex: 1, headerAlign: 'center', align: 'center' },
         {
           field: 'actions',
           headerName: '操作',
