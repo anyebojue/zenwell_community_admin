@@ -1,7 +1,16 @@
-import { ChangeEvent, Dispatch, memo, SetStateAction, useState, useCallback } from 'react'
+import {
+  ChangeEvent,
+  Dispatch,
+  memo,
+  SetStateAction,
+  useState,
+  useCallback,
+  useEffect
+} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ResourceStoreParams } from 'api/model/property/purchase/resourceStoreModel'
 import { find } from 'modules/property/purchase/resourceStore'
+import { find as findStoreType } from 'modules/property/purchase/resourceStoreType'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { Add, Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -32,16 +41,23 @@ interface SearchFormProps {
 const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.ParkingAreaSlice)
+  const { list: storehouseList } = useSelector((state: RootState) => state.StorehouseSlice)
+  const { list: storeList } = useSelector((state: RootState) => state.StoreTypeSlice)
+  const { list: storeTypeList } = useSelector((state: RootState) => state.ResourceStoreTypeSlice)
+  const { list: storeSpecificationList } = useSelector(
+    (state: RootState) => state.ResourceStoreSpecificationSlice
+  )
 
   const [openDialog, setOpenDialog] = useState(false)
   const [searchParams, setSearchParams] = useState<ResourceStoreParams>({
     shId: '',
     resName: '',
     resCode: '',
-    parentRstId: '',
+    storeId: '',
     rstId: '',
+    rssId: '',
     id: '',
-    is_fixed: ''
+    isFixed: ''
   })
 
   const handleInputChange = useCallback(
@@ -52,32 +68,51 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
   )
 
   const fetchData = useCallback(
-    async (params: ResourceStoreParams & PaginationParams) => {
-      const closeLoading = message.loading('正在加载列表中，请稍后...')
+    async (
+      action: Function,
+      params: Record<string, boolean | string | number>,
+      loadingMessage: string
+    ) => {
+      const closeLoading = message.loading(loadingMessage)
       try {
-        const res = await dispatch(
-          find({ 'page.num': page.num, 'page.size': page.size, ...params })
-        )
+        const res = await dispatch(action(params))
         if ('error' in res && res.error?.message) {
           throw new Error(res.error.message)
         }
-      } catch (err) {
+      } catch (err: unknown) {
         if (err instanceof Error) message.error(err.message)
       } finally {
         closeLoading()
       }
     },
-    [dispatch, page.num, page.size]
+    [dispatch]
   )
 
   const handleSearch = useCallback(() => {
-    fetchData({ ...searchParams })
-  }, [fetchData, searchParams])
+    fetchData(
+      find,
+      { 'page.num': page.num, 'page.size': page.size, ...searchParams },
+      '正在加载列表中，请稍后...'
+    )
+  }, [fetchData, page.num, page.size, searchParams])
 
   const handleReset = useCallback(() => {
-    const initialParams = { shId: '' }
+    const initialParams = {
+      shId: '',
+      resName: '',
+      resCode: '',
+      storeId: '',
+      rstId: '',
+      rssId: '',
+      id: '',
+      isFixed: ''
+    }
     setSearchParams(initialParams)
-    fetchData({ ...initialParams, 'page.num': page.num, 'page.size': page.size })
+    fetchData(
+      find,
+      { 'page.num': page.num, 'page.size': page.size, ...initialParams },
+      '正在加载列表中，请稍后...'
+    )
   }, [fetchData, page.num, page.size])
 
   const handleBatchDelete = useCallback(() => {
@@ -96,33 +131,136 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
       }))
     }
 
+  useEffect(() => {
+    if (searchParams.storeId) {
+      fetchData(
+        findStoreType,
+        { 'page.num': page.num, 'page.size': page.size, storeId: searchParams.storeId },
+        '正在加载列表中，请稍后...'
+      )
+    }
+  }, [fetchData, page.num, page.size, searchParams.storeId])
+
   return (
     <Box>
       <Stack direction="row" spacing={3} component="form" sx={{ mt: 2, mb: 1.5 }}>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
+            select
             size="small"
-            label="请输入停车场编号"
+            label="请选择仓库"
+            value={searchParams.shId}
+            onChange={handleSelectChange('shId')}
+            variant="outlined"
+            sx={textFieldStyles}
+          >
+            {storehouseList.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.shName}
+              </MenuItem>
+            ))}
+          </TextField>
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            size="small"
+            label="请输入物品名称"
             type="text"
             variant="outlined"
             sx={textFieldStyles}
-            value={searchParams.shId}
-            onChange={handleInputChange('shId')}
+            value={searchParams.resName}
+            onChange={handleInputChange('resName')}
+          />
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            size="small"
+            label="请输入物品编码"
+            type="text"
+            variant="outlined"
+            sx={textFieldStyles}
+            value={searchParams.resCode}
+            onChange={handleInputChange('resCode')}
           />
         </FormControl>
         <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
           <TextField
             select
             size="small"
-            label="请选择停车场类型"
-            value={searchParams.shId}
-            onChange={handleSelectChange('shId')}
+            label="请选择物品类型"
+            value={searchParams.storeId}
+            onChange={handleSelectChange('storeId')}
+            variant="outlined"
+            sx={textFieldStyles}
+          >
+            {storeList.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.name}
+              </MenuItem>
+            ))}
+          </TextField>
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            select
+            size="small"
+            label="请选择二级分类"
+            value={searchParams.rstId}
+            onChange={handleSelectChange('rstId')}
+            variant="outlined"
+            sx={textFieldStyles}
+          >
+            {storeTypeList.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.name}
+              </MenuItem>
+            ))}
+          </TextField>
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            select
+            size="small"
+            label="请选择物品规格"
+            value={searchParams.rssId}
+            onChange={handleSelectChange('rssId')}
+            variant="outlined"
+            sx={textFieldStyles}
+          >
+            {storeSpecificationList.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.specName}
+              </MenuItem>
+            ))}
+          </TextField>
+        </FormControl>
+      </Stack>
+      <Stack direction="row" spacing={3} component="form" sx={{ mt: 2, mb: 1.5 }}>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            size="small"
+            label="请输入物品ID"
+            type="text"
+            variant="outlined"
+            sx={textFieldStyles}
+            value={searchParams.id}
+            onChange={handleInputChange('id')}
+          />
+        </FormControl>
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+          <TextField
+            select
+            size="small"
+            label="请选择物品是否固定"
+            value={searchParams.isFixed}
+            onChange={handleSelectChange('isFixed')}
             variant="outlined"
             sx={textFieldStyles}
           >
             {[
-              { value: '1001', label: '地上停车场' },
-              { value: '2001', label: '地下停车场' }
+              { value: 'Y', label: '是' },
+              { value: 'N', label: '否' },
+              { value: 'T', label: '通用' }
             ].map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -130,48 +268,48 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             ))}
           </TextField>
         </FormControl>
-      </Stack>
-      <Stack direction="row" spacing={1} component="form" sx={{ mb: 2 }}>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          startIcon={<Search />}
-          sx={buttonStyles('#2660ad', '#1d428a')}
-          onClick={handleSearch}
-        >
-          查询
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          startIcon={<History />}
-          sx={buttonStyles('darkgray', '#696969')}
-          onClick={handleReset}
-        >
-          重置
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          startIcon={<Add />}
-          sx={buttonStyles('#2660ad', '#1d428a')}
-          onClick={() => setOpenDialog(true)}
-        >
-          新增
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          startIcon={<Delete />}
-          sx={buttonStyles('#B22222', '#8B0000')}
-          onClick={handleBatchDelete}
-        >
-          批量删除
-        </Button>
+        <Stack direction="row" spacing={1} component="form" sx={{ mb: 2 }}>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            startIcon={<Search />}
+            sx={buttonStyles('#2660ad', '#1d428a')}
+            onClick={handleSearch}
+          >
+            查询
+          </Button>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            startIcon={<History />}
+            sx={buttonStyles('darkgray', '#696969')}
+            onClick={handleReset}
+          >
+            重置
+          </Button>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            startIcon={<Add />}
+            sx={buttonStyles('#2660ad', '#1d428a')}
+            onClick={() => setOpenDialog(true)}
+          >
+            新增
+          </Button>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            startIcon={<Delete />}
+            sx={buttonStyles('#B22222', '#8B0000')}
+            onClick={handleBatchDelete}
+          >
+            批量删除
+          </Button>
+        </Stack>
       </Stack>
       <FormDialog openDialog={openDialog} dialogType="add" setOpenDialog={setOpenDialog} />
     </Box>

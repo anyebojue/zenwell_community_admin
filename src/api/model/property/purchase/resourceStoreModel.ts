@@ -4,7 +4,7 @@ export interface ResourceStoreReply {
   id?: string
   createdAt?: string
   updatedAt?: string
-  storeI?: string
+  storeId?: string
   resName?: string
   resCode?: string
   description?: string
@@ -26,16 +26,29 @@ export interface ResourceStoreReply {
   miniStock?: string
   parentRstId?: string
   isFixed?: string
+  img?: string
 }
 
 export interface ResourceStoreParams {
   id?: string
-  shId?: string
   resName?: string
   resCode?: string
-  parentRstId?: string
+  storeId?: string
   rstId?: string
-  is_fixed?: string
+  unitCode?: string
+  isFixed?: string
+  rssId?: string
+  shId?: string
+  price?: number
+  warningStock?: number
+  miniUnitCode?: number
+  miniStock?: string
+  outLowPrice?: number
+  outHighPrice?: number
+  description?: string
+  remark?: string
+  img?: string
+  stock?: string
 }
 
 export interface FindResourceStoreReply {

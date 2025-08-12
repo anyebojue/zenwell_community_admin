@@ -2,14 +2,58 @@ import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ResourceStoreReply } from 'api/model/property/purchase/resourceStoreModel'
 import { find } from 'modules/property/purchase/resourceStore'
+import { find as findStore } from 'modules/property/purchase/storeType'
+import { find as findStorehouse } from 'modules/property/purchase/storehouse'
+import { find as findSpecification } from 'modules/property/purchase/resourceStoreSpecification'
 import { Chip } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
 
 const statusValue: Record<string, string> = {
-  '1001': '地上停车场',
-  '2001': '地下停车场'
+  Y: '是',
+  N: '否',
+  T: '通用'
+}
+
+const UNIT_OPTIONS: Record<string, string> = {
+  '1001': '个',
+  '1002': '次',
+  '1003': '米',
+  '1004': '台',
+  '1005': '副',
+  '1006': '把',
+  '1007': '套',
+  '1008': '平米',
+  '1009': '条/次',
+  '1010': '套/次',
+  '1011': '个/次',
+  '1012': '盒',
+  '1013': '箱',
+  '1014': '瓶',
+  '1015': '卷',
+  '1016': '张',
+  '1017': '桶',
+  '1018': '只',
+  '1019': '支',
+  '1020': '片',
+  '1021': '条',
+  '1022': '根',
+  '1023': '块',
+  '1024': '吨',
+  '1025': '节',
+  '1026': '件',
+  '1027': '本',
+  '1028': '提',
+  '1029': '袋',
+  '1030': '辆',
+  '1031': '双',
+  '1032': '公',
+  '1033': '包',
+  '1034': '克',
+  '1035': '部',
+  '1036': '匹',
+  '1037': '升'
 }
 
 interface TableDataProps {
@@ -28,7 +72,7 @@ const TableData: React.FC<TableDataProps> = ({
   setDelOpen
 }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.ParkingAreaSlice)
+  const { page, list } = useSelector((state: RootState) => state.ResourceStoreSlice)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -49,6 +93,9 @@ const TableData: React.FC<TableDataProps> = ({
 
   useEffect(() => {
     fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
+    fetchData(findStore, { 'page.disable': true }, '正在加载列表中，请稍后...')
+    fetchData(findStorehouse, { 'page.disable': true }, '正在加载列表中，请稍后...')
+    fetchData(findSpecification, { 'page.disable': true }, '正在加载列表中，请稍后...')
   }, [fetchData, page.num, page.size])
 
   const handleRowSelection = useCallback(
@@ -98,24 +145,117 @@ const TableData: React.FC<TableDataProps> = ({
 
   return (
     <DataGrid
-      sx={{ mt: 2 }}
+      sx={{
+        '& .MuiDataGrid-columnHeaderTitle': {
+          whiteSpace: 'normal',
+          wordWrap: 'break-word',
+          lineHeight: '1.2'
+        },
+        mt: 1
+      }}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
       checkboxSelection
       rows={list}
       columns={[
-        { field: 'id', headerName: '停车场ID', flex: 1 },
-        { field: 'name', headerName: '停车场编号', flex: 1 },
         {
-          field: 'typeCd',
-          headerName: '停车场类型',
+          field: 'shId',
+          headerName: '仓库名称',
           flex: 1,
-          renderCell: ({ row }) => <Chip label={statusValue[row.typeCd!] || '未知类型'} />
+          headerAlign: 'center',
+          align: 'center'
         },
-        { field: 'num', headerName: '外部编码', flex: 1 },
-        { field: 'remark', headerName: '备注', flex: 1 },
-        { field: 'createdAt', headerName: '创建时间', width: 180 },
+        {
+          field: 'resourceStoreType.name',
+          headerName: '物品类型',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) =>
+            `${row.resourceStoreType?.storeType?.name} > ${row.resourceStoreType?.name}`
+        },
+        {
+          field: 'resName',
+          headerName: '物品名称(编号)',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => `${row.resName}(${row.resCode})`
+        },
+        {
+          field: 'rssId',
+          headerName: '物品规格',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => `${row.rssId}`
+        },
+        {
+          field: 'isFixed',
+          headerName: '固定物品',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => <Chip label={statusValue[row.isFixed!] || '-'} />
+        },
+        {
+          field: 'price',
+          headerName: '参考价格',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => `¥${row.price}`
+        },
+        {
+          field: 'outHighPrice',
+          headerName: '收费标准',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => `¥${row.outHighPrice}`
+        },
+        {
+          field: 'stock',
+          headerName: '物品库存',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => `${row.stock}${UNIT_OPTIONS[String(row.unitCode)]}`
+        },
+        {
+          field: 'miniStock',
+          headerName: '最小计量',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) =>
+            `${row.stock}${UNIT_OPTIONS[String(row.unitCode)]}=${row.miniStock}${UNIT_OPTIONS[String(row.miniUnitCode)]}`
+        },
+        {
+          field: 'miniUnitStock',
+          headerName: '最小计量总数',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => `${row.miniUnitStock}${UNIT_OPTIONS[String(row.miniUnitCode)]}`
+        },
+        {
+          field: 'averagePrice',
+          headerName: '物品均价',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: ({ row }) => `¥${row.averagePrice}`
+        },
+        {
+          field: 'price*stock',
+          headerName: '物品总价',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center',
+          renderCell: () => <Chip color="primary" label="查询" />
+        },
         {
           field: 'actions',
           headerName: '操作',

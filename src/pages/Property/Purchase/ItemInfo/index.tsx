@@ -2,7 +2,7 @@ import { memo, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ResourceStoreReply } from 'api/model/property/purchase/resourceStoreModel'
 import { deleteByIds, find } from 'modules/property/purchase/resourceStore'
-import { Box, Button, Theme, Typography } from '@mui/material'
+import { Box, Button, Stack, Theme, Typography } from '@mui/material'
 import NavbarBreadcrumbs from 'layouts/components/Header/NavbarBreadcrumbs'
 import Copyright from 'layouts/components/Copyright'
 import message from 'components/Message'
@@ -21,7 +21,7 @@ const contentBoxStyle = (theme: Theme) => ({
 
 const ParkingLotManagementIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page, list } = useSelector((state: RootState) => state.ParkingAreaSlice)
+  const { page, list } = useSelector((state: RootState) => state.ResourceStoreSlice)
 
   const [dialogValue, setDialogValue] = useState<ResourceStoreReply | undefined>()
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
@@ -34,12 +34,12 @@ const ParkingLotManagementIndex = () => {
     return Array.from(selectedRows)
       .map(id => list.find(item => item.id === id))
       .filter(item => item)
-      .map(item => ({ id: item!.id!, name: item!.name! }))
+      .map(item => ({ id: item!.id!, resName: item!.resName! }))
   }, [selectedRows, list])
 
   const deleteData = getDeleteData()
   const deleteIds = deleteData.map(item => item.id)
-  const deleteNames = deleteData.map(item => item.name)
+  const deleteNames = deleteData.map(item => item.resName)
 
   const handleDelete = useCallback(
     async (ids: string[]) => {
@@ -68,19 +68,48 @@ const ParkingLotManagementIndex = () => {
       <Box sx={contentBoxStyle}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="h6">停车场信息</Typography>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Add />}
-            sx={buttonStyles('#2660ad', '#1d428a')}
-            onClick={() => {
-              setOpenDialog(true)
-              setDialogType('add')
-            }}
-          >
-            添加
-          </Button>
+          <Stack direction="row" spacing={1}>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              sx={buttonStyles('#2660ad', '#1d428a')}
+              onClick={() => {}}
+            >
+              入库与领用
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              startIcon={<Add />}
+              sx={buttonStyles('#2660ad', '#1d428a')}
+              onClick={() => {
+                setOpenDialog(true)
+                setDialogType('add')
+              }}
+            >
+              添加
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              sx={buttonStyles('#2660ad', '#1d428a')}
+              onClick={() => {}}
+            >
+              导入
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              sx={buttonStyles('#2660ad', '#1d428a')}
+              onClick={() => {}}
+            >
+              导出
+            </Button>
+          </Stack>
         </Box>
         <TableData
           setDialogType={setDialogType}
