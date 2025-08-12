@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { StoreTypeParams } from 'api/model/property/purchase/storeTypeModel'
 import { find } from 'modules/property/purchase/storeType'
 import { Box, FormControl, Button, Stack, TextField } from '@mui/material'
-import { Add, Delete, History, Search } from '@mui/icons-material'
+import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import message from 'components/Message'
 import FormDialog from './FormDialog'
@@ -96,49 +96,40 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
             onChange={handleInputChange('name')}
           />
         </FormControl>
+        <Stack direction="row" spacing={1} component="form" sx={{ mb: 2 }}>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            startIcon={<Search />}
+            sx={buttonStyles('#2660ad', '#1d428a')}
+            onClick={handleSearch}
+          >
+            查询
+          </Button>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            startIcon={<History />}
+            sx={buttonStyles('darkgray', '#696969')}
+            onClick={handleReset}
+          >
+            重置
+          </Button>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            startIcon={<Delete />}
+            sx={buttonStyles('#B22222', '#8B0000')}
+            onClick={handleBatchDelete}
+          >
+            批量删除
+          </Button>
+        </Stack>
       </Stack>
-      <Stack direction="row" spacing={1} component="form" sx={{ mb: 2 }}>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          startIcon={<Search />}
-          sx={buttonStyles('#2660ad', '#1d428a')}
-          onClick={handleSearch}
-        >
-          查询
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          startIcon={<History />}
-          sx={buttonStyles('darkgray', '#696969')}
-          onClick={handleReset}
-        >
-          重置
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          startIcon={<Add />}
-          sx={buttonStyles('#2660ad', '#1d428a')}
-          onClick={() => setOpenDialog(true)}
-        >
-          新增
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          startIcon={<Delete />}
-          sx={buttonStyles('#B22222', '#8B0000')}
-          onClick={handleBatchDelete}
-        >
-          批量删除
-        </Button>
-      </Stack>
+
       <FormDialog openDialog={openDialog} dialogType="add" setOpenDialog={setOpenDialog} />
     </Box>
   )
