@@ -1,4 +1,7 @@
 import { Page } from '../../pageModel'
+import { ResourceStoreSpecificationReply } from './resourceStoreSpecificationModel'
+import { ResourceStoreTypeReply } from './resourceStoreTypeModel'
+import { StorehouseReply } from './storehouseModel'
 
 export interface ResourceStoreReply {
   id?: string
@@ -27,6 +30,9 @@ export interface ResourceStoreReply {
   parentRstId?: string
   isFixed?: string
   img?: string
+  resourceStoreType?: ResourceStoreTypeReply
+  storehouse?: StorehouseReply
+  resourceStoreSpecification?: ResourceStoreSpecificationReply
 }
 
 export interface ResourceStoreParams {

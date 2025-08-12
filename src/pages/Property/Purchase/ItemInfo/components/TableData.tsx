@@ -1,14 +1,16 @@
-import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ResourceStoreReply } from 'api/model/property/purchase/resourceStoreModel'
 import { find } from 'modules/property/purchase/resourceStore'
 import { find as findStore } from 'modules/property/purchase/storeType'
 import { find as findStorehouse } from 'modules/property/purchase/storehouse'
 import { find as findSpecification } from 'modules/property/purchase/resourceStoreSpecification'
-import { Chip } from '@mui/material'
+import { Button, Chip, Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
+import { Close } from '@mui/icons-material'
+import { buttonStyles } from 'components/DeleteModal'
 
 const statusValue: Record<string, string> = {
   Y: '是',
@@ -73,6 +75,7 @@ const TableData: React.FC<TableDataProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.ResourceStoreSlice)
+  const [openViewDialog, setOpenViewDialog] = useState(false)
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -144,138 +147,213 @@ const TableData: React.FC<TableDataProps> = ({
     ))
 
   return (
-    <DataGrid
-      sx={{
-        '& .MuiDataGrid-columnHeaderTitle': {
-          whiteSpace: 'normal',
-          wordWrap: 'break-word',
-          lineHeight: '1.2'
-        },
-        mt: 1
-      }}
-      localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
-      disableColumnResize
-      disableVirtualization={false}
-      checkboxSelection
-      rows={list}
-      columns={[
-        {
-          field: 'shId',
-          headerName: '仓库名称',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center'
-        },
-        {
-          field: 'resourceStoreType.name',
-          headerName: '物品类型',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) =>
-            `${row.resourceStoreType?.storeType?.name} > ${row.resourceStoreType?.name}`
-        },
-        {
-          field: 'resName',
-          headerName: '物品名称(编号)',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => `${row.resName}(${row.resCode})`
-        },
-        {
-          field: 'rssId',
-          headerName: '物品规格',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => `${row.rssId}`
-        },
-        {
-          field: 'isFixed',
-          headerName: '固定物品',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => <Chip label={statusValue[row.isFixed!] || '-'} />
-        },
-        {
-          field: 'price',
-          headerName: '参考价格',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => `¥${row.price}`
-        },
-        {
-          field: 'outHighPrice',
-          headerName: '收费标准',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => `¥${row.outHighPrice}`
-        },
-        {
-          field: 'stock',
-          headerName: '物品库存',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => `${row.stock}${UNIT_OPTIONS[String(row.unitCode)]}`
-        },
-        {
-          field: 'miniStock',
-          headerName: '最小计量',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) =>
-            `${row.stock}${UNIT_OPTIONS[String(row.unitCode)]}=${row.miniStock}${UNIT_OPTIONS[String(row.miniUnitCode)]}`
-        },
-        {
-          field: 'miniUnitStock',
-          headerName: '最小计量总数',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => `${row.miniUnitStock}${UNIT_OPTIONS[String(row.miniUnitCode)]}`
-        },
-        {
-          field: 'averagePrice',
-          headerName: '物品均价',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: ({ row }) => `¥${row.averagePrice}`
-        },
-        {
-          field: 'price*stock',
-          headerName: '物品总价',
-          flex: 1,
-          headerAlign: 'center',
-          align: 'center',
-          renderCell: () => <Chip color="primary" label="查询" />
-        },
-        {
-          field: 'actions',
-          headerName: '操作',
-          type: 'actions',
-          width: 200,
-          getActions: ({ row }) => renderActionButtons(row)
-        }
-      ]}
-      onRowSelectionModelChange={handleRowSelection}
-      pageSizeOptions={[10, 20, 50, 100]}
-      paginationMode="server"
-      rowCount={Number(page.total)}
-      initialState={{
-        pagination: {
-          paginationModel: {
-            pageSize: Number(page.size)
+    <>
+      <DataGrid
+        sx={{
+          '& .MuiDataGrid-columnHeaderTitle': {
+            whiteSpace: 'normal',
+            wordWrap: 'break-word',
+            lineHeight: '1.2'
+          },
+          mt: 1
+        }}
+        localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
+        disableColumnResize
+        disableVirtualization={false}
+        checkboxSelection
+        rows={list}
+        columns={[
+          {
+            field: 'storehouse.shName',
+            headerName: '仓库名称',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) => row.storehouse?.shName
+          },
+          {
+            field: 'resourceStoreType.name',
+            headerName: '物品类型',
+            width: 150,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) =>
+              `${row.resourceStoreType?.storeType?.name} > ${row.resourceStoreType?.name}`
+          },
+          {
+            field: 'resName',
+            headerName: '物品名称(编号)',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) => `${row.resName}(${row.resCode})`
+          },
+          {
+            field: 'resourceStoreSpecification.specName',
+            headerName: '物品规格',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) => `${row.resourceStoreSpecification?.specName}`
+          },
+          {
+            field: 'isFixed',
+            headerName: '固定物品',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) => <Chip label={statusValue[row.isFixed!] || '-'} />
+          },
+          {
+            field: 'price',
+            headerName: '参考价格',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) => `¥${row.price}`
+          },
+          {
+            field: 'outHighPrice',
+            headerName: '收费标准',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) => `¥${row.outHighPrice}`
+          },
+          {
+            field: 'stock',
+            headerName: '物品库存',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) => `${row.stock}${UNIT_OPTIONS[String(row.unitCode)]}`
+          },
+          {
+            field: 'miniStock',
+            headerName: '最小计量',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) =>
+              `${row.stock}${UNIT_OPTIONS[String(row.unitCode)]}=${row.miniStock}${UNIT_OPTIONS[String(row.miniUnitCode)]}`
+          },
+          {
+            field: 'miniUnitStock',
+            headerName: '最小计量总数',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) => `${row.miniUnitStock}${UNIT_OPTIONS[String(row.miniUnitCode)]}`
+          },
+          {
+            field: 'averagePrice',
+            headerName: '物品均价',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: ({ row }) => `¥${row.averagePrice}`
+          },
+          {
+            field: 'price*stock',
+            headerName: '物品总价',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: () => (
+              <Button
+                sx={{ color: '#2660ad', textDecoration: 'underline' }}
+                size="small"
+                variant="text"
+                onClick={() => setOpenViewDialog(true)}
+              >
+                查询
+              </Button>
+            )
+          },
+          {
+            field: 'actions',
+            headerName: '操作',
+            type: 'actions',
+            width: 200,
+            getActions: ({ row }) => renderActionButtons(row)
           }
-        }
-      }}
-    />
+        ]}
+        onRowSelectionModelChange={handleRowSelection}
+        pageSizeOptions={[10, 20, 50, 100]}
+        paginationMode="server"
+        rowCount={Number(page.total)}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: Number(page.size)
+            }
+          }
+        }}
+      />
+      <Dialog maxWidth="lg" open={openViewDialog} onClose={() => setOpenViewDialog(false)}>
+        <DialogTitle
+          sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+        >
+          物品总价
+          <IconButton onClick={() => setOpenViewDialog(false)}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <DataGrid
+            disableRowSelectionOnClick
+            disableColumnMenu
+            rows={list}
+            columns={[
+              {
+                field: 'resCode',
+                headerName: '物品编号',
+                width: 100,
+                headerAlign: 'center',
+                align: 'center'
+              },
+              {
+                field: 'createdAt',
+                headerName: '入库时间',
+                width: 250,
+                headerAlign: 'center',
+                align: 'center'
+              },
+              {
+                field: 'price',
+                headerName: '单价',
+                width: 100,
+                headerAlign: 'center',
+                align: 'center'
+              },
+              {
+                field: 'stock',
+                headerName: '库存',
+                width: 100,
+                headerAlign: 'center',
+                align: 'center'
+              },
+              {
+                field: 'price*stock',
+                headerName: '总价',
+                width: 150,
+                headerAlign: 'center',
+                align: 'center',
+                renderCell: ({ row }) => row.price! * Number(row.stock)
+              }
+            ]}
+            pageSizeOptions={[25]}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 25
+                }
+              }
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
 
