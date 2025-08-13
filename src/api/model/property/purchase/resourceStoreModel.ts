@@ -1,6 +1,5 @@
 import { Page } from '../../pageModel'
 import { ResourceStoreSpecificationReply } from './resourceStoreSpecificationModel'
-import { ResourceStoreTypeReply } from './resourceStoreTypeModel'
 import { StorehouseReply } from './storehouseModel'
 
 export interface ResourceStoreReply {
@@ -30,7 +29,6 @@ export interface ResourceStoreReply {
   parentRstId?: string
   isFixed?: string
   img?: string
-  resourceStoreType?: ResourceStoreTypeReply
   storehouse?: StorehouseReply
   resourceStoreSpecification?: ResourceStoreSpecificationReply
   count?: string
