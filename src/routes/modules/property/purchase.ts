@@ -70,6 +70,14 @@ const purchase: IRouter[] = [
         }
       },
       {
+        path: 'Procurement',
+        element: load('Property/Purchase/Procurement'),
+        meta: {
+          title: '申请采购',
+          hidden: true
+        }
+      },
+      {
         path: 'ItemRequisition',
         element: load('Property/Purchase/ItemRequisition'),
         meta: {

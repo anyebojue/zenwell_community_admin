@@ -10,7 +10,6 @@ import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
 import { Close } from '@mui/icons-material'
-import { buttonStyles } from 'components/DeleteModal'
 
 const statusValue: Record<string, string> = {
   Y: '是',
@@ -342,11 +341,14 @@ const TableData: React.FC<TableDataProps> = ({
                 renderCell: ({ row }) => row.price! * Number(row.stock)
               }
             ]}
-            pageSizeOptions={[25]}
+            onRowSelectionModelChange={handleRowSelection}
+            pageSizeOptions={[10, 20, 50, 100]}
+            paginationMode="server"
+            rowCount={Number(page.total)}
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 25
+                  pageSize: Number(page.size)
                 }
               }
             }}

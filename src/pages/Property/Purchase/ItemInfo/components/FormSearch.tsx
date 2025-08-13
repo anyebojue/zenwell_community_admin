@@ -40,7 +40,7 @@ interface SearchFormProps {
 
 const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { page } = useSelector((state: RootState) => state.ParkingAreaSlice)
+  const { page } = useSelector((state: RootState) => state.ResourceStoreSlice)
   const { list: storehouseList } = useSelector((state: RootState) => state.StorehouseSlice)
   const { list: storeList } = useSelector((state: RootState) => state.StoreTypeSlice)
   const { list: storeTypeList } = useSelector((state: RootState) => state.ResourceStoreTypeSlice)

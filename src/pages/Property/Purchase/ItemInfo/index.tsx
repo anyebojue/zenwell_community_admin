@@ -69,7 +69,7 @@ const ParkingLotManagementIndex = () => {
       <FormSearch setDelOpen={setDelOpen} selectedRows={selectedRows} />
       <Box sx={contentBoxStyle}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h6">停车场信息</Typography>
+          <Typography variant="h6">物品信息</Typography>
           <Stack direction="row" spacing={1}>
             <Button
               size="small"

@@ -33,6 +33,7 @@ export interface ResourceStoreReply {
   resourceStoreType?: ResourceStoreTypeReply
   storehouse?: StorehouseReply
   resourceStoreSpecification?: ResourceStoreSpecificationReply
+  count?: string
 }
 
 export interface ResourceStoreParams {

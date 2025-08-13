@@ -15,6 +15,7 @@ interface TableDataProps {
 const statusCd: Record<string, string> = {
   '1000': '未审核',
   '1001': '审核中',
+  '1002': '已审核',
   '1003': '完结',
   '1004': '未通过'
 }
@@ -22,6 +23,8 @@ const statusCd: Record<string, string> = {
 const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.BusinessPurchaseApplySlice)
+  const current_community = localStorage.getItem('current_community')
+  const community = JSON.parse(current_community || '')
 
   const fetchData = useCallback(
     async (action: Function, params: Record<string, boolean | string>, loadingMessage: string) => {
@@ -100,7 +103,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
         {
           field: 'id',
           headerName: '申请单号',
-          width: 100,
+          width: 200,
           headerAlign: 'center',
           align: 'center'
         },
@@ -123,7 +126,8 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
           headerName: '操作人',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          renderCell: () => community.name
         },
         {
           field: 'resourceStore.resName',
@@ -135,7 +139,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
         {
           field: 'createdAt',
           headerName: '申请时间',
-          flex: 1,
+          width: 170,
           headerAlign: 'center',
           align: 'center'
         },
@@ -158,7 +162,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
           field: 'actions',
           headerName: '操作',
           type: 'actions',
-          width: 240,
+          width: 80,
           getActions: ({ row }) => renderActionButtons(row)
         }
       ]}

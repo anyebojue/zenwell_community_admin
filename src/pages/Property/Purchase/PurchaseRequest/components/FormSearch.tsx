@@ -89,7 +89,7 @@ const FormSearch: React.FC<FormSearchProps> = () => {
           <TextField
             select
             size="small"
-            label="请选择审批状态"
+            label="请选择状态"
             value={searchParams.stateCd}
             onChange={handleInputChange('stateCd')}
             variant="outlined"
@@ -98,6 +98,7 @@ const FormSearch: React.FC<FormSearchProps> = () => {
             {[
               { value: '1000', label: '未审核' },
               { value: '1001', label: '审核中' },
+              { value: '1002', label: '已审核' },
               { value: '1003', label: '完结' },
               { value: '1004', label: '未通过' }
             ].map(option => (
@@ -118,34 +119,34 @@ const FormSearch: React.FC<FormSearchProps> = () => {
             onChange={handleInputChange('userName')}
           />
         </FormControl>
-        <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<Search />}
-            sx={buttonStyles('#2660ad', '#1d428a')}
-            onClick={handleSearch}
-          >
-            查询
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            startIcon={<History />}
-            sx={buttonStyles('darkgray', '#696969')}
-            onClick={() => {
-              setSearchParams({ id: '', userName: '', stateCd: '' })
-              fetchData({
-                'page.num': page.num,
-                'page.size': page.size
-              })
-            }}
-          >
-            重置
-          </Button>
-        </Stack>
+      </Stack>
+      <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
+          startIcon={<Search />}
+          sx={buttonStyles('#2660ad', '#1d428a')}
+          onClick={handleSearch}
+        >
+          查询
+        </Button>
+        <Button
+          size="small"
+          variant="contained"
+          color="error"
+          startIcon={<History />}
+          sx={buttonStyles('darkgray', '#696969')}
+          onClick={() => {
+            setSearchParams({ id: '', userName: '', stateCd: '' })
+            fetchData({
+              'page.num': page.num,
+              'page.size': page.size
+            })
+          }}
+        >
+          重置
+        </Button>
       </Stack>
     </Box>
   )
