@@ -10,7 +10,8 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle
+  DialogTitle,
+  InputAdornment
 } from '@mui/material'
 import { Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -133,7 +134,7 @@ const Associated: React.FC<AssociatedProps> = ({
                 `${row.resourceStoreType?.storeType?.name} > ${row.resourceStoreType?.name}`
             },
             {
-              field: 'userName',
+              field: 'resName',
               headerName: '物品名称',
               flex: 1,
               headerAlign: 'center',
@@ -187,6 +188,15 @@ const Associated: React.FC<AssociatedProps> = ({
               renderCell: ({ row }) => (
                 <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                   <TextField
+                    slotProps={{
+                      input: {
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            {`${UNIT_OPTIONS[String(row.unitCode)]}`}
+                          </InputAdornment>
+                        )
+                      }
+                    }}
                     size="small"
                     type="number"
                     value={row.count ?? '1'}
