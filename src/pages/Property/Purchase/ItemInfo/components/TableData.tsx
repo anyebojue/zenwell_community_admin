@@ -4,7 +4,6 @@ import { ResourceStoreReply } from 'api/model/property/purchase/resourceStoreMod
 import { find } from 'modules/property/purchase/resourceStore'
 import { find as findStore } from 'modules/property/purchase/storeType'
 import { find as findStorehouse } from 'modules/property/purchase/storehouse'
-import { find as findSpecification } from 'modules/property/purchase/resourceStoreSpecification'
 import { Button, Chip, Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
@@ -97,7 +96,6 @@ const TableData: React.FC<TableDataProps> = ({
     fetchData(find, { 'page.num': page.num, 'page.size': page.size }, '正在加载列表中，请稍后...')
     fetchData(findStore, { 'page.disable': true }, '正在加载列表中，请稍后...')
     fetchData(findStorehouse, { 'page.disable': true }, '正在加载列表中，请稍后...')
-    fetchData(findSpecification, { 'page.disable': true }, '正在加载列表中，请稍后...')
   }, [fetchData, page.num, page.size])
 
   const handleRowSelection = useCallback(

@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction, useCallback, useEffect, useState, memo
 import { useDispatch, useSelector } from 'react-redux'
 import { create, find, update } from 'modules/property/purchase/resourceStore'
 import { find as findStoreType } from 'modules/property/purchase/resourceStoreType'
+import { find as findSpecification } from 'modules/property/purchase/resourceStoreSpecification'
 import {
   CircularProgress,
   FormLabel,
@@ -157,21 +158,27 @@ const FormDialog: React.FC<FormDialogProps> = ({
 
   useEffect(() => {
     if (!formData.storeId) return
-    const fetchStoreType = async () => {
+    const fetchData = async () => {
       const closeLoading = message.loading('正在加载列表中，请稍后...')
       try {
-        const res = await dispatch(
-          findStoreType({ 'page.num': page.num, 'page.size': page.size, storeId: formData.storeId })
+        const res1 = await dispatch(
+          findStoreType({ 'page.disable': true, storeId: formData.storeId })
         )
-        if ('error' in res && res.error?.message) throw new Error(res.error.message)
+        if ('error' in res1 && res1.error?.message) throw new Error(res1.error.message)
+        if (formData.rstId) {
+          const res2 = await dispatch(
+            findSpecification({ 'page.disable': true, rstId: formData.rstId })
+          )
+          if ('error' in res2 && res2.error?.message) throw new Error(res2.error.message)
+        }
       } catch (error) {
         if (error instanceof Error) message.error(error.message)
       } finally {
         closeLoading()
       }
     }
-    fetchStoreType()
-  }, [dispatch, formData.storeId, page.num, page.size])
+    fetchData()
+  }, [dispatch, formData.rstId, formData.storeId])
 
   const renderField = (
     label: string,

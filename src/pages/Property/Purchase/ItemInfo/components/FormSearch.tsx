@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ResourceStoreParams } from 'api/model/property/purchase/resourceStoreModel'
 import { find } from 'modules/property/purchase/resourceStore'
 import { find as findStoreType } from 'modules/property/purchase/resourceStoreType'
+import { find as findSpecification } from 'modules/property/purchase/resourceStoreSpecification'
 import { Box, FormControl, Button, Stack, TextField, MenuItem } from '@mui/material'
 import { Delete, History, Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
@@ -135,11 +136,21 @@ const FormSearch: React.FC<SearchFormProps> = ({ selectedRows, setDelOpen }) => 
     if (searchParams.storeId) {
       fetchData(
         findStoreType,
-        { 'page.num': page.num, 'page.size': page.size, storeId: searchParams.storeId },
+        { 'page.disable': true, storeId: searchParams.storeId },
         '正在加载列表中，请稍后...'
       )
     }
   }, [fetchData, page.num, page.size, searchParams.storeId])
+
+  useEffect(() => {
+    if (searchParams.rstId) {
+      fetchData(
+        findSpecification,
+        { 'page.disable': true, rstId: searchParams.rstId },
+        '正在加载列表中，请稍后...'
+      )
+    }
+  }, [fetchData, page.num, page.size, searchParams.rstId])
 
   return (
     <Box>
