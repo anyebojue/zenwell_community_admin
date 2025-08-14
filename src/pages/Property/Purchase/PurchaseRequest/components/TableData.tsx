@@ -138,7 +138,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
         {
           field: 'procurementResourceStores',
           headerName: '物品',
-          flex: 1,
+          flex: 3,
           headerAlign: 'center',
           align: 'center',
           renderCell: ({ row }) => (

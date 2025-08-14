@@ -1,5 +1,6 @@
-import { Dispatch, memo, SetStateAction } from 'react'
-import { useSelector } from 'react-redux'
+import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { find as findSpecification } from 'modules/property/purchase/resourceStoreSpecification'
 import {
   Box,
   Button,
@@ -11,13 +12,16 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  InputAdornment
+  InputAdornment,
+  Select,
+  MenuItem
 } from '@mui/material'
 import { Search } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
 import { ResourceStoreReply } from 'api/model/property/purchase/resourceStoreModel'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
+import message from 'components/Message'
 import FormSearch from './FormSearch'
 import AssociatedTableData from './AssociatedTableData'
 
@@ -99,7 +103,34 @@ const Associated: React.FC<AssociatedProps> = ({
   associatedOpen,
   setAssociatedOpen
 }) => {
+  const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.ResourceStoreSlice)
+  const { list: storehouseList } = useSelector((state: RootState) => state.StorehouseSlice)
+
+  const fetchData = useCallback(
+    async (
+      action: Function,
+      params: Record<string, boolean | string | number>,
+      loadingMessage: string
+    ) => {
+      const closeLoading = message.loading(loadingMessage)
+      try {
+        const res = await dispatch(action(params))
+        if ('error' in res && res.error?.message) {
+          throw new Error(res.error.message)
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) message.error(err.message)
+      } finally {
+        closeLoading()
+      }
+    },
+    [dispatch]
+  )
+
+  useEffect(() => {
+    fetchData(findSpecification, { 'page.disable': true }, '正在加载列表中，请稍后...')
+  }, [fetchData])
 
   return (
     <>
@@ -150,28 +181,12 @@ const Associated: React.FC<AssociatedProps> = ({
               renderCell: ({ row }) => `${row.resourceStoreSpecification?.specName}`
             },
             {
-              field: 'price',
-              headerName: '价格',
+              field: 'averagePrice',
+              headerName: '参考价格',
               flex: 1,
               headerAlign: 'center',
               align: 'center',
-              renderCell: ({ row }) => (
-                <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
-                  <TextField
-                    size="small"
-                    type="number"
-                    value={row.price ?? 0}
-                    sx={textFieldStyles}
-                    onChange={e => {
-                      const value = Number(e.target.value)
-                      console.log('price', value)
-                      setDialogValue(prev =>
-                        prev.map(item => (item.id === row.id ? { ...item, price: value } : item))
-                      )
-                    }}
-                  />
-                </Box>
-              )
+              renderCell: ({ row }) => `¥${row.averagePrice}`
             },
             {
               field: 'stock',
@@ -205,12 +220,62 @@ const Associated: React.FC<AssociatedProps> = ({
                     sx={textFieldStyles}
                     onChange={e => {
                       const value = e.target.value
-                      console.log('count', value)
                       setDialogValue(prev =>
                         prev.map(item => (item.id === row.id ? { ...item, count: value } : item))
                       )
                     }}
                   />
+                </Box>
+              )
+            },
+            {
+              field: 'price',
+              headerName: '采购单价',
+              flex: 1,
+              headerAlign: 'center',
+              align: 'center',
+              renderCell: ({ row }) => (
+                <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                  <TextField
+                    size="small"
+                    type="number"
+                    value={row.price ?? 0}
+                    sx={textFieldStyles}
+                    onChange={e => {
+                      const value = Number(e.target.value)
+                      setDialogValue(prev =>
+                        prev.map(item => (item.id === row.id ? { ...item, price: value } : item))
+                      )
+                    }}
+                  />
+                </Box>
+              )
+            },
+            {
+              field: 'shId',
+              headerName: '目标仓库',
+              flex: 1,
+              headerAlign: 'center',
+              align: 'center',
+              renderCell: ({ row }) => (
+                <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                  <Select
+                    size="small"
+                    value={row.shId ?? ''}
+                    sx={textFieldStyles}
+                    onChange={e => {
+                      const value = e.target.value
+                      setDialogValue(prev =>
+                        prev.map(item => (item.id === row.id ? { ...item, shId: value } : item))
+                      )
+                    }}
+                  >
+                    {storehouseList.map(option => (
+                      <MenuItem key={option.id} value={option.id}>
+                        {option.shName}
+                      </MenuItem>
+                    ))}
+                  </Select>
                 </Box>
               )
             },

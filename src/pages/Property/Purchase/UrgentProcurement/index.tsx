@@ -3,7 +3,7 @@ import { create } from 'modules/property/purchase/businessPurchaseApply'
 import { Box, Button, Step, StepLabel, Stepper, styled } from '@mui/material'
 import { StepConnector, stepConnectorClasses } from '@mui/material'
 import { StepIconProps } from '@mui/material/StepIcon'
-import { Discount, FmdBad, Person } from '@mui/icons-material'
+import { Discount, FmdBad } from '@mui/icons-material'
 import message from 'components/Message'
 import { useNavigate } from 'react-router-dom'
 import { buttonStyles } from 'components/DeleteModal'
@@ -18,10 +18,12 @@ interface ProcurementItem {
   resName: string
   resCode: string
   rssId: string
-  price: number
+  averagePrice: number
   stock: string
   unitCode: string
   count: string
+  price: number
+  shId: string
   remark: string
   communityId: string
 }
@@ -105,8 +107,7 @@ const ColorlibStepIcon = (props: StepIconProps) => {
 
   const icons: { [index: string]: React.ReactElement<unknown> } = {
     1: <Discount />,
-    2: <FmdBad />,
-    3: <Person />
+    2: <FmdBad />
   }
 
   return (
@@ -116,7 +117,7 @@ const ColorlibStepIcon = (props: StepIconProps) => {
   )
 }
 
-const steps = ['选择物品', '申请信息', '审批人']
+const steps = ['选择物品', '申请信息']
 
 const CheckInOwner = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -135,7 +136,7 @@ const CheckInOwner = () => {
     storeName: community.store[0].name,
     employess: community.store[0].userId,
     remark: '',
-    resOrderType: '10000',
+    resOrderType: '20000',
     procurementResourceStores: []
   })
 
@@ -149,10 +150,12 @@ const CheckInOwner = () => {
         resName: item.resName!,
         resCode: item.resCode!,
         rssId: item.rssId!,
-        price: item.price!,
+        averagePrice: item.averagePrice!,
         stock: item.stock!,
         unitCode: item.unitCode!,
         count: item.count || '1',
+        price: item.price!,
+        shId: item.shId!,
         remark: item.remark!,
         communityId: community.id!
       }))

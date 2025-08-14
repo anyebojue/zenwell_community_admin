@@ -7,10 +7,12 @@ interface ProcurementItem {
   resName: string
   resCode: string
   rssId: string
-  price: number
+  averagePrice: number
   stock: string
   unitCode: string
   count: string
+  price: number
+  shId: string
   remark: string
   communityId: string
 }

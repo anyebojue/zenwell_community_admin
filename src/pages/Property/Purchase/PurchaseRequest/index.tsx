@@ -46,7 +46,7 @@ const OwnerCarIndex = () => {
               color="error"
               startIcon={<Add />}
               sx={buttonStyles('#2660ad', '#1d428a')}
-              onClick={() => {}}
+              onClick={() => navigate('/purchase/UrgentProcurement')}
             >
               紧急采购
             </Button>
