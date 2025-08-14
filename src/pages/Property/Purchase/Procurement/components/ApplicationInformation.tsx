@@ -4,12 +4,14 @@ import { Box, Typography, Theme, TextField, FormLabel, Stack, Divider } from '@m
 interface ProcurementItem {
   storeId: string
   rstId: string
+  resName: string
   rssId: string
   price: number
   stock: string
   unitCode: string
   count: string
   remark: string
+  communityId: string
 }
 
 interface FormData {
@@ -21,6 +23,7 @@ interface FormData {
   storeName: string
   employess: string
   remark: string
+  resOrderType: string
   procurementResourceStores: ProcurementItem[]
 }
 

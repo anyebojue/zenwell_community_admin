@@ -1,5 +1,20 @@
 import { Page } from '../../pageModel'
 
+export interface ProcurementResourceStores {
+  id: string
+  storeId: string
+  rstId: string
+  resName: string
+  rssId: string
+  price: number
+  stock: string
+  unitCode: string
+  count: string
+  remark: string
+  communityId: string
+  bpaId: string
+}
+
 export interface BusinessPurchaseApplyReply {
   id?: string
   createdAt?: string
@@ -15,6 +30,7 @@ export interface BusinessPurchaseApplyReply {
   endUserName: ''
   endUserTel: ''
   communityId: ''
+  procurementResourceStores: ProcurementResourceStores[]
 }
 
 export interface BusinessPurchaseApplyParams {

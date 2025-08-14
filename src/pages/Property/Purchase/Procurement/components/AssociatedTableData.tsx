@@ -118,7 +118,7 @@ const AssociatedTableData: React.FC<AssociatedTableDataProps> = ({ setDialogValu
           headerAlign: 'center',
           align: 'center',
           renderCell: ({ row }) =>
-            `${row.resourceStoreType?.storeType?.name} > ${row.resourceStoreType?.name}`
+            `${row.resourceStoreSpecification?.resourceStoreType?.storeType?.name} > ${row.resourceStoreSpecification?.resourceStoreType?.name}`
         },
         {
           field: 'resName',

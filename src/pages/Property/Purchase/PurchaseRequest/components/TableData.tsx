@@ -20,6 +20,11 @@ const statusCd: Record<string, string> = {
   '1004': '未通过'
 }
 
+const statusValue: Record<string, string> = {
+  '10000': '采购入库',
+  '20000': '紧急采购'
+}
+
 const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.BusinessPurchaseApplySlice)
@@ -95,6 +100,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
           lineHeight: '1.2'
         }
       }}
+      getRowHeight={() => 100}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
@@ -130,11 +136,35 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
           renderCell: () => community.name
         },
         {
-          field: 'resourceStore.resName',
+          field: 'procurementResourceStores',
           headerName: '物品',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          renderCell: ({ row }) => (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100%',
+                width: '100%'
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '4px 8px',
+                  justifyContent: 'center'
+                }}
+              >
+                {row.procurementResourceStores.map((item, index) => (
+                  <Chip key={item.id} label={`${index + 1}: ${item.resName}`} size="small" />
+                ))}
+              </div>
+            </div>
+          )
         },
         {
           field: 'createdAt',
@@ -148,7 +178,8 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
           headerName: '采购方式',
           flex: 1,
           headerAlign: 'center',
-          align: 'center'
+          align: 'center',
+          renderCell: ({ row }) => <Chip label={statusValue[row.resOrderType!] || '-'} />
         },
         {
           field: 'stateCd',
@@ -156,7 +187,7 @@ const TableData: React.FC<TableDataProps> = ({ setDialogValue }) => {
           flex: 1,
           headerAlign: 'center',
           align: 'center',
-          renderCell: ({ row }) => <Chip label={statusCd[row.stateCd!] || '未知'} />
+          renderCell: ({ row }) => <Chip label={statusCd[row.stateCd!] || '-'} />
         },
         {
           field: 'actions',

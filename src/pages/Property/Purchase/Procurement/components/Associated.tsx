@@ -131,7 +131,7 @@ const Associated: React.FC<AssociatedProps> = ({
               headerAlign: 'center',
               align: 'center',
               renderCell: ({ row }) =>
-                `${row.resourceStoreType?.storeType?.name} > ${row.resourceStoreType?.name}`
+                `${row.resourceStoreSpecification?.resourceStoreType?.storeType?.name} > ${row.resourceStoreSpecification?.resourceStoreType?.name}`
             },
             {
               field: 'resName',
@@ -163,6 +163,7 @@ const Associated: React.FC<AssociatedProps> = ({
                     sx={textFieldStyles}
                     onChange={e => {
                       const value = Number(e.target.value)
+                      console.log('price', value)
                       setDialogValue(prev =>
                         prev.map(item => (item.id === row.id ? { ...item, price: value } : item))
                       )
@@ -203,6 +204,7 @@ const Associated: React.FC<AssociatedProps> = ({
                     sx={textFieldStyles}
                     onChange={e => {
                       const value = e.target.value
+                      console.log('count', value)
                       setDialogValue(prev =>
                         prev.map(item => (item.id === row.id ? { ...item, count: value } : item))
                       )

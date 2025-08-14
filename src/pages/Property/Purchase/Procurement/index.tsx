@@ -15,12 +15,14 @@ import ApplicationInformation from './components/ApplicationInformation'
 interface ProcurementItem {
   storeId: string
   rstId: string
+  resName: string
   rssId: string
   price: number
   stock: string
   unitCode: string
   count: string
   remark: string
+  communityId: string
 }
 
 interface FormData {
@@ -32,6 +34,7 @@ interface FormData {
   storeName: string
   employess: string
   remark: string
+  resOrderType: string
   procurementResourceStores: ProcurementItem[]
 }
 
@@ -131,6 +134,7 @@ const CheckInOwner = () => {
     storeName: community.store[0].name,
     employess: community.store[0].userId,
     remark: '',
+    resOrderType: '10000',
     procurementResourceStores: []
   })
 
@@ -141,18 +145,20 @@ const CheckInOwner = () => {
       procurementResourceStores: dialogValue.map(item => ({
         storeId: item.storeId!,
         rstId: item.rstId!,
+        resName: item.resName!,
         rssId: item.rssId!,
         price: item.price!,
         stock: item.stock!,
         unitCode: item.unitCode!,
-        count: item.count!,
-        remark: item.remark!
+        count: item.count || '1',
+        remark: item.remark!,
+        communityId: community.id!
       }))
     }))
     console.log(activeStep)
     if (activeStep !== 0 && !formData.remark) return message.warning('您还没有填申请说明')
     setActiveStep(prev => Math.min(prev + 1, steps.length - 1))
-  }, [activeStep, dialogValue, formData.remark])
+  }, [activeStep, community.id, dialogValue, formData.remark])
 
   const handleBack = useCallback(() => {
     setActiveStep(prev => Math.max(prev - 1, 0))
