@@ -81,7 +81,6 @@ const Chargeback: React.FC<ChargebackProps> = ({
             staff_name: list.filter(item => item.staffId === formData.staff_id)[0]?.staffName
           }
         }
-        console.log(params)
         const action = update({ ...params })
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {

@@ -55,7 +55,6 @@ const RelevanceTableData: React.FC<RelevanceTableDataProps> = ({
     (actionType: string, row: RolesReply) => {
       switch (actionType) {
         case 'details':
-          console.log(row)
           navigate('/organizations/EmployeesDetails', { state: { value: row } })
           break
         case 'delete':

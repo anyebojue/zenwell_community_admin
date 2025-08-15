@@ -86,6 +86,14 @@ const purchase: IRouter[] = [
         }
       },
       {
+        path: 'ApplicationInfo',
+        element: load('Property/Purchase/ApplicationInfo'),
+        meta: {
+          title: '采购信息',
+          hidden: true
+        }
+      },
+      {
         path: 'ItemRequisition',
         element: load('Property/Purchase/ItemRequisition'),
         meta: {

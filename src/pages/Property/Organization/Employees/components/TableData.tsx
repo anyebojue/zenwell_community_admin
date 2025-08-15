@@ -70,7 +70,6 @@ const TableData: React.FC<TableDataProps> = ({
     (actionType: string, row: EmployeesReply) => {
       switch (actionType) {
         case 'restartAlt':
-          console.log(row)
           setDialogValue(row)
           setPasswordOpen(true)
           break

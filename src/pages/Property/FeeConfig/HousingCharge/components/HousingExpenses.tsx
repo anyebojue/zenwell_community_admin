@@ -80,7 +80,6 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue }) => {
   )
 
   useEffect(() => {
-    console.log(dialogValue.roomData)
     fetchData(findFeeConfigType, { 'page.disable': true }, '正在加载列表中，请稍后...')
     fetchData(findFeeConfig, { 'page.disable': true }, '正在加载列表中，请稍后...')
     if (dialogValue.id) {

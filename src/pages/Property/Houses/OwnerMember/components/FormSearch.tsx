@@ -30,7 +30,6 @@ interface FormSearchProps {
 }
 
 const FormSearch: React.FC<FormSearchProps> = ({ dialogValue, selectedRows, setDelOpen }) => {
-  console.log(dialogValue)
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.OwnerSlice)
   const [searchParams, setSearchParams] = useState<OwnerReply>({

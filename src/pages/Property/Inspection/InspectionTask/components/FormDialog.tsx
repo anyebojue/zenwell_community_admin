@@ -131,7 +131,6 @@ const FormDialog: React.FC<FormDialogProps> = ({
           originalPlanUserId: dialogValue?.planUserId,
           originalPlanUserName: dialogValue?.planUserName
         }
-        console.log(params)
         const action = update({ id: dialogValue?.id, ...params })
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {

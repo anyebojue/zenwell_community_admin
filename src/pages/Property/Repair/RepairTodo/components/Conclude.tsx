@@ -43,7 +43,6 @@ const Conclude: React.FC<ConcludeProps> = ({ dialogValue, concludeOpen, setConcl
 
   const handleImageChange =
     (type: 'before' | 'after') => (event: React.ChangeEvent<HTMLInputElement>) => {
-      console.log(111)
       const file = event.target.files?.[0]
       if (file) {
         uploadImage(file)
@@ -72,7 +71,6 @@ const Conclude: React.FC<ConcludeProps> = ({ dialogValue, concludeOpen, setConcl
           statusCd: 1900,
           updateStatusMsg: { ...formData, pic_before: images.before, pic_after: images.after }
         }
-        console.log(params)
         const action = update(params)
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {

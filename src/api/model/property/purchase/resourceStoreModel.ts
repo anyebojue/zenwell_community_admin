@@ -31,7 +31,8 @@ export interface ResourceStoreReply {
   img?: string
   storehouse?: StorehouseReply
   resourceStoreSpecification?: ResourceStoreSpecificationReply
-  count?: string
+  purchaseQuantity?: string
+  purchaseRemark?: string
 }
 
 export interface ResourceStoreParams {

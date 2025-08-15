@@ -128,7 +128,6 @@ const FormDialog: React.FC<FormDialogProps> = ({
           startTime: formData.startTime,
           endTime: formData.endTime
         }
-        console.log(params)
         const res = await dispatch(payFeesBatch(params))
         if ('error' in res && res.error?.message) throw new Error(res.error.message)
         await dispatch(find({ 'page.num': page.num || '1', 'page.size': page.size }))

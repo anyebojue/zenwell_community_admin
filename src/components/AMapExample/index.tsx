@@ -26,7 +26,6 @@ const AMapExample: React.FC<AMapExampleProps> = ({ setLng, setLat, mapHeight }) 
         // 地图点击事件
         amap.on('click', (event: AMap.MapsEvent) => {
           const { lng, lat } = event.lnglat // 获取点击的经纬度
-          console.log('点击的经纬度:', { lng, lat })
           setLng && setLng(String(lng))
           setLat && setLat(String(lat))
 

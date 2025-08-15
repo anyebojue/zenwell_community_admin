@@ -33,7 +33,6 @@ const getItemDescendantsIds = (item: TreeViewBaseItem) => {
 const CheckOut: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { menus } = useSelector((state: RootState) => state.MenuSlice)
-  console.log(menus)
   const navigate = useNavigate()
   const location = useLocation()
   const data = location.state?.value

@@ -24,7 +24,6 @@ const FeeComboMemberIndex = () => {
   const location = useLocation()
   const { page, list } = useSelector((state: RootState) => state.FeeComboMemberSlice)
   const row = location.state.value
-  console.log(row)
 
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
   const [openDialog, setOpenDialog] = useState(false)

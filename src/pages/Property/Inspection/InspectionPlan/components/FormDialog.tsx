@@ -262,7 +262,6 @@ const FormDialog: React.FC<FormDialogProps> = ({
               size="small"
               value={formData.inspectionRouteId || ''}
               onChange={e => {
-                console.log('Selected Route ID:', e.target.value)
                 setFormData({ ...formData, inspectionRouteId: e.target.value })
               }}
               variant="outlined"

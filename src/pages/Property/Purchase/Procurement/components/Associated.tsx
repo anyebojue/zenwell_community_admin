@@ -164,7 +164,6 @@ const Associated: React.FC<AssociatedProps> = ({
                     sx={textFieldStyles}
                     onChange={e => {
                       const value = Number(e.target.value)
-                      console.log('price', value)
                       setDialogValue(prev =>
                         prev.map(item => (item.id === row.id ? { ...item, price: value } : item))
                       )
@@ -182,7 +181,7 @@ const Associated: React.FC<AssociatedProps> = ({
               renderCell: ({ row }) => `${row.stock}${UNIT_OPTIONS[String(row.unitCode)]}`
             },
             {
-              field: 'count',
+              field: 'purchaseQuantity',
               headerName: '申请数量',
               flex: 1,
               headerAlign: 'center',
@@ -201,13 +200,14 @@ const Associated: React.FC<AssociatedProps> = ({
                     }}
                     size="small"
                     type="number"
-                    value={row.count ?? '1'}
+                    value={row.purchaseQuantity ?? '1'}
                     sx={textFieldStyles}
                     onChange={e => {
                       const value = e.target.value
-                      console.log('count', value)
                       setDialogValue(prev =>
-                        prev.map(item => (item.id === row.id ? { ...item, count: value } : item))
+                        prev.map(item =>
+                          item.id === row.id ? { ...item, purchaseQuantity: value } : item
+                        )
                       )
                     }}
                   />
@@ -215,7 +215,7 @@ const Associated: React.FC<AssociatedProps> = ({
               )
             },
             {
-              field: 'remark',
+              field: 'purchaseRemark',
               headerName: '备注',
               flex: 1,
               headerAlign: 'center',
@@ -224,12 +224,14 @@ const Associated: React.FC<AssociatedProps> = ({
                 <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                   <TextField
                     size="small"
-                    value={row.remark ?? ''}
+                    value={row.purchaseRemark ?? row.remark}
                     sx={textFieldStyles}
                     onChange={e => {
                       const value = e.target.value
                       setDialogValue(prev =>
-                        prev.map(item => (item.id === row.id ? { ...item, remark: value } : item))
+                        prev.map(item =>
+                          item.id === row.id ? { ...item, purchaseRemark: value } : item
+                        )
                       )
                     }}
                   />

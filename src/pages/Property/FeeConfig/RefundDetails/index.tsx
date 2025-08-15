@@ -21,7 +21,6 @@ const RolesIndex = () => {
   const navigate = useNavigate()
   const row: ReturnPayFeeReply = location.state.value
   const theme = useTheme()
-  console.log(row)
 
   return (
     <Box sx={{ mt: 3.5, width: '100%', height: '100%' }}>

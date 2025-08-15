@@ -1,35 +1,43 @@
 import { Page } from '../../pageModel'
 
 export interface ProcurementResourceStores {
-  id: string
-  storeId: string
-  rstId: string
-  resName: string
-  rssId: string
-  price: number
-  stock: string
-  unitCode: string
-  count: string
-  remark: string
-  communityId: string
-  bpaId: string
+  id?: string
+  storeId?: string
+  rstId?: string
+  resName?: string
+  shId?: string
+  rssId?: string
+  rsId?: string
+  resCode?: string
+  isFixed?: string
+  averagePrice?: number
+  originalStock?: string
+  unitCode?: string
+  stock?: string
+  quantity?: string
+  remark?: string
+  price?: number
+  purchaseQuantity?: string
+  purchaseRemark?: string
+  communityId?: string
+  bpaId?: string
 }
 
 export interface BusinessPurchaseApplyReply {
   id?: string
   createdAt?: string
   updatedAt?: string
-  storeId: ''
-  userId: ''
-  userName: ''
-  description: ''
-  resOrderType: ''
-  stateCd: ''
-  statusCd: ''
-  operate: ''
-  endUserName: ''
-  endUserTel: ''
-  communityId: ''
+  storeId?: string
+  userId?: string
+  userName?: string
+  description?: string
+  resOrderType?: string
+  stateCd?: string
+  statusCd?: string
+  operate?: string
+  endUserName?: string
+  endUserTel?: string
+  communityId?: string
   procurementResourceStores: ProcurementResourceStores[]
 }
 

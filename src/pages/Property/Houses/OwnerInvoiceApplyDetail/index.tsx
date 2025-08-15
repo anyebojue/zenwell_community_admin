@@ -20,7 +20,6 @@ const RolesIndex = () => {
   const row = location.state.value
   const theme = useTheme()
   const [activeTabIndex, setActiveTabIndex] = useState(0)
-  console.log(row)
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setActiveTabIndex(newValue)

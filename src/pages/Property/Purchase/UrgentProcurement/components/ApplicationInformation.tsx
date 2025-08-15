@@ -5,15 +5,20 @@ interface ProcurementItem {
   storeId: string
   rstId: string
   resName: string
-  resCode: string
-  rssId: string
-  averagePrice: number
-  stock: string
-  unitCode: string
-  count: string
-  price: number
   shId: string
+  rssId: string
+  rsId: string
+  resCode: string
+  isFixed: string
+  averagePrice: number
+  originalStock: string
+  unitCode: string
+  stock: string
+  quantity: string
   remark: string
+  price: number
+  purchaseQuantity: string
+  purchaseRemark: string
   communityId: string
 }
 
@@ -62,7 +67,6 @@ interface AssociatedProps {
 }
 
 const Associated: React.FC<AssociatedProps> = ({ activeStep, formData, setFormData }) => {
-  console.log(formData)
   return (
     <Box sx={contentBoxStyle}>
       <Box

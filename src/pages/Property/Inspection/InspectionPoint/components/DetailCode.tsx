@@ -16,8 +16,6 @@ interface AddPointProps {
 }
 
 const AddPoint: React.FC<AddPointProps> = ({ dialogValue, openDialog, setOpenDialog }) => {
-  console.log(dialogValue)
-
   return (
     <Dialog maxWidth="xs" open={openDialog} onClose={() => setOpenDialog(false)}>
       <DialogTitle>巡检二维码</DialogTitle>

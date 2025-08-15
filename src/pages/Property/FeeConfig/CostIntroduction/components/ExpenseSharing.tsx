@@ -48,7 +48,6 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
   const { list: housingManagementList } = useSelector((state: RootState) => state.FloorSlice)
   const { list: unitList } = useSelector((state: RootState) => state.UnitSlice)
   const { list: feeFormulaList } = useSelector((state: RootState) => state.FeeFormulaSlice)
-  console.log(feeFormulaList)
   const [loading, setLoading] = useState(false)
   const [disabled, setDisabled] = useState(true)
 
@@ -112,7 +111,16 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, setOpenDialog }) =>
         setLoading(false)
       }
     },
-    [formData, dispatch, page.num, page.size, setOpenDialog, initialFormData]
+    [
+      formData,
+      housingManagementList,
+      unitList,
+      dispatch,
+      page.num,
+      page.size,
+      setOpenDialog,
+      initialFormData
+    ]
   )
 
   return (

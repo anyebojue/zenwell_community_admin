@@ -22,7 +22,6 @@ const contentBoxStyle = (theme: Theme) => ({
 const ParkingLotManagementIndex = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { page, list } = useSelector((state: RootState) => state.ParkingSpaceApplySlice)
-  console.log(page)
 
   const [dialogValue, setDialogValue] = useState<ParkingSpaceApplyReply | undefined>()
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())

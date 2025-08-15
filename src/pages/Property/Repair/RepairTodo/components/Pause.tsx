@@ -66,7 +66,6 @@ const Pause: React.FC<PauseProps> = ({ dialogValue, pauseOpen, setPauseOpen }) =
             ...formData
           }
         }
-        console.log(params)
         const action = update({ ...params })
         const res = await dispatch(action)
         if ('error' in res && res.error?.message) {

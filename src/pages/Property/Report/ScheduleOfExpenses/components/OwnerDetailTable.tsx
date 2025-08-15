@@ -56,8 +56,6 @@ const TableData: React.FC<TableDataProps> = () => {
     return { id: item.id || index, ...item, ...feeData }
   })
 
-  console.log(columns, rows)
-
   return (
     <>
       <Box

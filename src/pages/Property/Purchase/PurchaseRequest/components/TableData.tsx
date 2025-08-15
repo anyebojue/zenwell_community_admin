@@ -17,6 +17,7 @@ import { zhCN } from '@mui/x-data-grid/locales'
 import message from 'components/Message'
 import { WarningRounded } from '@mui/icons-material'
 import { buttonStyles } from 'components/DeleteModal'
+import { useNavigate } from 'react-router-dom'
 
 interface TableDataProps {
   dialogValue?: BusinessPurchaseApplyParams
@@ -38,6 +39,7 @@ const statusValue: Record<string, string> = {
 
 const TableData: React.FC<TableDataProps> = ({ dialogValue, setDialogValue }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const { page, list } = useSelector((state: RootState) => state.BusinessPurchaseApplySlice)
   const current_community = localStorage.getItem('current_community')
   const community = JSON.parse(current_community || '')
@@ -47,8 +49,6 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue, setDialogValue }) =>
   const onDelete = useCallback(async () => {
     setLoading(true)
     try {
-      console.log(dialogValue)
-      console.log({ ...dialogValue, stateCd: '1004' })
       const res = await dispatch(update({ id: dialogValue?.id, stateCd: '1004' }))
       if ('error' in res && res.error?.message) {
         throw new Error(res.error.message)
@@ -97,6 +97,7 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue, setDialogValue }) =>
       switch (actionType) {
         case 'view':
           setDialogValue(row)
+          navigate('/purchase/ApplicationInfo', { state: { value: row } })
           break
         case 'cancel':
           setDialogValue(row)
@@ -104,7 +105,7 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue, setDialogValue }) =>
           break
       }
     },
-    [setDialogValue]
+    [navigate, setDialogValue]
   )
 
   const renderActionButtons = (row: BusinessPurchaseApplyParams) => {

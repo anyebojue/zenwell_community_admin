@@ -59,8 +59,6 @@ const FormMeterReading: React.FC<FormMeterReadingProps> = ({
   setDialogType,
   setOpenDialog
 }) => {
-  console.log('dialogValue', dialogValue)
-  console.log('dialogMeterWaterValue', dialogMeterWaterValue)
   const info = useSelector((state: RootState) => state.info.userInfo)
   const dispatch = useDispatch<AppDispatch>()
   const { page } = useSelector((state: RootState) => state.MeterWaterSlice)

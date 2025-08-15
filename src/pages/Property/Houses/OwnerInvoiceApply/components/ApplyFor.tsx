@@ -43,7 +43,6 @@ const FormDialog: React.FC<FormDialogProps> = ({ selectedButton, openDialog, set
 
   useEffect(() => {
     if (ownerInvoice?.id) {
-      console.log(ownerInvoice)
       setFormData(prevData => ({
         ...prevData,
         ownerId: ownerInvoice.ownerId,

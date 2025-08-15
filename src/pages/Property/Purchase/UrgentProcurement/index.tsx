@@ -16,15 +16,20 @@ interface ProcurementItem {
   storeId: string
   rstId: string
   resName: string
-  resCode: string
-  rssId: string
-  averagePrice: number
-  stock: string
-  unitCode: string
-  count: string
-  price: number
   shId: string
+  rssId: string
+  rsId: string
+  resCode: string
+  isFixed: string
+  averagePrice: number
+  originalStock: string
+  unitCode: string
+  stock: string
+  quantity: string
   remark: string
+  price: number
+  purchaseQuantity: string
+  purchaseRemark: string
   communityId: string
 }
 
@@ -148,19 +153,23 @@ const CheckInOwner = () => {
         storeId: item.storeId!,
         rstId: item.rstId!,
         resName: item.resName!,
-        resCode: item.resCode!,
-        rssId: item.rssId!,
-        averagePrice: item.averagePrice!,
-        stock: item.stock!,
-        unitCode: item.unitCode!,
-        count: item.count || '1',
-        price: item.price!,
         shId: item.shId!,
+        rssId: item.rssId!,
+        rsId: '',
+        resCode: item.resCode!,
+        isFixed: item.isFixed!,
+        averagePrice: item.averagePrice!,
+        originalStock: item.stock!,
+        unitCode: item.unitCode!,
+        stock: item.stock!,
+        quantity: item.miniStock!,
         remark: item.remark!,
+        price: item.price!,
+        purchaseQuantity: item.purchaseQuantity!,
+        purchaseRemark: item.purchaseRemark!,
         communityId: community.id!
       }))
     }))
-    console.log(activeStep)
     if (activeStep !== 0 && !formData.remark) return message.warning('您还没有填申请说明')
     setActiveStep(prev => Math.min(prev + 1, steps.length - 1))
   }, [activeStep, community.id, dialogValue, formData.remark])

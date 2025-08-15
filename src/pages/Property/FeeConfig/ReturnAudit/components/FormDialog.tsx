@@ -41,7 +41,6 @@ const FormDialog: React.FC<FormDialogProps> = ({ dialogValue, openDialog, setOpe
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
       setLoading(true)
-      console.log(dialogValue)
       try {
         const current_community = localStorage.getItem('current_community')
         const community = JSON.parse(current_community || '')

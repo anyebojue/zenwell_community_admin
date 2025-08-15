@@ -44,7 +44,6 @@ const FormDialog: React.FC<FormDialogProps> = ({
   const dispatch = useDispatch<AppDispatch>()
   const { list: floorList } = useSelector((state: RootState) => state.FloorSlice)
   const [loading, setLoading] = useState(false)
-  console.log(dialogRoomValue)
 
   const initialFormData = useMemo(
     () => ({
