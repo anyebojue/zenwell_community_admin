@@ -1,6 +1,8 @@
 import { Page } from '../../pageModel'
+import { ResourceStoreSpecificationReply } from './resourceStoreSpecificationModel'
+import { StorehouseReply } from './storehouseModel'
 
-export interface ProcurementResourceStores {
+export interface ProcurementResourceStore {
   id?: string
   storeId?: string
   rstId?: string
@@ -21,6 +23,8 @@ export interface ProcurementResourceStores {
   purchaseRemark?: string
   communityId?: string
   bpaId?: string
+  resourceStoreSpecification?: ResourceStoreSpecificationReply
+  storehouse?: StorehouseReply
 }
 
 export interface BusinessPurchaseApplyReply {
@@ -38,7 +42,7 @@ export interface BusinessPurchaseApplyReply {
   endUserName?: string
   endUserTel?: string
   communityId?: string
-  procurementResourceStores: ProcurementResourceStores[]
+  procurementResourceStore: ProcurementResourceStore[]
 }
 
 export interface BusinessPurchaseApplyParams {

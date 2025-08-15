@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect } from 'react'
+import { memo } from 'react'
 import { DataGrid } from '@mui/x-data-grid'
 import { zhCN } from '@mui/x-data-grid/locales'
 import { BusinessPurchaseApplyReply } from 'api/model/property/purchase/businessPurchaseApplyModel'
@@ -61,7 +61,7 @@ const PlanIndex: React.FC<PlanIndexProps> = ({ dialogValue }) => {
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       disableColumnResize
       disableVirtualization={false}
-      rows={dialogValue.procurementResourceStores}
+      rows={dialogValue.procurementResourceStore}
       columns={[
         {
           field: 'resourceStoreType.name',
@@ -95,7 +95,7 @@ const PlanIndex: React.FC<PlanIndexProps> = ({ dialogValue }) => {
           align: 'center',
           renderCell: ({ row }) => `${row.resourceStoreSpecification?.specName}`
         },
-        { field: 'action', headerName: '供应商', flex: 1 },
+        { field: 'action', headerName: '供应商', flex: 1, headerAlign: 'center', align: 'center' },
         {
           field: 'resCode',
           headerName: '物品编码',
@@ -143,18 +143,36 @@ const PlanIndex: React.FC<PlanIndexProps> = ({ dialogValue }) => {
           align: 'center',
           renderCell: ({ row }) => `${row.quantity}${UNIT_OPTIONS[String(row.unitCode)]}`
         },
-        { field: 'remark', headerName: '申请备注', flex: 1 },
-        { field: 'price', headerName: '采购单价', flex: 1 },
-        { field: 'purchaseQuantity', headerName: '采购数量', flex: 1 },
-        { field: 'purchaseRemark', headerName: '采购备注', flex: 1 }
+        {
+          field: 'remark',
+          headerName: '申请备注',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        { field: 'price', headerName: '采购单价', flex: 1, headerAlign: 'center', align: 'center' },
+        {
+          field: 'purchaseQuantity',
+          headerName: '采购数量',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
+        {
+          field: 'purchaseRemark',
+          headerName: '采购备注',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        }
       ]}
       pageSizeOptions={[10, 20, 50, 100]}
       paginationMode="server"
-      rowCount={dialogValue.procurementResourceStores.length}
+      rowCount={dialogValue.procurementResourceStore.length}
       initialState={{
         pagination: {
           paginationModel: {
-            pageSize: dialogValue.procurementResourceStores.length
+            pageSize: dialogValue.procurementResourceStore.length
           }
         }
       }}

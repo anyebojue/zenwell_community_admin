@@ -178,7 +178,7 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue, setDialogValue }) =>
             renderCell: () => community.name
           },
           {
-            field: 'procurementResourceStores',
+            field: 'procurementResourceStore',
             headerName: '物品',
             flex: 3,
             headerAlign: 'center',
@@ -201,7 +201,7 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue, setDialogValue }) =>
                     justifyContent: 'center'
                   }}
                 >
-                  {row.procurementResourceStores.map((item, index) => (
+                  {row.procurementResourceStore.map((item, index) => (
                     <Chip key={item.id} label={`${index + 1}: ${item.resName}`} size="small" />
                   ))}
                 </div>

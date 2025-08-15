@@ -43,7 +43,7 @@ interface FormData {
   employess: string
   remark: string
   resOrderType: string
-  procurementResourceStores: ProcurementItem[]
+  procurementResourceStore: ProcurementItem[]
 }
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
@@ -143,14 +143,14 @@ const CheckInOwner = () => {
     employess: community.store[0].userId,
     remark: '',
     resOrderType: '10000',
-    procurementResourceStores: []
+    procurementResourceStore: []
   })
 
   const handleNext = useCallback(() => {
     if (!dialogValue.length) return message.warning('您还没有选择物品')
     setFormData(prev => ({
       ...prev,
-      procurementResourceStores: dialogValue.map(item => ({
+      procurementResourceStore: dialogValue.map(item => ({
         storeId: item.storeId!,
         rstId: item.rstId!,
         resName: item.resName!,

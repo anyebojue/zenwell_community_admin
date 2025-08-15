@@ -78,18 +78,18 @@ const RolesIndex = () => {
                 { label: '使用人', value: row?.endUserName },
                 { label: '联系电话', value: community?.tel },
                 { label: '申请时间', value: row?.createdAt },
-                { label: '审批状态', value: statusCd[row?.stateCd] },
-                { label: '入库方式', value: statusValue[row?.resOrderType] },
+                { label: '审批状态', value: statusCd[row?.stateCd!] },
+                { label: '入库方式', value: statusValue[row?.resOrderType!] },
                 { label: '说明', value: row?.description },
                 {
                   label: '参考采购总价格',
-                  value: `¥${row.procurementResourceStores.reduce((sum, item) => {
+                  value: `¥${row.procurementResourceStore.reduce((sum, item) => {
                     return sum + Number(item.price) * Number(item.stock)
                   }, 0)}`
                 },
                 {
                   label: '实际采购总价格',
-                  value: `¥${row.procurementResourceStores.reduce((sum, item) => {
+                  value: `¥${row.procurementResourceStore.reduce((sum, item) => {
                     return sum + Number(item.averagePrice) * Number(item.stock)
                   }, 0)}`
                 }

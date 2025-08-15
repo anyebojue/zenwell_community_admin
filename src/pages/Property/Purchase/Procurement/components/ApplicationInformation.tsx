@@ -32,7 +32,7 @@ interface FormData {
   employess: string
   remark: string
   resOrderType: string
-  procurementResourceStores: ProcurementItem[]
+  procurementResourceStore: ProcurementItem[]
 }
 
 const textFieldStyles = {
