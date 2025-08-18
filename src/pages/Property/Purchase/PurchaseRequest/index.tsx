@@ -36,7 +36,7 @@ const OwnerCarIndex = () => {
               color="error"
               startIcon={<Add />}
               sx={buttonStyles('#2660ad', '#1d428a')}
-              onClick={() => navigate('/purchase/Procurement')}
+              onClick={() => navigate('/purchase/Procurement?resOrderType=10000')}
             >
               采购申请
             </Button>

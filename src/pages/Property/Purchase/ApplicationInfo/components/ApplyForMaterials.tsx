@@ -150,17 +150,23 @@ const PlanIndex: React.FC<PlanIndexProps> = ({ dialogValue }) => {
           headerAlign: 'center',
           align: 'center'
         },
-        { field: 'price', headerName: '采购单价', flex: 1, headerAlign: 'center', align: 'center' },
+        {
+          field: 'price',
+          headerName: dialogValue.resOrderType === '10000' ? '采购单价' : '领用单价',
+          flex: 1,
+          headerAlign: 'center',
+          align: 'center'
+        },
         {
           field: 'purchaseQuantity',
-          headerName: '采购数量',
+          headerName: dialogValue.resOrderType === '10000' ? '采购数量' : '领用数量',
           flex: 1,
           headerAlign: 'center',
           align: 'center'
         },
         {
           field: 'purchaseRemark',
-          headerName: '采购备注',
+          headerName: dialogValue.resOrderType === '10000' ? '采购备注' : '领用备注',
           flex: 1,
           headerAlign: 'center',
           align: 'center'

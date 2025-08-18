@@ -42,6 +42,7 @@ export interface BusinessPurchaseApplyReply {
   endUserName?: string
   endUserTel?: string
   communityId?: string
+  warehousingWay?: string
   procurementResourceStore: ProcurementResourceStore[]
 }
 
@@ -50,6 +51,7 @@ export interface BusinessPurchaseApplyParams {
   userName?: string
   stateCd?: string
   isExport?: boolean
+  resOrderType?: string
 }
 
 export interface FindBusinessPurchaseApplyReply {

@@ -86,6 +86,7 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue, setDialogValue }) =>
       {
         'page.num': page.num,
         'page.size': page.size,
+        resOrderType: '10000',
         isExport: true
       },
       '正在加载列表中，请稍后...'
@@ -216,12 +217,12 @@ const TableData: React.FC<TableDataProps> = ({ dialogValue, setDialogValue }) =>
             align: 'center'
           },
           {
-            field: 'resOrderType',
+            field: 'warehousingWay',
             headerName: '采购方式',
             flex: 1,
             headerAlign: 'center',
             align: 'center',
-            renderCell: ({ row }) => <Chip label={statusValue[row.resOrderType!] || '-'} />
+            renderCell: ({ row }) => <Chip label={statusValue[row.warehousingWay!] || '-'} />
           },
           {
             field: 'stateCd',

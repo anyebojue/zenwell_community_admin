@@ -50,6 +50,7 @@ const FormSearch: React.FC<FormSearchProps> = () => {
           find({
             'page.num': page.num,
             'page.size': page.size,
+            resOrderType: '10000',
             ...params,
             isExport: true
           })

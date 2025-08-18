@@ -79,20 +79,7 @@ const RolesIndex = () => {
                 { label: '联系电话', value: community?.tel },
                 { label: '申请时间', value: row?.createdAt },
                 { label: '审批状态', value: statusCd[row?.stateCd!] },
-                { label: '入库方式', value: statusValue[row?.resOrderType!] },
-                { label: '说明', value: row?.description },
-                {
-                  label: '参考采购总价格',
-                  value: `¥${row.procurementResourceStore.reduce((sum, item) => {
-                    return sum + Number(item.price) * Number(item.stock)
-                  }, 0)}`
-                },
-                {
-                  label: '实际采购总价格',
-                  value: `¥${row.procurementResourceStore.reduce((sum, item) => {
-                    return sum + Number(item.averagePrice) * Number(item.stock)
-                  }, 0)}`
-                }
+                { label: '说明', value: row?.description }
               ].map((item, index) => (
                 <Grid size={{ xs: 3, sm: 3, md: 3 }} key={index}>
                   <Typography variant="body2">
@@ -100,6 +87,43 @@ const RolesIndex = () => {
                   </Typography>
                 </Grid>
               ))}
+              {row.resOrderType === '10000' && (
+                <>
+                  <Grid size={{ xs: 3, sm: 3, md: 3 }}>
+                    <Typography variant="body2">
+                      入库方式：{statusValue[row?.warehousingWay!]}
+                    </Typography>
+                  </Grid>
+                  <Grid size={{ xs: 3, sm: 3, md: 3 }}>
+                    <Typography variant="body2">
+                      参考采购总价格：¥
+                      {row.procurementResourceStore.reduce((sum, item) => {
+                        return sum + Number(item.price) * Number(item.stock)
+                      }, 0)}
+                    </Typography>
+                  </Grid>
+                  <Grid size={{ xs: 3, sm: 3, md: 3 }}>
+                    <Typography variant="body2">
+                      实际采购总价格：¥
+                      {row.procurementResourceStore.reduce((sum, item) => {
+                        return sum + Number(item.averagePrice) * Number(item.stock)
+                      }, 0)}
+                    </Typography>
+                  </Grid>
+                </>
+              )}
+              {row.resOrderType === '20000' && (
+                <Grid size={{ xs: 3, sm: 3, md: 3 }}>
+                  <Typography variant="body2">
+                    出库方式：
+                    {row?.warehousingWay === '10000'
+                      ? '审核出库'
+                      : row?.warehousingWay === '20000'
+                        ? '直接入库'
+                        : ''}
+                  </Typography>
+                </Grid>
+              )}
             </Grid>
           </Box>
         </Box>

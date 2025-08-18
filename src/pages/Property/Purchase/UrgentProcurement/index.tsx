@@ -42,7 +42,7 @@ interface FormData {
   storeName: string
   employess: string
   remark: string
-  resOrderType: string
+  warehousingWay: string
   procurementResourceStore: ProcurementItem[]
 }
 
@@ -141,7 +141,7 @@ const CheckInOwner = () => {
     storeName: community.store[0].name,
     employess: community.store[0].userId,
     remark: '',
-    resOrderType: '20000',
+    warehousingWay: '20000',
     procurementResourceStore: []
   })
 
@@ -170,9 +170,8 @@ const CheckInOwner = () => {
         communityId: community.id!
       }))
     }))
-    if (activeStep !== 0 && !formData.remark) return message.warning('您还没有填申请说明')
     setActiveStep(prev => Math.min(prev + 1, steps.length - 1))
-  }, [activeStep, community.id, dialogValue, formData.remark])
+  }, [community.id, dialogValue])
 
   const handleBack = useCallback(() => {
     setActiveStep(prev => Math.max(prev - 1, 0))
@@ -180,8 +179,11 @@ const CheckInOwner = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!formData.remark) {
+      return message.warning('您还没有填申请说明')
+    }
     const closeLoading = message.loading('正在加载中，请稍后...')
-    const params = { ...formData, stateCd: '1000' }
+    const params = { ...formData, stateCd: '1000', resOrderType: '10000' }
     try {
       const res = await dispatch(create(params))
       if ('error' in res && res.error?.message) throw new Error(res.error.message)

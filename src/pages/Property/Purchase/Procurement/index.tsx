@@ -5,7 +5,7 @@ import { StepConnector, stepConnectorClasses } from '@mui/material'
 import { StepIconProps } from '@mui/material/StepIcon'
 import { Discount, FmdBad, Person } from '@mui/icons-material'
 import message from 'components/Message'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { buttonStyles } from 'components/DeleteModal'
 import { useDispatch } from 'react-redux'
 import { ResourceStoreReply } from 'api/model/property/purchase/resourceStoreModel'
@@ -42,7 +42,7 @@ interface FormData {
   storeName: string
   employess: string
   remark: string
-  resOrderType: string
+  warehousingWay: string
   procurementResourceStore: ProcurementItem[]
 }
 
@@ -128,6 +128,8 @@ const steps = ['选择物品', '申请信息', '审批人']
 const CheckInOwner = () => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const resOrderType = searchParams.get('resOrderType')
   const current_community = localStorage.getItem('current_community')
   const community = JSON.parse(current_community || '')
   const [associatedOpen, setAssociatedOpen] = useState(false)
@@ -142,7 +144,7 @@ const CheckInOwner = () => {
     storeName: community.store[0].name,
     employess: community.store[0].userId,
     remark: '',
-    resOrderType: '10000',
+    warehousingWay: '10000',
     procurementResourceStore: []
   })
 
@@ -182,7 +184,7 @@ const CheckInOwner = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const closeLoading = message.loading('正在加载中，请稍后...')
-    const params = { ...formData, stateCd: '1000' }
+    const params = { ...formData, stateCd: '1000', resOrderType: resOrderType! }
     try {
       const res = await dispatch(create(params))
       if ('error' in res && res.error?.message) throw new Error(res.error.message)

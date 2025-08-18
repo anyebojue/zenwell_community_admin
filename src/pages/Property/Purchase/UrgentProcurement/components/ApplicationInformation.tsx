@@ -31,7 +31,7 @@ interface FormData {
   storeName: string
   employess: string
   remark: string
-  resOrderType: string
+  warehousingWay: string
   procurementResourceStore: ProcurementItem[]
 }
 
