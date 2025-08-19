@@ -1,5 +1,6 @@
 import React, { memo, useState, useCallback } from 'react'
 import { create } from 'modules/property/purchase/businessPurchaseApply'
+import { create as createDetail } from 'modules/property/purchase/purchaseApplyDetail'
 import { Box, Button, Step, StepLabel, Stepper, styled } from '@mui/material'
 import { StepConnector, stepConnectorClasses } from '@mui/material'
 import { StepIconProps } from '@mui/material/StepIcon'
@@ -187,10 +188,34 @@ const CheckInOwner = () => {
     try {
       const res = await dispatch(create(params))
       if ('error' in res && res.error?.message) throw new Error(res.error.message)
+      for (const item of formData.procurementResourceStore) {
+        const detailParams = {
+          communityId: formData.communityId,
+          userId: formData.userId,
+          userName: formData.userName,
+          endUserName: '无',
+          resOrderType: '10000',
+          storeId: item.storeId,
+          rstId: item.rstId,
+          resName: item.resName,
+          rssId: item.rssId,
+          isFixed: item.isFixed,
+          rsId: item.rsId,
+          shId: item.shId,
+          warehousingWay: formData.warehousingWay,
+          quantity: item.quantity,
+          purchaseQuantity: item.purchaseQuantity,
+          price: item.price,
+          totalPrice: Number(item.price) * Number(item.quantity),
+          purchaseRemark: item.purchaseRemark,
+          statusCd: '1000',
+          procurementResourceStore: [item]
+        }
+        await dispatch(createDetail(detailParams))
+      }
       navigate(-1)
       message.success('申请成功')
     } catch (err: unknown) {
-      closeLoading()
       if (err instanceof Error) message.error(err.message)
     } finally {
       closeLoading()

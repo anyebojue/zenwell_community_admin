@@ -122,6 +122,7 @@ import ResourceStoreSpecificationSlice from './property/purchase/resourceStoreSp
 import ResourceStoreSlice from './property/purchase/resourceStore'
 import ResourceStoreTypeSlice from './property/purchase/resourceStoreType'
 import BusinessPurchaseApplySlice from './property/purchase/businessPurchaseApply'
+import PurchaseApplyDetailSlice from './property/purchase/purchaseApplyDetail'
 import ResourceSupplierSlice from './property/purchase/resourceSupplier'
 
 const store = configureStore({
@@ -249,6 +250,7 @@ const store = configureStore({
     ResourceStoreSlice,
     ResourceStoreTypeSlice,
     BusinessPurchaseApplySlice,
+    PurchaseApplyDetailSlice,
     ResourceSupplierSlice
   },
   // 关闭序列化检测
