@@ -264,36 +264,74 @@ const fallbackValueByKey = (key: string, index = 0): any => {
   return `${toTitle(normalized)} ${index + 1}`
 }
 
-const proxyValue = (value: any, index = 0): any => {
-  if (Array.isArray(value)) {
-    return value.map((item, itemIndex) => proxyValue(item, itemIndex))
+const ensureDisplayData = (record: MockRecord, index = 0): MockRecord => {
+  const commonDefaults: MockRecord = {
+    id: `row-${String(index + 1).padStart(3, '0')}`,
+    code: `CODE-${String(index + 1).padStart(3, '0')}`,
+    name: `数据 ${index + 1}`,
+    title: `标题 ${index + 1}`,
+    remark: '模拟数据展示内容',
+    description: '模拟数据展示内容',
+    content: '模拟数据展示内容',
+    statusCd: '0',
+    state: '0',
+    createdAt: nowString(index),
+    updatedAt: nowString(index),
+    startTime: nowString(index),
+    endTime: nowString(index),
+    amount: String(100 + index * 10),
+    totalAmount: String(100 + index * 10),
+    totalFee: String(100 + index * 10),
+    price: String(100 + index * 10),
+    mobile: `1390000${String(index + 1).padStart(4, '0')}`,
+    tel: `1360000${String(index + 1).padStart(4, '0')}`,
+    link: `1370000${String(index + 1).padStart(4, '0')}`,
+    address: `上海市示例路 ${index + 1} 号`,
+    ownerName: `业主${index + 1}`,
+    applyCompany: `申请单位${index + 1}`,
+    applyPerson: `申请人${index + 1}`,
+    applyTel: `1380000${String(index + 1).padStart(4, '0')}`,
+    idCard: `31010119900${String(index + 1).padStart(6, '0')}`,
+    passTime: nowString(index),
+    parkingSpace: fallbackParkingSpace(index),
+    parkingSpaceInfo: fallbackParkingSpace(index),
+    releaseType: [fallbackReleaseType(index)],
+    releaseRes: fallbackReleaseRes(index),
+    owner: {
+      id: `owner-${String(index + 1).padStart(3, '0')}`,
+      name: `业主${index + 1}`,
+      link: `1380000${String(index + 1).padStart(4, '0')}`
+    },
+    org: [
+      {
+        id: `org-${String(index + 1).padStart(3, '0')}`,
+        name: `组织 ${index + 1}`
+      }
+    ]
   }
-  if (value && typeof value === 'object') {
-    return ensureDisplayData(value, index)
-  }
-  return value
-}
 
-const ensureDisplayData = (record: MockRecord, index = 0): MockRecord =>
-  new Proxy(record, {
-    get(target, prop, receiver) {
-      if (typeof prop !== 'string') {
-        return Reflect.get(target, prop, receiver)
-      }
-
-      const current = Reflect.get(target, prop, receiver)
-
-      if (current !== undefined && current !== null && current !== '') {
-        return proxyValue(current, index)
-      }
-
-      if (current === '') {
-        return fallbackValueByKey(prop, index)
-      }
-
-      return proxyValue(fallbackValueByKey(prop, index), index)
+  const normalizedEntries = Object.entries({ ...commonDefaults, ...record }).map(([key, value]) => {
+    if (value === undefined || value === null || value === '') {
+      return [key, fallbackValueByKey(key, index)]
     }
+    if (Array.isArray(value)) {
+      return [
+        key,
+        value.length > 0
+          ? value.map((item, itemIndex) =>
+              item && typeof item === 'object' ? ensureDisplayData(item, itemIndex) : item
+            )
+          : fallbackValueByKey(key, index)
+      ]
+    }
+    if (value && typeof value === 'object') {
+      return [key, ensureDisplayData(value, index)]
+    }
+    return [key, value]
   })
+
+  return Object.fromEntries(normalizedEntries)
+}
 
 const normalizePath = (rawUrl = '') => {
   const url = rawUrl.replace(/^https?:\/\/[^/]+/, '')
