@@ -6,6 +6,7 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 
 // 判断当前环境是否为开发模式
 const isDev = process.env.NODE_ENV === 'development'
+const isVercel = process.env.VERCEL === '1'
 
 // 公共路径配置
 const paths = {
@@ -94,6 +95,7 @@ export default defineConfig({
     }),
     isDev && new RefreshPlugin(), // 仅在开发模式启用 React 热更新插件
     !isDev &&
+      !isVercel &&
       new BundleAnalyzerPlugin({
         analyzerMode: 'static', // 生成静态报告文件
         openAnalyzer: false, // 不自动打开浏览器
