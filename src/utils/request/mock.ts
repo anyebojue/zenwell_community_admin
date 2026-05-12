@@ -65,6 +65,26 @@ const COMMUNITY_LIST = [
   }
 ]
 
+const fallbackParkingSpace = (index = 0) => ({
+  id: `parking-space-${String(index + 1).padStart(3, '0')}`,
+  num: `P${String(100 + index)}`,
+  name: `车位 ${index + 1}`
+})
+
+const fallbackReleaseType = (index = 0) => ({
+  id: `release-type-${String(index + 1).padStart(3, '0')}`,
+  typeName: ['家具放行', '装修放行', '设备出门', '物资搬运'][index % 4]
+})
+
+const fallbackReleaseRes = (index = 0) => [
+  {
+    id: `release-res-${String(index + 1).padStart(3, '0')}`,
+    resName: ['办公椅', '显示器', '工具箱', '档案盒'][index % 4],
+    amount: String((index % 3) + 1),
+    remark: '模拟放行物品'
+  }
+]
+
 const MENU_TREE = [
   {
     id: 'menu-communitys',
@@ -169,6 +189,111 @@ const toTitle = (value: string) =>
     .filter(Boolean)
     .map(part => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ')
+
+const fallbackValueByKey = (key: string, index = 0): any => {
+  const normalized = String(key)
+
+  const exactMap: Record<string, any> = {
+    applyCompany: `申请单位${index + 1}`,
+    applyPerson: `申请人${index + 1}`,
+    applyTel: `1380000${String(index + 1).padStart(4, '0')}`,
+    idCard: `31010119900${String(index + 1).padStart(6, '0')}`,
+    passTime: nowString(index),
+    carNum: `沪A${String(2000 + index).padStart(5, '0')}`,
+    tel: `1360000${String(index + 1).padStart(4, '0')}`,
+    mobile: `1390000${String(index + 1).padStart(4, '0')}`,
+    link: `1370000${String(index + 1).padStart(4, '0')}`,
+    releaseType: [fallbackReleaseType(index)],
+    releaseRes: fallbackReleaseRes(index),
+    parkingSpace: fallbackParkingSpace(index),
+    parkingSpaceInfo: fallbackParkingSpace(index),
+    owner: {
+      id: `owner-${String(index + 1).padStart(3, '0')}`,
+      name: `业主${index + 1}`,
+      link: `1380000${String(index + 1).padStart(4, '0')}`
+    },
+    org: [
+      {
+        id: `org-${String(index + 1).padStart(3, '0')}`,
+        name: `组织 ${index + 1}`
+      }
+    ]
+  }
+
+  if (normalized in exactMap) {
+    return exactMap[normalized]
+  }
+
+  if (normalized.endsWith('Name') || normalized === 'name' || normalized === 'title') {
+    return `${toTitle(normalized)} ${index + 1}`
+  }
+  if (normalized.includes('Company') || normalized.includes('company')) {
+    return `单位${index + 1}`
+  }
+  if (normalized.includes('Person') || normalized.includes('User') || normalized.includes('user')) {
+    return `人员${index + 1}`
+  }
+  if (normalized.includes('Phone') || normalized.includes('phone') || normalized.includes('Tel') || normalized.includes('tel')) {
+    return `1380000${String(index + 1).padStart(4, '0')}`
+  }
+  if (normalized.includes('Card')) {
+    return `31010119900${String(index + 1).padStart(6, '0')}`
+  }
+  if (normalized.includes('Time') || normalized.endsWith('At') || normalized.includes('Date')) {
+    return nowString(index)
+  }
+  if (normalized.includes('Amount') || normalized.includes('Price') || normalized.includes('Fee') || normalized.includes('Stock') || normalized.includes('Total') || normalized.includes('score')) {
+    return String(100 + index * 10)
+  }
+  if (normalized.includes('Num') || normalized === 'num' || normalized.includes('Code') || normalized === 'id') {
+    return `${normalized.toUpperCase().slice(0, 4)}-${String(index + 1).padStart(3, '0')}`
+  }
+  if (normalized.includes('Status') || normalized === 'statusCd' || normalized === 'state') {
+    return '0'
+  }
+  if (normalized.includes('Remark') || normalized === 'remark' || normalized === 'description' || normalized === 'content') {
+    return '模拟数据展示内容'
+  }
+  if (normalized.includes('Address') || normalized === 'address') {
+    return `上海市示例路 ${index + 1} 号`
+  }
+  if (normalized.includes('Area')) {
+    return String(80 + index)
+  }
+
+  return `${toTitle(normalized)} ${index + 1}`
+}
+
+const proxyValue = (value: any, index = 0): any => {
+  if (Array.isArray(value)) {
+    return value.map((item, itemIndex) => proxyValue(item, itemIndex))
+  }
+  if (value && typeof value === 'object') {
+    return ensureDisplayData(value, index)
+  }
+  return value
+}
+
+const ensureDisplayData = (record: MockRecord, index = 0): MockRecord =>
+  new Proxy(record, {
+    get(target, prop, receiver) {
+      if (typeof prop !== 'string') {
+        return Reflect.get(target, prop, receiver)
+      }
+
+      const current = Reflect.get(target, prop, receiver)
+
+      if (current !== undefined && current !== null && current !== '') {
+        return proxyValue(current, index)
+      }
+
+      if (current === '') {
+        return fallbackValueByKey(prop, index)
+      }
+
+      return proxyValue(fallbackValueByKey(prop, index), index)
+    }
+  })
 
 const normalizePath = (rawUrl = '') => {
   const url = rawUrl.replace(/^https?:\/\/[^/]+/, '')
@@ -518,7 +643,14 @@ const createResourceRecord = (resourceName: string, index: number): MockRecord =
       id: `${resourceName}-${String(index + 1).padStart(3, '0')}`,
       title: `${resourceName.includes('announcement') ? '社区公示' : '放行申请'} ${index + 1}`,
       photo: imagePlaceholder,
-      publisher: `管理员${index + 1}`
+      publisher: `管理员${index + 1}`,
+      applyCompany: `申请单位${index + 1}`,
+      applyPerson: `申请人${index + 1}`,
+      applyTel: `1380000${String(index + 1).padStart(4, '0')}`,
+      idCard: `31010119900${String(index + 1).padStart(6, '0')}`,
+      passTime: nowString(index),
+      releaseType: [fallbackReleaseType(index)],
+      releaseRes: fallbackReleaseRes(index)
     }
   }
 
@@ -771,7 +903,7 @@ export const mockRequest = async <T>(
         ...createResourceRecord(resourcePath.split('/').pop() || 'resource', 0),
         id: resourceId
       }
-      return buildResponse(config, detail as T)
+      return buildResponse(config, ensureDisplayData(detail, 0) as T)
     }
 
     const filtered = filterRows(collection, params)
@@ -779,7 +911,7 @@ export const mockRequest = async <T>(
       config,
       {
         page: buildPage(params, filtered.length),
-        list: paginateRows(filtered, params),
+        list: paginateRows(filtered, params).map((item, index) => ensureDisplayData(item, index)),
         exportUrl: imagePlaceholder
       } as T
     )
@@ -794,7 +926,7 @@ export const mockRequest = async <T>(
     }
     collection.unshift(created)
     database.set(resourcePath, collection)
-    return buildResponse(config, created as T)
+    return buildResponse(config, ensureDisplayData(created, 0) as T)
   }
 
   if (method === 'patch') {
@@ -803,7 +935,7 @@ export const mockRequest = async <T>(
     )
     database.set(resourcePath, nextCollection)
     const updated = nextCollection.find(item => item.id === resourceId) || body
-    return buildResponse(config, updated as T)
+    return buildResponse(config, ensureDisplayData(updated, 0) as T)
   }
 
   if (method === 'delete') {
