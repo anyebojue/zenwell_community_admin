@@ -264,8 +264,8 @@ const fallbackValueByKey = (key: string, index = 0): any => {
   return `${toTitle(normalized)} ${index + 1}`
 }
 
-const ensureDisplayData = (record: MockRecord, index = 0): MockRecord => {
-  const commonDefaults: MockRecord = {
+const ensureDisplayData = (record: MockRecord, index = 0, depth = 0): MockRecord => {
+  const topLevelDefaults: MockRecord = {
     id: `row-${String(index + 1).padStart(3, '0')}`,
     code: `CODE-${String(index + 1).padStart(3, '0')}`,
     name: `数据 ${index + 1}`,
@@ -292,45 +292,74 @@ const ensureDisplayData = (record: MockRecord, index = 0): MockRecord => {
     applyPerson: `申请人${index + 1}`,
     applyTel: `1380000${String(index + 1).padStart(4, '0')}`,
     idCard: `31010119900${String(index + 1).padStart(6, '0')}`,
-    passTime: nowString(index),
-    parkingSpace: fallbackParkingSpace(index),
-    parkingSpaceInfo: fallbackParkingSpace(index),
-    releaseType: [fallbackReleaseType(index)],
-    releaseRes: fallbackReleaseRes(index),
-    owner: {
-      id: `owner-${String(index + 1).padStart(3, '0')}`,
-      name: `业主${index + 1}`,
-      link: `1380000${String(index + 1).padStart(4, '0')}`
-    },
-    org: [
-      {
-        id: `org-${String(index + 1).padStart(3, '0')}`,
-        name: `组织 ${index + 1}`
-      }
-    ]
+    passTime: nowString(index)
   }
 
-  const normalizedEntries = Object.entries({ ...commonDefaults, ...record }).map(([key, value]) => {
+  const nestedDefaults: MockRecord = {
+    id: `nested-${String(index + 1).padStart(3, '0')}`,
+    name: `子项 ${index + 1}`,
+    remark: '模拟数据展示内容'
+  }
+
+  const seed = depth === 0 ? { ...topLevelDefaults, ...record } : { ...nestedDefaults, ...record }
+
+  const normalizedEntries = Object.entries(seed).map(([key, value]) => {
     if (value === undefined || value === null || value === '') {
       return [key, fallbackValueByKey(key, index)]
     }
+
     if (Array.isArray(value)) {
+      if (value.length === 0) {
+        return [key, fallbackValueByKey(key, index)]
+      }
+
+      if (depth >= 1) {
+        return [key, value]
+      }
+
       return [
         key,
-        value.length > 0
-          ? value.map((item, itemIndex) =>
-              item && typeof item === 'object' ? ensureDisplayData(item, itemIndex) : item
-            )
-          : fallbackValueByKey(key, index)
+        value.map((item, itemIndex) =>
+          item && typeof item === 'object' ? ensureDisplayData(item, itemIndex, depth + 1) : item
+        )
       ]
     }
+
     if (value && typeof value === 'object') {
-      return [key, ensureDisplayData(value, index)]
+      if (depth >= 1) {
+        return [key, value]
+      }
+      return [key, ensureDisplayData(value, index, depth + 1)]
     }
+
     return [key, value]
   })
 
-  return Object.fromEntries(normalizedEntries)
+  const result = Object.fromEntries(normalizedEntries)
+
+  if (depth === 0) {
+    if (!result.parkingSpace) result.parkingSpace = fallbackParkingSpace(index)
+    if (!result.parkingSpaceInfo) result.parkingSpaceInfo = fallbackParkingSpace(index)
+    if (!result.releaseType) result.releaseType = [fallbackReleaseType(index)]
+    if (!result.releaseRes) result.releaseRes = fallbackReleaseRes(index)
+    if (!result.owner) {
+      result.owner = {
+        id: `owner-${String(index + 1).padStart(3, '0')}`,
+        name: `业主${index + 1}`,
+        link: `1380000${String(index + 1).padStart(4, '0')}`
+      }
+    }
+    if (!result.org) {
+      result.org = [
+        {
+          id: `org-${String(index + 1).padStart(3, '0')}`,
+          name: `组织 ${index + 1}`
+        }
+      ]
+    }
+  }
+
+  return result
 }
 
 const normalizePath = (rawUrl = '') => {
