@@ -13,6 +13,7 @@ import houses from './modules/property/houses'
 import feeConfig from './modules/property/feeConfig'
 import parking from './modules/property/parking'
 import purchase from './modules/property/purchase'
+import assets from './modules/property/assets'
 import repair from './modules/property/repair'
 import inspection from './modules/property/inspection'
 import report from './modules/property/report'
@@ -96,6 +97,7 @@ const useAllRoutes = (): IRouter[] => {
         ...feeConfig,
         ...parking,
         ...purchase,
+        ...assets,
         ...repair,
         ...inspection,
         ...report,

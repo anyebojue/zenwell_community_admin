@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import configObj from 'configs'
+import { isMockEnabled, mockRequest } from './mock'
 
 class Request {
   private instance: AxiosInstance
@@ -157,18 +158,30 @@ class Request {
   }
 
   public get<T = unknown>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+    if (isMockEnabled()) {
+      return mockRequest<T>('get', config)
+    }
     return this.instance.get<T>(config.url!, config)
   }
 
   public post<T = unknown>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+    if (isMockEnabled()) {
+      return mockRequest<T>('post', config)
+    }
     return this.instance.post<T>(config.url!, config.data, config)
   }
 
   public patch<T = unknown>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+    if (isMockEnabled()) {
+      return mockRequest<T>('patch', config)
+    }
     return this.instance.patch<T>(config.url!, config.data, config)
   }
 
   public delete<T = unknown>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+    if (isMockEnabled()) {
+      return mockRequest<T>('delete', config)
+    }
     return this.instance.delete<T>(config.url!, config)
   }
 }
